@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@ab/landing-page": [
+        "libs/adrian-badilla/frontend/landing-page/src/index.ts"
+      ],
       "@ab/shared": ["libs/adrian-badilla/frontend/shared/src/index.ts"]
     }
   },
