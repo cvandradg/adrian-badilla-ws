@@ -2,7 +2,6 @@
   "name": "@adrian-badilla-ws/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
   "private": true,
   "dependencies": {
     "@angular/common": "~19.2.0",
@@ -12,6 +11,9 @@
     "@angular/platform-browser": "~19.2.0",
     "@angular/platform-browser-dynamic": "~19.2.0",
     "@angular/router": "~19.2.0",
+    "firebase": "^11.0.2",
+    "firebase-tools": "^13.27.0",
+    "punycode": "^2.3.1",
     "rxjs": "~7.8.0",
     "zone.js": "~0.15.0"
   },
@@ -53,5 +55,6 @@
     "tslib": "^2.3.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.19.0"
-  }
+  },
+  "packageManager": "yarn@4.9.1"
 }
