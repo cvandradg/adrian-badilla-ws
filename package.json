@@ -2,6 +2,14 @@
   "name": "@adrian-badilla-ws/source",
   "version": "0.0.0",
   "license": "MIT",
+  "scripts": {
+    "test": "yarn && npx nx run-many -t test",
+    "build:only": "yarn && npx nx  build adrian-badilla",
+    "format": "npx nx format --base=main --head=HEAD",
+    "build": " yarn && npx nx build adrian-badilla && npx nx run-many -t test",
+    "s": "yarn && npx nx lint adrian-badilla && npx nx build adrian-badilla && npx nx run-many -t test && npx nx serve adrian-badilla",
+    "r": "yarn && npx nx serve adrian-badilla"
+  },
   "private": true,
   "dependencies": {
     "@angular/common": "~19.2.0",
