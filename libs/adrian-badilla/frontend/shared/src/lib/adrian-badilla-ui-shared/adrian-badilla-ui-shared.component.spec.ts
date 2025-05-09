@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AdrianBadillaUiSharedComponent } from './adrian-badilla-ui-shared.component';
+import { SharedComponent } from './adrian-badilla-ui-shared.component';
 
-describe('AdrianBadillaUiSharedComponent', () => {
-  let component: AdrianBadillaUiSharedComponent;
-  let fixture: ComponentFixture<AdrianBadillaUiSharedComponent>;
+describe('SharedComponent', () => {
+  let component: SharedComponent;
+  let fixture: ComponentFixture<SharedComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AdrianBadillaUiSharedComponent],
+      imports: [SharedComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AdrianBadillaUiSharedComponent);
+    fixture = TestBed.createComponent(SharedComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
