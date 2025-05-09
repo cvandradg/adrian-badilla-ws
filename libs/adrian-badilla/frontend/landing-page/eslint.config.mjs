@@ -12,7 +12,7 @@ export default [
         'error',
         {
           type: 'attribute',
-          prefix: 'adrian-badilla',
+          prefix: 'lib',
           style: 'camelCase',
         },
       ],
