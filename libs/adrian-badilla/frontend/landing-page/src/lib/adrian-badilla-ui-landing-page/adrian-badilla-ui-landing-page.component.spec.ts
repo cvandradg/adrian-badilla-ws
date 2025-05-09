@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AdrianBadillaUiLandingPageComponent } from './adrian-badilla-ui-landing-page.component';
+import { LandingPageComponent } from './adrian-badilla-ui-landing-page.component';
 
-describe('AdrianBadillaUiLandingPageComponent', () => {
-  let component: AdrianBadillaUiLandingPageComponent;
-  let fixture: ComponentFixture<AdrianBadillaUiLandingPageComponent>;
+describe('LandingPageComponent', () => {
+  let component: LandingPageComponent;
+  let fixture: ComponentFixture<LandingPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AdrianBadillaUiLandingPageComponent],
+      imports: [LandingPageComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AdrianBadillaUiLandingPageComponent);
+    fixture = TestBed.createComponent(LandingPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
