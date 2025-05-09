@@ -14,7 +14,17 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@adrian-badilla/ui/landing-page": [
+        "libs/adrian-badilla/frontend/landing-page/src/index.ts"
+      ],
+      "@adrian-badilla/ui/landing-page/routes": [
+        "libs/adrian-badilla/frontend/landing-page/src/lib/lib.routes"
+      ],
+      "@adrian-badilla/ui/shared": [
+        "libs/adrian-badilla/frontend/shared/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
