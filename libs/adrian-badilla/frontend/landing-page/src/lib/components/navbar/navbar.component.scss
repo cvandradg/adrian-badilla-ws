@@ -1,0 +1,44 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 2;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+
+  .logo {
+    margin-right: auto;
+    font-weight: bold;
+    font-size: 5rem;
+    -webkit-text-stroke: 0.0625rem white;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+
+
+    li a {
+      font-weight: bold;
+      color: white;
+    }
+  }
+
+  .cta {
+    background: white;
+    color: black;
+    border: none;
+    padding: 0.5em 1em;
+    font-weight: bold;
+    border-radius: 0.25rem; // 4px = 0.25rem
+    margin-left: 2rem;
+  }
+}
