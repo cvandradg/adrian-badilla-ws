@@ -4,6 +4,7 @@ import { HeroComponent } from '../components/hero/hero.component';
 import { NavbarComponent } from '../components/navbar/navbar.component';
 
 @Component({
+  standalone: true,
   selector: 'adrian-badilla-landing-page',
   imports: [CommonModule, HeroComponent, NavbarComponent],
   templateUrl: './adrian-badilla-ui-landing-page.component.html',
