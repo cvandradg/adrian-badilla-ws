@@ -42,3 +42,39 @@
     opacity: 0.3;
   }
 }
+
+
+
+
+.footer {
+  color: #fff;
+  padding: 3rem ;
+  font-family: sans-serif;
+  font-size: 6rem;
+
+  .footer-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: flex-start;
+    max-width: 115rem;
+    margin: 0 auto;
+    gap: 2rem;
+
+    .address,
+    .contact {
+      margin: 1.5rem;
+      line-height: 1.6;
+      font-size: 1.5rem;
+    }
+
+  }
+
+  .footer-bottom {
+    align-items: start;
+    margin-top: 2rem;
+    font-size: 1.3rem;
+    color: #ccc;
+    padding-left: 9rem;
+  }
+}
