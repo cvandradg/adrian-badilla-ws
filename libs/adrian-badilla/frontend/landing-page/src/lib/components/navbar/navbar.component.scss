@@ -1,8 +1,7 @@
 .navbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
+  padding: 1rem;
   position: fixed;
   top: 0;
   width: 100%;
@@ -10,34 +9,73 @@
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.8);
   }
 
   .logo {
     margin-right: auto;
     font-weight: bold;
-    font-size: 5rem;
+    font-size: clamp(1.5rem, 5vw, 3rem);
     -webkit-text-stroke: 0.0625rem white;
   }
 
-  .nav-links {
-    display: flex;
-    gap: 2rem;
-    list-style: none;
-
-    li a {
-      font-weight: bold;
-      color: white;
-    }
+  .navbar-toggle {
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    // Solo visible en móvil (por defecto)
+    display: block;
   }
 
+  .nav-links,
   .cta {
-    background: white;
-    color: black;
-    border: none;
-    padding: 0.5em 1em;
-    font-weight: bold;
-    border-radius: 0.25rem; // 4px = 0.25rem
-    margin-left: 2rem;
+    display: none; // oculto en móvil
+  }
+
+  &.open {
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: rgba(0, 0, 0, 0.9);
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      padding: 1rem 0;
+    }
+    .cta {
+      display: block;
+      margin: 1rem auto;
+    }
+  }
+}
+
+// --- Breakpoint para tablet/desktop ---
+@media (min-width: 768px) {
+  .navbar {
+    padding: 1rem 2rem;
+
+    .navbar-toggle {
+      display: none;
+    }
+
+    li a {
+      color: white;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      margin-left: auto;
+    }
+
+    .cta {
+      display: inline-block;
+      margin-left: 2rem;
+    }
   }
 }
