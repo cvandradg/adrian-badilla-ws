@@ -25,13 +25,12 @@
     border: none;
     color: white;
     cursor: pointer;
-    // Solo visible en móvil (por defecto)
     display: block;
   }
 
   .nav-links,
   .cta {
-    display: none; // oculto en móvil
+    display: none;
   }
 
   &.open {
@@ -53,7 +52,6 @@
   }
 }
 
-// --- Breakpoint para tablet/desktop ---
 @media (min-width: 768px) {
   .navbar {
     padding: 1rem 2rem;
