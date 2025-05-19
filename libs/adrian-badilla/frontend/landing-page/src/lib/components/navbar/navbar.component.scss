@@ -56,8 +56,8 @@
 
 @media (min-width: 768px) {
   .navbar {
-    padding-block: clamp(1rem, 2vw, 1.5rem);
     padding-inline: clamp(2rem, 5vw, 6rem);
+    padding-block: clamp(1rem, 2vw, 1.5rem);
 
     .navbar-toggle {
       display: none;
@@ -65,28 +65,28 @@
 
     .nav-links {
       display: flex;
-      gap: clamp(2rem, 5vw, 3rem);
       list-style: none;
       margin-left: auto;
+      gap: clamp(2rem, 5vw, 3rem);
 
       li a {
-        font-size: clamp(1rem, 2.5vw, 1.125rem);
         color: white;
         text-decoration: none;
+        font-size: clamp(1rem, 2.5vw, 1.125rem);
       }
     }
 
     .cta {
+      border: none;
+      color: black;
+      cursor: pointer;
       display: inline-block;
+      background-color: white;
       margin-left: clamp(2rem, 5vw, 3rem);
+      padding-inline: clamp(1rem, 3vw, 2rem);
       font-size: clamp(1rem, 2.5vw, 1.25rem);
       padding-block: clamp(0.5rem, 2vw, 1rem);
-      padding-inline: clamp(1rem, 3vw, 2rem);
-      background-color: white;
-      color: black;
-      border: none;
       border-radius: clamp(0.25rem, 1vw, 0.5rem);
-      cursor: pointer;
     }
   }
 }
