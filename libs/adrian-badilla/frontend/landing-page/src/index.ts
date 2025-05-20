@@ -5,3 +5,5 @@ export * from './lib/adrian-badilla-ui-landing-page/adrian-badilla-ui-landing-pa
 export * from './lib/components/hero/hero.component';
 
 export * from './lib/components/navbar/navbar.component';
+
+export * from './lib/components/footer/footer.component';
