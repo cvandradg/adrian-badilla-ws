@@ -1,13 +1,26 @@
+:host {
+  --padding: 1.5rem;
+}
+
+.card-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  flex: 1;
+}
+
 .card {
-  color: var(--clr-neutral-100);
-  background-image: url(/global/assets/img/image.png);
-  background-position: center center;
-  background-size: cover;
-  padding: 10rem 0 0;
+  display: flex;
+  flex-direction: column;
   max-width: 35ch;
+  padding-top: 10rem;
   border-radius: 0.5rem;
   overflow: hidden;
-  transition: transform 500ms ease;
+  background-image: url('/global/assets/img/image.png');
+  background-position: center;
+  background-size: cover;
+  transition: transform 0.5s ease;
 }
 
 .card:hover,
@@ -16,12 +29,14 @@
 }
 
 .card-content {
-  --padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   padding: var(--padding);
   background: linear-gradient(
-    hsl(0 0% 0% / 0),
-    hsl(0 0% 0% / 0.3) 20%,
-    hsl(0 0% 0% / 1)
+    rgba(0,0,0,0),
+    rgba(0,0,0,0.3) 20%,
+    rgba(0,0,0,1)
   );
 }
 
@@ -33,13 +48,14 @@
 .card-title::after {
   content: '';
   position: absolute;
-  height: 4px;
+  bottom: -0.125rem;
   left: calc(var(--padding) * -1);
-  bottom: -2px;
   width: calc(100% + var(--padding));
+  height: 0.25rem;
   background: var(--clr-accent-400);
   transform-origin: left;
-  transition: transform 500ms ease;
+  transform: scaleX(0);
+  transition: transform 0.5s ease;
 }
 
 .card:hover .card-title::after,
@@ -48,24 +64,44 @@
 }
 
 .card-body {
-  color: rgb(255, 255, 255 / 0.85);
+  margin-top: 0.5rem;
+  color: rgba(255,255,255,0.85);
+}
+
+.button {
+  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5em 1.25em;
+  border-radius: 0.5em;
+  background: var(--clr-accent-400);
+  color: var(--clr-neutral-900);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.button:hover,
+.button:focus {
+  background: var(--clr-neutral-100);
 }
 
 @media (hover) {
   .card-content {
     transform: translateY(65%);
-    transition: transform 500ms ease;
+    transition: transform 0.5s ease;
   }
 
   .card-content > *:not(.card-title) {
     opacity: 0;
-    transition: opacity 500ms linear;
+    transition: opacity 0.5s linear;
   }
 
   .card:hover .card-content,
   .card:focus-within .card-content {
     transform: translateY(0);
-    transition-delay: 500ms;
+    transition-delay: 0.5s;
   }
 
   .card:focus-within .card-content {
@@ -75,7 +111,7 @@
   .card:hover .card-content > *:not(.card-title),
   .card:focus-within .card-content > *:not(.card-title) {
     opacity: 1;
-    transition-delay: 1000ms;
+    transition-delay: 1s;
   }
 
   .card-title::after {
@@ -83,29 +119,4 @@
   }
 }
 
-.button {
-  cursor: pointer;
-  display: inline-block;
-  text-decoration: none;
-  color: var(--clr-neutral-900);
-  background-color: var(--clr-accent-400);
-  padding: 0.5em 1.25em;
-  border-radius: 0.5em;
-}
 
-.button:hover,
-.button:focus {
-  background-color: var(--clr-neutral-100);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    transition-delay: 0ms !important;
-    scroll-behavior: auto !important;
-  }
-}

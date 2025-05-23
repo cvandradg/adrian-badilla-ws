@@ -1,15 +1,17 @@
-// * {
-//   margin: 0;
-//   padding: 0;
-//   box-sizing: border-box;
-// }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-// html, body {
-//   background-color: black;
-//   height: 100%;
-//   overflow-x: hidden;
-//   font-family: sans-serif;
-// }
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+  font-family: sans-serif;
+  background: var(--clr-neutral-900);
+  color: var(--clr-neutral-100);
+  margin: 0;
+}
 
 
 
@@ -19,18 +21,4 @@
   --clr-accent-400: hsl(142 90% 61%);
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-body {
-  display: grid;
-  min-height: 100vh;
-  place-items: center;
-  line-height: 1.6;
-  background: var(--clr-neutral-900);
-  font-family: sans-serif;
-}
 
