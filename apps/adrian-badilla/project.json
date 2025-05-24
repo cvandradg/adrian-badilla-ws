@@ -19,7 +19,8 @@
         "assets": [
           {
             "glob": "**/*",
-            "input": "apps/adrian-badilla/public"
+            "input": "libs/adrian-badilla/frontend/shared/src/lib/assets",
+            "output": "/global/assets"
           }
         ],
         "styles": ["apps/adrian-badilla/src/styles.scss"],

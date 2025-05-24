@@ -4,9 +4,18 @@
   box-sizing: border-box;
 }
 
-html, body {
-  background-color: black;
+html,
+body {
+  margin: 0;
   height: 100%;
   overflow-x: hidden;
   font-family: sans-serif;
+  color: var(--clr-neutral-100);
+  background: var(--clr-neutral-900);
+}
+
+:root {
+  --clr-accent-400: hsl(142 90% 61%);
+  --clr-neutral-100: hsl(0, 0%, 100%);
+  --clr-neutral-900: hsl(207, 19%, 9%);
 }
