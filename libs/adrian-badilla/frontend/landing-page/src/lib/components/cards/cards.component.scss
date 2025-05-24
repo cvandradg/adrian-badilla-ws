@@ -110,7 +110,7 @@
   .card:hover .card-content > *:not(.card-title),
   .card:focus-within .card-content > *:not(.card-title) {
     opacity: 1;
-    transition-delay: .4s;
+    transition-delay: .3s;
   }
 
   .card-title::after {
