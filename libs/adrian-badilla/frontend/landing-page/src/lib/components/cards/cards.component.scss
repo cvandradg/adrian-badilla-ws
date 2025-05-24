@@ -3,24 +3,24 @@
 }
 
 .card-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
   flex: 1;
+  display: flex;
+  padding: 2rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .card {
   display: flex;
-  flex-direction: column;
   max-width: 35ch;
+  overflow: hidden;
   padding-top: 10rem;
   border-radius: 0.5rem;
-  overflow: hidden;
-  background-image: url('/global/assets/img/image.png');
-  background-position: center;
   background-size: cover;
+  flex-direction: column;
+  background-position: center;
   transition: transform 0.5s ease;
+  background-image: url('/global/assets/img/image.png');
 }
 
 .card:hover,
@@ -31,12 +31,11 @@
 .card-content {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   padding: var(--padding);
+  justify-content: flex-end;
   background: linear-gradient(
-    rgba(0,0,0,0),
-    rgba(0,0,0,0.3) 20%,
-    rgba(0,0,0,1)
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 1) rgba(0, 0, 0, 0.3) 20%
   );
 }
 
@@ -47,15 +46,15 @@
 
 .card-title::after {
   content: '';
-  position: absolute;
-  bottom: -0.125rem;
-  left: calc(var(--padding) * -1);
-  width: calc(100% + var(--padding));
   height: 0.25rem;
-  background: var(--clr-accent-400);
-  transform-origin: left;
+  bottom: -0.125rem;
+  position: absolute;
   transform: scaleX(0);
+  transform-origin: left;
+  left: calc(var(--padding) * -1);
   transition: transform 0.5s ease;
+  background: var(--clr-accent-400);
+  width: calc(100% + var(--padding));
 }
 
 .card:hover .card-title::after,
@@ -65,20 +64,20 @@
 
 .card-body {
   margin-top: 0.5rem;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .button {
-  margin-top: 1rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5em 1.25em;
-  border-radius: 0.5em;
-  background: var(--clr-accent-400);
-  color: var(--clr-neutral-900);
-  text-decoration: none;
   cursor: pointer;
+  margin-top: 1rem;
+  align-items: center;
+  border-radius: 0.5em;
+  display: inline-flex;
+  text-decoration: none;
+  padding: 0.5em 1.25em;
+  justify-content: center;
+  color: var(--clr-neutral-900);
+  background: var(--clr-accent-400);
   transition: background 0.3s ease;
 }
 
@@ -100,8 +99,8 @@
 
   .card:hover .card-content,
   .card:focus-within .card-content {
-    transform: translateY(0);
     transition-delay: 0.5s;
+    transform: translateY(0);
   }
 
   .card:focus-within .card-content {
@@ -118,5 +117,3 @@
     transform: scaleX(0);
   }
 }
-
-
