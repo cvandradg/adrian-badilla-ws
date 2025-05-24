@@ -2,7 +2,7 @@ import { Route } from '@angular/router';
 
 export const appRoutes: Route[] = [
   {
-    path: 'landing-page',
+    path: '',
     loadChildren: () => import('@adrian-badilla/ui/landing-page/routes'),
   },
 ];
