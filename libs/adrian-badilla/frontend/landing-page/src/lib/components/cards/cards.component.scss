@@ -19,7 +19,7 @@
   background-size: cover;
   flex-direction: column;
   background-position: center;
-  transition: transform .2s ease;
+  transition: transform .3s ease;
   background-image: url('/global/assets/img/image.png');
 }
 
@@ -52,7 +52,7 @@
   transform: scaleX(0);
   transform-origin: left;
   left: calc(var(--padding) * -1);
-  transition: transform .2s ease;
+  transition: transform .4s ease;
   background: var(--clr-accent-400);
   width: calc(100% + var(--padding));
 }
@@ -78,7 +78,7 @@
   justify-content: center;
   color: var(--clr-neutral-900);
   background: var(--clr-accent-400);
-  transition: background .2s ease;
+  transition: background .3s ease;
 }
 
 .button:hover,
@@ -89,22 +89,22 @@
 @media (hover) {
   .card-content {
     transform: translateY(65%);
-    transition: transform .2s ease;
+    transition: transform .4s ease;
   }
 
   .card-content > *:not(.card-title) {
     opacity: 0;
-    transition: opacity .2s linear;
+    transition: opacity .3s linear;
   }
 
   .card:hover .card-content,
   .card:focus-within .card-content {
-    transition-delay: .2s;
+    transition-delay: 0s;
     transform: translateY(0);
   }
 
   .card:focus-within .card-content {
-    transition-duration: 0s;
+    transition-duration: .5s;
   }
 
   .card:hover .card-content > *:not(.card-title),
