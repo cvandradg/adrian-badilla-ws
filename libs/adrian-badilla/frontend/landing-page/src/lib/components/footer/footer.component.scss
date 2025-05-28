@@ -17,6 +17,12 @@
     .logo {
       font-weight: bold;
       font-size: clamp(2rem, 5vw, 4rem);
+
+      .logo-img {
+        display: block;
+        width: clamp(3rem, 10vw, 5rem); // 48px–80px aprox.
+        height: auto;
+      }
     }
 
     .address,
