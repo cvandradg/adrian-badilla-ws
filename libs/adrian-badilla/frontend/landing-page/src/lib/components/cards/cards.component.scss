@@ -8,14 +8,16 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  justify-content: space-between;
 }
 
 .card {
   display: flex;
-  width: 35.875rem;
+  flex: 1 1 20rem;
   height: 20.18rem;
   overflow: hidden;
   padding-top: 9rem;
+  max-width: 26.875rem;
   border-radius: 0.5rem;
   flex-direction: column;
   background-size: cover;
