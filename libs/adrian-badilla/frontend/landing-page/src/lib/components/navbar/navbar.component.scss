@@ -18,6 +18,12 @@
     font-weight: bold;
     font-size: clamp(1.5rem, 5vw, 3rem);
     -webkit-text-stroke: 0.0625rem white;
+
+    .logo-img {
+      display: block;
+      width: clamp(3rem, 10vw, 5rem); // 48px–80px aprox.
+      height: auto;
+    }
   }
 
   .navbar-toggle {
