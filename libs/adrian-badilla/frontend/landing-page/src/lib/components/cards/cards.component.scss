@@ -3,24 +3,25 @@
 }
 
 .card-section {
-  flex: 1;
-  display: flex;
+  gap: 2rem;
   padding: 2rem;
-  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
 }
 
 .card {
   display: flex;
-  max-width: 35ch;
+  width: 35.875rem;
+  height: 20.18rem;
   overflow: hidden;
-  padding-top: 10rem;
+  padding-top: 9rem;
   border-radius: 0.5rem;
-  background-size: cover;
   flex-direction: column;
+  background-size: cover;
   background-position: center;
-  transition: transform .3s ease;
   background-image: url('/global/assets/img/image.png');
+  transition: transform 0.3s ease;
 }
 
 .card:hover,
@@ -40,8 +41,10 @@
 }
 
 .card-title {
-  position: relative;
+  line-height: 1.2;
   width: max-content;
+  position: relative;
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
 }
 
 .card-title::after {
@@ -52,7 +55,7 @@
   transform: scaleX(0);
   transform-origin: left;
   left: calc(var(--padding) * -1);
-  transition: transform .4s ease;
+  transition: transform 0.4s ease;
   background: var(--clr-accent-400);
   width: calc(100% + var(--padding));
 }
@@ -63,22 +66,24 @@
 }
 
 .card-body {
+  line-height: 1.4;
   margin-top: 0.5rem;
   color: rgba(255, 255, 255, 0.85);
+  font-size: clamp(0.9rem, 3.5vw, 1rem);
 }
 
 .button {
   cursor: pointer;
   margin-top: 1rem;
   align-items: center;
-  border-radius: 0.5em;
   display: inline-flex;
-  text-decoration: none;
+  border-radius: 0.5em;
   padding: 0.5em 1.25em;
+  text-decoration: none;
   justify-content: center;
   color: var(--clr-neutral-900);
   background: var(--clr-accent-400);
-  transition: background .3s ease;
+  transition: background 0.3s ease;
 }
 
 .button:hover,
@@ -89,12 +94,12 @@
 @media (hover) {
   .card-content {
     transform: translateY(65%);
-    transition: transform .4s ease;
+    transition: transform 0.4s ease;
   }
 
   .card-content > *:not(.card-title) {
     opacity: 0;
-    transition: opacity .3s linear;
+    transition: opacity 0.3s linear;
   }
 
   .card:hover .card-content,
@@ -104,13 +109,13 @@
   }
 
   .card:focus-within .card-content {
-    transition-duration: .5s;
+    transition-duration: 0.5s;
   }
 
   .card:hover .card-content > *:not(.card-title),
   .card:focus-within .card-content > *:not(.card-title) {
     opacity: 1;
-    transition-delay: .3s;
+    transition-delay: 0.3s;
   }
 
   .card-title::after {
