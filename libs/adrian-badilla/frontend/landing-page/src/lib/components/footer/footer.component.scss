@@ -1,8 +1,5 @@
 $max-width: 90rem;
-$gap-vertical: clamp(2rem, 4vw, 2rem);
 $gap-horizontal: clamp(2rem, 4vw, 4rem);
-$spacing-vertical: clamp(2rem, 5vw, 3rem);
-$spacing-horizontal: clamp(8rem, 8vw, 10rem);
 
 .footer {
   display: flex;
@@ -10,21 +7,21 @@ $spacing-horizontal: clamp(8rem, 8vw, 10rem);
   background: #000;
   flex-direction: column;
   align-items: flex-start;
-  font-family: 'Inter var', system-ui, sans-serif;
-  padding: $spacing-vertical $spacing-horizontal 2rem;
+  font-family: 'Inter', sans-serif;
+  padding: clamp(5rem, 4vw, 5.5rem) clamp(2rem, 8vw, 10rem) 2rem;
 
   .footer-top {
     width: 100%;
     display: flex;
+    position: relative;
     align-items: center;
     gap: $gap-horizontal;
     max-width: $max-width;
-    margin: $gap-vertical auto;
     justify-content: flex-start;
+    margin: clamp(2rem, 4vw, 2rem) 0;
 
     .logo {
-      flex: 0 0 auto;
-      margin-inline-end: clamp(20rem, 10vw, 30rem);
+      flex: 1.1;
 
       img {
         height: auto;
@@ -36,12 +33,12 @@ $spacing-horizontal: clamp(8rem, 8vw, 10rem);
     .address,
     .contact {
       flex: 1;
-      line-height: 1.5;
-      letter-spacing: 0.125rem;
+      line-height: 1.463rem;
+      letter-spacing: 0.094rem;
       font-size: clamp(1rem, 1.125vw, 1.125rem);
 
       span {
-        margin: 0;
+        // margin: 0;
         color: inherit;
         display: block;
         padding: 0.25em 0;
@@ -62,8 +59,6 @@ $spacing-horizontal: clamp(8rem, 8vw, 10rem);
       gap: clamp(1rem, 4vw, 1.5rem);
 
       .logo {
-        margin-inline-end: 0;
-        margin-bottom: $gap-vertical;
         img {
           width: clamp(4rem, 12vw, 6rem);
         }
@@ -77,13 +72,8 @@ $spacing-horizontal: clamp(8rem, 8vw, 10rem);
 
     @media (min-width: 641px) and (max-width: 1023px) {
       flex-wrap: wrap;
-      justify-content: center;
       gap: $gap-horizontal;
-
-      .logo {
-        margin-bottom: 0;
-        margin-inline-end: clamp(5rem, 8vw, 10rem);
-      }
+      justify-content: center;
 
       .address,
       .contact {
@@ -95,12 +85,11 @@ $spacing-horizontal: clamp(8rem, 8vw, 10rem);
   .footer-bottom {
     width: 100%;
     text-align: left;
-    font-weight: 400;
+    margin-top: 4rem;
+    font-weight: 300;
     line-height: 1.2;
-    padding-left: 2rem;
     max-width: $max-width;
     letter-spacing: 0.125rem;
-    padding-top: $gap-vertical;
     font-size: clamp(0.875rem, 1vw, 1rem);
 
     p {
