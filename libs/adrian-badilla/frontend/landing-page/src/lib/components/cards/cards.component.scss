@@ -2,12 +2,39 @@
   --padding: 1.5rem;
 }
 
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: clamp(10rem, 4vw, 10rem) clamp(2rem, 8vw, 10rem) 2rem;
+}
+
+h1 {
+  font-weight: 800;
+  font-size: 3.5rem;
+  line-height: 4.2rem;
+  padding: 0 0 2.5rem 0;
+  letter-spacing: 0.15625rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+span {
+  flex: 1;
+  height: 1.5rem;
+  max-width: 50rem;
+  font-weight: 300;
+  line-height: 1.7rem;
+  letter-spacing: 0.09375rem;
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1rem, 1.125vw, 1.125rem);
+}
+
 .card-section {
   gap: 2rem;
-  padding: 2rem;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-between;
+  padding: clamp(2rem, 4vw, 3rem) clamp(2rem, 8vw, 10rem) 5rem;
 }
 
 .card {
@@ -21,8 +48,8 @@
   flex-direction: column;
   background-size: cover;
   background-position: center;
-  background-image: url('/global/assets/img/image.png');
   transition: transform 0.3s ease;
+  background-image: url('/global/assets/img/image.png');
 }
 
 .card:hover,
@@ -69,7 +96,7 @@
 .card-body {
   line-height: 1.4;
   margin-top: 0.5rem;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--clr-neutral-900);
   font-size: clamp(0.9rem, 3.5vw, 1rem);
 }
 

@@ -11,26 +11,26 @@
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: var(--clr-neutral-900);
   }
 
   .logo {
     font-weight: bold;
     font-size: clamp(1.5rem, 5vw, 3rem);
-    -webkit-text-stroke: 0.0625rem white;
+    -webkit-text-stroke: 0.0625rem var(--clr-neutral-100);
 
     .logo-img {
-      display: block;
-      width: clamp(3rem, 10vw, 5rem); // 48px–80px aprox.
       height: auto;
+      display: block;
+      width: clamp(3rem, 10vw, 5rem);
     }
   }
 
   .navbar-toggle {
     border: none;
-    color: white;
     cursor: pointer;
     background: none;
+    color: var(--clr-neutral-100);
     font-size: clamp(2rem, 5vw, 2.5rem);
   }
 
@@ -48,7 +48,7 @@
       position: absolute;
       flex-direction: column;
       gap: clamp(1rem, 3vw, 2rem);
-      background: rgba(0, 0, 0, 0.9);
+      background: var(--clr-neutral-900);
       padding-block: clamp(1rem, 3vw, 2rem);
     }
     .cta {
@@ -76,7 +76,7 @@
       gap: clamp(2rem, 5vw, 3rem);
 
       li a {
-        color: white;
+        color: var(--clr-neutral-100);
         text-decoration: none;
         font-size: clamp(1rem, 2.5vw, 1.125rem);
       }
@@ -84,14 +84,14 @@
 
     .cta {
       border: none;
-      color: black;
       cursor: pointer;
       display: inline-block;
-      background-color: white;
+      color: var(--clr-neutral-900);
       margin-left: clamp(2rem, 5vw, 3rem);
       padding-inline: clamp(1rem, 3vw, 2rem);
       font-size: clamp(1rem, 2.5vw, 1.25rem);
       padding-block: clamp(0.5rem, 2vw, 1rem);
+      background-color: var(--clr-neutral-100);
       border-radius: clamp(0.25rem, 1vw, 0.5rem);
     }
   }
