@@ -1,11 +1,10 @@
 .navbar {
   top: 0;
   left: 0;
-  width: 100%;
-  background-color: transparent;
   z-index: 2;
-    position: relative;
-
+  width: 100%;
+  position: relative;
+  background-color: transparent;
 }
 
 .hero {
@@ -31,7 +30,6 @@
     object-fit: cover;
     position: absolute;
     transform: translate(-50%, -50%);
-
   }
 
   .hero-content {
@@ -65,9 +63,12 @@
   }
 }
 
-
-
-
-
-
-
+@media (max-width: 768px) {
+  .navbar {
+    top: 0;
+    left: 0;
+    width: 100%;
+    position: absolute;
+    padding: clamp(1rem, 5vw, 2rem);
+  }
+}
