@@ -1,18 +1,10 @@
 .navbar {
-  top: 0;
-  z-index: 2;
-  width: 100%;
   display: flex;
-  position: fixed;
+  font-weight: 600;
   align-items: center;
+  letter-spacing: 0.125rem;
   justify-content: space-between;
-  padding-block: clamp(1rem, 3vw, 2rem);
-  padding-inline: clamp(2rem, 5vw, 4rem);
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color:black;
-  }
+  margin-top: clamp(0rem, 2vw, 2rem);
 
   .logo {
     font-weight: bold;
@@ -22,7 +14,7 @@
     .logo-img {
       height: auto;
       display: block;
-      width: clamp(3rem, 10vw, 5rem);
+      width: clamp(3rem, 10vw, 7rem);
     }
   }
 
@@ -37,9 +29,7 @@
   .nav-links,
   .cta {
     display: none;
-  }
 
-  &.open {
     .nav-links {
       left: 0;
       top: 100%;
@@ -48,7 +38,6 @@
       position: absolute;
       flex-direction: column;
       gap: clamp(1rem, 3vw, 2rem);
-      background: var(--clr-neutral-900);
       padding-block: clamp(1rem, 3vw, 2rem);
     }
     .cta {
@@ -62,7 +51,7 @@
 
 @media (min-width: 768px) {
   .navbar {
-    padding-inline: clamp(2rem, 5vw, 6rem);
+    padding-inline: clamp(1rem, 5vw, 2rem);
     padding-block: clamp(1rem, 2vw, 1.5rem);
 
     .navbar-toggle {
@@ -73,12 +62,12 @@
       display: flex;
       list-style: none;
       margin-left: auto;
-      gap: clamp(2rem, 5vw, 3rem);
+      gap: clamp(2rem, 5vw, 3.5rem);
 
       li a {
         color: var(--clr-neutral-100);
         text-decoration: none;
-        font-size: clamp(1rem, 2.5vw, 1.125rem);
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
       }
     }
 
