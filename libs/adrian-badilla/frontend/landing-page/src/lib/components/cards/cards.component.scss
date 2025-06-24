@@ -80,10 +80,33 @@ h1 {
 .card-content {
   flex: 1;
   z-index: 3;
+  height: 100%;
   display: flex;
+  overflow: hidden;
   position: relative;
   flex-direction: column;
   padding: var(--padding);
+
+  p {
+    max-height: 100%;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
 }
 
 .card-title {
@@ -114,11 +137,15 @@ h1 {
 }
 
 .card-body {
-  flex: 0 0 auto;
-  line-height: 1.4;
-  margin-top: 1.5rem;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: clamp(0.9rem, 3.5vw, 1rem);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.09375rem;
+  font-size: clamp(0.875rem, 1.125vw, 1rem); // antes usabas algo así
+  line-height: 1.6;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+  padding: 0;
 }
 
 .button {
