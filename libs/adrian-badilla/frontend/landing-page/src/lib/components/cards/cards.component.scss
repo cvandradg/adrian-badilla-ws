@@ -1,5 +1,5 @@
 :host {
-  --padding: 2.5rem;
+  --padding: 2rem;
   --card-height: 20.18rem;
 }
 
@@ -14,7 +14,7 @@ h1 {
   font-weight: 800;
   font-size: 3.5rem;
   padding-bottom: 0;
-  line-height: 4.2rem;
+  line-height: 3.2rem;
   letter-spacing: 0.15625rem;
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
@@ -137,15 +137,16 @@ h1 {
 }
 
 .card-body {
-  font-family: 'Inter', sans-serif;
-  font-weight: 300;
-  letter-spacing: 0.09375rem;
-  font-size: clamp(0.875rem, 1.125vw, 1rem); 
-  line-height: 1.6;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  max-width: 100%;
   padding: 0;
+  max-width: 100%;
+  margin-top: 0.5rem;
+  line-height: 1.4;
+  font-weight: 300;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  letter-spacing: 0.09375rem;
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.875rem, 1.125vw, 1rem);
 }
 
 .button {
