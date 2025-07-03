@@ -124,12 +124,38 @@
             "type": "UPDATE"
           }
         ],
-        "ref": "2a93688e80e6098f6ffca6fb4fde0eeab287170b",
+        "ref": "ef6860906cc26acbeabb564d5cd869fcd161c4cd",
+        "nextSteps": []
+      },
+      "migrate-provide-server-rendering-import": {
+        "type": "successful",
+        "name": "migrate-provide-server-rendering-import",
+        "changedFiles": [],
+        "ref": "ef6860906cc26acbeabb564d5cd869fcd161c4cd",
+        "nextSteps": []
+      },
+      "replace-provide-server-routing": {
+        "type": "successful",
+        "name": "replace-provide-server-routing",
+        "changedFiles": [],
+        "ref": "ef6860906cc26acbeabb564d5cd869fcd161c4cd",
+        "nextSteps": []
+      },
+      "set-generator-defaults-for-previous-style-guide": {
+        "type": "successful",
+        "name": "set-generator-defaults-for-previous-style-guide",
+        "changedFiles": [
+          {
+            "path": "nx.json",
+            "type": "UPDATE"
+          }
+        ],
+        "ref": "d54e14c14a1814a21fe0c30985ef8d10ef039636",
         "nextSteps": []
       }
     },
     "runningMigrations": [
-      "update-angular-cli-version-20-0-0"
+      "set-generator-defaults-for-previous-style-guide"
     ]
   }
 }
