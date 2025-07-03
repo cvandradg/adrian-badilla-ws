@@ -150,12 +150,24 @@
             "type": "UPDATE"
           }
         ],
-        "ref": "d54e14c14a1814a21fe0c30985ef8d10ef039636",
+        "ref": "107cd0d5a62124089d067be8777a68fac6626c3e",
+        "nextSteps": []
+      },
+      "update-module-resolution": {
+        "type": "successful",
+        "name": "update-module-resolution",
+        "changedFiles": [
+          {
+            "path": "apps/adrian-badilla/tsconfig.app.json",
+            "type": "UPDATE"
+          }
+        ],
+        "ref": "5675312b16b1683389c2dd1922d43c2cc5972925",
         "nextSteps": []
       }
     },
     "runningMigrations": [
-      "set-generator-defaults-for-previous-style-guide"
+      "update-module-resolution"
     ]
   }
 }
