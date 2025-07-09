@@ -17,21 +17,22 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
 })
 export class GalleryComponent implements AfterViewInit {
+  private generatePaths(basePath: string, count: number): string[] {
+    return Array.from({ length: count }, (_, i) => `${basePath}${i + 1}.jpg`);
+  }
+
   carousels = [
     {
       images: this.generatePaths('/global/assets/gallery/img-', 10),
       reverse: false,
-      ref: 'track1',
     },
     {
       images: this.generatePaths('/global/assets/gallery2/img-', 7),
       reverse: true,
-      ref: 'track2',
     },
     {
       images: this.generatePaths('/global/assets/gallery3/img-', 9),
       reverse: false,
-      ref: 'track3',
     },
   ];
 
@@ -48,7 +49,4 @@ export class GalleryComponent implements AfterViewInit {
     });
   }
 
-  private generatePaths(basePath: string, count: number): string[] {
-    return Array.from({ length: count }, (_, i) => `${basePath}${i + 1}.jpg`);
-  }
 }

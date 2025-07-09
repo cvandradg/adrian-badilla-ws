@@ -1,34 +1,34 @@
 .title {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding-block: clamp(5rem, 8vw, 10rem);
-  padding-bottom: 2rem;
   text-align: center;
+  align-items: center;
+  padding-bottom: 2rem;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: clamp(5rem, 8vw, 10rem);
 
   h2 {
-    font-size: clamp(2rem, 5vw, 4rem);
     font-weight: 800;
-    color: white;
     letter-spacing: 0.1rem;
+    color: var(--clr-neutral-100);
+    font-size: clamp(2rem, 5vw, 4rem);
     font-family: 'Plus Jakarta Sans', sans-serif;
   }
 }
 
 .carousel {
-  position: relative;
   overflow: hidden;
+  position: relative;
 
   &::before,
   &::after {
-    content: '';
-    position: absolute;
     top: 0;
-    width: clamp(4rem, 15vw, 10rem);
-    height: 100%;
     z-index: 2;
+    content: '';
+    height: 100%;
+    position: absolute;
     pointer-events: none;
+    width: clamp(4rem, 15vw, 10rem);
   }
 
   &::before {
@@ -42,8 +42,8 @@
   }
 
   .carousel-track {
-    display: flex;
     gap: 0.5rem;
+    display: flex;
     width: max-content;
     animation: scroll-left var(--scroll-duration, 20s) linear infinite;
   }
@@ -53,13 +53,13 @@
     margin-right: 0.5rem;
 
     img {
+      opacity: 0.9;
+      display: block;
+      object-fit: cover;
+      user-select: none;
+      border-radius: 0.5rem;
       width: clamp(10rem, 40vw, 20rem);
       height: clamp(10rem, 40vw, 20rem);
-      object-fit: cover;
-      display: block;
-      border-radius: 0.5rem;
-      opacity: 0.9;
-      user-select: none;
     }
   }
 }
