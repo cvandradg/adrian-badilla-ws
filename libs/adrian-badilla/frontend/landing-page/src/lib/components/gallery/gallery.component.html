@@ -7,12 +7,12 @@
     <div class="carousel-track" #carouselTrack>
       <ng-container *ngFor="let path of carousel.images">
         <div class="carousel-item">
-          <img [src]="path" alt="Gallery image" />
+          <img [src]="path" alt="Gallery image" draggable="false"  />
         </div>
       </ng-container>
       <ng-container *ngFor="let path of carousel.images">
         <div class="carousel-item">
-          <img [src]="path" alt="Gallery image" />
+          <img [src]="path" alt="Gallery image " draggable="false"  />
         </div>
       </ng-container>
     </div>

@@ -8,7 +8,7 @@
   text-align: center;
 
   h2 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(2rem, 5vw, 4rem);
     font-weight: 800;
     color: white;
     letter-spacing: 0.1rem;
@@ -25,7 +25,7 @@
     content: '';
     position: absolute;
     top: 0;
-    width: clamp(32rem, 10vw, 45rem);
+    width: clamp(4rem, 15vw, 10rem);
     height: 100%;
     z-index: 2;
     pointer-events: none;
@@ -50,15 +50,16 @@
 
   .carousel-item {
     flex: 0 0 auto;
-    margin-right: 1rem;
+    margin-right: 0.5rem;
 
     img {
-      width: 20rem;
-      height: 20rem;
+      width: clamp(10rem, 40vw, 20rem);
+      height: clamp(10rem, 40vw, 20rem);
       object-fit: cover;
       display: block;
       border-radius: 0.5rem;
       opacity: 0.9;
+      user-select: none;
     }
   }
 }

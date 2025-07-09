@@ -1,4 +1,3 @@
-// gallery.component.ts
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
