@@ -1,0 +1,88 @@
+.title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding-block: clamp(5rem, 8vw, 10rem);
+  padding-bottom: 2rem;
+  text-align: center;
+
+  h2 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    color: white;
+    letter-spacing: 0.1rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+.carousel {
+  position: relative;
+  overflow: hidden;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: clamp(32rem, 10vw, 45rem);
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  &::before {
+    left: 0;
+    background: linear-gradient(to right, rgba(0, 0, 0, 1), transparent);
+  }
+
+  &::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(0, 0, 0, 1), transparent);
+  }
+
+  .carousel-track {
+    display: flex;
+    gap: 0.5rem;
+    width: max-content;
+    animation: scroll-left var(--scroll-duration, 20s) linear infinite;
+  }
+
+  .carousel-item {
+    flex: 0 0 auto;
+    margin-right: 1rem;
+
+    img {
+      width: 20rem;
+      height: 20rem;
+      object-fit: cover;
+      display: block;
+      border-radius: 0.5rem;
+      opacity: 0.9;
+    }
+  }
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(var(--scroll-width));
+  }
+}
+
+.carousel--reverse {
+  .carousel-track {
+    animation-name: scroll-right;
+  }
+}
+
+@keyframes scroll-right {
+  0% {
+    transform: translateX(var(--scroll-width));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
