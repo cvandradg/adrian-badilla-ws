@@ -4,11 +4,12 @@ import { HeroComponent } from '../components/hero/hero.component';
 import { FooterComponent } from '../components/footer/footer.component';
 import { CardsComponent } from '../components/cards/cards.component';
 import { GalleryComponent } from '../components/gallery/gallery.component';
+import { TrainerInfoComponent } from '../components/trainer-info/trainer-info.component';
 
 @Component({
   standalone: true,
   selector: 'adrian-badilla-landing-page',
-  imports: [CommonModule, HeroComponent, FooterComponent, CardsComponent, GalleryComponent],
+  imports: [CommonModule, HeroComponent, FooterComponent, CardsComponent, GalleryComponent, TrainerInfoComponent],
   templateUrl: './adrian-badilla-ui-landing-page.component.html',
   styleUrl: './adrian-badilla-ui-landing-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
