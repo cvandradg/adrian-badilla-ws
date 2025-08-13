@@ -5,28 +5,28 @@
   aspect-ratio: 16/9;
   align-items: center;
   justify-content: center;
-  background: url('/global/assets/img/biografia3.png') center/cover no-repeat;
+  background: url('/global/assets/img/biografia.png') center/cover no-repeat;
 
   &__header {
     gap: 0.5rem;
     display: flex;
-    padding-top: 6rem;
+    padding-top: 15vw;
     text-align: center;
     align-items: center;
     flex-direction: column;
   }
 
   &__title {
-    font-weight: 800;
     letter-spacing: 0.1rem;
-    font-size: clamp(2rem, 8%, 4rem);
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: var(--fw-bold);
+    font-family: var(--font-primary);
+    font-size: clamp(2rem, 4vw, 6rem);
   }
 
   &__subtitle {
-    font-weight: 500;
     letter-spacing: 0.2rem;
-    font-size: clamp(1rem, 2.5vw, 1.8rem);
+    font-weight: var(--fw-medium);
+    font-size: clamp(1rem, 2vw, 4rem);
   }
 }
 
@@ -37,6 +37,7 @@
   &__description {
     max-width: 70%;
     text-align: center;
+    margin-bottom: 8rem;
     font-size: clamp(1rem, 2.5vw, 1.4rem);
     line-height: clamp(1.6rem, 3vh, 2rem);
   }
