@@ -3,6 +3,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
 
 .footer {
   display: flex;
+  margin-top: 15vh;
   background: #000;
   flex-direction: column;
   align-items: flex-start;

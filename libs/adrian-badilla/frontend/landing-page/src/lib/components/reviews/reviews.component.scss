@@ -1,0 +1,45 @@
+.testimonials {
+  margin-top: 15vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 3rem 1rem;
+  background-color: var(--clr-neutral-900);
+  font-family: var(--font-secondary);
+  font-weight: var(--fw-medium);
+
+
+  .testimonial {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    max-width: 800px;
+    margin: 1rem auto;
+
+    .avatar {
+      width: 4rem;
+      height: 4rem;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .text {
+      .quote {
+        font-size: 1.125rem;
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .author {
+        margin-top: 0.5rem;
+        font-weight: bold;
+        font-size: 1rem;
+
+        span {
+          font-weight: normal;
+          margin-left: 0.5rem;
+        }
+      }
+    }
+  }
+}
