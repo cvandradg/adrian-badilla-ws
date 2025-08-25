@@ -11,7 +11,10 @@ body {
   overflow-x: hidden;
   font-family: sans-serif;
   color: var(--clr-neutral-100);
-  background-image: url('/global/assets/img/background.png');
+
+  background-image: url('/global/assets/img/background.jpg');
+  background-position: center;  
+  background-size: cover;
 }
 
 :root {

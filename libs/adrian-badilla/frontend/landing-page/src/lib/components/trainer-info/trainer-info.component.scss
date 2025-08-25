@@ -1,20 +1,18 @@
 .trainer-info {
   width: 100%;
-  height: 70vh; /* 👈 controla el tamaño de la sección */
+  height: 70vh; 
   display: flex;
   position: relative;
   align-items: center;
   justify-content: center;
 
-  /* Imagen de fondo */
   background: url('/global/assets/img/biografia.png') center/contain no-repeat;
-  /* usa contain si quieres que se vea toda la imagen */
-  /* usa cover si quieres que llene el espacio aunque se recorte */
+
 
   &__header {
     gap: 0.5rem;
     display: flex;
-    padding-top: 15vw; /* 👈 más predecible que 15vw */
+    padding-top: 15vw;
     text-align: center;
     align-items: center;
     flex-direction: column;
