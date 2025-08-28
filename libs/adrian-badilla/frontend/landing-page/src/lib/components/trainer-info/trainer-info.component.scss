@@ -1,46 +1,47 @@
 .trainer-info {
+
   width: 100%;
-  height: 70vh; 
   display: flex;
-  position: relative;
+  margin-top: 15vh;
   align-items: center;
+  flex-direction: column;
   justify-content: center;
-
-  background: url('/global/assets/img/biografia.png') center/contain no-repeat;
-
-
-  &__header {
-    gap: 0.5rem;
-    display: flex;
-    padding-top: 15vw;
-    text-align: center;
-    align-items: center;
-    flex-direction: column;
-  }
-
-  &__title {
-    letter-spacing: 0.1rem;
-    font-weight: var(--fw-bold);
-    font-family: var(--font-primary);
-    font-size: clamp(2rem, 4vw, 6rem);
-  }
-
-  &__subtitle {
-    letter-spacing: 0.2rem;
-    font-weight: var(--fw-medium);
-    font-size: clamp(1rem, 2vw, 4rem);
-  }
+  gap: clamp(0.1rem, 0.5vh, 1rem);
+  min-height: clamp(36rem, 85vh, 64rem);
+  padding-inline: clamp(1rem, 4vw, 3rem);
+  padding-block: clamp(1.5rem, 4vh, 3rem);
 }
 
-.trainer-text {
-  display: flex;
-  justify-content: center;
+.trainer-info__header {
+  text-align: center;
+}
 
-  &__description {
-    max-width: 70%;
-    text-align: center;
-    margin-bottom: 8rem;
-    font-size: clamp(1rem, 2.5vw, 1.4rem);
-    line-height: clamp(1.6rem, 3vh, 2rem);
-  }
+.trainer-info__title {
+  letter-spacing: 0.1rem;
+  font-weight: var(--fw-bold);
+  font-family: var(--font-primary);
+  font-size: clamp(2rem, 4vw, 6rem);
+}
+
+.trainer-info__subtitle {
+  letter-spacing: 0.2rem;
+  font-weight: var(--fw-medium);
+  font-size: clamp(1rem, 2.2vw, 1.6rem);
+}
+
+.trainer-info__img {
+  height: auto;
+  object-fit: contain;
+  width: min(80vw, 85rem);
+  max-height: min(80vh, 40rem);
+}
+
+
+.trainer-info__description {
+  margin: 0;
+  text-align: center;
+  max-width: clamp(36ch, 80%, 108ch);
+  line-height: clamp(1.4, 1.6, 1.75);
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+
 }
