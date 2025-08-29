@@ -1,0 +1,100 @@
+.testimonials {
+  margin-top: 15vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 3rem 1rem;
+  font-family: var(--font-secondary);
+  font-weight: var(--fw-medium);
+
+  position: relative;
+  isolation: isolate;
+  max-width: min(1100px, 92vw);
+  margin-inline: auto;
+  border-radius: 20px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35),
+      0 1px 0 rgba(255, 255, 255, 0.05) inset,
+      0 -1px 0 rgba(255, 255, 255, 0.02) inset;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: -1;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -8px;
+    width: min(900px, 80%);
+    height: 56px;
+    border-radius: 50%;
+    background: radial-gradient(
+      50% 100% at 50% 0%,
+      rgba(0, 0, 0, 0.35) 0%,
+      transparent 70%
+    );
+    filter: blur(14px);
+    z-index: -2;
+    pointer-events: none;
+  }
+
+  .testimonial {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    max-width: 800px;
+    margin: 1rem auto;
+
+    .avatar {
+      width: 4rem;
+      height: 4rem;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+    }
+
+    .text {
+      .quote {
+        font-size: 1.125rem;
+        line-height: 1.5;
+        margin: 0;
+      }
+      .author {
+        margin-top: 0.5rem;
+        font-weight: bold;
+        font-size: 1rem;
+        span {
+          font-weight: normal;
+          margin-left: 0.5rem;
+          opacity: 0.85;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    border-radius: 16px;
+    gap: 1.25rem;
+    padding: 2rem 1rem;
+
+    .testimonial {
+      gap: 1rem;
+      .avatar {
+        width: 3.25rem;
+        height: 3.25rem;
+      }
+      .text .quote {
+        font-size: 1.05rem;
+      }
+    }
+  }
+}

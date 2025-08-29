@@ -11,11 +11,22 @@ body {
   overflow-x: hidden;
   font-family: sans-serif;
   color: var(--clr-neutral-100);
-  background: var(--clr-neutral-900);
+
+  background-position: center;
+  background-size: clamp(90%, 100%, 110%);
+  background-image: url('/global/assets/img/background.jpg');
 }
 
 :root {
   --clr-accent-400: hsl(142 90% 61%);
   --clr-neutral-100: hsl(0, 0%, 100%);
   --clr-neutral-900: hsl(0, 0%, 0%);
+
+  // Fuentes
+  --font-primary: 'Plus Jakarta Sans', sans-serif;
+  --font-secondary: 'Inter', sans-serif;
+
+  //pesos de fuente
+  --fw-medium: 500;
+  --fw-bold: 800;
 }

@@ -5,8 +5,7 @@
   width: 100%;
   position: relative;
   background-color: transparent;
-    top: calc(-1 * clamp(1rem, 5vw, 4rem));
-
+  top: calc(-1 * clamp(1rem, 5vw, 4rem));
 }
 
 .hero {
@@ -18,7 +17,8 @@
   align-items: flex-start;
   justify-content: center;
   padding: clamp(1rem, 5vw, 4rem);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-primary);
+  background-color: var(--clr-neutral-900);
 
   video {
     top: 50%;
@@ -50,16 +50,16 @@
       max-width: 38rem;
       line-height: 1.6rem;
       letter-spacing: 0.09375rem;
-      font-family: 'inter', sans-serif;
+      font-family: var(--font-secondary);
       margin-top: clamp(4rem, 2vw, 1rem);
       font-size: clamp(1rem, 1.125rem + 0.2vw, 1.125rem);
     }
 
     .see-how {
-      color: var(--clr-neutral-100);
       font-size: 1.3rem;
-      text-decoration: none;
       display: inline-block;
+      text-decoration: none;
+      color: var(--clr-neutral-100);
       margin-top: clamp(1rem, 2.5vw, 2rem);
     }
   }
