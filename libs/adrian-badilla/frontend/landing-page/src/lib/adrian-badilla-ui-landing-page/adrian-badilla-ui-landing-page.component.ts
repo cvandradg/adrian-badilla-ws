@@ -6,6 +6,7 @@ import { CardsComponent } from '../components/cards/cards.component';
 import { GalleryComponent } from '../components/gallery/gallery.component';
 import { TrainerInfoComponent } from '../components/trainer-info/trainer-info.component';
 import { ReviewsComponent } from '../components/reviews/reviews.component';
+import { AnnouncementComponent } from '../components/announcement/announcement.component';
 
 @Component({
   standalone: true,
@@ -18,6 +19,7 @@ import { ReviewsComponent } from '../components/reviews/reviews.component';
     GalleryComponent,
     TrainerInfoComponent,
     ReviewsComponent,
+    AnnouncementComponent
   ],
   templateUrl: './adrian-badilla-ui-landing-page.component.html',
   styleUrl: './adrian-badilla-ui-landing-page.component.scss',

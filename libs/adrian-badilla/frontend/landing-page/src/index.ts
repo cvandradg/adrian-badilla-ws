@@ -13,3 +13,5 @@ export * from './lib/components/cards/cards.component';
 export * from './lib/components/gallery/gallery.component';
 
 export * from './lib/components/reviews/reviews.component';
+
+export * from './lib/components/announcement/announcement.component';
