@@ -1,72 +1,109 @@
 .mobile-app {
-  --accent: hsl(272 100% 60%); /* morado neón base */
-  --accent-strong: hsl(272 100% 65%);
-  --glow: 0 0 2rem hsl(272 100% 60% / .8), 0 0 4rem hsl(272 100% 60% / .5);
-
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: clamp(1rem, 2vw, 2rem);
   padding: clamp(2rem, 6vw, 5rem) clamp(1rem, 4vw, 3rem);
-  color: var(--clr-neutral-100, #fff);
+  color: var(--clr-neutral-100);
   position: relative;
   overflow: hidden;
+  max-width: min(110rem, 92vw); /* contención suave */
 }
-
-
-
 
 /* Header */
-.mobile-app__header{
-  display:flex; flex-direction:column; align-items:center; text-align:center;
+.mobile-app__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: clamp(0.25rem, 0.8vw, 0.75rem);
-  padding-top: 8vh; /* evita que se monte con la imagen en móvil */
+  padding-top: 8vh; /* evita solaparse con la imagen en móvil */
 }
-.mobile-app__title{
-  font-family: var(--font-primary, 'Plus Jakarta Sans'), system-ui, sans-serif;
-  font-weight: var(--fw-bold, 800);
+.mobile-app__title {
+  font-family: var(--font-primary);
+  font-weight: var(--fw-bold);
   letter-spacing: -0.02em;
   line-height: 1.1;
   font-size: clamp(1.6rem, 3.2vw, 2.75rem);
 }
-.mobile-app__subtitle{
-  font-family: var(--font-secondary, 'Inter'), system-ui, sans-serif;
-  font-weight: var(--fw-medium, 500);
-  opacity:.9;
+.mobile-app__subtitle {
+  font-family: var(--font-secondary);
+  font-weight: var(--fw-medium);
+  opacity: 0.9;
   font-size: clamp(0.95rem, 1.6vw, 1.15rem);
   max-width: min(70ch, 90%);
 }
 
-/* Imagen + glow del teléfono */
-.mobile-app__image{
-  display:flex; justify-content:center; align-items:center;
-  width:100%;
-  min-height: clamp(18rem, 42vh, 32rem);
-  position:relative;
-}
-.mobile-app__image > img{
-  max-width:min(90%, 34rem);
-  width:100%; height:auto; object-fit:contain;
-  filter: drop-shadow(var(--glow));
+/* Imagen principal */
+.mobile-app__image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  /* altura visual del bloque de la imagen */
+  min-height: clamp(22rem, 48vh, 36rem);
+  position: relative;
 }
 
-
+/* SOLO el teléfono (no el logo) */
+.phone-img {
+  /* controla el tamaño: ancho fluido con límite razonable */
+  width: clamp(16rem, 48vw, 34rem);
+  height: auto;
+  object-fit: contain;
+  display: block;
+  /* sutil realce */
+  filter: drop-shadow(0 0.4rem 1.25rem hsl(0 0% 0% / 0.35));
+}
 
 /* Texto y badges */
-.mobile-app__text{
-  display:flex; flex-direction:column; align-items:center; gap: clamp(.75rem, 1.5vw, 1.25rem);
-  max-width:70%;
+.mobile-app__text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  max-width: 70%;
 }
-.mobile-app__description{
-  text-align:center;
-  font-family: var(--font-secondary, 'Inter'), system-ui, sans-serif;
-  font-weight: var(--fw-medium, 500);
+.mobile-app__description {
+  text-align: center;
+  font-family: var(--font-secondary);
+  font-weight: var(--fw-medium);
   font-size: clamp(1rem, 1.6vw, 1.125rem);
-  line-height:1.6; opacity:.95;
+  line-height: 1.6;
+  opacity: 0.95;
 }
 
-.mobile-app__stores{
-  display:flex; align-items:center; justify-content:center; gap: clamp(.75rem, 1.5vw, 1.25rem); flex-wrap:wrap;
+.mobile-app__stores {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  flex-wrap: wrap;
 }
 
+/* Contenedor idéntico para ambos */
+.store-badge {
+  width:  clamp(12rem, 20vw, 16rem);   /* ancho uniforme */
+  height: clamp(3.8rem, 6vw, 4.8rem);  /* alto uniforme */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(0 0% 100% / 0.06);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+/* La imagen se adapta al contenedor */
+.store-badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* mantiene proporción dentro del rectángulo */
+}
+
+/* Responsivo (sin tocar escritorio) */
+@media (max-width: 768px) {
+  .mobile-app__header { padding-top: 6vh; }
+  .mobile-app__text { max-width: 90%; }
+  .screen-logo { width: clamp(3rem, 12vw, 5rem); }
+}
