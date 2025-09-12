@@ -1,67 +1,53 @@
 .mobile-app {
-  --content-max: clamp(62.5rem, 62.5rem, 62.5rem); /* ≈ 1000 */
-  --left-width: 28rem; /* antes 30rem */
-  --gap-cols: clamp(3.5rem, 3.5rem, 3.5rem); /* ≈ 56 */
-  --phone-w: clamp(22.5rem, 22.5rem, 22.5rem); /* ≈ 360 */
-  --badge-h: clamp(2.5rem, 2.5rem, 2.5rem); /* ≈ 40 */
-
   width: 100%;
-  margin-top: 15vh;
-
-  color: var(--clr-neutral-100);
-  padding: clamp(2rem, 6vw, 5rem) clamp(1rem, 6vw, 6rem);
-  min-height: clamp(36rem, 78vh, 52rem);
-
   position: relative;
   isolation: isolate;
-  max-width: min(68.75rem, 92vw);
-  margin-inline: auto;
-  border-radius: 1.25rem;
+  color: var(--clr-neutral-100);
+  min-height: clamp(36rem, 78vh, 52rem);
+  margin: clamp(8vh, 15vh, 15vh) auto 0;
+  border-radius: clamp(0.75rem, 1.5vw, 1.25rem);
+  max-width: min(clamp(60rem, 92vw, 68.75rem), 92vw);
+  padding: clamp(2rem, 6vw, 5rem) clamp(1rem, 6vw, 6rem);
 
   &::before {
     content: '';
-    position: absolute;
     inset: 0;
-    border-radius: inherit;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35),
-      0 1px 0 rgba(255, 255, 255, 0.05) inset,
-      0 -1px 0 rgba(255, 255, 255, 0.02) inset;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
     z-index: -1;
+    position: absolute;
+    border-radius: inherit;
+    background: hsl(0 0% 100% / 0.03);
+    border: 1px solid hsl(0 0% 100% / 0.06);
+    box-shadow: 0 clamp(1rem, 3vw, 1.25rem) clamp(2rem, 5vw, 2.5rem)
+        hsl(0 0% 0% / 0.35),
+      0 1px 0 hsl(0 0% 100% / 0.05) inset, 0 -1px 0 hsl(0 0% 100% / 0.02) inset;
+    backdrop-filter: blur(clamp(4px, 1vw, 6px));
+    -webkit-backdrop-filter: blur(clamp(4px, 1vw, 6px));
   }
 }
 
-/* Fila dos columnas */
 .mobile-app__content {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-start;
-  row-gap: 0;
-  max-width: clamp(64rem, 72vw, 72rem); /* bloquea el ancho total */
   margin-inline: auto;
+  justify-content: flex-start;
+  max-width: clamp(48rem, 72vw, 72rem);
 }
 
-/* Columna izquierda */
 .mobile-app__left {
-  flex: 0 0 29rem;
-  max-width: 29rem;
   display: flex;
   flex-direction: column;
   gap: clamp(0.75rem, 1.2vw, 1rem);
+  flex: 0 0 clamp(20rem, 40vw, 29rem);
+  max-width: clamp(20rem, 40vw, 29rem);
 }
 
-/* Columna derecha (respeta el gap, nada de empujar) */
 .mobile-app__right {
-  flex: 0 0 auto;
   display: flex;
+  flex: 0 0 auto;
   justify-content: flex-start;
 }
 
-/* Tipografía (compacta como la referencia) */
 .mobile-app__header {
   display: flex;
   flex-direction: column;
@@ -69,63 +55,147 @@
 }
 
 .mobile-app__title {
-  font-family: var(--font-primary);
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.02em;
-  line-height: 1.05;
-  font-size: clamp(2.2rem, 5vw, 3.5rem);
   max-width: 16ch;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-weight: var(--fw-bold);
+  font-family: var(--font-primary);
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
   margin: 0 0 clamp(0.5rem, 1vw, 0.75rem);
 }
 
 .mobile-app__subtitle {
-  font-family: var(--font-secondary);
-  font-weight: var(--fw-medium);
-  font-size: clamp(1rem, 1.6vw, 1.125rem);
-  opacity: 0.9;
   max-width: 42ch;
+  opacity: 0.9;
+  font-weight: var(--fw-medium);
+  font-family: var(--font-secondary);
+  font-size: clamp(1rem, 1.6vw, 1.125rem);
 }
 
 .mobile-app__label {
-  font-family: var(--font-secondary);
-  font-weight: var(--fw-medium);
-  font-size: clamp(0.9rem, 1.2vw, 1rem);
-  letter-spacing: 0.02em;
   opacity: 0.75;
+  letter-spacing: 0.02em;
+  font-weight: var(--fw-medium);
+  font-family: var(--font-secondary);
+  font-size: clamp(0.9rem, 1.2vw, 1rem);
   margin-top: clamp(0.25rem, 0.8vw, 0.5rem);
 }
 
-/* Badges en fila, misma altura visual */
 .mobile-app__stores {
   display: flex;
-  align-items: center;              /* centra verticalmente ambos */
-  justify-content: flex-start;      /* pegados a la izquierda del texto */
-  gap: clamp(0.9rem, 2vw, 1.25rem); /* separación entre badges */
-}
-.store-badge {
-  inline-size: clamp(12.5rem, 22vw, 14rem);  /* ancho uniforme */
-  block-size:  clamp(3.2rem, 5vw, 3.8rem);   /* alto uniforme */
-  padding: 0;                                 /* sin relleno extra */
-  border-radius: 0.85rem;
-  background: hsl(0 0% 100% / 0.08);          /* glass suave como tu UI */
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: clamp(0.9rem, 2vw, 1.25rem);
+}
+
+.store-badge {
+  padding: 0;
+  align-items: center;
+  display: inline-flex;
   text-decoration: none;
+  justify-content: center;
+  background: hsl(0 0% 100% / 0.08);
+  block-size: clamp(3.2rem, 5vw, 3.8rem);
+  inline-size: clamp(12.5rem, 22vw, 14rem);
+  border-radius: clamp(0.5rem, 1vw, 0.85rem);
 }
+
 .store-badge img {
-  height: clamp(2.4rem, 4.5vw, 3.2rem);   /* controla la altura exacta */
   width: auto;
-  object-fit: contain;
   display: block;
+  object-fit: contain;
+  height: clamp(2.4rem, 4.5vw, 3.2rem);
 }
 
-/* Teléfono */
 .phone-img {
-  width: 27.5rem ;
   height: auto;
-  object-fit: contain;
   display: block;
-  filter: drop-shadow(0 0.4rem 1.25rem hsl(0 0% 0% / 0.35));
+  object-fit: contain;
+  width: clamp(18rem, 40vw, 27.5rem);
+  filter: drop-shadow(
+    0 clamp(0.2rem, 0.4vw, 0.4rem) clamp(1rem, 2vw, 1.25rem) hsl(0 0% 0% / 0.35)
+  );
 }
 
+@media (max-width: 800px) {
+  .mobile-app {
+    min-height: auto;
+    margin: clamp(8vh, 10vh, 14vh) auto 0;
+    border-radius: clamp(0.6rem, 2vw, 1rem);
+    padding: clamp(1.25rem, 6vw, 2rem) clamp(1rem, 5vw, 2rem);
+
+    &::before {
+      box-shadow: 0 clamp(0.6rem, 2.2vw, 1rem) clamp(1.2rem, 3.5vw, 2rem)
+          hsl(0 0% 0% / 0.3),
+        0 1px 0 hsl(0 0% 100% / 0.05) inset,
+        0 -1px 0 hsl(0 0% 100% / 0.02) inset;
+      backdrop-filter: blur(clamp(3px, 1vw, 5px));
+      -webkit-backdrop-filter: blur(clamp(3px, 1vw, 5px));
+    }
+  }
+
+  .mobile-app__content {
+    max-width: 92vw;
+    align-items: flex-start;
+    gap: clamp(1rem, 3.5vw, 1.5rem);
+  }
+
+  .mobile-app__left {
+    flex: 1 1 100%;
+    max-width: 100%;
+    text-align: center;
+    align-items: center;
+    gap: clamp(0.6rem, 2.5vw, 0.9rem);
+  }
+
+  .mobile-app__right {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  .mobile-app__header {
+    gap: clamp(0.35rem, 2.5vw, 0.6rem);
+  }
+
+  .mobile-app__title {
+    max-width: 20ch;
+    line-height: 1.08;
+    font-size: clamp(1.9rem, 8vw, 2.6rem);
+    margin: 0 0 clamp(0.4rem, 2.5vw, 0.6rem);
+  }
+
+  .mobile-app__subtitle {
+    opacity: 0.95;
+    max-width: 90%;
+    font-size: clamp(0.95rem, 2.8vw, 1.05rem);
+  }
+
+  .mobile-app__label {
+    margin-top: clamp(0.25rem, 2.5vw, 0.5rem);
+    font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+  }
+
+  .mobile-app__stores {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(0.6rem, 3.2vw, 1rem);
+  }
+
+  .store-badge {
+    inline-size: clamp(10.5rem, 42vw, 12rem);
+    block-size: clamp(2.6rem, 8.5vw, 3.2rem);
+    border-radius: clamp(0.5rem, 2.5vw, 0.8rem);
+  }
+
+  .store-badge img {
+    height: clamp(2rem, 7vw, 2.6rem);
+  }
+
+  .phone-img {
+    width: clamp(16rem, 66vw, 22rem);
+    filter: drop-shadow(
+      0 clamp(0.15rem, 0.5vw, 0.35rem) clamp(0.8rem, 3vw, 1.1rem)
+        hsl(0 0% 0% / 0.35)
+    );
+  }
+}

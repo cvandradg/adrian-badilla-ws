@@ -2,11 +2,11 @@
 
   width: 100%;
   display: flex;
-  margin-top: 15vh;
   align-items: center;
   flex-direction: column;
   justify-content: center;
   gap: clamp(0.1rem, 0.5vh, 1rem);
+  margin-top: clamp(6rem, 15vw, 12rem);
   min-height: clamp(36rem, 85vh, 64rem);
   padding-inline: clamp(1rem, 4vw, 3rem);
   padding-block: clamp(1.5rem, 4vh, 3rem);
