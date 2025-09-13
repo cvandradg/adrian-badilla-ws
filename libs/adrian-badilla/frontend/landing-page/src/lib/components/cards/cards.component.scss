@@ -5,11 +5,11 @@
 
 .title {
   display: flex;
-  margin-top: 15vw;
   text-align: center;
   align-items: center;
   flex-direction: column;
   justify-content: center;
+  margin-top: clamp(6rem, 15vw, 12rem);
 }
 
 h1 {
@@ -22,7 +22,7 @@ h1 {
 
 .card-section {
   display: flex;
-  padding: clamp(2rem, 4vw, 3rem) clamp(2rem, 8vw, 10rem) ;
+  padding: clamp(2rem, 4vw, 3rem) clamp(2rem, 8vw, 10rem);
 }
 
 .card {

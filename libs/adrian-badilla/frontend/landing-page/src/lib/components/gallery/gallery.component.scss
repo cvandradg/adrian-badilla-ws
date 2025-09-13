@@ -1,11 +1,11 @@
 .title {
-  margin-top: 15vw;
   display: flex;
   text-align: center;
   align-items: center;
   padding-bottom: 3rem;
   flex-direction: column;
   justify-content: center;
+  margin-top: clamp(6rem, 17vw, 14rem);
 
   h2 {
     letter-spacing: 0.1rem;
