@@ -5,8 +5,9 @@
   position: relative;
   isolation: isolate;
   margin-inline: auto;
-  border-radius: 1.25rem;
   flex-direction: column;
+  border-radius: 1.25rem;
+  color: var(--clr-neutral-100);
   font-weight: var(--fw-medium);
   max-width: min(68.75rem, 92vw);
   font-family: var(--font-secondary);
@@ -15,6 +16,7 @@
   &::before {
     content: '';
     inset: 0;
+    z-index: -1;
     position: absolute;
     border-radius: inherit;
     background: rgba(255, 255, 255, 0.03);
@@ -24,7 +26,6 @@
       0 -1px 0 rgba(255, 255, 255, 0.02) inset;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
-    z-index: -1;
   }
 
   .testimonial {
@@ -45,17 +46,21 @@
     .text {
       .quote {
         margin: 0;
+        color: inherit;
         line-height: 1.5;
         font-size: 1.125rem;
       }
+
       .author {
         font-size: 1rem;
+        color: inherit;
         font-weight: bold;
         margin-top: 0.5rem;
+
         span {
           opacity: 0.85;
-          font-weight: normal;
           margin-left: 0.5rem;
+          font-weight: normal;
         }
       }
     }
@@ -68,10 +73,12 @@
 
     .testimonial {
       gap: 1rem;
+
       .avatar {
         width: 3.25rem;
         height: 3.25rem;
       }
+
       .text .quote {
         font-size: 1.05rem;
       }

@@ -12,7 +12,7 @@
   margin-top: clamp(6rem, 15vw, 12rem);
 }
 
-h1 {
+.title h1 {
   letter-spacing: 0.1rem;
   font-weight: var(--fw-bold);
   color: var(--clr-neutral-100);
@@ -21,6 +21,7 @@ h1 {
 }
 
 .card-section {
+  gap: 0;
   display: flex;
   padding: clamp(2rem, 4vw, 3rem) clamp(2rem, 8vw, 10rem);
 }
@@ -29,12 +30,14 @@ h1 {
   flex: 1 1 0;
   overflow: hidden;
   position: relative;
-  transition: flex 0.4s ease;
   height: var(--card-height);
+  transition: flex 0.4s ease;
   background-size: auto 100%;
-  background-repeat: no-repeat;
   background-position: center;
+  background-repeat: no-repeat;
   background-attachment: initial;
+
+  will-change: flex;
 
   &--adelgazar {
     background-image: url('/global/assets/img/adelgazar.jpg');
@@ -73,17 +76,14 @@ h1 {
     z-index: 1;
   }
 }
-
 .card:hover {
   flex: 2.7 1 0;
 }
 
 .card-content {
-  flex: 1;
   z-index: 3;
   height: 100%;
   display: flex;
-  overflow: hidden;
   position: relative;
   flex-direction: column;
   padding: var(--padding);
@@ -98,12 +98,10 @@ h1 {
     &::-webkit-scrollbar {
       width: 6px;
     }
-
     &::-webkit-scrollbar-thumb {
       border-radius: 10px;
       background-color: rgba(255, 255, 255, 0.3);
     }
-
     &::-webkit-scrollbar-track {
       background: transparent;
     }
@@ -114,23 +112,23 @@ h1 {
   line-height: 2rem;
   width: max-content;
   position: relative;
-  font-size: 1.625rem;
   height: var(--padding);
   font-weight: var(--fw-medium);
   font-size: clamp(1.25rem, 4vw, 1.5rem);
-}
+  color: inherit; /* hereda del scope */
 
-.card-title::after {
-  content: '';
-  height: 0.25rem;
-  bottom: -0.125rem;
-  position: absolute;
-  transform: scaleX(0);
-  transform-origin: left;
-  left: calc(var(--padding) * -1);
-  transition: transform 0.4s ease;
-  background: var(--clr-accent-400);
-  width: calc(100% + var(--padding));
+  &::after {
+    content: '';
+    height: 0.25rem;
+    bottom: -0.125rem;
+    position: absolute;
+    transform: scaleX(0);
+    transform-origin: left;
+    left: calc(var(--padding) * -1);
+    transition: transform 0.4s ease;
+    background: var(--clr-accent-400);
+    width: calc(100% + var(--padding));
+  }
 }
 
 .card:hover .card-title::after {
@@ -139,42 +137,44 @@ h1 {
 
 .card-body {
   padding: 0;
+  color: inherit;
   max-width: 100%;
   line-height: 1.4;
   font-weight: 300;
   margin-top: 0.5rem;
-  word-break: break-word;
-  overflow-wrap: break-word;
   letter-spacing: 0.09375rem;
   font-family: var(--font-secondary);
   font-size: clamp(0.875rem, 1.125vw, 1rem);
 }
 
 .button {
-  cursor: pointer;
   max-width: 16rem;
   margin-top: 1rem;
   align-items: center;
-  display: inline-flex;
   border-radius: 0.5em;
-  padding: 0.5em 1.25em;
+  display: inline-flex;
   text-decoration: none;
+  padding: 0.5em 1.25em;
   justify-content: center;
   color: var(--clr-neutral-900);
-  transition: background 0.3s ease;
   background: var(--clr-accent-400);
-}
+  text-decoration-color: currentColor;
+  transition: background 0.3s ease, transform 0.15s ease;
 
-.button:hover,
-.button:focus {
-  background: var(--clr-neutral-100);
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    background: var(--clr-neutral-100);
+    transform: translateY(-0.03rem);
+  }
 }
 
 @media (hover) {
   .card {
     &::after {
-      inset: 0;
       content: '';
+      inset: 0;
+      z-index: 2;
       position: absolute;
       background: linear-gradient(
         to top,
@@ -183,7 +183,6 @@ h1 {
         rgba(0, 0, 0, 0) 100%
       );
       opacity: 0;
-      z-index: 2;
       transition: opacity 0.3s ease;
     }
     &:hover::after {
@@ -191,16 +190,10 @@ h1 {
     }
   }
 
-  .card-content {
-    z-index: 3;
-    position: relative;
-  }
-
   .card-title {
     transform: translateY(13rem);
     transition: transform 0.4s ease;
   }
-
   .card:hover .card-title {
     transform: translateY(0);
   }
@@ -210,7 +203,6 @@ h1 {
     transform: translateY(15%);
     transition: transform 0.3s ease, opacity 0.2s linear;
   }
-
   .card:hover .card-content > *:not(.card-title) {
     opacity: 1;
     transition-delay: 0.3s;
@@ -223,9 +215,15 @@ h1 {
     flex-direction: column;
     padding-inline: clamp(1rem, 5vw, 3rem);
   }
-
   .card {
     flex: none;
     min-height: 22rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card * {
+    transition: none;
   }
 }

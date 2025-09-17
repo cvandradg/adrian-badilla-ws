@@ -1,15 +1,15 @@
 .trainer-info {
-
   width: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  gap: clamp(0.1rem, 0.5vh, 1rem);
+  color: var(--clr-neutral-100);
+  gap: clamp(0.25rem, 0.8vh, 1rem);
   margin-top: clamp(6rem, 15vw, 12rem);
   min-height: clamp(36rem, 85vh, 64rem);
   padding-inline: clamp(1rem, 4vw, 3rem);
-  padding-block: clamp(1.5rem, 4vh, 3rem);
+  padding-block: clamp(1.5rem, 6vh, 3.5rem);
 }
 
 .trainer-info__header {
@@ -17,6 +17,8 @@
 }
 
 .trainer-info__title {
+  margin: 0;
+  color: inherit;
   letter-spacing: 0.1rem;
   font-weight: var(--fw-bold);
   font-family: var(--font-primary);
@@ -24,6 +26,7 @@
 }
 
 .trainer-info__subtitle {
+  color: inherit;
   letter-spacing: 0.2rem;
   font-weight: var(--fw-medium);
   font-size: clamp(1rem, 2.2vw, 1.6rem);
@@ -31,17 +34,35 @@
 
 .trainer-info__img {
   height: auto;
+  display: block;
   object-fit: contain;
   width: min(80vw, 85rem);
   max-height: min(80vh, 40rem);
 }
 
-
 .trainer-info__description {
   margin: 0;
+  color: inherit;
   text-align: center;
+  font-family: var(--font-secondary);
   max-width: clamp(36ch, 80%, 108ch);
-  line-height: clamp(1.4, 1.6, 1.75);
+  line-height: clamp(1.45, 1.6, 1.75);
   font-size: clamp(1rem, 1.8vw, 1.25rem);
+}
 
+@media (max-width: 768px) {
+  .trainer-info {
+    gap: clamp(0.25rem, 2vh, 0.75rem);
+    padding-inline: clamp(1rem, 6vw, 2rem);
+    padding-block: clamp(1rem, 5vh, 2rem);
+  }
+
+  .trainer-info__img {
+    width: min(90vw, 70rem);
+    max-height: min(70vh, 36rem);
+  }
+
+  .trainer-info__description {
+    max-width: 90%;
+  }
 }
