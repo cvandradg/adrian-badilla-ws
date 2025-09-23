@@ -1,8 +1,10 @@
-<section class="mobile-app">
+<section class="mobile-app" aria-labelledby="mobile-app-title">
   <div class="mobile-app__content">
     <div class="mobile-app__left">
       <header class="mobile-app__header">
-        <h2 class="mobile-app__title">Próximamente la<br />nueva App</h2>
+        <h2 id="mobile-app-title" class="mobile-app__title">
+          Próximamente la<br />nueva App
+        </h2>
         <p class="mobile-app__subtitle">
           Calendario de entrenos, rutinas personalizadas, lleva el control de
           calorías y notificaciones para mantenerte al día.
@@ -12,14 +14,21 @@
       <p class="mobile-app__label">Disponible en:</p>
 
       <div class="mobile-app__stores" role="group" aria-label="Descargar">
-        <a class="store-badge" href="#">
+        <a class="store-badge" href="#" aria-label="Descargar en Google Play">
           <img
             src="/global/assets/img/google-play-store.png"
             alt="Google Play"
+            loading="lazy"
+            decoding="async"
           />
         </a>
-        <a class="store-badge" href="#">
-          <img src="/global/assets/img/apple-store.png" alt="App Store" />
+        <a class="store-badge" href="#" aria-label="Descargar en App Store">
+          <img
+            src="/global/assets/img/apple-store.png"
+            alt="App Store"
+            loading="lazy"
+            decoding="async"
+          />
         </a>
       </div>
     </div>
@@ -29,6 +38,8 @@
         class="phone-img"
         src="/global/assets/img/celphone-Image.png"
         alt="Mockup App Adrián Badilla"
+        loading="lazy"
+        decoding="async"
       />
     </div>
   </div>

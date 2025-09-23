@@ -3,35 +3,82 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
 
 .footer {
   display: flex;
-  margin-top: clamp(6rem, 15vw, 12rem);
   background: #000;
   flex-direction: column;
   align-items: flex-start;
   color: var(--clr-neutral-100);
   font-family: var(--font-secondary);
+  margin-top: clamp(6rem, 15vw, 12rem);
   padding: clamp(5rem, 4vw, 5.5rem) clamp(2rem, 8vw, 10rem) 2rem;
 
   .footer-top {
     width: 100%;
     display: flex;
     position: relative;
-    align-items: center;
     gap: $gap-horizontal;
     max-width: $max-width;
-    justify-content: flex-start;
+    align-items: flex-start;
+    justify-content: space-between;
     margin: clamp(2rem, 4vw, 2rem) 0;
 
     .logo {
       flex: 1.1;
-
       img {
+        width: clamp(6rem, 10vw, 8rem);
         height: auto;
         display: block;
-        width: clamp(6rem, 10vw, 8rem);
       }
     }
 
-    .address,
+    h3 {
+      color: inherit;
+      letter-spacing: 0.02em;
+      font-weight: var(--fw-bold);
+      margin: 0 0 clamp(0.4rem, 1vw, 0.75rem);
+    }
+
+    .shortcuts {
+      flex: 1;
+      line-height: 1.463rem;
+      letter-spacing: 0.094rem;
+      font-size: clamp(1rem, 1.125vw, 1.125rem);
+
+      ul {
+        margin: 0;
+        gap: 0.35rem;
+        display: flex;
+        list-style: disc;
+        padding-left: 1.25rem;
+        flex-direction: column;
+        list-style-position: outside;
+      }
+
+      ul li a {
+        color: inherit;
+        text-decoration: none;
+        text-decoration-color: currentColor;
+        transition: opacity 0.2s ease;
+        &:hover {
+          opacity: 0.7;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        ul {
+          flex-wrap: wrap;
+          row-gap: 0.35rem;
+          flex-direction: row;
+          column-gap: var(--col-gap);
+          --col-gap: clamp(1rem, 2vw, 1.5rem);
+        }
+        ul > li {
+          box-sizing: border-box;
+          flex: 0 0 calc(50% - var(--col-gap) / 2);
+          max-width: calc(50% - var(--col-gap) / 2);
+        }
+      }
+    }
+
     .contact {
       flex: 1;
       line-height: 1.463rem;
@@ -42,14 +89,15 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
         color: inherit;
         display: block;
         padding: 0.25em 0;
-        text-decoration: none;
       }
 
-      p {
-        margin: 0;
+      a {
         color: inherit;
         display: block;
+        padding: 0.25em 0;
+        line-height: inherit;
         text-decoration: none;
+        letter-spacing: inherit;
       }
     }
 
@@ -58,24 +106,19 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
       flex-direction: column;
       gap: clamp(1rem, 4vw, 1.5rem);
 
-      .logo {
-        img {
-          width: clamp(4rem, 12vw, 6rem);
-        }
+      .logo img {
+        width: clamp(4rem, 12vw, 6rem);
       }
-
-      .address,
+      .shortcuts,
       .contact {
         text-align: center;
       }
     }
-
     @media (min-width: 641px) and (max-width: 1023px) {
       flex-wrap: wrap;
       gap: $gap-horizontal;
       justify-content: center;
-
-      .address,
+      .shortcuts,
       .contact {
         text-align: center;
       }
@@ -84,21 +127,55 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
 
   .footer-bottom {
     width: 100%;
-    text-align: left;
+    display: flex;
     margin-top: 4rem;
-    font-weight: 300;
-    line-height: 1.2;
+    align-items: center;
     max-width: $max-width;
-    letter-spacing: 0.125rem;
-    font-size: clamp(0.875rem, 1vw, 1rem);
+    gap: clamp(1rem, 3vw, 2rem);
+    justify-content: space-between;
 
     p {
       margin: 0;
+      color: inherit;
+      font-weight: 300;
+      line-height: 1.2;
+      letter-spacing: 0.125rem;
+      font-size: clamp(0.875rem, 1vw, 1rem);
+    }
+
+    .socials {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      list-style: none;
+      align-items: center;
+      gap: clamp(0.75rem, 2vw, 1.25rem);
+      color: inherit;
+    }
+
+    .socials__link {
+      opacity: 0.9;
+      line-height: 1;
+      color: inherit;
+      display: inline-flex;
+      text-decoration: none;
+      transition: transform 120ms ease, opacity 120ms ease, color 120ms ease;
+      &:hover,
+      &:focus-visible {
+        opacity: 1;
+        transform: translateY(-0.05rem);
+        outline: none;
+      }
+    }
+
+    .socials__icon {
+      color: currentColor;
+      font-size: clamp(1.35rem, 2.2vw, 1.7rem);
     }
 
     @media (max-width: 1023px) {
-      padding-left: 0;
       text-align: center;
+      flex-direction: column;
     }
   }
 }

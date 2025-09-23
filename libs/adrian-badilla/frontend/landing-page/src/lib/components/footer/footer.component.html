@@ -7,17 +7,64 @@
         class="logo-img"
       />
     </div>
-    <div class="address">
-      <p>3400 Irvine Ave. Ste. 201</p>
-      <p>Newport Beach, CA 92660</p>
-    </div>
-    <div class="contact">
-      <span>Correo Electronico</span>
-      <span>555-555-555</span>
-    </div>
+
+    <nav class="shortcuts" aria-label="Atajos">
+      <h3>Atajos:</h3>
+      <ul>
+        <li><a href="#hero">Inicio</a></li>
+        <li><a href="#trainer">Sobre mí</a></li>
+        <li><a href="#services">Servicios</a></li>
+        <li><a href="#testimonials">Testimonios</a></li>
+        <li><a href="#gallery">Galería</a></li>
+        <li><a href="#contact">Contacto</a></li>
+      </ul>
+    </nav>
+
+    <address class="contact">
+      <h3>Contáctanos:</h3>
+      <span>Correo Electrónico</span>
+      <a href="tel:+50687400603">+506 8740 0603</a>
+      <a href="tel:+50688468940">+506 8846 8940</a>
+    </address>
   </div>
 
   <div class="footer-bottom">
     <p>©2025 Adrian Badilla™ All rights reserved.</p>
+
+    <ul class="socials" aria-label="Redes sociales">
+      <li>
+        <a
+          class="socials__link"
+          href="https://www.instagram.com/adrianbadilla74/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Instagram"
+        >
+          <fa-icon [icon]="faInstagram" class="socials__icon"></fa-icon>
+        </a>
+      </li>
+      <li>
+        <a
+          class="socials__link"
+          href="https://www.facebook.com/teambadilla"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Facebook"
+        >
+          <fa-icon [icon]="faFacebook" class="socials__icon"></fa-icon>
+        </a>
+      </li>
+      <li>
+        <a
+          class="socials__link"
+          href="https://wa.me/50687400603"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="WhatsApp"
+        >
+          <fa-icon [icon]="faWhatsapp" class="socials__icon"></fa-icon>
+        </a>
+      </li>
+    </ul>
   </div>
 </footer>

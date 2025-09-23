@@ -1,10 +1,11 @@
 .mobile-app {
+  color: var(--clr-neutral-100);
+
   width: 100%;
   position: relative;
   isolation: isolate;
-  color: var(--clr-neutral-100);
-  min-height: clamp(36rem, 78vh, 52rem);
   margin: clamp(8vh, 15vh, 15vh) auto 0;
+  min-height: clamp(36rem, 78vh, 52rem);
   border-radius: clamp(0.75rem, 1.5vw, 1.25rem);
   max-width: min(clamp(60rem, 92vw, 68.75rem), 92vw);
   padding: clamp(2rem, 6vw, 5rem) clamp(1rem, 6vw, 6rem);
@@ -54,6 +55,12 @@
   gap: clamp(0.25rem, 0.8vw, 0.75rem);
 }
 
+.mobile-app__title,
+.mobile-app__subtitle,
+.mobile-app__label {
+  color: inherit;
+}
+
 .mobile-app__title {
   max-width: 16ch;
   line-height: 1.05;
@@ -65,8 +72,8 @@
 }
 
 .mobile-app__subtitle {
-  max-width: 42ch;
   opacity: 0.9;
+  max-width: 42ch;
   font-weight: var(--fw-medium);
   font-family: var(--font-secondary);
   font-size: clamp(1rem, 1.6vw, 1.125rem);
@@ -94,10 +101,22 @@
   display: inline-flex;
   text-decoration: none;
   justify-content: center;
+
+  color: inherit;
   background: hsl(0 0% 100% / 0.08);
+  text-decoration-color: currentColor;
   block-size: clamp(3.2rem, 5vw, 3.8rem);
+  border: 1px solid hsl(0 0% 100% / 0.06);
   inline-size: clamp(12.5rem, 22vw, 14rem);
   border-radius: clamp(0.5rem, 1vw, 0.85rem);
+
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  &:hover,
+  &:focus-visible {
+    opacity: 0.85;
+    transform: translateY(-0.05rem);
+    outline: none;
+  }
 }
 
 .store-badge img {
@@ -159,15 +178,15 @@
 
   .mobile-app__title {
     max-width: 20ch;
+    margin: 0 0 clamp(0.4rem, 2.5vw, 0.6rem);
     line-height: 1.08;
     font-size: clamp(1.9rem, 8vw, 2.6rem);
-    margin: 0 0 clamp(0.4rem, 2.5vw, 0.6rem);
   }
 
   .mobile-app__subtitle {
-    opacity: 0.95;
     max-width: 90%;
     font-size: clamp(0.95rem, 2.8vw, 1.05rem);
+    opacity: 0.95;
   }
 
   .mobile-app__label {
@@ -182,8 +201,8 @@
   }
 
   .store-badge {
-    inline-size: clamp(10.5rem, 42vw, 12rem);
     block-size: clamp(2.6rem, 8.5vw, 3.2rem);
+    inline-size: clamp(10.5rem, 42vw, 12rem);
     border-radius: clamp(0.5rem, 2.5vw, 0.8rem);
   }
 
