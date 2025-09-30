@@ -1,7 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
-  faInstagram, faFacebook, faTiktok, faYoutube, faWhatsapp
+  faInstagram,
+  faFacebook,
+  faTiktok,
+  faYoutube,
+  faWhatsapp,
 } from '@fortawesome/free-brands-svg-icons';
 
 @Component({
@@ -13,10 +17,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FooterComponent {
-    faInstagram = faInstagram;
+  faInstagram = faInstagram;
   faFacebook = faFacebook;
   faTiktok = faTiktok;
   faYoutube = faYoutube;
   faWhatsapp = faWhatsapp;
 }
-

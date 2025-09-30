@@ -39,10 +39,18 @@
   will-change: flex;
   color: var(--clr-neutral-100);
 
-  &.card--nutrition   { background-image: url('/global/assets/img/adelgazar.jpg'); }
-  &.card--strength    { background-image: url('/global/assets/img/musculo.jpg'); }
-  &.card--definition  { background-image: url('/global/assets/img/tonificar.jpg'); }
-  &.card--coaching    { background-image: url('/global/assets/img/muchoMas.jpg'); }
+  &.card--nutrition {
+    background-image: url('/global/assets/img/adelgazar.jpg');
+  }
+  &.card--strength {
+    background-image: url('/global/assets/img/musculo.jpg');
+  }
+  &.card--definition {
+    background-image: url('/global/assets/img/tonificar.jpg');
+  }
+  &.card--coaching {
+    background-image: url('/global/assets/img/muchoMas.jpg');
+  }
 
   &::before {
     content: '';
@@ -69,7 +77,9 @@
   }
 }
 
-.card:hover { flex: 2.7 1 0; }
+.card:hover {
+  flex: 2.7 1 0;
+}
 
 .card__header,
 .card__list,
@@ -127,12 +137,16 @@
 
   list-style: none;
   padding-left: 1.25rem;
-  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
   &::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background-color: rgba(255, 255, 255, 0.3);
   }
-  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
   li {
     list-style: none;
@@ -140,18 +154,18 @@
     padding-left: 0.9rem;
     line-height: 1.5;
 
-  li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.55em;
-    width: 0.35rem;
-    height: 0.35rem;
-    border-radius: 50%;
-    background: currentColor;
-    opacity: 0.85;
+    li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 0.35rem;
+      height: 0.35rem;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.85;
+    }
   }
-}
 }
 
 .card__footer {
@@ -168,9 +182,19 @@
   gap: 0.35rem;
   white-space: nowrap;
 
-  .price__from  { font-size: clamp(0.8rem, 1.4vw, 0.95rem); opacity: 0.85; }
-  .price__value { font-size: clamp(1.25rem, 3.2vw, 1.75rem); font-weight: var(--fw-bold); line-height: 1; }
-  .price__unit  { font-size: clamp(0.8rem, 1.4vw, 0.95rem); opacity: 0.85; }
+  .price__from {
+    font-size: clamp(0.8rem, 1.4vw, 0.95rem);
+    opacity: 0.85;
+  }
+  .price__value {
+    font-size: clamp(1.25rem, 3.2vw, 1.75rem);
+    font-weight: var(--fw-bold);
+    line-height: 1;
+  }
+  .price__unit {
+    font-size: clamp(0.8rem, 1.4vw, 0.95rem);
+    opacity: 0.85;
+  }
 }
 
 .card__cta {
@@ -211,16 +235,22 @@
       opacity: 0;
       transition: opacity 0.3s ease;
     }
-    &:hover::after { opacity: 1; }
+    &:hover::after {
+      opacity: 1;
+    }
   }
 
-  .card:hover .card__title::after { transform: scaleX(1); }
+  .card:hover .card__title::after {
+    transform: scaleX(1);
+  }
 
   .card__title {
     transform: translateY(13rem);
     transition: transform 0.4s ease;
   }
-  .card:hover .card__title { transform: translateY(0); }
+  .card:hover .card__title {
+    transform: translateY(0);
+  }
 
   .card__header > .card__subtitle,
   .card__list,
@@ -251,5 +281,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .card,
-  .card * { transition: none; }
+  .card * {
+    transition: none;
+  }
 }

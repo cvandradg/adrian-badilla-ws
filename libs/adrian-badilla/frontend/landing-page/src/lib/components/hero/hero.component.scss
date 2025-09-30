@@ -68,11 +68,11 @@
       text-decoration-color: currentColor;
       margin-top: clamp(1rem, 2.5vw, 2rem);
       font-size: clamp(1.1rem, 2.5vw, 1.3rem);
-      transition: transform .15s ease, opacity .15s ease;
+      transition: transform 0.15s ease, opacity 0.15s ease;
       &:hover,
       &:focus-visible {
         transform: translateY(-0.03rem);
-        opacity: .9;
+        opacity: 0.9;
         outline: none;
       }
     }
@@ -90,5 +90,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .video-bg { display: none; }
+  .video-bg {
+    display: none;
+  }
 }
