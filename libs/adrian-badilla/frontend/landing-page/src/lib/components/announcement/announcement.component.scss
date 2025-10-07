@@ -5,7 +5,7 @@
   position: relative;
   isolation: isolate;
   margin: clamp(8vh, 15vh, 15vh) auto 0;
-  min-height: clamp(36rem, 78vh, 52rem);
+  min-height: clamp(20rem, 58vh, 52rem);
   border-radius: clamp(0.75rem, 1.5vw, 1.25rem);
   max-width: min(clamp(60rem, 92vw, 68.75rem), 92vw);
   padding: clamp(2rem, 6vw, 5rem) clamp(1rem, 6vw, 6rem);
@@ -16,12 +16,12 @@
     z-index: -1;
     position: absolute;
     border-radius: inherit;
-    background: hsl(0 0% 100% / 0.03);
+    background: hsla(0, 0%, 100%, 0.048);
     border: 1px solid hsl(0 0% 100% / 0.06);
     box-shadow: 0 clamp(1rem, 3vw, 1.25rem) clamp(2rem, 5vw, 2.5rem)
-        hsl(0 0% 0% / 0.35),
+        hsl(0, 0%, 0%),
       0 1px 0 hsl(0 0% 100% / 0.05) inset, 0 -1px 0 hsl(0 0% 100% / 0.02) inset;
-    backdrop-filter: blur(clamp(4px, 1vw, 6px));
+    backdrop-filter: blur(clamp(4px, 5vw, 6px));
     -webkit-backdrop-filter: blur(clamp(4px, 1vw, 6px));
   }
 }
