@@ -11,7 +11,6 @@
   font-weight: var(--fw-medium);
   max-width: min(68.75rem, 92vw);
   font-family: var(--font-secondary);
-  margin-top: clamp(6rem, 15vw, 12rem);
 
   &::before {
     content: '';

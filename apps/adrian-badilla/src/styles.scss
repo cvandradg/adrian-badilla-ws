@@ -30,3 +30,7 @@ body {
   --fw-medium: 500;
   --fw-bold: 800;
 }
+
+.section-spacing {
+  margin-top: clamp(4rem, 8vw, 10rem);
+}
