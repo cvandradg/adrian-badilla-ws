@@ -23,15 +23,15 @@ export class GalleryComponent implements AfterViewInit {
 
   carousels = [
     {
-      images: this.generatePaths('/global/assets/gallery/img-', 10),
+      images: this.generatePaths('/global/assets/img/gallery/img-', 10),
       reverse: false,
     },
     {
-      images: this.generatePaths('/global/assets/gallery2/img-', 7),
+      images: this.generatePaths('/global/assets/img/gallery2/img-', 7),
       reverse: true,
     },
     {
-      images: this.generatePaths('/global/assets/gallery3/img-', 9),
+      images: this.generatePaths('/global/assets/img/gallery3/img-', 9),
       reverse: false,
     },
   ];
