@@ -1,27 +1,23 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  QueryList,
-  ViewChildren,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+type Carousel = { images: string[]; reverse: boolean };
 
 @Component({
   selector: 'adrian-badilla-gallery',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
 })
-export class GalleryComponent implements AfterViewInit {
-  private generatePaths(basePath: string, count: number): string[] {
-    return Array.from({ length: count }, (_, i) => `${basePath}${i + 1}.jpg`);
-  }
+export class GalleryComponent {
+  // ---- Generador de rutas (puro y reutilizable) ----
+  readonly generatePaths = (basePath: string, count: number): string[] =>
+    Array.from({ length: count }, (_, i) => `${basePath}${i + 1}.jpg`);
 
-  carousels = [
+  // ---- Datos base del carrusel ----
+  readonly baseCarousels = signal<Carousel[]>([
     {
       images: this.generatePaths('/global/assets/img/gallery/img-', 10),
       reverse: false,
@@ -34,19 +30,19 @@ export class GalleryComponent implements AfterViewInit {
       images: this.generatePaths('/global/assets/img/gallery3/img-', 9),
       reverse: false,
     },
-  ];
+  ]);
 
-  @ViewChildren('carouselTrack') trackRefs!: QueryList<ElementRef<HTMLDivElement>>;
-
-  ngAfterViewInit() {
-    this.trackRefs.forEach((trackRef) => {
-      const track = trackRef.nativeElement;
-      const totalWidth = track.scrollWidth / 2;
+  // ---- Cálculo reactivo de propiedades CSS para cada carrusel ----
+  readonly carousels = computed(() =>
+    this.baseCarousels().map((carousel) => {
+      // Simulamos un ancho proporcional al número de imágenes
+      const totalWidth = carousel.images.length * 100; // cada img ≈100px
       const duration = totalWidth / 100;
-
-      track.style.setProperty('--scroll-width', `-${totalWidth}px`);
-      track.style.setProperty('--scroll-duration', `${duration}s`);
-    });
-  }
-
+      return {
+        ...carousel,
+        scrollWidth: `-${totalWidth}px`,
+        scrollDuration: `${duration}s`,
+      };
+    })
+  );
 }
