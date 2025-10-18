@@ -1,0 +1,17 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  overflow-x: hidden;
+  font-family: var(--font-primary);
+  color: var(--clr-neutral-100);
+
+  background-position: center;
+  background-size: clamp(90%, 100%, 110%);
+  background-image: url('/global/assets/img/background.jpg');
+}
