@@ -1,0 +1,10 @@
+%glass {
+  background: hsla(0, 0%, 100%, 0.048);
+  border: 1px solid hsl(0 0% 100% / 0.06);
+  box-shadow:
+    0 clamp(1rem, 3vw, 1.25rem) clamp(2rem, 5vw, 2.5rem) hsl(0, 0%, 0%),
+    0 1px 0 hsl(0 0% 100% / 0.05) inset,
+    0 -1px 0 hsl(0 0% 100% / 0.02) inset;
+  backdrop-filter: blur(clamp(4px, 5vw, 6px));
+  -webkit-backdrop-filter: blur(clamp(4px, 1vw, 6px));
+}

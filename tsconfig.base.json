@@ -10,7 +10,10 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -24,9 +27,13 @@
       "@adrian-badilla/ui/shared": [
         "libs/adrian-badilla/frontend/shared/src/index.ts"
       ],
-      "@shared/*": ["libs/shared/src/*"]
-
+      "@shared/*": [
+        "libs/adrian-badilla/frontend/shared/*"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

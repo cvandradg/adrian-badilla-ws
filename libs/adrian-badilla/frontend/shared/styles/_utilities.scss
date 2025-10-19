@@ -8,3 +8,19 @@
   min-height: 100vh;
 }
 
+%flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+%flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+%flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
