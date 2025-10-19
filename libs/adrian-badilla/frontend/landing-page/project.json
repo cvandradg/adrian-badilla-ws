@@ -18,7 +18,7 @@
     }
   },
   "stylePreprocessorOptions": {
-  "includePaths": ["libs/adrian-badilla/frontend/shared/styles"]
+  "includePaths": ["libs/adrian-badilla/frontend/shared/src/lib/styles"]
 }
 
 }

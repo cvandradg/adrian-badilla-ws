@@ -33,7 +33,7 @@
         "scripts": [],
         "stylePreprocessorOptions": {
           "includePaths": [
-            "libs/adrian-badilla/frontend/shared/styles"
+            "libs/adrian-badilla/frontend/shared/src/lib/styles"
           ]
         }
       },
