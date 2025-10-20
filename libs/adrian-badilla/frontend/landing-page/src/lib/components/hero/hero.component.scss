@@ -1,3 +1,5 @@
+@use 'index' as *;
+
 .navbar {
   left: 0;
   z-index: 2;
@@ -8,11 +10,9 @@
 }
 
 .hero {
+  @extend %page;
   z-index: 2;
-  display: flex;
-  min-height: 100vh;
   position: relative;
-  flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   padding: clamp(1rem, 5vw, 4rem);
@@ -62,19 +62,11 @@
     }
 
     .see-how {
-      color: inherit;
+      @extend %link-clean;
       display: inline-block;
-      text-decoration: none;
-      text-decoration-color: currentColor;
       margin-top: clamp(1rem, 2.5vw, 2rem);
       font-size: clamp(1.1rem, 2.5vw, 1.3rem);
       transition: transform 0.15s ease, opacity 0.15s ease;
-      &:hover,
-      &:focus-visible {
-        transform: translateY(-0.03rem);
-        opacity: 0.9;
-        outline: none;
-      }
     }
   }
 }

@@ -2,7 +2,7 @@
 
 .title {
   @extend %section-spacing;
-@extend %flex-column;
+  @extend %flex-column;
   text-align: center;
   align-items: center;
   padding-bottom: 3rem;
