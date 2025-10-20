@@ -1,7 +1,7 @@
 @use 'index' as *;
 
 .navbar {
-@extend %flex-space-between;
+  @extend %flex-space-between;
   font-weight: 600;
   letter-spacing: 0.125rem;
   padding-inline: clamp(1rem, 5vw, 2rem);
