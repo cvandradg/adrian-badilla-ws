@@ -1,9 +1,11 @@
+@use 'index' as *;
+
 .title {
-  display: flex;
+  @extend %section-spacing;
+@extend %flex-column;
   text-align: center;
   align-items: center;
   padding-bottom: 3rem;
-  flex-direction: column;
   justify-content: center;
 
   h2 {
