@@ -1,6 +1,6 @@
 import { Route } from '@angular/router';
-import { AdrianBadillaUiAuthComponent } from './adrian-badilla-ui-auth/adrian-badilla-ui-auth.component';
+import { LoginComponent } from './components/login/login.component';
 
 export const adrianBadillaUiAuthRoutes: Route[] = [
-  { path: '', component: AdrianBadillaUiAuthComponent },
+  { path: '', component: LoginComponent },
 ];

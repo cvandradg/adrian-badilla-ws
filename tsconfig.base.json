@@ -24,6 +24,9 @@
       "@adrian-badilla/ui/shared": [
         "libs/adrian-badilla/frontend/shared/src/index.ts"
       ],
+      "@adrian-badilla/ui/shared/*": [
+        "libs/adrian-badilla/frontend/shared/src/lib/*"
+      ],
       "@shared/*": ["libs/adrian-badilla/frontend/shared/*"],
       "@adrian-badilla/auth": ["libs/adrian-badilla/frontend/auth/src/index.ts"]
     }

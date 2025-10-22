@@ -28,12 +28,14 @@
           }
         ],
         "styles": [
-          "apps/adrian-badilla/src/styles.scss"
+          "apps/adrian-badilla/src/styles.scss",
+          "libs/adrian-badilla/frontend/shared/src/lib/assets/styles/general-styles/general-styles.scss"
         ],
         "scripts": [],
         "stylePreprocessorOptions": {
           "includePaths": [
-            "libs/adrian-badilla/frontend/shared/src/lib/styles"
+            "libs/adrian-badilla/frontend/shared/src/lib/styles",
+            "libs/adrian-badilla/frontend/shared/src/lib/assets/styles/general-styles"
           ]
         }
       },
