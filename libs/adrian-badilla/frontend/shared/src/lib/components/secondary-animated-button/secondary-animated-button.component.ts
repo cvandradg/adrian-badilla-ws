@@ -7,7 +7,7 @@ import {
   Output,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { Fontawesome } from '../../assets/icons/fontawesome';
 
 @Component({
   standalone: true,
@@ -17,7 +17,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   imports: [MODULES],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SecondaryAnimatedButtonComponent extends FontAwesomeModule {
+export class SecondaryAnimatedButtonComponent extends Fontawesome {
   @Output() submitEvent = new EventEmitter<never>();
 
   @Input() small = false;

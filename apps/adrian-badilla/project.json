@@ -23,6 +23,11 @@
         "assets": [
           {
             "glob": "**/*",
+            "input": "apps/adrian-badilla/src/assets/",
+            "output": "/app"
+          },
+          {
+            "glob": "**/*",
             "input": "libs/adrian-badilla/frontend/shared/src/lib/assets",
             "output": "/global/assets"
           }
