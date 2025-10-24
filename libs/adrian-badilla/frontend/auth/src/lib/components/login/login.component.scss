@@ -1,6 +1,7 @@
 @use 'index' as *;
 
 .login-container {
+  font-family: var(--font-roboto);
   color: #fff;
   height: 80%;
   max-width: 100%;
