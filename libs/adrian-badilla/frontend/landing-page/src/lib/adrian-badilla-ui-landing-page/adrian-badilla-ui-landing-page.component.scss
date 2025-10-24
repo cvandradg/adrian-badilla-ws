@@ -1,1 +1,5 @@
 @use 'index' as *;
+
+.page {
+  @extend %page;
+}
