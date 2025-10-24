@@ -58,7 +58,6 @@ button {
       hsla(226, 78%, 67%, 0.397),
       rgb(163, 31, 31)
     );
-    // filter: blur(1rem);
     @media (pointer: coarse) {
       filter: blur(0);
     }
@@ -71,7 +70,6 @@ button {
       rgb(163, 31, 31)
     );
 
-    // filter: blur(1rem);
     @media (pointer: coarse) {
       filter: blur(0);
     }
@@ -136,25 +134,3 @@ button {
     }
   }
 }
-// :host {
-//   p {
-//     color: #ffffff !important;
-//     opacity: 1 !important;
-//     visibility: visible !important;
-//     mix-blend-mode: normal !important;
-//     z-index: 5 !important;
-//     position: relative;
-//   }
-
-//   fa-icon {
-//     color: #ffffff !important;
-//     opacity: 1 !important;
-//     z-index: 5 !important;
-//     position: relative;
-//   }
-
-//   button,
-//   .signup-button {
-//     isolation: isolate;
-//   }
-// }

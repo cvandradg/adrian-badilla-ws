@@ -12,11 +12,9 @@ type Carousel = { images: string[]; reverse: boolean };
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GalleryComponent {
-  // ---- Generador de rutas (puro y reutilizable) ----
   readonly generatePaths = (basePath: string, count: number): string[] =>
     Array.from({ length: count }, (_, i) => `${basePath}${i + 1}.jpg`);
 
-  // ---- Datos base del carrusel ----
   readonly baseCarousels = signal<Carousel[]>([
     {
       images: this.generatePaths('/global/assets/img/gallery/img-', 10),
@@ -32,10 +30,8 @@ export class GalleryComponent {
     },
   ]);
 
-  // ---- Cálculo reactivo de propiedades CSS para cada carrusel ----
   readonly carousels = computed(() =>
     this.baseCarousels().map((carousel) => {
-      // Simulamos un ancho proporcional al número de imágenes
       const totalWidth = carousel.images.length * 100; // cada img ≈100px
       const duration = totalWidth / 100;
       return {
