@@ -1,0 +1,156 @@
+@use 'utilities/mixins' as *;
+
+
+// ============================================================
+// 🧩 Layout Mixins — Base estructurada y declarativa
+// ============================================================
+
+// 🔹 Base genérica para cualquier sección
+@mixin section-base(
+  $padding-block: clamp(2rem, 6vw, 5rem),
+  $padding-inline: clamp(1rem, 6vw, 6rem),
+  $margin-top: clamp(8vh, 12vh, 15vh),
+  $radius: clamp(0.75rem, 1.5vw, 1.25rem),
+  $min-height: null
+) {
+  width: 100%;
+  max-width: min(clamp(60rem, 92vw, 68.75rem), 92vw);
+  margin: $margin-top auto 0;
+  padding: $padding-block $padding-inline;
+  border-radius: $radius;
+  position: relative;
+
+  @if $min-height {
+    min-height: $min-height;
+  }
+}
+
+// 🔹 Flex helper (reutilizable en cualquier layout)
+@mixin flex-center(
+  $direction: row,
+  $justify: center,
+  $align: center
+) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+// 🔹 Textos genéricos
+@mixin text-style(
+  $size: clamp(1rem, 1.6vw, 1.125rem),
+  $weight: var(--fw-medium),
+  $family: var(--font-secondary),
+  $color: inherit
+) {
+  font-size: $size;
+  font-weight: $weight;
+  font-family: $family;
+  color: $color;
+}
+
+// 🔹 Títulos genéricos
+@mixin heading-style(
+  $size: clamp(2.2rem, 5vw, 3.5rem),
+  $line-height: 1.05,
+  $spacing: -0.02em
+) {
+  color: inherit;
+  font-family: var(--font-primary);
+  font-weight: var(--fw-bold);
+  line-height: $line-height;
+  letter-spacing: $spacing;
+  font-size: $size;
+}
+
+// ============================================================
+// 🧱 Composiciones reutilizables
+// ============================================================
+
+// 🔸 Hero layout (hereda de section-base)
+@mixin hero-layout {
+  @include section-base($min-height: 100vh);
+  @include flex-center(column, flex-start, center);
+  background-color: var(--clr-neutral-900);
+  font-family: var(--font-primary);
+  z-index: 2;
+}
+
+// 🔸 Video background
+@mixin video-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+
+  video {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.3;
+    position: absolute;
+  }
+}
+
+// 🔸 Contenido de sección (hero, cards, announcement, etc.)
+@mixin section-content(
+  $color: var(--clr-neutral-100),
+  $padding: clamp(1rem, 5vw, 8rem)
+) {
+  position: relative;
+  z-index: 2;
+  color: $color;
+  padding: $padding;
+}
+
+// 🔸 Heading principal (Hero, Cards, Trainer Info, etc.)
+@mixin section-heading($size: clamp(2rem, 6vw, 6rem)) {
+  @include heading-style($size);
+  line-height: 1.1;
+  margin: 0;
+}
+
+// 🔸 Texto de apoyo / párrafo
+@mixin section-text(
+  $max-width: 38rem,
+  $font-size: clamp(1rem, 1.125rem + 0.2vw, 1.125rem),
+  $margin-top: clamp(1rem, 2vw, 4rem)
+) {
+  @include text-style($font-size);
+  max-width: $max-width;
+  margin-top: $margin-top;
+  line-height: 1.6rem;
+  letter-spacing: 0.09375rem;
+  opacity: 0.95;
+}
+
+// 🔸 CTA / Link estilo general
+@mixin cta-link {
+  @include link-clean;
+  display: inline-block;
+  margin-top: clamp(1rem, 2.5vw, 2rem);
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+// 🔸 Navbar capa superior
+@mixin layer-navbar {
+  left: 0;
+  z-index: 2;
+  width: 95%;
+  position: relative;
+  background-color: transparent;
+  top: calc(-2.5 * clamp(1rem, 5vw, 4rem));
+}
+
+// 🔸 Navbar versión móvil
+@mixin navbar-mobile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 85%;
+  position: absolute;
+  padding: clamp(1rem, 5vw, 2rem);
+}

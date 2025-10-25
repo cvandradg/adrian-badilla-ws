@@ -16,9 +16,6 @@
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "stylePreprocessorOptions": {
-  "includePaths": ["libs/adrian-badilla/frontend/shared/src/lib/styles"]
-}
+  }
 
 }

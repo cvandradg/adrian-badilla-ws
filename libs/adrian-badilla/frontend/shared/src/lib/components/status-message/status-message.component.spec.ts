@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StatusMessageComponent } from './status-message.component';
-import { MODULES } from '@adrianbadilla/shared/exports/export-modules';
+import { MODULES } from '../../exports/export-modules';
 
 describe('StatusMessageComponent', () => {
   let component: StatusMessageComponent;
