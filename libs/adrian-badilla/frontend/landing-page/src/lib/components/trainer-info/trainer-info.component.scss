@@ -1,4 +1,6 @@
-@use 'index' as *;
+@use 'utilities/layout/helpers' as *;
+@use 'utilities/layout/text' as *;
+@use 'utilities/mixins' as *;
 
 .trainer-info {
   @include section-spacing;

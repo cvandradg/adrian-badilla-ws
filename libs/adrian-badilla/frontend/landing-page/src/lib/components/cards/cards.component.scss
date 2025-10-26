@@ -1,4 +1,7 @@
-@use 'index' as *;
+@use 'utilities/layout/helpers' as *;
+@use 'utilities/layout/sections' as *;
+@use 'utilities/mixins' as *;
+@use 'utilities/components/visual' as *;
 
 :host {
   --padding: 2rem;

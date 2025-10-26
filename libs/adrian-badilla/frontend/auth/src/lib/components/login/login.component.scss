@@ -1,49 +1,61 @@
-@use 'index' as *;
+// @use 'utilities/layout/components' as *;
+@use 'utilities/layout/helpers' as *;
+// @use 'utilities/layout/sections' as *;
+@use 'utilities/layout/structure' as *;
+@use 'utilities/layout/text' as *;
+@use 'utilities/mixins' as *;
+// @use 'utilities/components/visual' as *;
+@use 'components/angular-material-overrides' as *;
+// @use 'base' as *;
+// @use 'variables.scss' as *;
+// @use 'material-icons.scss' as *;
+// @use 'roboto.scss' as *;
+
 
 .login-container {
   font-family: var(--font-roboto);
   color: #fff;
   height: 80%;
   max-width: 100%;
-}
-
-.container,
-.login-container {
-  display: flex;
-  flex-direction: column;
+  @include flex-column;
   align-items: center;
-  margin: 2rem 0;
-  width: 90%;
+  justify-content: center;
   margin: 0 auto;
+  width: 90%;
+  padding-block: 2rem;
 }
 
 .container {
+  @include flex-column;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  margin: 0 auto;
+
   .title {
-    font-size: 3rem;
-    font-weight: 700;
+    @include heading-style(clamp(1.5rem, 4vw, 3rem));
     text-align: center;
-    margin: 5.5% 0;
+    margin-block: 5.5%;
   }
 
   .description {
-    font-size: 1.3rem;
-    font-weight: 400;
+    @include text-style(
+      clamp(1rem, 2vw, 1.3rem),
+      400,
+      var(--font-secondary),
+      #88898e
+    );
     text-align: center;
     max-width: 55%;
-    color: #88898e;
     margin-bottom: 5%;
   }
 }
 
-.login-header,
 .login-components-container {
-  display: flex;
+  @include flex-center;
   flex-direction: row;
-  align-items: center;
   justify-content: space-around;
-}
-
-.login-components-container {
+  align-items: flex-start;
   width: 90%;
   max-width: 1200px;
   min-height: 17rem;
@@ -58,8 +70,7 @@
   .manual-login-inputs,
   .form-login-inputs,
   .automatic-signin-tools {
-    display: flex;
-    flex-direction: column;
+    @include flex-column;
     justify-content: space-between;
     align-self: flex-start;
   }
@@ -75,31 +86,27 @@
   }
 
   .manual-login-inputs {
-    gap: 0.007rem;
     width: 100%;
+    gap: 0.007rem;
   }
 }
 
-.aligment {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-footer {
-  display: flex;
+.login-footer {
+  @include flex-center;
   flex-direction: row;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   width: 80%;
+  color: #7b7d81;
   bottom: 0;
   position: fixed;
-  color: #7b7d81;
+
+  p {
+    margin: 0;
+  }
 }
 
-/// Media Queries///
-@media screen and (max-width: 768px) {
+@include respond-to('tablet') {
   .container .description {
     font-size: 1.2rem;
     margin-bottom: 10%;
@@ -111,7 +118,7 @@ footer {
   }
 }
 
-@media screen and (max-width: 1000px) {
+@include respond-to('desktop-sm') {
   .container,
   .login-container {
     width: 95%;
@@ -141,7 +148,7 @@ footer {
     width: 100%;
   }
 
-  footer {
+  .login-footer {
     margin-top: 5rem;
     gap: 8rem;
     position: initial;

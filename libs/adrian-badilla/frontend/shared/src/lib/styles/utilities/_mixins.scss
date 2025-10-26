@@ -24,8 +24,6 @@
     @media #{inspect(map-get($breakpoints, $breakpoint))} {
       @content;
     }
-  } @else {
-    @warn "⚠️ Breakpoint `#{$breakpoint}` no definido en respond-to().";
   }
 }
 

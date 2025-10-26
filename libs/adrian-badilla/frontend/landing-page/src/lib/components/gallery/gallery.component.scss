@@ -1,4 +1,5 @@
-@use 'index' as *;
+@use 'utilities/layout/sections' as *;
+
 
 .title {
   @include section-layout(center);

@@ -1,7 +1,6 @@
-@use 'index' as *;
+@use 'utilities/layout/helpers' as *;
 
 .page {
   @include flex-column;
   min-height: 100vh;
 }
-

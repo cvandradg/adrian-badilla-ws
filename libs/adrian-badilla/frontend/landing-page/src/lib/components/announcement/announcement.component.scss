@@ -1,4 +1,9 @@
-@use 'index' as *;
+@use 'utilities/layout/helpers' as *;
+@use 'utilities/layout/structure' as *;
+@use 'utilities/layout/text' as *;
+@use 'utilities/components/visual' as *;
+@use 'utilities/mixins' as *;
+
 
 .mobile-app {
   @include section-spacing;
