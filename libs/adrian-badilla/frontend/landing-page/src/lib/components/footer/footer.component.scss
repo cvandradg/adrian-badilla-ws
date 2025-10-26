@@ -1,10 +1,9 @@
 @use 'index' as *;
 
-$max-width: 90rem;
 $gap-horizontal: clamp(2rem, 4vw, 4rem);
 
 .footer {
-  @extend %section-spacing;
+  @include section-spacing;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -15,7 +14,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
 
   .footer-top {
     width: 100%;
-    max-width: $max-width;
+    max-width: min(68.75rem, 92vw);
     display: flex;
     position: relative;
     align-items: flex-start;
@@ -47,16 +46,16 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
       font-size: clamp(1rem, 1.125vw, 1.125rem);
 
       ul {
+        @include flex-column;
         margin: 0;
         padding-left: 1.25rem;
         list-style: disc;
         list-style-position: outside;
-        @extend %flex-column;
         gap: 0.35rem;
       }
 
       ul li a {
-        @extend %link-clean;
+        @include link-clean;
       }
 
       @media (min-width: 1024px) {
@@ -89,7 +88,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
       }
 
       a {
-        @extend %link-clean;
+        @include link-clean;
         display: block;
         padding: 0.25em 0;
         line-height: inherit;
@@ -97,8 +96,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
       }
     }
 
-    /* Responsive */
-    @media (max-width: 640px) {
+    @include respond-to('mobile') {
       flex-direction: column;
       align-items: center;
       gap: clamp(1rem, 4vw, 1.5rem);
@@ -113,7 +111,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
       }
     }
 
-    @media (min-width: 641px) and (max-width: 1023px) {
+    @include respond-to('tablet') {
       flex-wrap: wrap;
       justify-content: center;
       gap: $gap-horizontal;
@@ -126,9 +124,9 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
   }
 
   .footer-bottom {
-    @extend %flex-space-between;
+    @include flex-space-between;
     width: 100%;
-    max-width: $max-width;
+    max-width: min(68.75rem, 92vw);
     margin-top: 4rem;
     gap: clamp(1rem, 3vw, 2rem);
 
@@ -138,20 +136,20 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
       font-weight: 300;
       line-height: 1.2;
       letter-spacing: 0.125rem;
-      font-size: var(--font-secondary);
+      font-family: var(--font-secondary);
     }
 
     .socials {
-      margin: 0;
-      padding: 0;
       display: flex;
       align-items: center;
       list-style: none;
+      margin: 0;
+      padding: 0;
       gap: clamp(0.75rem, 2vw, 1.25rem);
       color: inherit;
 
       &__link {
-        @extend %link-clean;
+        @include link-clean;
         opacity: 0.9;
         line-height: 1;
         transition: transform 120ms ease, opacity 120ms ease;
@@ -170,7 +168,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
       }
     }
 
-    @media (max-width: 1023px) {
+    @include respond-to('tablet') {
       flex-direction: column;
       text-align: center;
     }
