@@ -1,19 +1,11 @@
 @use 'index' as *;
 
 .title {
-  @extend %section-spacing;
-  @extend %flex-column;
-  text-align: center;
-  align-items: center;
+  @include section-layout(center);
   padding-bottom: 3rem;
-  justify-content: center;
 
   h2 {
-    letter-spacing: 0.1rem;
-    font-weight: var(--fw-bold);
-    color: var(--clr-neutral-100);
-    font-family: var(--font-primary);
-    font-size: clamp(2rem, 5vw, 4rem);
+    @include section-title;
   }
 }
 
