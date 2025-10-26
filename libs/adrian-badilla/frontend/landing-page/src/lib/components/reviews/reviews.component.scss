@@ -1,9 +1,9 @@
 @use 'index' as *;
 
 .testimonials {
-  @extend %section-spacing;
-  @extend %glass;
-  @extend %flex-column;
+  @include section-spacing;
+  @include flex-column;
+
   gap: 2rem;
   padding: 3rem 1rem;
   position: relative;
@@ -12,15 +12,16 @@
   border-radius: 1.25rem;
   color: var(--clr-neutral-100);
   font-weight: var(--fw-medium);
-  max-width: min(68.75rem, 92vw);
   font-family: var(--font-secondary);
+  max-width: min(68.75rem, 92vw);
+
+  @include glass-effect;
 
   .testimonial {
+    @include flex-center(row, flex-start, flex-start);
     gap: 1.5rem;
-    display: flex;
-    max-width: 800px;
+    max-width: 50rem;
     margin: 1rem auto;
-    align-items: flex-start;
 
     .avatar {
       width: 4rem;
@@ -33,27 +34,29 @@
     .text {
       .quote {
         margin: 0;
-        color: inherit;
         line-height: 1.5;
+        color: inherit;
         font-size: 1.125rem;
       }
 
       .author {
-        font-size: 1rem;
-        color: inherit;
-        font-weight: bold;
         margin-top: 0.5rem;
+        color: inherit;
+        font-weight: var(--fw-bold);
+        font-size: 1rem;
 
         span {
-          opacity: 0.85;
           margin-left: 0.5rem;
+          opacity: 0.85;
           font-weight: normal;
         }
       }
     }
   }
+}
 
-  @media (max-width: 768px) {
+@include respond-to('mobile') {
+  .testimonials {
     gap: 1.25rem;
     padding: 2rem 1rem;
     border-radius: 1rem;
