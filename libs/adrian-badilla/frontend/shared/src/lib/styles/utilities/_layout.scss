@@ -25,6 +25,29 @@
   }
 }
 
+// 🔸 Hero / Section layout base — usado por secciones principales
+@mixin section-full(
+  $bg: var(--clr-neutral-900),
+  $font: var(--font-primary),
+  $padding: clamp(1rem, 5vw, 4rem),
+  $min-height: 100vh
+) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  min-height: $min-height;
+
+  background-color: $bg;
+  font-family: $font;
+  padding: $padding;
+}
+
+
 // 🔹 Flex helper (reutilizable en cualquier layout)
 @mixin flex-center(
   $direction: row,
@@ -135,6 +158,29 @@
   transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
+// 🔸 CTA button estilo (Navbar, Hero, Footer)
+@mixin cta-button {
+  display: inline-block;
+  color: var(--clr-neutral-900);
+  background-color: var(--clr-neutral-100);
+  border: none;
+  border-radius: clamp(0.25rem, 1vw, 0.5rem);
+  cursor: pointer;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  padding-block: clamp(0.5rem, 2vw, 1rem);
+  padding-inline: clamp(1rem, 3vw, 2rem);
+  transition: background 0.3s ease, transform 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    background: var(--clr-accent-400);
+    transform: translateY(-0.03rem);
+  }
+}
+
+
+
 // 🔸 Navbar capa superior
 @mixin layer-navbar {
   left: 0;
@@ -144,6 +190,16 @@
   background-color: transparent;
   top: calc(-2.5 * clamp(1rem, 5vw, 4rem));
 }
+
+// 🔸 Navbar layout (reemplazo de %flex-space-between)
+@mixin navbar-layout {
+  @include flex-center(row, space-between, center);
+  font-weight: 600;
+  letter-spacing: 0.125rem;
+  padding-inline: clamp(1rem, 5vw, 2rem);
+  padding-block: clamp(1rem, 2vw, 1.5rem);
+}
+
 
 // 🔸 Navbar versión móvil
 @mixin navbar-mobile {

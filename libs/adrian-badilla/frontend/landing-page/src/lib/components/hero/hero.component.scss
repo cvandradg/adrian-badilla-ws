@@ -1,39 +1,46 @@
 @use 'index' as *;
 
-.navbar { @include layer-navbar; }
+.navbar {
+  @include layer-navbar;
+}
 
 .hero {
-  // Equivalente a hero-layout sin depender del mixin
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
+  @include section-full;
 
-  position: relative;
-  z-index: 2;
-  min-height: 100vh;
-  width: 100%;
-
-  background-color: var(--clr-neutral-900);
-  font-family: var(--font-primary);
-  padding: clamp(1rem, 5vw, 4rem);
-
-  .video-bg { @include video-background; }
+  .video-bg {
+    @include video-background;
+  }
 
   .hero-content {
     @include section-content();
 
-    h1, h2 { @include section-heading(clamp(2rem, 6vw, 6rem)); }
-    p { @include section-text(38rem, clamp(1rem, 1.125rem + 0.2vw, 1.125rem), clamp(1rem, 2vw, 4rem)); }
+    h1,
+    h2 {
+      @include section-heading(clamp(2rem, 6vw, 6rem));
+    }
+    p {
+      @include section-text(
+        38rem,
+        clamp(1rem, 1.125rem + 0.2vw, 1.125rem),
+        clamp(1rem, 2vw, 4rem)
+      );
+    }
 
-    .see-how { @include link-clean; @include cta-link; }
+    .see-how {
+      @include link-clean;
+      @include cta-link;
+    }
   }
 }
 
 @include respond-to('mobile') {
-  .navbar { @include navbar-mobile; }
+  .navbar {
+    @include navbar-mobile;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .video-bg { display: none; }
+  .video-bg {
+    display: none;
+  }
 }
