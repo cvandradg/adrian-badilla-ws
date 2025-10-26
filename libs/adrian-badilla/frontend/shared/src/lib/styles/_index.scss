@@ -1,9 +1,10 @@
 @forward 'variables';
 @forward 'base';
+@forward 'utilities/mixins';
+@forward 'utilities/layout';
+@forward 'utilities/components';
 @forward 'utilities';
 @forward 'effects';
 @forward 'material-icons';
 @forward 'roboto';
-@forward 'utilities/layout';
-@forward 'utilities/mixins';
 @forward 'components/angular-material-overrides';

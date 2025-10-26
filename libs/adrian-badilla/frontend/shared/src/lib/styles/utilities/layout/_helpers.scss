@@ -1,0 +1,18 @@
+// %section-spacing → margin superior de sección
+@mixin section-spacing {
+  margin-top: clamp(4rem, 8vw, 10rem);
+}
+
+// %flex-column
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// %flex-space-between
+@mixin flex-space-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+

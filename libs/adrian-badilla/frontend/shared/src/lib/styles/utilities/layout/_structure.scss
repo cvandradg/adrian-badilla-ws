@@ -1,0 +1,84 @@
+@use '../mixins' as *;
+
+// 🔹 Base genérica para cualquier sección
+@mixin section-base(
+  $padding-block: clamp(2rem, 6vw, 5rem),
+  $padding-inline: clamp(1rem, 6vw, 6rem),
+  $margin-top: clamp(8vh, 12vh, 15vh),
+  $radius: clamp(0.75rem, 1.5vw, 1.25rem),
+  $min-height: null
+) {
+  width: 100%;
+  max-width: min(clamp(60rem, 92vw, 68.75rem), 92vw);
+  margin: $margin-top auto 0;
+  padding: $padding-block $padding-inline;
+  border-radius: $radius;
+  position: relative;
+
+  @if $min-height {
+    min-height: $min-height;
+  }
+}
+
+// 🔹 Flex helper (reutilizable en cualquier layout)
+@mixin flex-center($direction: row, $justify: center, $align: center) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+// 🔹 Hero / Section layout base — usado por secciones principales
+@mixin section-full(
+  $bg: var(--clr-neutral-900),
+  $font: var(--font-primary),
+  $padding: clamp(1rem, 5vw, 4rem),
+  $min-height: 100vh
+) {
+  @include flex-center(column, center, flex-start);
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  min-height: $min-height;
+
+  background-color: $bg;
+  font-family: $font;
+  padding: $padding;
+}
+
+// 🔹 Video background (bloque contenedor + <video>)
+@mixin video-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+
+  video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.3;
+  }
+}
+
+// 🔹 Hero layout (si lo usás en componentes)
+@mixin hero-layout {
+  @include section-base($min-height: 100vh);
+  @include flex-center(column, center, flex-start);
+  background-color: var(--clr-neutral-900);
+  font-family: var(--font-primary);
+  z-index: 2;
+}
+
+// 🔹 Contenedor central (antiguo %container)
+@mixin container(
+  $max-width: clamp(70rem, 90vw, 90rem),
+  $padding-inline: clamp(2rem, 8vw, 10rem)
+) {
+  width: 100%;
+  max-width: $max-width;
+  margin-inline: auto;
+  padding-inline: $padding-inline;
+}
