@@ -1,15 +1,16 @@
 @use 'index' as *;
 
 .trainer-info {
-  @extend %page;
-  @extend %section-spacing;
+  @include section-spacing;
+  @include flex-column;
+
   align-items: center;
-  width: 100%;
   justify-content: center;
   color: var(--clr-neutral-100);
   gap: clamp(0.25rem, 0.8vh, 1rem);
   padding-inline: clamp(1rem, 4vw, 3rem);
   padding-block: clamp(1.5rem, 6vh, 3.5rem);
+  width: 100%;
 }
 
 .trainer-info__header {
@@ -17,40 +18,43 @@
 }
 
 .trainer-info__title {
-  margin: 0;
-  color: inherit;
+  @include section-heading(clamp(2rem, 4vw, 6rem));
   letter-spacing: 0.1rem;
-  font-weight: var(--fw-bold);
-  font-family: var(--font-primary);
-  font-size: clamp(2rem, 4vw, 6rem);
+  margin: 0;
 }
 
 .trainer-info__subtitle {
-  color: inherit;
+  @include text-style(
+    clamp(1rem, 2.2vw, 1.6rem),
+    var(--fw-medium),
+    var(--font-secondary)
+  );
   letter-spacing: 0.2rem;
-  font-weight: var(--fw-medium);
-  font-size: clamp(1rem, 2.2vw, 1.6rem);
+  text-align: center;
 }
 
 .trainer-info__img {
-  height: auto;
   display: block;
   object-fit: contain;
   width: min(80vw, 85rem);
   max-height: min(80vh, 40rem);
+  height: auto;
 }
 
 .trainer-info__description {
-  margin: 0;
+  @include text-style(
+    clamp(1rem, 1.8vw, 1.25rem),
+    var(--fw-medium),
+    var(--font-secondary)
+  );
   color: inherit;
   text-align: center;
-  font-family: var(--font-secondary);
   max-width: clamp(36ch, 80%, 108ch);
   line-height: clamp(1.45, 1.6, 1.75);
-  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  margin: 0;
 }
 
-@media (max-width: 768px) {
+@include respond-to('mobile') {
   .trainer-info {
     gap: clamp(0.25rem, 2vh, 0.75rem);
     padding-inline: clamp(1rem, 6vw, 2rem);
