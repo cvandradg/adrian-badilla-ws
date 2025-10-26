@@ -210,3 +210,50 @@
   position: absolute;
   padding: clamp(1rem, 5vw, 2rem);
 }
+
+
+/* ===== Helpers equivalentes a tus placeholders ===== */
+
+/* %section-spacing */
+@mixin section-spacing {
+  margin-top: clamp(4rem, 8vw, 10rem);
+}
+
+/* %flex-column */
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* %flex-space-between */
+@mixin flex-space-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* %card-gradient  (tal cual tu gradiente) */
+@mixin card-gradient {
+  content: '';
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  position: absolute;
+  height: clamp(10rem, 25%, 15rem);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.98) 10%,
+    rgba(0, 0, 0, 0.95) 20%,
+    rgba(0, 0, 0, 0.9) 30%,
+    rgba(0, 0, 0, 0.8) 40%,
+    rgba(0, 0, 0, 0.6) 50%,
+    rgba(0, 0, 0, 0.4) 60%,
+    rgba(0, 0, 0, 0.2) 70%,
+    rgba(0, 0, 0, 0.1) 80%,
+    rgba(0, 0, 0, 0.05) 90%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  z-index: 1;
+}
+
