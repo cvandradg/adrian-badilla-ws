@@ -16,3 +16,18 @@
   justify-content: space-between;
 }
 
+// 🔹 Flex wrap helper (reemplazo de %flex-wrap)
+@mixin flex-wrap(
+  $justify: flex-start,
+  $align: center,
+  $gap: null
+) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: $justify;
+  align-items: $align;
+
+  @if $gap {
+    gap: $gap;
+  }
+}
