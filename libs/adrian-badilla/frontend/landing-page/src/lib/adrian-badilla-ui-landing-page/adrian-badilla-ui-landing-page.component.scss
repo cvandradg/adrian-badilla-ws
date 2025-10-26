@@ -1,5 +1,7 @@
 @use 'index' as *;
 
 .page {
-  @extend %page;
+  @include flex-column;
+  min-height: 100vh;
 }
+
