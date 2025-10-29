@@ -3,7 +3,8 @@
   [ngClass]="{ 'enabled-button': enable }"
 >
   <button
-    mat-button
+  class="custom-login-button"
+  mat-button
     [disabled]="!enable"
     (click)="onSubmit()"
     (keyup.enter)="enable && onSubmit()"
