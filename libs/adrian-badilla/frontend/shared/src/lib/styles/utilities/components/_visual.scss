@@ -44,3 +44,55 @@
   border-bottom-left-radius: 0.3rem;
   background-position: left;
 }
+
+@mixin signup-animation {
+  position: relative;
+  background-clip: padding-box, border-box;
+  background-origin: border-box;
+  border-radius: 0.3rem;
+  background-image: linear-gradient(90deg, #222222, #222222),
+    linear-gradient(90deg, hsla(226, 78%, 67%, 0.397), rgb(163, 31, 31));
+  background-clip: padding-box, border-box;
+  background-origin: border-box;
+  border: 1px solid transparent;
+
+  &:hover {
+    border: 1px solid transparent;
+  }
+
+  &::after,
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+  }
+
+  &:hover::after,
+  &:hover::before {
+    animation: rotation 5s linear infinite;
+    z-index: 1;
+    background-color: transparent;
+    border: 0px solid transparent;
+    background: linear-gradient(
+      90deg,
+      hsla(226, 78%, 67%, 0.397),
+      rgb(163, 31, 31)
+    );
+    @media (pointer: coarse) {
+      filter: blur(0);
+    }
+  }
+
+  &:hover::after {
+    background: linear-gradient(
+      var(--gradient-angle),
+      hsl(226, 78%, 67%),
+      rgb(163, 31, 31)
+    );
+
+    @media (pointer: coarse) {
+      filter: blur(0);
+    }
+  }
+}
