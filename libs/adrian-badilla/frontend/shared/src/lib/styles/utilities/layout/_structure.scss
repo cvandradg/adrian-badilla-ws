@@ -1,6 +1,6 @@
 @use '../mixins' as *;
 
-// 🔹 Base genérica para cualquier sección
+//  Base genérica para cualquier sección
 @mixin section-base(
   $padding-block: clamp(2rem, 6vw, 5rem),
   $padding-inline: clamp(1rem, 6vw, 6rem),
@@ -20,7 +20,7 @@
   }
 }
 
-// 🔹 Flex helper (reutilizable en cualquier layout)
+//  Flex helper (reutilizable en cualquier layout)
 @mixin flex-center($direction: row, $justify: center, $align: center) {
   display: flex;
   flex-direction: $direction;
@@ -28,7 +28,7 @@
   align-items: $align;
 }
 
-// 🔹 Hero / Section layout base — usado por secciones principales
+//  Hero / Section layout base — usado por secciones principales
 @mixin section-full(
   $bg: var(--clr-neutral-900),
   $font: var(--font-primary),

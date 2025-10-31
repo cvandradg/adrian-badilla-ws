@@ -1,11 +1,6 @@
-// utilities/layout/_sections.scss
 @use '../mixins' as *;
 
-// ============================================================
-// 🧩 Secciones generales del sitio (Hero, Cards, Gallery, etc.)
-// ============================================================
-
-// 🔹 Layout base de sección
+//  Layout base de sección
 @mixin section-layout(
   $align: center,
   $padding-block: clamp(2rem, 6vw, 5rem),
@@ -20,7 +15,7 @@
   margin-top: $margin-top;
 }
 
-// 🔹 Título de sección reutilizable
+//  Título de sección reutilizable
 @mixin section-title($size: clamp(2rem, 5vw, 4rem)) {
   letter-spacing: 0.1rem;
   font-weight: var(--fw-bold);

@@ -1,14 +1,11 @@
-// %section-spacing → margin superior de sección
 @mixin section-spacing {
   margin-top: clamp(4rem, 8vw, 10rem);
 }
 
-// %flex-column
 @mixin flex-column {
   display: flex;
   flex-direction: column;
 }
-
 
 @mixin flex-start {
   display: flex;
@@ -16,14 +13,12 @@
   justify-content: flex-start;
 }
 
-// %flex-space-between
 @mixin flex-space-between {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-// 🔹 Flex wrap helper (reemplazo de %flex-wrap)
 @mixin flex-wrap(
   $justify: flex-start,
   $align: center,

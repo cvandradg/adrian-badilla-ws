@@ -1,6 +1,6 @@
 @use '../mixins' as *;
 
-// 🔹 Textos genéricos
+//  Textos genéricos
 @mixin text-style(
   $size: clamp(1rem, 1.6vw, 1.125rem),
   $weight: var(--fw-medium),
@@ -13,7 +13,7 @@
   color: $color;
 }
 
-// 🔹 Títulos genéricos
+//  Títulos genéricos
 @mixin heading-style(
   $size: clamp(2.2rem, 5vw, 3.5rem),
   $line-height: 1.05,
@@ -27,14 +27,14 @@
   font-size: $size;
 }
 
-// 🔹 Heading principal (Hero, Cards, etc.)
+//  Heading principal (Hero, Cards, etc.)
 @mixin section-heading($size: clamp(2rem, 6vw, 6rem)) {
   @include heading-style($size);
   line-height: 1.1;
   margin: 0;
 }
 
-// 🔹 Texto de apoyo / párrafo
+//  Texto de apoyo / párrafo
 @mixin section-text(
   $max-width: 38rem,
   $font-size: clamp(1rem, 1.125rem + 0.2vw, 1.125rem),

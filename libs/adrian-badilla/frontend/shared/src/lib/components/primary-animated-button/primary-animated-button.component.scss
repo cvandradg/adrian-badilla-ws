@@ -7,9 +7,9 @@
 
 button {
   height: 4rem;
-  background: transparent !important;
+  background: transparent;
 }
 
 .horizontal-animation {
-@include horizontal-animation;
+  @include horizontal-animation;
 }

@@ -1,4 +1,3 @@
-// --- Reusable Mixins ---
 @mixin link-clean {
   color: inherit;
   text-decoration-color: currentColor;
@@ -10,8 +9,6 @@
   }
 }
 
-// --- Responsive mixin ---
-// Usa breakpoints semánticos en lugar de px fijos.
 @mixin respond-to($breakpoint) {
   $breakpoints: (
     mobile: (max-width: 768px),

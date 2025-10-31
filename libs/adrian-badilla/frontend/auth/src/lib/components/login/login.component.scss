@@ -1,28 +1,18 @@
-// @use 'utilities/layout/components' as *;
 @use 'utilities/layout/helpers' as *;
-// @use 'utilities/layout/sections' as *;
 @use 'utilities/layout/structure' as *;
 @use 'utilities/layout/text' as *;
 @use 'utilities/mixins' as *;
-// @use 'utilities/components/visual' as *;
 @use 'components/angular-material-overrides' as *;
-// @use 'base' as *;
-// @use 'variables.scss' as *;
-// @use 'material-icons.scss' as *;
-// @use 'roboto.scss' as *;
-
 
 .login-container {
   font-family: var(--font-roboto);
-  color: #fff;
-  height: 80%;
+  color: var(--crl-neutral-100);
   max-width: 100%;
   @include flex-column;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
   width: 90%;
-  padding-block: 2rem;
 }
 
 .container {
@@ -34,6 +24,7 @@
 
   .title {
     @include heading-style(clamp(1.5rem, 4vw, 3rem));
+  font-family: var(--font-roboto);
     text-align: center;
     margin-block: 5.5%;
   }
@@ -42,7 +33,7 @@
     @include text-style(
       clamp(1rem, 2vw, 1.3rem),
       400,
-      var(--font-secondary),
+      var(--font-roboto),
       #88898e
     );
     text-align: center;
