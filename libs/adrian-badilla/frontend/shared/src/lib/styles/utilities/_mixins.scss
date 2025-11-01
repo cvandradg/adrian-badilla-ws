@@ -1,0 +1,27 @@
+@mixin link-clean {
+  color: inherit;
+  text-decoration-color: currentColor;
+  transition: opacity 0.25s ease, transform 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 0.8;
+  }
+}
+
+@mixin respond-to($breakpoint) {
+  $breakpoints: (
+    mobile: (max-width: 768px),
+    tablet: (min-width: 769px) and (max-width: 1023px),
+    laptop: (min-width: 1024px) and (max-width: 1439px),
+    desktop: (min-width: 1440px)
+  );
+
+  @if map-has-key($breakpoints, $breakpoint) {
+    @media #{inspect(map-get($breakpoints, $breakpoint))} {
+      @content;
+    }
+  }
+}
+
+

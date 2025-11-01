@@ -1,1 +1,2 @@
-export * from './lib/adrian-badilla-ui-shared/adrian-badilla-ui-shared.component';
+export * from './lib/exports'
+export * from './lib/types/general-types'

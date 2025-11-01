@@ -23,8 +23,15 @@
             "output": "/global/assets"
           }
         ],
-        "styles": ["apps/adrian-badilla/src/styles.scss"],
-        "scripts": []
+        "styles": [
+          "apps/adrian-badilla/src/styles.scss"
+        ],
+        "scripts": [],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/adrian-badilla/frontend/shared/src/lib/styles"
+          ]
+        }
       },
       "configurations": {
         "production": {
@@ -40,6 +47,16 @@
               "maximumError": "8kb"
             }
           ],
+          "optimization": {
+            "scripts": true,
+            "styles": {
+              "minify": true,
+              "inlineCritical": true
+            },
+            "fonts": true
+          },
+          "extractLicenses": true,
+          "sourceMap": false,
           "outputHashing": "all"
         },
         "development": {

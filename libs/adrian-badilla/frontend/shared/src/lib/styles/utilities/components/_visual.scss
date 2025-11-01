@@ -1,0 +1,98 @@
+// 🔹 Efecto glass translúcido
+@mixin glass-effect {
+  background: hsla(0, 0%, 100%, 0.048);
+  border: 1px solid hsl(0 0% 100% / 0.06);
+  box-shadow:
+    0 clamp(1rem, 3vw, 1.25rem) clamp(2rem, 5vw, 2.5rem) hsl(0, 0%, 0%),
+    0 1px 0 hsl(0 0% 100% / 0.05) inset,
+    0 -1px 0 hsl(0 0% 100% / 0.02) inset;
+  backdrop-filter: blur(clamp(4px, 5vw, 6px));
+  -webkit-backdrop-filter: blur(clamp(4px, 1vw, 6px));
+}
+
+// 🔹 Gradiente inferior para overlays (cards, secciones, etc.)
+@mixin card-gradient {
+  content: '';
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  position: absolute;
+  height: clamp(10rem, 25%, 15rem);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.98) 10%,
+    rgba(0, 0, 0, 0.95) 20%,
+    rgba(0, 0, 0, 0.9) 30%,
+    rgba(0, 0, 0, 0.8) 40%,
+    rgba(0, 0, 0, 0.6) 50%,
+    rgba(0, 0, 0, 0.4) 60%,
+    rgba(0, 0, 0, 0.2) 70%,
+    rgba(0, 0, 0, 0.1) 80%,
+    rgba(0, 0, 0, 0.05) 90%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  z-index: 1;
+}
+
+@mixin horizontal-animation {
+  background: linear-gradient(to left, rgb(126, 156, 255), rgb(143, 18, 18))
+    right;
+  background-size: 200%;
+  transition: background-position 1s ease-out;
+  border-bottom-right-radius: 0.3rem;
+  border-bottom-left-radius: 0.3rem;
+  background-position: left;
+}
+
+@mixin signup-animation {
+  position: relative;
+  background-clip: padding-box, border-box;
+  background-origin: border-box;
+  border-radius: 0.3rem;
+  background-image: linear-gradient(90deg, #222222, #222222),
+    linear-gradient(90deg, hsla(226, 78%, 67%, 0.397), rgb(163, 31, 31));
+  background-clip: padding-box, border-box;
+  background-origin: border-box;
+  border: 1px solid transparent;
+
+  &:hover {
+    border: 1px solid transparent;
+  }
+
+  &::after,
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+  }
+
+  &:hover::after,
+  &:hover::before {
+    animation: rotation 5s linear infinite;
+    z-index: 1;
+    background-color: transparent;
+    border: 0px solid transparent;
+    background: linear-gradient(
+      90deg,
+      hsla(226, 78%, 67%, 0.397),
+      rgb(163, 31, 31)
+    );
+    @media (pointer: coarse) {
+      filter: blur(0);
+    }
+  }
+
+  &:hover::after {
+    background: linear-gradient(
+      var(--gradient-angle),
+      hsl(226, 78%, 67%),
+      rgb(163, 31, 31)
+    );
+
+    @media (pointer: coarse) {
+      filter: blur(0);
+    }
+  }
+}

@@ -1,0 +1,85 @@
+@use 'utilities/layout/helpers' as *;
+@use 'utilities/components/visual' as *;
+
+@property --gradient-angle {
+  syntax: '<angle>';
+  initial-value: 160deg;
+  inherits: false;
+}
+
+.login-button {
+  @include flex-space-between;
+  flex-direction: row;
+}
+
+.signup-button {
+  @include flex-start;
+  gap: 1rem;
+  height: 100%;
+}
+
+.padding {
+  font-family: var(--font-roboto);
+  padding: 0 3.3rem;
+  width: 80%;
+}
+
+.signup-animation {
+  @include signup-animation;
+}
+
+button {
+  @include flex-start;
+  height: 4rem;
+  background: transparent;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.3rem;
+  z-index: 2;
+
+  @media (pointer: coarse) {
+    &::after,
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0px;
+      border-radius: inherit;
+    }
+
+    &:focus::after,
+    &:focus::before {
+      background-image: linear-gradient(
+        90deg,
+        hsla(226, 78%, 67%, 0.397),
+        rgb(163, 31, 31)
+      );
+    }
+  }
+}
+
+@keyframes rotation {
+  0% {
+    --gradient-angle: 0deg;
+  }
+  100% {
+    --gradient-angle: 360deg;
+  }
+}
+
+@media screen and (min-width: 550px) and (max-width: 590px) {
+  .signup-button {
+    p {
+      padding: 0 0.5rem;
+    }
+  }
+}
+
+@media screen and (min-width: 601px) and (max-width: 650px) {
+  .signup-button {
+    gap: 0.1rem;
+    p {
+      line-height: 1rem;
+      font-size: 0.8rem;
+    }
+  }
+}

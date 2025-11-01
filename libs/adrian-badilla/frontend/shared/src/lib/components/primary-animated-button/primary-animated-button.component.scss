@@ -1,0 +1,15 @@
+@use 'utilities/layout/structure' as *;
+@use 'utilities/components/visual' as *;
+
+.login-button {
+  @include flex-center(row, space-between, center);
+}
+
+button {
+  height: 4rem;
+  background: transparent;
+}
+
+.horizontal-animation {
+  @include horizontal-animation;
+}

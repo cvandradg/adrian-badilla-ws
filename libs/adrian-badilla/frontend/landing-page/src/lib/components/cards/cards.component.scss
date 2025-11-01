@@ -1,22 +1,19 @@
+@use 'utilities/layout/helpers' as *;
+@use 'utilities/layout/sections' as *;
+@use 'utilities/mixins' as *;
+@use 'utilities/components/visual' as *;
+
 :host {
   --padding: 2rem;
   --card-height: 20.18rem;
 }
 
 .title {
-  display: flex;
-  text-align: center;
-  align-items: center;
-  flex-direction: column;
-  justify-content: center;
-  margin-top: clamp(6rem, 15vw, 12rem);
+  @include section-layout(center);
+  padding-bottom: 3rem;
 
   h1 {
-    letter-spacing: 0.1rem;
-    font-weight: var(--fw-bold);
-    color: var(--clr-neutral-100);
-    font-family: var(--font-primary);
-    font-size: clamp(2rem, 5vw, 4rem);
+    @include section-title;
   }
 }
 
@@ -39,37 +36,27 @@
   will-change: flex;
   color: var(--clr-neutral-100);
 
-  &.card--nutrition   { background-image: url('/global/assets/img/adelgazar.jpg'); }
-  &.card--strength    { background-image: url('/global/assets/img/musculo.jpg'); }
-  &.card--definition  { background-image: url('/global/assets/img/tonificar.jpg'); }
-  &.card--coaching    { background-image: url('/global/assets/img/muchoMas.jpg'); }
+  &.card--nutrition {
+    background-image: url('/global/assets/img/adelgazar.jpg');
+  }
+  &.card--strength {
+    background-image: url('/global/assets/img/musculo.jpg');
+  }
+  &.card--definition {
+    background-image: url('/global/assets/img/tonificar.jpg');
+  }
+  &.card--coaching {
+    background-image: url('/global/assets/img/muchoMas.jpg');
+  }
 
   &::before {
-    content: '';
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    position: absolute;
-    height: clamp(10rem, 25%, 15rem);
-    background: linear-gradient(
-      to top,
-      rgba(0, 0, 0, 1) 0%,
-      rgba(0, 0, 0, 0.98) 10%,
-      rgba(0, 0, 0, 0.95) 20%,
-      rgba(0, 0, 0, 0.9) 30%,
-      rgba(0, 0, 0, 0.8) 40%,
-      rgba(0, 0, 0, 0.6) 50%,
-      rgba(0, 0, 0, 0.4) 60%,
-      rgba(0, 0, 0, 0.2) 70%,
-      rgba(0, 0, 0, 0.1) 80%,
-      rgba(0, 0, 0, 0.05) 90%,
-      rgba(0, 0, 0, 0) 100%
-    );
-    z-index: 1;
+    @include card-gradient;
   }
 }
 
-.card:hover { flex: 2.7 1 0; }
+.card:hover {
+  flex: 2.7 1 0;
+}
 
 .card__header,
 .card__list,
@@ -80,8 +67,7 @@
 }
 
 .card__header {
-  display: flex;
-  flex-direction: column;
+  @include flex-column;
   gap: 0.25rem;
   padding-top: var(--padding);
 }
@@ -127,19 +113,24 @@
 
   list-style: none;
   padding-left: 1.25rem;
-  &::-webkit-scrollbar { width: 6px; }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
   &::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background-color: rgba(255, 255, 255, 0.3);
   }
-  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
   li {
     list-style: none;
     position: relative;
     padding-left: 0.9rem;
     line-height: 1.5;
-
+  }
   li::before {
     content: '';
     position: absolute;
@@ -152,12 +143,9 @@
     opacity: 0.85;
   }
 }
-}
 
 .card__footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  @include flex-space-between;
   gap: 1rem;
   padding: 1rem var(--padding);
 }
@@ -168,9 +156,19 @@
   gap: 0.35rem;
   white-space: nowrap;
 
-  .price__from  { font-size: clamp(0.8rem, 1.4vw, 0.95rem); opacity: 0.85; }
-  .price__value { font-size: clamp(1.25rem, 3.2vw, 1.75rem); font-weight: var(--fw-bold); line-height: 1; }
-  .price__unit  { font-size: clamp(0.8rem, 1.4vw, 0.95rem); opacity: 0.85; }
+  .price__from {
+    font-size: clamp(0.8rem, 1.4vw, 0.95rem);
+    opacity: 0.85;
+  }
+  .price__value {
+    font-size: clamp(1.25rem, 3.2vw, 1.75rem);
+    font-weight: var(--fw-bold);
+    line-height: 1;
+  }
+  .price__unit {
+    font-size: clamp(0.8rem, 1.4vw, 0.95rem);
+    opacity: 0.85;
+  }
 }
 
 .card__cta {
@@ -211,16 +209,22 @@
       opacity: 0;
       transition: opacity 0.3s ease;
     }
-    &:hover::after { opacity: 1; }
+    &:hover::after {
+      opacity: 1;
+    }
   }
 
-  .card:hover .card__title::after { transform: scaleX(1); }
+  .card:hover .card__title::after {
+    transform: scaleX(1);
+  }
 
   .card__title {
     transform: translateY(13rem);
     transition: transform 0.4s ease;
   }
-  .card:hover .card__title { transform: translateY(0); }
+  .card:hover .card__title {
+    transform: translateY(0);
+  }
 
   .card__header > .card__subtitle,
   .card__list,
@@ -238,7 +242,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@include respond-to('mobile') {
   .cards {
     flex-direction: column;
     padding-inline: clamp(1rem, 5vw, 3rem);
@@ -251,5 +255,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .card,
-  .card * { transition: none; }
+  .card * {
+    transition: none;
+  }
 }

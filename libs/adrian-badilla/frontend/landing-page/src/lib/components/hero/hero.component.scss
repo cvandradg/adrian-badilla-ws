@@ -1,94 +1,49 @@
+@use 'utilities/layout/structure' as *;
+@use 'utilities/layout/text' as *;
+@use 'utilities/layout/components' as *;
+@use 'utilities/mixins' as *;
+
 .navbar {
-  left: 0;
-  z-index: 2;
-  width: 100%;
-  position: relative;
-  background-color: transparent;
-  top: calc(-1 * clamp(1rem, 5vw, 4rem));
+  @include layer-navbar;
 }
 
 .hero {
-  z-index: 2;
-  display: flex;
-  min-height: 100vh;
-  position: relative;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  padding: clamp(1rem, 5vw, 4rem);
-  font-family: var(--font-primary);
-  background-color: var(--clr-neutral-900);
+  @include section-full;
 
   .video-bg {
-    inset: 0;
-    z-index: 0;
-    overflow: hidden;
-    position: absolute;
-  }
-
-  video {
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.3;
-    object-fit: cover;
-    position: absolute;
+    @include video-background;
   }
 
   .hero-content {
-    z-index: 2;
-    position: relative;
-    color: var(--clr-neutral-100);
-    padding: clamp(1rem, 5vw, 8rem);
+    @include section-content();
 
     h1,
     h2 {
-      margin: 0;
-      color: inherit;
-      line-height: 1.1;
-      font-weight: var(--fw-bold);
-      font-family: var(--font-primary);
-      font-size: clamp(2rem, 6vw, 6rem);
+      @include section-heading(clamp(2rem, 6vw, 6rem));
     }
-
     p {
-      color: inherit;
-      max-width: 38rem;
-      line-height: 1.6rem;
-      letter-spacing: 0.09375rem;
-      font-family: var(--font-secondary);
-      margin-top: clamp(1rem, 2vw, 4rem);
-      font-size: clamp(1rem, 1.125rem + 0.2vw, 1.125rem);
+      @include section-text(
+        38rem,
+        clamp(1rem, 1.125rem + 0.2vw, 1.125rem),
+        clamp(1rem, 2vw, 4rem)
+      );
     }
 
     .see-how {
-      color: inherit;
-      display: inline-block;
-      text-decoration: none;
-      text-decoration-color: currentColor;
-      margin-top: clamp(1rem, 2.5vw, 2rem);
-      font-size: clamp(1.1rem, 2.5vw, 1.3rem);
-      transition: transform .15s ease, opacity .15s ease;
-      &:hover,
-      &:focus-visible {
-        transform: translateY(-0.03rem);
-        opacity: .9;
-        outline: none;
-      }
+      @include link-clean;
+      @include cta-link;
     }
   }
 }
 
-@media (max-width: 768px) {
+@include respond-to('mobile') {
   .navbar {
-    top: 0;
-    left: 0;
-    width: 100%;
-    position: absolute;
-    padding: clamp(1rem, 5vw, 2rem);
+    @include navbar-mobile;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .video-bg { display: none; }
+  .video-bg {
+    display: none;
+  }
 }

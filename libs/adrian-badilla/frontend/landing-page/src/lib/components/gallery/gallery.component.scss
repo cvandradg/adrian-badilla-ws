@@ -1,18 +1,12 @@
+@use 'utilities/layout/sections' as *;
+
+
 .title {
-  display: flex;
-  text-align: center;
-  align-items: center;
+  @include section-layout(center);
   padding-bottom: 3rem;
-  flex-direction: column;
-  justify-content: center;
-  margin-top: clamp(6rem, 17vw, 14rem);
 
   h2 {
-    letter-spacing: 0.1rem;
-    font-weight: var(--fw-bold);
-    color: var(--clr-neutral-100);
-    font-family: var(--font-primary);
-    font-size: clamp(2rem, 5vw, 4rem);
+    @include section-title;
   }
 }
 

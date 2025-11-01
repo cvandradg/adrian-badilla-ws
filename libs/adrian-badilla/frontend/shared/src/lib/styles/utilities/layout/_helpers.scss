@@ -1,0 +1,35 @@
+@mixin section-spacing {
+  margin-top: clamp(4rem, 8vw, 10rem);
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@mixin flex-space-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-wrap(
+  $justify: flex-start,
+  $align: center,
+  $gap: null
+) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: $justify;
+  align-items: $align;
+
+  @if $gap {
+    gap: $gap;
+  }
+}

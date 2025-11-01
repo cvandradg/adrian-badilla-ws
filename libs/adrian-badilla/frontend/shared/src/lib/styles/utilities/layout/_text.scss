@@ -1,0 +1,49 @@
+@use '../mixins' as *;
+
+//  Textos genéricos
+@mixin text-style(
+  $size: clamp(1rem, 1.6vw, 1.125rem),
+  $weight: var(--fw-medium),
+  $family: var(--font-secondary),
+  $color: inherit
+) {
+  font-size: $size;
+  font-weight: $weight;
+  font-family: $family;
+  color: $color;
+}
+
+//  Títulos genéricos
+@mixin heading-style(
+  $size: clamp(2.2rem, 5vw, 3.5rem),
+  $line-height: 1.05,
+  $spacing: -0.02em
+) {
+  color: inherit;
+  font-family: var(--font-primary);
+  font-weight: var(--fw-bold);
+  line-height: $line-height;
+  letter-spacing: $spacing;
+  font-size: $size;
+}
+
+//  Heading principal (Hero, Cards, etc.)
+@mixin section-heading($size: clamp(2rem, 6vw, 6rem)) {
+  @include heading-style($size);
+  line-height: 1.1;
+  margin: 0;
+}
+
+//  Texto de apoyo / párrafo
+@mixin section-text(
+  $max-width: 38rem,
+  $font-size: clamp(1rem, 1.125rem + 0.2vw, 1.125rem),
+  $margin-top: clamp(1rem, 2vw, 4rem)
+) {
+  @include text-style($font-size);
+  max-width: $max-width;
+  margin-top: $margin-top;
+  line-height: 1.6rem;
+  letter-spacing: 0.09375rem;
+  opacity: 0.95;
+}
