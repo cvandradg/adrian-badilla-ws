@@ -14,7 +14,8 @@ export const firebaseAuthStore = signalStore(
   withMethods((store) => ({
     googleSignIn: rxMethod<void>(
       pipe(
-        exhaustMap(() => store.firebaseAuthService.googleSignin())
+        exhaustMap(() => store.firebaseAuthService.googleSignin()),
+        tap((respuesta) => console.log('Respuesta de Google Sign-In:', respuesta))
       )
     ),
   }))
