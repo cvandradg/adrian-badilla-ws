@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { COMPONENTS, Credentials, MODULES, validations } from '@adrian-badilla/ui/shared';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
+import { firebaseAuthStore } from '../../data-access/auth.store';
 // import { LoginStore } from './login.store';
 
 @Component({
@@ -14,8 +15,8 @@ import { FormBuilder, Validators } from '@angular/forms';
   // providers: [provideComponentStore(LoginStore)],
 })
 export class LoginComponent{
-  // readonly loginStore = inject(LoginStore);
-    router = inject(Router);
+  readonly firebaseAuthStore = inject(firebaseAuthStore);
+  router = inject(Router);
   formBuilder = inject(FormBuilder);
 
   loginInputForm = this.formBuilder.group({
