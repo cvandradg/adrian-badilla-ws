@@ -68,6 +68,7 @@
         <adrian-badilla-secondary-animated-button
           [buttonText]="'Accede con Google'"
           [fontawesomeIcon]="['fab', 'google']"
+          (click)="firebaseAuthStore.googleSignIn()"
         />
 
         <adrian-badilla-secondary-animated-button
