@@ -9,7 +9,6 @@ import { firebaseAuthStore } from '../../data-access/auth.store';
   selector: 'adrian-badilla-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [COMPONENTS, MODULES],
   // providers: [provideComponentStore(LoginStore)],
