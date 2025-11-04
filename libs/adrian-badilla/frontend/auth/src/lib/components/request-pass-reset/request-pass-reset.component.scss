@@ -1,4 +1,8 @@
-@import 'general-styles.scss';
+@use 'utilities/layout/helpers' as *;
+@use 'utilities/layout/structure' as *;
+@use 'utilities/layout/text' as *;
+@use 'utilities/mixins' as *;
+@use 'components/angular-material-overrides' as *;
 
 .container {
   display: flex;
