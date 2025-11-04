@@ -18,7 +18,6 @@ import {
 } from '@fortawesome/sharp-solid-svg-icons';
 
 import {
-  faArrowRight,
   faXmark as faXmarkSolid,
   faCheck,
 } from '@fortawesome/free-solid-svg-icons';
@@ -45,6 +44,7 @@ import {
   faTelescope,
   faHeartPulse,
   faPersonDollyEmpty,
+  faArrowRight,
 } from '@fortawesome/pro-solid-svg-icons';
 import { faHouseTree } from '@fortawesome/pro-regular-svg-icons';
 
