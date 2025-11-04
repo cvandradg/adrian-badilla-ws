@@ -1,7 +1,4 @@
-import { Directive, inject } from '@angular/core';
-import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
-
-import {
+;import {
   faClipboardQuestion,
   faRightToBracket,
   faEnvelopeCircleCheck,
@@ -48,12 +45,8 @@ import {
 } from '@fortawesome/pro-solid-svg-icons';
 import { faHouseTree } from '@fortawesome/pro-regular-svg-icons';
 
-@Directive()
-export class Fontawesome {
-  private readonly library = inject(FaIconLibrary);
-  constructor() {
-    this.library?.addIcons(
-      faBolt,
+export const FontAwesomeicons = [
+  faBolt,
       faPlus,
       faUser,
       faBars,
@@ -87,6 +80,4 @@ export class Fontawesome {
       faMessageExclamation,
       faEnvelopeCircleCheck,
       faCommentsQuestionCheck
-    );
-  }
-}
+]

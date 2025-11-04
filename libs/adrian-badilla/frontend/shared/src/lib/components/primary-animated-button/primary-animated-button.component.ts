@@ -6,7 +6,6 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MODULES } from '../../exports';
 
 @Component({
@@ -17,7 +16,7 @@ import { MODULES } from '../../exports';
   imports: [CommonModule, MODULES],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PrimaryAnimatedButtonComponent extends FontAwesomeModule {
+export class PrimaryAnimatedButtonComponent {
   @Input() enable = false;
   @Input() loading = false;
   @Input() buttonText!: string;

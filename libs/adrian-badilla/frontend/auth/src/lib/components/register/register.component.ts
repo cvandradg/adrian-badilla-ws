@@ -1,6 +1,6 @@
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Subject, map, combineLatest } from 'rxjs';
+import { Subject } from 'rxjs';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { COMPONENTS, MODULES, validations } from '@adrian-badilla/ui/shared';
 import { FormBuilder, Validators } from '@angular/forms';
