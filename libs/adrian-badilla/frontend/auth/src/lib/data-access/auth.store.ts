@@ -29,11 +29,10 @@ export const firebaseAuthStore = signalStore(
     ),
 
     login: rxMethod<Credentials>(
-  pipe(
-    exhaustMap((creds) => store.firebaseAuthService.login(creds)),
-    tap((resp) => console.log('Login Firebase:', resp))
-  )
-),
-
+      pipe(
+        exhaustMap((creds) => store.firebaseAuthService.login(creds)),
+        tap((resp) => console.log('Login Firebase:', resp))
+      )
+    ),
   }))
 );
