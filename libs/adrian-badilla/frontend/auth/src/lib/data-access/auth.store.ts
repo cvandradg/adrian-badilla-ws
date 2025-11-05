@@ -27,5 +27,13 @@ export const firebaseAuthStore = signalStore(
         tap((resp) => console.log('Cuenta creada Firebase:', resp))
       )
     ),
+
+    login: rxMethod<Credentials>(
+  pipe(
+    exhaustMap((creds) => store.firebaseAuthService.login(creds)),
+    tap((resp) => console.log('Login Firebase:', resp))
+  )
+),
+
   }))
 );

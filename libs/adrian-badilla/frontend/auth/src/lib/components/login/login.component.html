@@ -1,7 +1,4 @@
-<div
-  class="login-container"
-
->
+<div class="login-container">
   <div class="container">
     <div class="title">Accede a Tu Cuenta</div>
     <div class="description">
@@ -34,11 +31,11 @@
         </form>
 
         <ng-container #loginComponents>
-
           <adrian-badilla-primary-animated-button
             #loginButton
             [enable]="!loginInputForm.invalid"
             [buttonText]="'Accede a Tu Cuenta'"
+            (click)="firebaseAuthStore.login(credentials())"
           />
 
           <adrian-badilla-status-message
@@ -48,7 +45,7 @@
               'Verifica tu cuenta, te hemos enviado un link al correo.'
             "
           />
-            <!-- [display]="
+          <!-- [display]="
               !vm.loading &&
               vm.user?.emailVerified === false &&
               !vm.error?.status
@@ -57,14 +54,13 @@
           <adrian-badilla-status-message
             [type]="'error'"
             [icon]="['fas', 'xmark']"
-            />
-            <!-- [message]="vm.error?.message"
+          />
+          <!-- [message]="vm.error?.message"
             [display]="!vm.loading && vm.error?.status" -->
         </ng-container>
       </div>
       <div class="divison">/</div>
       <div class="automatic-signin-tools">
-
         <adrian-badilla-secondary-animated-button
           [buttonText]="'Accede con Google'"
           [fontawesomeIcon]="['fab', 'google']"

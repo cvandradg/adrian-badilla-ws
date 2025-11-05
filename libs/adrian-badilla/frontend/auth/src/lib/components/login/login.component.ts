@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, Signal } from '@angular/core';
 import { COMPONENTS, Credentials, MODULES, validations } from '@adrian-badilla/ui/shared';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { firebaseAuthStore } from '../../data-access/auth.store';
-// import { LoginStore } from './login.store';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'adrian-badilla-login',
@@ -23,10 +23,9 @@ export class LoginComponent{
     pass: validations(),
   });
 
-  get credentials(): Credentials {
-    return {
-      user: this.loginInputForm.get('user')?.value as string,
-      pass: this.loginInputForm.get('pass')?.value as string,
-    };
-  }
+  credentials = toSignal(this.loginInputForm.valueChanges, {
+    initialValue: this.loginInputForm.value,
+  }) as Signal<Credentials>;
+
+
 }
