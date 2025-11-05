@@ -3,6 +3,7 @@ import {
   inject,
   Component,
   ChangeDetectionStrategy,
+  Signal,
 } from '@angular/core';
 import {
   MODULES,
@@ -34,7 +35,7 @@ export class RegisterComponent {
 
   credentials = toSignal(this.loginInputForm.valueChanges, {
     initialValue: this.loginInputForm.value,
-  }) as () => Credentials;
+  }) as Signal<Credentials>;
 
   constructor() {
     effect(() => {
