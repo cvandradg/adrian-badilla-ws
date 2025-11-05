@@ -1,13 +1,20 @@
+import {
+  effect,
+  inject,
+  Component,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import {
+  MODULES,
+  COMPONENTS,
+  Credentials,
+  validations,
+} from '@adrian-badilla/ui/shared';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Subject } from 'rxjs';
-import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
-import { COMPONENTS, MODULES, validations } from '@adrian-badilla/ui/shared';
-import { FormBuilder, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { FormBuilder, Validators } from '@angular/forms';
 import { firebaseAuthStore } from '../../data-access/auth.store';
-
-
 
 @Component({
   selector: 'adrian-badilla-register',
@@ -17,57 +24,30 @@ import { firebaseAuthStore } from '../../data-access/auth.store';
   imports: [CommonModule, RouterModule, COMPONENTS, MODULES],
 })
 export class RegisterComponent {
-firebaseAuthStore = inject(firebaseAuthStore);
-
-
-  isPassStrong$ = new Subject<boolean>();
-
   formBuilder = inject(FormBuilder);
+  firebaseAuthStore = inject(firebaseAuthStore);
 
   loginInputForm = this.formBuilder.group({
     user: validations(Validators.email),
     pass: validations(),
   });
 
-  formChangesSignal = toSignal(this.loginInputForm.valueChanges, {
+  credentials = toSignal(this.loginInputForm.valueChanges, {
     initialValue: this.loginInputForm.value,
-  });
+  }) as () => Credentials;
 
-constructor() {
-  effect(() => {
-    console.log('form changed:', this.formChangesSignal());
-  });
+  constructor() {
+    effect(() => {
+      console.log('form credentials:', this.credentials());
+    });
+  }
 }
 
-  get credentials() {
-    return {
-      user: this.loginInputForm.get('user')?.value as string,
-      pass: this.loginInputForm.get('pass')?.value as string,
-    };
-  }
+// isValidUser$ = this.loginInputForm.valueChanges.pipe(
+//   map(() => !this.loginInputForm.controls.user.invalid)
+// );
 
+// enableButton$ = combineLatest([this.isValidUser$, this.isPassStrong$]).pipe(
+//   map(([isValidUser, isPassStrong]) => isValidUser && isPassStrong)
+// );
 
-prueba() {
-  this.firebaseAuthStore.createAccount(this.credentials);
-
-  console.log('Datos enviados para crear cuenta:', this.credentials);
-}
-
-  }
-
-  // isValidUser$ = this.loginInputForm.valueChanges.pipe(
-  //   map(() => !this.loginInputForm.controls.user.invalid)
-  // );
-
-  // enableButton$ = combineLatest([this.isValidUser$, this.isPassStrong$]).pipe(
-  //   map(([isValidUser, isPassStrong]) => isValidUser && isPassStrong)
-  // );
-
-// function toSignal(
-//   valueChanges: Observable<
-//     Partial<{ user: string | null; pass: string | null }>
-//   >,
-//   arg1: { initialValue: Partial<{ user: string | null; pass: string | null }> }
-// ) {
-//   throw new Error('Function not implemented.');
-// }
