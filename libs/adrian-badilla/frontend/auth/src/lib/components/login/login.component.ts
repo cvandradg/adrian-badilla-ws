@@ -1,8 +1,19 @@
-import { ChangeDetectionStrategy, Component, effect, inject, Signal } from '@angular/core';
-import { COMPONENTS, Credentials, MODULES, validations } from '@adrian-badilla/ui/shared';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  Signal,
+} from '@angular/core';
+import {
+  COMPONENTS,
+  Credentials,
+  MODULES,
+  validations,
+} from '@adrian-badilla/ui/shared';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
-import { firebaseAuthStore } from '../../data-access/auth.store';
+import { firebaseAuthStore } from '../../data-access/stores/auth.store';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -13,7 +24,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   imports: [COMPONENTS, MODULES],
   // providers: [provideComponentStore(LoginStore)],
 })
-export class LoginComponent{
+export class LoginComponent {
   readonly firebaseAuthStore = inject(firebaseAuthStore);
   router = inject(Router);
   formBuilder = inject(FormBuilder);
@@ -27,5 +38,9 @@ export class LoginComponent{
     initialValue: this.loginInputForm.value,
   }) as Signal<Credentials>;
 
-
+  constructor() {
+    effect(() => {
+      console.log('login', this.firebaseAuthStore.isLoginIn());
+    });
+  }
 }

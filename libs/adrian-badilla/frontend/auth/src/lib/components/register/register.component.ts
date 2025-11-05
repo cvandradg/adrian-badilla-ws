@@ -15,7 +15,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, Validators } from '@angular/forms';
-import { firebaseAuthStore } from '../../data-access/auth.store';
+import { firebaseAuthStore } from '../../data-access/stores/auth.store';
 
 @Component({
   selector: 'adrian-badilla-register',
