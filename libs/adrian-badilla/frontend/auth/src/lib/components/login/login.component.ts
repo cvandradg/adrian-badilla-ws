@@ -15,14 +15,12 @@ import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { firebaseAuthStore } from '../../data-access/stores/auth.store';
 import { toSignal } from '@angular/core/rxjs-interop';
-
 @Component({
   selector: 'adrian-badilla-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [COMPONENTS, MODULES],
-  // providers: [provideComponentStore(LoginStore)],
 })
 export class LoginComponent {
   readonly firebaseAuthStore = inject(firebaseAuthStore);
