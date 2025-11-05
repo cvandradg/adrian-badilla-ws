@@ -22,6 +22,14 @@ export class RegisterComponent {
     pass: validations(),
   });
 
+  prueba(){
+    const user = this.loginInputForm.get('user')?.value;
+    const pass = this.loginInputForm.get('pass')?.value;
+
+    console.log('Correo:', user);
+    console.log('Contraseña:', pass);
+    console.log('prueba del click')}
+
   // isValidUser$ = this.loginInputForm.valueChanges.pipe(
   //   map(() => !this.loginInputForm.controls.user.invalid)
   // );

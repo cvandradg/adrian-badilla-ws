@@ -14,7 +14,7 @@
           type="email"
           required="true"
           formControlName="user"
-  
+
         />
       </mat-form-field>
       <mat-form-field>
@@ -36,6 +36,7 @@
         'enabled-button': vm.enableButton || vm.user
       }" -->
       <button
+      (click)="prueba()"
         mat-button
       >
         <!-- [disabled]="!vm.enableButton && vm.loading && vm.user"
@@ -96,6 +97,10 @@
       />
       <!-- [message]="vm.error?.message"
       [display]="!vm.loading && vm.error?.status" -->
+
+      <adrian-badilla-strength-meter
+  [password]="'c12!123CCCCCCC'"
+></adrian-badilla-strength-meter>
 
     <!-- <adrian-badilla-strength-meter
       [password]="loginInputForm.get('pass')?.value || ''"
