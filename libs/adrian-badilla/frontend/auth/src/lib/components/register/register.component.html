@@ -1,6 +1,4 @@
-<div
-  class="container"
->
+<div class="container">
   <div class="title">Crea tu cuenta</div>
   <div class="description">Recuerda crear una contraseña segura.</div>
 
@@ -14,7 +12,6 @@
           type="email"
           required="true"
           formControlName="user"
-
         />
       </mat-form-field>
       <mat-form-field>
@@ -29,44 +26,38 @@
       </mat-form-field>
     </form>
 
-    <div
-      class="horizontal-animation"
-    >
+    <div class="horizontal-animation">
       <!-- [ngClass]="{
         'enabled-button': vm.enableButton || vm.user
       }" -->
       <button
         mat-button
+        (click)="firebaseAuthStore.createAccount(credentials())"
       >
-        <!-- [disabled]="!vm.enableButton && vm.loading && vm.user"
-        (click)="
-          vm.enableButton &&
-            !vm.user &&
-            registerStore.createAccount$(loginInputForm)
-        "
-        (keyup.enter)="
-          vm.enableButton &&
-            !vm.user &&
-            registerStore.createAccount$(loginInputForm)
-        " -->
         <div class="register-button">
           <p>Crear Cuenta</p>
-          <!-- *ngIf="!vm.loading && !vm.user" -->
           <fa-icon
+            *ngIf="
+              !firebaseAuthStore.isRegistering() &&
+              !firebaseAuthStore.registerSuccess()
+            "
             [icon]="['fas', 'arrow-right']"
             class="icon fa-xl fa-shake"
             style="--fa-animation-iteration-count: 2"
           />
 
-          <!-- *ngIf="vm.loading" -->
           <fa-icon
+            *ngIf="firebaseAuthStore.isRegistering()"
             [icon]="['fas', 'spinner-third']"
             class="icon fa-xl fa-spin"
             style="--fa-animation-duration: 1s"
           />
 
-          <!-- *ngIf="!vm.loading && vm.user" -->
           <fa-icon
+            *ngIf="
+              !firebaseAuthStore.isRegistering() &&
+              firebaseAuthStore.registerSuccess()
+            "
             [icon]="['fas', 'check']"
             class="icon fa-xl fa-shake"
             style="--fa-animation-iteration-count: 2"
@@ -79,27 +70,24 @@
         [type]="'warning'"
         [icon]="['fas', 'message-exclamation']"
         [message]="'Revisa tu correo para activar tu cuenta.'"
-        />
-        <!-- [display]="!vm.loading && !!vm.user" -->
+      />
+      <!-- [display]="!vm.loading && !!vm.user" -->
 
       <adrian-badilla-status-message
         [type]="'success'"
         [icon]="['fas', 'check']"
         [message]="'Creaste una nueva cuenta.'"
-        />
-        <!-- [display]="!vm.loading && !!vm.user" -->
+      />
+      <!-- [display]="!vm.loading && !!vm.user" -->
     </div>
 
-    <adrian-badilla-status-message
-      [type]="'error'"
-      [icon]="['fas', 'xmark']"
-      />
-      <!-- [message]="vm.error?.message"
+    <adrian-badilla-status-message [type]="'error'" [icon]="['fas', 'xmark']" />
+    <!-- [message]="vm.error?.message"
       [display]="!vm.loading && vm.error?.status" -->
 
-      <adrian-badilla-strength-meter
-  [password]="'c12!123CCCCCCC'"
-></adrian-badilla-strength-meter>
+    <adrian-badilla-strength-meter
+      [password]="'c12!123CCCCCCC'"
+    ></adrian-badilla-strength-meter>
 
     <!-- <adrian-badilla-strength-meter
       [password]="loginInputForm.get('pass')?.value || ''"
