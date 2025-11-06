@@ -2,9 +2,8 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  Output,
+  input,
+  output,
 } from '@angular/core';
 import { MODULES } from '../../exports';
 
@@ -17,11 +16,11 @@ import { MODULES } from '../../exports';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrimaryAnimatedButtonComponent {
-  @Input() enable = false;
-  @Input() loading = false;
-  @Input() buttonText!: string;
-  @Input() success = false;
-  @Output() submitEvent = new EventEmitter<never>();
+  enable = input(false);
+  loading = input (false);
+  buttonText = input<string>();
+  success = input(false);
+  submitEvent = output<void>();
 
   onSubmit() {
     this.submitEvent.emit();

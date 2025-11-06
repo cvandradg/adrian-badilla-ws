@@ -1,12 +1,6 @@
 import { MODULES } from '../../exports/export-modules';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
 
 @Component({
   standalone: true,
@@ -17,11 +11,11 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SecondaryAnimatedButtonComponent {
-  @Output() submitEvent = new EventEmitter<never>();
+  submitEvent = output<void>();
 
-  @Input() small = false;
-  @Input() buttonText = 'Some Text';
-  @Input() fontawesomeIcon: IconProp = ['fas', 'user'];
+  small = input(false);
+  buttonText = input('Some Text');
+  fontawesomeIcon = input<IconProp>(['fas', 'user']);
 
   onSubmit() {
     this.submitEvent.emit();
