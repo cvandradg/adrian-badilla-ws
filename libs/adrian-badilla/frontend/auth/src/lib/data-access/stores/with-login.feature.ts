@@ -6,7 +6,7 @@ import {
   signalStoreFeature,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { exhaustMap, pipe, tap } from 'rxjs';
+import { delay, exhaustMap, pipe, tap } from 'rxjs';
 import { inject } from '@angular/core';
 import { Credentials, FirebaseAuthService } from '@adrian-badilla/ui/shared';
 import { withLoginInitialState } from '../types/with-login';
@@ -16,6 +16,7 @@ export function withLoginResources() {
     withState<withLoginInitialState>({
       isLoginIn: false,
       loginError: null,
+      loginSuccess: false,
     }),
     withProps(() => ({
       firebaseAuthService: inject(FirebaseAuthService),
@@ -23,18 +24,37 @@ export function withLoginResources() {
     withMethods((innerStore) => ({
       googleSignIn: rxMethod<void>(
         pipe(
-          tap(() => patchState(innerStore, { isLoginIn: true })),
+          tap(() =>
+            patchState(innerStore, { isLoginIn: true, loginSuccess: false })
+          ),
           exhaustMap(() => innerStore.firebaseAuthService.googleSignin()),
-          tap(() => patchState(innerStore, { isLoginIn: false }))
+          tap(() =>
+            patchState(innerStore, { isLoginIn: false, loginSuccess: true })
+          )
         )
       ),
 
-      login: rxMethod<Credentials>(
-        pipe(
-          exhaustMap((creds) => innerStore.firebaseAuthService.login(creds)),
-          tap((resp) => console.log('Login Firebase:', resp))
-        )
-      ),
+login: rxMethod<Credentials>(
+  pipe(
+    tap(() =>
+      patchState(innerStore, {
+        isLoginIn: true,
+        loginSuccess: false,
+      })
+    ),
+    exhaustMap((creds) =>
+      innerStore.firebaseAuthService.login(creds)
+    ),
+    tap((resp) => {
+      console.log('Login Firebase:', resp);
+      patchState(innerStore, {
+        isLoginIn: false,
+        loginSuccess: true,
+      });
+    })
+  )
+),
+
     }))
   );
 }

@@ -20,6 +20,7 @@ export class PrimaryAnimatedButtonComponent {
   @Input() enable = false;
   @Input() loading = false;
   @Input() buttonText!: string;
+  @Input() success = false;
   @Output() submitEvent = new EventEmitter<never>();
 
   onSubmit() {
