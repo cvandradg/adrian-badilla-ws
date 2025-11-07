@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { RouterModule, provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { provideMockStore } from '@ngrx/store/testing';
 import {
   FontAwesomeModule,
   FaIconLibrary,
@@ -22,8 +20,7 @@ describe('RequestPassResetComponent', () => {
         FontAwesomeModule,
         RequestPassResetComponent,
       ],
-      providers: [provideMockStore({}), provideRouter([])],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     const library = TestBed.inject(FaIconLibrary);
