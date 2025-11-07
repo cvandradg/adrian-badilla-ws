@@ -8,6 +8,10 @@ import {
 import { FontAwesomeicons } from '@adrian-badilla/ui/shared/assets/icons/fontawesome';
 import { RequestPassResetComponent } from './request-pass-reset.component';
 
+jest.mock('firebase/auth', () => ({
+  GoogleAuthProvider: {},
+}));
+
 describe('RequestPassResetComponent', () => {
   let fixture: ComponentFixture<RequestPassResetComponent>;
   let component: RequestPassResetComponent;
