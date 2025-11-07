@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { COMPONENTS } from '../../../../../shared/src/lib/exports/export-components';
-import { MODULES } from '../../../../../shared/src/lib/exports/export-modules';
+import { COMPONENTS, MODULES } from '@adrian-badilla/ui/shared';
+
 
 @Component({
   selector: 'adrian-badilla-request-pass-reset',
