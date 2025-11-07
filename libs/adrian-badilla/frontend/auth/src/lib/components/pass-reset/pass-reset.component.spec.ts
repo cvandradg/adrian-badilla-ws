@@ -1,35 +1,33 @@
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Component, inject } from '@angular/core';
-import { provideMockStore } from '@ngrx/store/testing';
-import { provideComponentStore } from '@ngrx/component-store';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MODULES } from '@adrianbadilla/shared/exports/export-modules';
-import {
-  BaseComponent,
-  MockComponentStore,
-} from '@adrianbadilla/shared/classes/tests-helper';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { provideMockStore } from '@ngrx/store/testing';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { FontAwesomeicons } from '@adrian-badilla/ui/shared/assets/icons/fontawesome';
+import { MODULES } from '../../../../../shared/src/lib/exports/export-modules';
 
 @Component({
   templateUrl: './pass-reset.component.html',
   standalone: true,
-  imports: [CommonModule, RouterModule, MODULES],
+  imports: [CommonModule, RouterModule, MODULES, FontAwesomeModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class PassResetComponent extends BaseComponent {
-  passResetStore = inject(MockComponentStore);
-}
+export class PassResetComponent {}
+
 describe('PassResetComponent', () => {
-  let component: PassResetComponent;
   let fixture: ComponentFixture<PassResetComponent>;
+  let component: PassResetComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PassResetComponent],
-      providers: [
-        provideMockStore({}),
-        provideComponentStore(MockComponentStore),
-      ],
+      imports: [PassResetComponent, FontAwesomeModule],
+      providers: [provideMockStore({})],
     }).compileComponents();
+
+    // 👇 Registrar los íconos personalizados
+    const library = TestBed.inject(FaIconLibrary);
+    library.addIcons(...FontAwesomeicons);
 
     fixture = TestBed.createComponent(PassResetComponent);
     component = fixture.componentInstance;

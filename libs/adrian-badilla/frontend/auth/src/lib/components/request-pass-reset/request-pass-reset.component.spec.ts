@@ -1,35 +1,33 @@
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { Component, inject } from '@angular/core';
-import { provideMockStore } from '@ngrx/store/testing';
-import { provideComponentStore } from '@ngrx/component-store';
+import { RouterModule, provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MODULES } from '@adrianbadilla/shared/exports/export-modules';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { provideMockStore } from '@ngrx/store/testing';
 import {
-  BaseComponent,
-  MockComponentStore,
-} from '@adrianbadilla/shared/classes/tests-helper';
+  FontAwesomeModule,
+  FaIconLibrary,
+} from '@fortawesome/angular-fontawesome';
+import { FontAwesomeicons } from '@adrian-badilla/ui/shared/assets/icons/fontawesome';
+import { RequestPassResetComponent } from './request-pass-reset.component';
 
-@Component({
-  templateUrl: './request-pass-reset.component.html',
-  standalone: true,
-  imports: [CommonModule, RouterModule, MODULES],
-})
-export class RequestPassResetComponent extends BaseComponent {
-  requestPassResetStore = inject(MockComponentStore);
-}
 describe('RequestPassResetComponent', () => {
-  let component: RequestPassResetComponent;
   let fixture: ComponentFixture<RequestPassResetComponent>;
+  let component: RequestPassResetComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RequestPassResetComponent],
-      providers: [
-        provideMockStore({}),
-        provideComponentStore(MockComponentStore),
+      imports: [
+        CommonModule,
+        RouterModule,
+        FontAwesomeModule,
+        RequestPassResetComponent,
       ],
+      providers: [provideMockStore({}), provideRouter([])],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
+
+    const library = TestBed.inject(FaIconLibrary);
+    library.addIcons(...FontAwesomeicons);
 
     fixture = TestBed.createComponent(RequestPassResetComponent);
     component = fixture.componentInstance;

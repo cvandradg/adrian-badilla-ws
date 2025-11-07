@@ -1,33 +1,38 @@
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { Component, inject } from '@angular/core';
-import { provideMockStore } from '@ngrx/store/testing';
-import { provideComponentStore } from '@ngrx/component-store';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MODULES } from '@adrianbadilla/shared/exports/export-modules';
 import {
-  BaseComponent,
-  MockComponentStore,
-} from '@adrianbadilla/shared/classes/tests-helper';
+  MODULES,
+  COMPONENTS,
+  FirebaseAuthService,
+} from '@adrian-badilla/ui/shared';
+import { RegisterComponent } from './register.component';
+import { inject, provideAppInitializer } from '@angular/core';
+import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { firebaseAuthStore } from '../../data-access/stores/auth.store';
+import { FontAwesomeicons } from '../../../../../shared/src/lib/assets/icons/fontawesome';
 
-@Component({
-  templateUrl: './register.component.html',
-  standalone: true,
-  imports: [CommonModule, RouterModule, MODULES],
-})
-export class RegisterComponent extends BaseComponent {
-  registerStore = inject(MockComponentStore);
-}
+jest.mock('firebase/auth', () => ({
+  GoogleAuthProvider: {},
+}));
+
 describe('RegisterComponent', () => {
-  let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
+  let component: RegisterComponent;
+
+  const mockStore = {
+    createAccount: jest.fn(),
+    isRegistering: jest.fn().mockReturnValue(false),
+    registerSuccess: jest.fn().mockReturnValue(false),
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegisterComponent],
+      imports: [RegisterComponent, COMPONENTS, MODULES],
       providers: [
-        provideMockStore({}),
-        provideComponentStore(MockComponentStore),
+        { provide: firebaseAuthStore, useValue: mockStore },
+        { provide: FirebaseAuthService, useValue: {} },
+        provideAppInitializer(() => {
+          inject(FaIconLibrary).addIcons(...FontAwesomeicons);
+        }),
       ],
     }).compileComponents();
 

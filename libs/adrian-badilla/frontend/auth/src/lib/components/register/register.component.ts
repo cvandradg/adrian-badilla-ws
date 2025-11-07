@@ -1,14 +1,13 @@
 import {
-  effect,
   inject,
   Component,
   ChangeDetectionStrategy,
   Signal,
 } from '@angular/core';
 import {
-  MODULES,
   COMPONENTS,
   Credentials,
+  MODULES,
   validations,
 } from '@adrian-badilla/ui/shared';
 import { RouterModule } from '@angular/router';
@@ -36,13 +35,13 @@ export class RegisterComponent {
   credentials = toSignal(this.loginInputForm.valueChanges, {
     initialValue: this.loginInputForm.value,
   }) as Signal<Credentials>;
+}
 
   // constructor() {
   //   effect(() => {
   //     console.log('form credentials:', this.credentials());
   //   });
   // }
-}
 
 // isValidUser$ = this.loginInputForm.valueChanges.pipe(
 //   map(() => !this.loginInputForm.controls.user.invalid)

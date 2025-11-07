@@ -39,6 +39,7 @@ __metadata:
     "@fortawesome/pro-thin-svg-icons": "npm:^7.1.0"
     "@fortawesome/sharp-solid-svg-icons": "npm:^7.1.0"
     "@ngrx/signals": "npm:^20.1.0"
+    "@ngrx/store": "npm:^20.1.0"
     "@nx/angular": "npm:22.0.2"
     "@nx/cypress": "npm:22.0.2"
     "@nx/eslint": "npm:22.0.2"
@@ -64,6 +65,7 @@ __metadata:
     jest: "npm:^29.7.0"
     jest-environment-jsdom: "npm:^29.7.0"
     jest-preset-angular: "npm:14.6.0"
+    node-fetch: "npm:^3.3.2"
     nx: "npm:22.0.2"
     prettier: "npm:^2.6.2"
     punycode: "npm:^2.3.1"
@@ -5528,6 +5530,18 @@ __metadata:
     rxjs:
       optional: true
   checksum: 10c0/5ee2df30ac5c85540c035f40312f9f3af87388686b9dee086e834098af6bfd9221641e0304be66ebfb67ac377330565b6fbd8f820078ec3c5d014cdf18549390
+  languageName: node
+  linkType: hard
+
+"@ngrx/store@npm:^20.1.0":
+  version: 20.1.0
+  resolution: "@ngrx/store@npm:20.1.0"
+  dependencies:
+    tslib: "npm:^2.0.0"
+  peerDependencies:
+    "@angular/core": ^20.0.0
+    rxjs: ^6.5.3 || ^7.5.0
+  checksum: 10c0/4d501b04f52baa59341bf6f5904519bc6dac1e35b9c2f25a827c3fad2400a702ac9db422f01a3067c2004daece626d1782eb1e37843dafe068aca12ae352c69e
   languageName: node
   linkType: hard
 
