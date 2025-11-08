@@ -1,0 +1,128 @@
+@use 'utilities/layout/helpers' as *;
+@use 'utilities/layout/sections' as *;
+@use 'utilities/layout/components' as *;
+@use 'utilities/mixins' as *;
+@use 'utilities/components/visual' as *;
+
+@mixin card {
+
+  :host {
+    --padding: 2rem;
+    --card-height: 20.18rem;
+  }
+
+  .title {
+    @include section-layout(center);
+    padding-bottom: 3rem;
+
+    h1 {
+      @include section-title;
+    }
+  }
+
+  .cards {
+    gap: 0;
+  display: flex;
+  padding: clamp(2rem, 4vw, 3rem) clamp(2rem, 8vw, 10rem);
+}
+
+.card {
+  @include card-base;
+  background-attachment: initial;
+  will-change: flex;
+  height: var(--card-height);
+
+  &.card--nutrition {
+    background-image: url('/global/assets/img/adelgazar.jpg');
+  }
+  &.card--strength {
+    background-image: url('/global/assets/img/musculo.jpg');
+  }
+  &.card--definition {
+    background-image: url('/global/assets/img/tonificar.jpg');
+  }
+  &.card--coaching {
+    background-image: url('/global/assets/img/muchoMas.jpg');
+  }
+
+  &::before {
+    @include card-gradient;
+  }
+}
+
+.card:hover {
+  flex: 2.7 1 0;
+}
+
+.card__header,
+.card__list,
+.card__footer {
+  z-index: 3;
+  position: relative;
+  padding-inline: var(--padding);
+}
+
+.card__header {
+  @include flex-column;
+  gap: 0.25rem;
+  padding-top: var(--padding);
+}
+
+.card__title {
+  @include card-title;
+
+  &::after {
+    content: '';
+    height: 0.25rem;
+    bottom: -0.125rem;
+    position: absolute;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+    left: calc(var(--padding) * -1);
+    background: var(--clr-accent-400);
+    width: calc(100% + var(--padding));
+  }
+}
+
+.card__list {
+  @include card-list;
+}
+
+.card__footer {
+  @include flex-space-between;
+  gap: 1rem;
+  padding: 1rem var(--padding);
+}
+
+.card__price {
+  @include card-price;
+}
+
+.card__cta {
+  @include card-cta;
+}
+
+@media (hover) {
+  @include card-hover-effects;
+}
+
+@include respond-to('mobile') {
+  .cards {
+    flex-direction: column;
+    padding-inline: clamp(1rem, 5vw, 3rem);
+  }
+  .card {
+    flex: none;
+    min-height: 22rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card * {
+    transition: none;
+  }
+}
+
+}
