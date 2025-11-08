@@ -14,6 +14,7 @@
           formControlName="user"
         />
       </mat-form-field>
+
       <mat-form-field>
         <mat-label>Contraseña</mat-label>
         <input
@@ -36,32 +37,30 @@
       >
         <div class="register-button">
           <p>Crear Cuenta</p>
+
+          @if (!firebaseAuthStore.isRegistering() &&
+          !firebaseAuthStore.registerSuccess()) {
           <fa-icon
-            *ngIf="
-              !firebaseAuthStore.isRegistering() &&
-              !firebaseAuthStore.registerSuccess()
-            "
             [icon]="['fas', 'arrow-right']"
             class="icon fa-xl fa-shake"
             style="--fa-animation-iteration-count: 2"
           />
-
+          } @if (firebaseAuthStore.isRegistering()) {
           <fa-icon
-            *ngIf="firebaseAuthStore.isRegistering()"
             [icon]="['fas', 'spinner-third']"
             class="icon fa-xl fa-spin"
             style="--fa-animation-duration: 1s"
           />
+          }
 
-          <fa-icon
-            *ngIf="
-              !firebaseAuthStore.isRegistering() &&
-              firebaseAuthStore.registerSuccess()
-            "
-            [icon]="['fas', 'check']"
-            class="icon fa-xl fa-shake"
-            style="--fa-animation-iteration-count: 2"
-          />
+          @if (!firebaseAuthStore.isRegistering() && firebaseAuthStore.registerSuccess()) {
+            <fa-icon
+              [icon]="['fas', 'check']"
+              class="icon fa-xl fa-shake"
+              style="--fa-animation-iteration-count: 2"
+            />
+          }
+
         </div>
       </button>
     </div>
@@ -85,8 +84,7 @@
     <!-- [message]="vm.error?.message"
       [display]="!vm.loading && vm.error?.status" -->
 
-    <adrian-badilla-strength-meter
-    ></adrian-badilla-strength-meter>
+    <adrian-badilla-strength-meter></adrian-badilla-strength-meter>
 
     <!-- <adrian-badilla-strength-meter
       [password]="loginInputForm.get('pass')?.value || ''"

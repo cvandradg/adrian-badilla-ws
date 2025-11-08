@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { RouterModule, provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
@@ -19,7 +18,6 @@ describe('RequestPassResetComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        CommonModule,
         RouterModule,
         FontAwesomeModule,
         RequestPassResetComponent,

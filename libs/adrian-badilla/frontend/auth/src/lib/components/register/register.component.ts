@@ -11,7 +11,6 @@ import {
   validations,
 } from '@adrian-badilla/ui/shared';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, Validators } from '@angular/forms';
 import { firebaseAuthStore } from '../../data-access/stores/auth.store';
@@ -21,7 +20,7 @@ import { firebaseAuthStore } from '../../data-access/stores/auth.store';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, RouterModule, COMPONENTS, MODULES],
+  imports: [RouterModule, COMPONENTS, MODULES],
 })
 export class RegisterComponent {
   formBuilder = inject(FormBuilder);

@@ -5,7 +5,7 @@
     (click)="onSubmit()"
     (keyup.enter)="onSubmit()"
   >
-    <div class="signup-button" [ngClass]="{ padding: !small() }">
+    <div class="signup-button" [class.padding]="!small()">
       <fa-icon [icon]="fontawesomeIcon()"></fa-icon>
       <p>{{ buttonText() }}</p>
     </div>

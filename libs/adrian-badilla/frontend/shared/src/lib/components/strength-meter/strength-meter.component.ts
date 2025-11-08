@@ -7,15 +7,11 @@ import {
   ChangeDetectionStrategy,
   SimpleChanges,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-
 @Component({
-  standalone: true,
   selector: 'adrian-badilla-strength-meter',
   templateUrl: './strength-meter.component.html',
   styleUrls: ['./strength-meter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
 })
 export class StrengthMeterComponent implements OnChanges {
   @Input() password = '';

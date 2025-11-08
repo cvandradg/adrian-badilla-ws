@@ -1,11 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
   templateUrl: './trainer-info.component.html',
-  standalone: true,
-  imports: [CommonModule],
 })
 export class TrainerInfoComponent {}
 
