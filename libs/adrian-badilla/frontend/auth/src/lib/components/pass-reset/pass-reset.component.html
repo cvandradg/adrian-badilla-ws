@@ -1,10 +1,8 @@
-<ng-container
-
->
+<ng-container>
   <div class="forgot-password">
-    <button mat-button (click)="onResetClick()">
-    <p>Recuperar Contraseña</p>
-  </button>
+    <button mat-button (click)="firebaseAuthStore.testResetPassword()">
+      <p>Recuperar Contraseña</p>
+    </button>
     <fa-icon
       [icon]="['fas', 'spinner-third']"
       class="icon fa-xl fa-spin"
@@ -12,19 +10,13 @@
     />
   </div>
 
-  <adrian-badilla-status-message
-    [type]="'success'"
-    [icon]="['fas', 'check']"
-    />
-    <!-- [message]="
+  <adrian-badilla-status-message [type]="'success'" [icon]="['fas', 'check']" />
+  <!-- [message]="
       'Si el correo es válido te llegará un link para cambiar tu contraseña.'
     "
     [display]="vm.requested && !vm.loading && !vm.error?.status" -->
 
-  <adrian-badilla-status-message
-    [type]="'error'"
-    [icon]="['fas', 'xmark']"
-    />
-    <!-- [message]="vm.error?.message"
+  <adrian-badilla-status-message [type]="'error'" [icon]="['fas', 'xmark']" />
+  <!-- [message]="vm.error?.message"
     [display]="!vm.loading && vm.error?.status" -->
 </ng-container>
