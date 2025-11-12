@@ -1,8 +1,13 @@
 <ng-container>
   <div class="forgot-password">
     <button mat-button (click)="firebaseAuthStore.testResetPassword()">
-      <p>Recuperar Contraseña</p>
+      <p>Test método normal</p>
     </button>
+
+    <button mat-button (click)="firebaseAuthStore.testRxResetPassword()">
+      <p>Test método rxMethod</p>
+    </button>
+
     <fa-icon
       [icon]="['fas', 'spinner-third']"
       class="icon fa-xl fa-spin"

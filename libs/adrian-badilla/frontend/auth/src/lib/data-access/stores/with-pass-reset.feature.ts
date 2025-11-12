@@ -6,7 +6,7 @@ import {
   signalStoreFeature,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { exhaustMap, pipe, tap } from 'rxjs';
+import { exhaustMap, from, of, pipe, tap } from 'rxjs';
 import { inject } from '@angular/core';
 import { Credentials, FirebaseAuthService } from '@adrian-badilla/ui/shared';
 
@@ -26,6 +26,16 @@ export function withPassResetResources() {
           testResetPassword() {
       console.log('Método del store funcionando correctamente');
     },
+
+          testRxResetPassword: rxMethod<void>(
+        pipe(
+          exhaustMap(() =>
+            of('hola').pipe(
+              tap((x) => console.log('probando log:', x))
+            )
+          )
+        )
+      ),
 
     }))
   );
