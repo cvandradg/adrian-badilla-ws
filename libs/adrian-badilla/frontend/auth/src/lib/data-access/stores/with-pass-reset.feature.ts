@@ -31,14 +31,10 @@ export function withPassResetResources() {
         pipe(
           exhaustMap(() =>
             store.firebaseAuthService
-              .recoverPassword('correo@ejemplo.com')
+              .recoverPassword('fabian.soy1990@gmail.com')
               .pipe(
                 tap((resultado) =>
                   console.log('Resultado del recoverPassword:', resultado),
-                          catchError((err: { message: any; }) => {
-            console.error('❌ Error al enviar el correo:', err.message);
-            return of(null);
-          })
                 )
               )
           )
