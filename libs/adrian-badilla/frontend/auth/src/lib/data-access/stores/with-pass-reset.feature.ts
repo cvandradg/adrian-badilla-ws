@@ -6,7 +6,7 @@ import {
   signalStoreFeature,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { exhaustMap, from, of, pipe, tap } from 'rxjs';
+import { catchError, exhaustMap, from, of, pipe, tap } from 'rxjs';
 import { inject } from '@angular/core';
 import { Credentials, FirebaseAuthService } from '@adrian-badilla/ui/shared';
 
@@ -22,7 +22,7 @@ export function withPassResetResources() {
       firebaseAuthService: inject(FirebaseAuthService),
     })),
 
-    withMethods(() => ({
+    withMethods((store) => ({
           testResetPassword() {
       console.log('Método del store funcionando correctamente');
     },
@@ -30,9 +30,17 @@ export function withPassResetResources() {
           testRxResetPassword: rxMethod<void>(
         pipe(
           exhaustMap(() =>
-            of('hola').pipe(
-              tap((x) => console.log('probando log:', x))
-            )
+            store.firebaseAuthService
+              .recoverPassword('correo@ejemplo.com')
+              .pipe(
+                tap((resultado) =>
+                  console.log('Resultado del recoverPassword:', resultado),
+                          catchError((err: { message: any; }) => {
+            console.error('❌ Error al enviar el correo:', err.message);
+            return of(null);
+          })
+                )
+              )
           )
         )
       ),
