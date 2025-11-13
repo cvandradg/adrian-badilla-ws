@@ -16,12 +16,8 @@
     <form class="form-pass-reset-inputs">
       <mat-form-field>
         <mat-label>Contraseña</mat-label>
-        <input
-          matInput
-          placeholder="EjemploDeClave1!"
-          type="password"
-          />
-          <!-- formControlName="pass" -->
+        <input matInput placeholder="EjemploDeClave1!" type="password" />
+        <!-- formControlName="pass" -->
 
         <!-- (keyup.enter)="
             requestPassResetStore.passReset$({
@@ -35,32 +31,15 @@
       <!-- [ngClass]="{ 'enabled-button': vm.isButtonEnable || vm.reseted }" -->
 
       <button mat-button (click)="log()">
-        <!-- [disabled]="vm.reseted"
-        (click)="
-          vm.isButtonEnable &&
-            requestPassResetStore.passReset$({
-              pass: loginInputForm.controls.pass.value || '',
-            })
-        " -->
-
-        <!-- (keyup.enter)="
-          vm.isButtonEnable &&
-            requestPassResetStore.passReset$({
-              pass: loginInputForm.controls.pass.value || '',
-            })
-        " -->
-
         <div class="pass-reset-button">
           <p>Cambiar contraseña</p>
-          <!-- *ngIf="!vm.loading" -->
+
           <fa-icon
             [icon]="['fas', 'arrow-right']"
             style="--fa-animation-iteration-count: 2"
             class="icon fa-xl fa-shake"
-            style="--fa-animation-iteration-count: 2"
           />
 
-          <!-- *ngIf="vm.loading" -->
           <fa-icon
             [icon]="['fas', 'spinner-third']"
             class="icon fa-xl fa-spin"
