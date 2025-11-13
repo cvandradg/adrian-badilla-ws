@@ -30,7 +30,15 @@
     <div class="horizontal-animation clase">
       <!-- [ngClass]="{ 'enabled-button': vm.isButtonEnable || vm.reseted }" -->
 
-      <button mat-button (click)="log()">
+      <button
+        mat-button
+        (click)="
+          firebaseAuthStore.resetPassword({
+            oobCode: oobCode,
+            newPassword: newPassword
+          })
+        "
+      >
         <div class="pass-reset-button">
           <p>Cambiar contraseña</p>
 
