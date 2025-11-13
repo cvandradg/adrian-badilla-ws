@@ -15,14 +15,7 @@ export class RequestPassResetComponent {
 
   isPassStrong$ = new Subject<boolean>();
 
-  // isValidPassword$ = this.loginInputForm.valueChanges.pipe(
-  //   map(() => !this.loginInputForm.controls.pass.invalid)
-  // );
-
-  // enableButton$ = combineLatest([
-  //   this.isValidPassword$,
-  //   this.isPassStrong$,
-  // ]).pipe(
-  //   map(([isValidPassword, isPassStrong]) => isValidPassword && isPassStrong)
-  // );
+  log(){
+    console.log('El boton funciona');
+  }
 }

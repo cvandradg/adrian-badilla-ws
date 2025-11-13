@@ -34,7 +34,7 @@
     <div class="horizontal-animation clase">
       <!-- [ngClass]="{ 'enabled-button': vm.isButtonEnable || vm.reseted }" -->
 
-      <button mat-button>
+      <button mat-button (click)="log()">
         <!-- [disabled]="vm.reseted"
         (click)="
           vm.isButtonEnable &&
