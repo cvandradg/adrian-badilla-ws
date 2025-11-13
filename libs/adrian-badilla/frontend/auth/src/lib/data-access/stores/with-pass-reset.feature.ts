@@ -6,16 +6,16 @@ import {
   signalStoreFeature,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, exhaustMap, from, of, pipe, tap } from 'rxjs';
+import { catchError, exhaustMap, of, pipe, tap } from 'rxjs';
 import { inject } from '@angular/core';
-import { Credentials, FirebaseAuthService } from '@adrian-badilla/ui/shared';
+import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
 
 export function withPassResetResources() {
   return signalStoreFeature(
     withState({
-      isRegistering: false,
-      registerError: null,
-      registerSuccess: false,
+      loading: false,
+      requested: false,
+      error: null as string | null,
     }),
 
     withProps(() => ({
@@ -23,24 +23,30 @@ export function withPassResetResources() {
     })),
 
     withMethods((store) => ({
-          testResetPassword() {
-      console.log('Método del store funcionando correctamente');
-    },
-
-          testRxResetPassword: rxMethod<void>(
+      passReset: rxMethod<string>(
         pipe(
-          exhaustMap(() =>
-            store.firebaseAuthService
-              .recoverPassword('fabian.soy1990@gmail.com')
-              .pipe(
-                tap((resultado) =>
-                  console.log('Resultado del recoverPassword:', resultado),
-                )
-              )
+          tap(() => patchState(store, { loading: true, error: null })),
+          exhaustMap((email) =>
+            store.firebaseAuthService.recoverPassword(email).pipe(
+              tap(() => {
+                console.log('Correo de recuperación enviado');
+                patchState(store, {
+                  loading: false,
+                  requested: true,
+                });
+              }),
+              catchError((err) => {
+                console.error('Error al enviar correo:', err);
+                patchState(store, {
+                  loading: false,
+                  error: err.message ?? 'Error desconocido',
+                });
+                return of(null);
+              })
+            )
           )
         )
       ),
-
     }))
   );
 }

@@ -1,23 +1,31 @@
 <ng-container>
   <div class="forgot-password">
-    <button mat-button (click)="firebaseAuthStore.testRxResetPassword()">
+    <button mat-button (click)="firebaseAuthStore.passReset(user)">
       <p>Recuperar Contraseña</p>
-    </button>
 
-    <fa-icon
-      [icon]="['fas', 'spinner-third']"
-      class="icon fa-xl fa-spin"
-      style="--fa-animation-duration: 1s"
-    />
+      @if (firebaseAuthStore.loading()) {
+      <fa-icon
+        [icon]="['fas', 'spinner-third']"
+        class="icon fa-xl fa-spin"
+        style="--fa-animation-duration: 1s"
+      />
+      }
+    </button>
   </div>
 
-  <adrian-badilla-status-message [type]="'success'" [icon]="['fas', 'check']" />
-  <!-- [message]="
+  @if (firebaseAuthStore.requested() && !firebaseAuthStore.loading()) {
+  <adrian-badilla-status-message
+    [type]="'success'"
+    [icon]="['fas', 'check']"
+    [message]="
       'Si el correo es válido te llegará un link para cambiar tu contraseña.'
     "
-    [display]="vm.requested && !vm.loading && !vm.error?.status" -->
-
-  <adrian-badilla-status-message [type]="'error'" [icon]="['fas', 'xmark']" />
-  <!-- [message]="vm.error?.message"
-    [display]="!vm.loading && vm.error?.status" -->
+  />
+  } @if (firebaseAuthStore.error()) {
+  <adrian-badilla-status-message
+    [type]="'error'"
+    [icon]="['fas', 'xmark']"
+    [message]="firebaseAuthStore.error()"
+  />
+  }
 </ng-container>

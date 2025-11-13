@@ -9,12 +9,8 @@ import { firebaseAuthStore } from '../../data-access/stores/auth.store';
   imports: [MODULES, COMPONENTS],
 })
 export class PassResetComponent {
-    firebaseAuthStore = inject(firebaseAuthStore);
+  firebaseAuthStore = inject(firebaseAuthStore);
 
   @Input()
   public user!: string;
-
-  onResetClick() {
-    console.log('Botón de recuperar contraseña funcionando');
-  }
 }
