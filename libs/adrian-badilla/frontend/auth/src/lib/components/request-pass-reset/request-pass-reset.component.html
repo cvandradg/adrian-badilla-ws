@@ -32,12 +32,7 @@
 
       <button
         mat-button
-        (click)="
-          firebaseAuthStore.resetPassword({
-            oobCode: oobCode,
-            newPassword: newPassword
-          })
-        "
+        (click)="firebaseAuthStore.resetPassword({ oobCode, newPassword })"
       >
         <div class="pass-reset-button">
           <p>Cambiar contraseña</p>

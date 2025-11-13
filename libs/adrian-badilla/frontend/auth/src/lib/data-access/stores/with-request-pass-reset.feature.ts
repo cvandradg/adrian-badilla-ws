@@ -14,7 +14,7 @@ export function withRequestPassResetResources() {
   return signalStoreFeature(
     withState({
       loading: false,
-      requested: false,
+      reseted: false,
       error: null as string | null,
     }),
 
@@ -22,13 +22,33 @@ export function withRequestPassResetResources() {
       firebaseAuthService: inject(FirebaseAuthService),
     })),
 
-    withMethods(() => ({
+    withMethods((store) => ({
       resetPassword: rxMethod<{ oobCode: string; newPassword: string }>(
-        tap(({ oobCode, newPassword }) => {
-          console.log('resetPassword() fue llamado');
-          console.log('oobCode recibido:', oobCode);
-          console.log('newPassword recibida:', newPassword);
-        })
+        pipe(
+          tap(() => {
+            console.log('🟡 resetPassword(): iniciando simulación…');
+            patchState(store, {
+              loading: true,
+              reseted: false,
+              error: null,
+            });
+            console.log('loading = true');
+          }),
+
+          exhaustMap(() =>
+            of('OK').pipe(
+              tap(() => {
+                console.log('🟢 Simulación completada correctamente');
+                patchState(store, {
+                  loading: false,
+                  reseted: true,
+                });
+                console.log('loading = false');
+                console.log('reseted = true');
+              })
+            )
+          )
+        )
       ),
     }))
   );
