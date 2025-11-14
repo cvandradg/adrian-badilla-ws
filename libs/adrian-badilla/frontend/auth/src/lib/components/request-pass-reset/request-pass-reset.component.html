@@ -5,7 +5,6 @@
   </div>
 
   <div class="reset-pass-input">
-
     <form class="form-pass-reset-inputs">
       <mat-form-field>
         <mat-label>Contraseña</mat-label>
@@ -19,13 +18,14 @@
     </form>
 
     <div class="horizontal-animation clase">
-
       <button
         mat-button
-        (click)="firebaseAuthStore.resetPassword({
-          oobCode: firebaseAuthStore.oobCode(),
-          newPassword: passInput.value
-        })"
+        (click)="
+          firebaseAuthStore.resetPassword({
+            oobCode: firebaseAuthStore.oobCode(),
+            newPassword: passInput.value
+          })
+        "
       >
         <div class="pass-reset-button">
           <p>Cambiar contraseña</p>
@@ -37,37 +37,33 @@
           ></fa-icon>
 
           @if (firebaseAuthStore.loading()) {
-            <fa-icon
-              [icon]="['fas', 'spinner-third']"
-              class="icon fa-xl fa-spin"
-              style="--fa-animation-duration: 1s"
-            ></fa-icon>
+          <fa-icon
+            [icon]="['fas', 'spinner-third']"
+            class="icon fa-xl fa-spin"
+            style="--fa-animation-duration: 1s"
+          ></fa-icon>
           }
         </div>
       </button>
-
     </div>
 
     @if (firebaseAuthStore.reseted()) {
-      <adrian-badilla-status-message
-        [type]="'success'"
-        [icon]="['fas', 'check']"
-        [routerLink]="'/'"
-        [message]="'Creaste una nueva contraseña..'"
-      >
-        <div class="success-message centered">
-          <strong>Click acá</strong> para acceder
-        </div>
-      </adrian-badilla-status-message>
+    <adrian-badilla-status-message
+      [type]="'success'"
+      [icon]="['fas', 'check']"
+      [routerLink]="'/'"
+      [message]="'Creaste una nueva contraseña..'"
+    >
+      <div class="success-message centered">
+        <strong>Click acá</strong> para acceder
+      </div>
+    </adrian-badilla-status-message>
+    } @if (firebaseAuthStore.error()) {
+    <adrian-badilla-status-message
+      [type]="'error'"
+      [icon]="['fas', 'xmark']"
+      [message]="firebaseAuthStore.error()"
+    ></adrian-badilla-status-message>
     }
-
-    @if (firebaseAuthStore.error()) {
-      <adrian-badilla-status-message
-        [type]="'error'"
-        [icon]="['fas', 'xmark']"
-        [message]="firebaseAuthStore.error()"
-      ></adrian-badilla-status-message>
-    }
-
   </div>
 </div>

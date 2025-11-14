@@ -5,10 +5,12 @@ import {
   withMethods,
   signalStoreFeature,
 } from '@ngrx/signals';
+
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { catchError, exhaustMap, of, pipe, tap } from 'rxjs';
 import { inject } from '@angular/core';
+import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
 import { ActivatedRoute } from '@angular/router';
-import { tap, of, exhaustMap, pipe } from 'rxjs';
 
 export function withRequestPassResetResources() {
   return signalStoreFeature(
@@ -20,6 +22,7 @@ export function withRequestPassResetResources() {
     }),
 
     withProps(() => ({
+      firebaseAuthService: inject(FirebaseAuthService),
       route: inject(ActivatedRoute),
     })),
 
@@ -27,38 +30,39 @@ export function withRequestPassResetResources() {
       initOobCode: rxMethod<void>(
         tap(() => {
           const code = store.route.snapshot.queryParamMap.get('oobCode') || '';
-          console.log('🔵 oobCode recibido desde la URL:', code);
+          console.log('🔑 oobCode recibido desde la URL:', code);
           patchState(store, { oobCode: code });
         })
       ),
 
       resetPassword: rxMethod<{ oobCode: string; newPassword: string }>(
         pipe(
-          tap(({ oobCode, newPassword }) => {
-            console.log('🟡 resetPassword() llamado con:', {
-              oobCode,
-              newPassword,
-            });
-
+          tap(() => {
+            console.log('🔄 Enviando petición real a Firebase…');
             patchState(store, {
               loading: true,
               reseted: false,
               error: null,
             });
-            console.log('loading = true');
           }),
 
-          exhaustMap(() =>
-            of('OK').pipe(
+          exhaustMap(({ oobCode, newPassword }) =>
+            store.firebaseAuthService.resetPass(oobCode, newPassword).pipe(
               tap(() => {
-                console.log('🟢 Simulación exitosa');
+                console.log('✅ Firebase confirmó el cambio de contraseña.');
                 patchState(store, {
                   loading: false,
                   reseted: true,
                 });
+              }),
 
-                console.log('loading = false');
-                console.log('reseted = true');
+              catchError((err) => {
+                console.error('❌ Error en Firebase:', err);
+                patchState(store, {
+                  loading: false,
+                  error: err?.message || 'Error desconocido',
+                });
+                return of(null);
               })
             )
           )
