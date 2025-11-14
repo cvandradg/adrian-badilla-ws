@@ -6,9 +6,9 @@ import {
   signalStoreFeature,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, exhaustMap, of, pipe, tap } from 'rxjs';
 import { inject } from '@angular/core';
-import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
+import { ActivatedRoute } from '@angular/router';
+import { tap, of, exhaustMap, pipe } from 'rxjs';
 
 export function withRequestPassResetResources() {
   return signalStoreFeature(
@@ -16,17 +16,30 @@ export function withRequestPassResetResources() {
       loading: false,
       reseted: false,
       error: null as string | null,
+      oobCode: '',
     }),
 
     withProps(() => ({
-      firebaseAuthService: inject(FirebaseAuthService),
+      route: inject(ActivatedRoute),
     })),
 
     withMethods((store) => ({
+      initOobCode: rxMethod<void>(
+        tap(() => {
+          const code = store.route.snapshot.queryParamMap.get('oobCode') || '';
+          console.log('🔵 oobCode recibido desde la URL:', code);
+          patchState(store, { oobCode: code });
+        })
+      ),
+
       resetPassword: rxMethod<{ oobCode: string; newPassword: string }>(
         pipe(
-          tap(() => {
-            console.log('🟡 resetPassword(): iniciando simulación…');
+          tap(({ oobCode, newPassword }) => {
+            console.log('🟡 resetPassword() llamado con:', {
+              oobCode,
+              newPassword,
+            });
+
             patchState(store, {
               loading: true,
               reseted: false,
@@ -38,11 +51,12 @@ export function withRequestPassResetResources() {
           exhaustMap(() =>
             of('OK').pipe(
               tap(() => {
-                console.log('🟢 Simulación completada correctamente');
+                console.log('🟢 Simulación exitosa');
                 patchState(store, {
                   loading: false,
                   reseted: true,
                 });
+
                 console.log('loading = false');
                 console.log('reseted = true');
               })
