@@ -10,7 +10,6 @@ import {
 
 @Component({
   selector: 'adrian-badilla-footer',
-  standalone: true,
   imports: [FontAwesomeModule],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',

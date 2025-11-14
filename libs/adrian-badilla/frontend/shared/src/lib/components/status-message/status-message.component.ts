@@ -4,7 +4,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { NothingOr } from '../../types/general-types';
 
 @Component({
-  standalone: true,
   selector: 'adrian-badilla-status-message',
   templateUrl: './status-message.component.html',
   styleUrls: ['./status-message.component.scss'],

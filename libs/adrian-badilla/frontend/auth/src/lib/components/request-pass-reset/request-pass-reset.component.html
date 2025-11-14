@@ -1,0 +1,69 @@
+<div class="container">
+  <div class="title">Cambiar contraseña</div>
+  <div class="description">
+    Si no deseas cambiar la contraseña cierra esta ventana.
+  </div>
+
+  <div class="reset-pass-input">
+    <form class="form-pass-reset-inputs">
+      <mat-form-field>
+        <mat-label>Contraseña</mat-label>
+        <input
+          matInput
+          placeholder="EjemploDeClave1!"
+          type="password"
+          #passInput
+        />
+      </mat-form-field>
+    </form>
+
+    <div class="horizontal-animation clase">
+      <button
+        mat-button
+        (click)="
+          firebaseAuthStore.resetPassword({
+            oobCode: firebaseAuthStore.oobCode(),
+            newPassword: passInput.value
+          })
+        "
+      >
+        <div class="pass-reset-button">
+          <p>Cambiar contraseña</p>
+
+          <fa-icon
+            [icon]="['fas', 'arrow-right']"
+            class="icon fa-xl fa-shake"
+            style="--fa-animation-iteration-count: 2"
+          ></fa-icon>
+
+          @if (firebaseAuthStore.loading()) {
+          <fa-icon
+            [icon]="['fas', 'spinner-third']"
+            class="icon fa-xl fa-spin"
+            style="--fa-animation-duration: 1s"
+          ></fa-icon>
+          }
+        </div>
+      </button>
+    </div>
+
+    @if (firebaseAuthStore.reseted()) {
+    <adrian-badilla-status-message
+      [type]="'success'"
+      [icon]="['fas', 'check']"
+      [routerLink]="'/'"
+      [message]="'Creaste una nueva contraseña..'"
+    >
+      <div class="success-message centered">
+        <strong>Click acá</strong> para acceder
+      </div>
+    </adrian-badilla-status-message>
+    } @if (firebaseAuthStore.error()) {
+    <adrian-badilla-status-message
+      [type]="'error'"
+      [icon]="['fas', 'xmark']"
+      [message]="firebaseAuthStore.error()"
+    ></adrian-badilla-status-message>
+    }
+  </div>
+</div>

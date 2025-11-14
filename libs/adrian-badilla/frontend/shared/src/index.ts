@@ -1,2 +1,4 @@
 export * from './lib/exports'
 export * from './lib/types/general-types'
+export * from './lib/environments/environment'
+export * from './lib/sevices/firebase-auth.service'
