@@ -1,5 +1,10 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  input,
+  output,
+} from '@angular/core';
 import { MODULES } from '../../exports';
 
 @Component({

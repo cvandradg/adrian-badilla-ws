@@ -17,11 +17,7 @@ describe('RequestPassResetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        RouterModule,
-        FontAwesomeModule,
-        RequestPassResetComponent,
-      ],
+      imports: [RouterModule, FontAwesomeModule, RequestPassResetComponent],
       providers: [provideRouter([])],
     }).compileComponents();
 

@@ -3,7 +3,6 @@ import { Subject } from 'rxjs';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { COMPONENTS, MODULES } from '@adrian-badilla/ui/shared';
 
-
 @Component({
   selector: 'adrian-badilla-request-pass-reset',
   templateUrl: './request-pass-reset.component.html',
@@ -12,7 +11,6 @@ import { COMPONENTS, MODULES } from '@adrian-badilla/ui/shared';
   imports: [RouterModule, MODULES, COMPONENTS],
 })
 export class RequestPassResetComponent {
-
   isPassStrong$ = new Subject<boolean>();
 
   // isValidPassword$ = this.loginInputForm.valueChanges.pipe(
