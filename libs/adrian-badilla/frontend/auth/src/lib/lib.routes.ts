@@ -2,7 +2,7 @@ import { Route } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 
-export const adrianBadillaUiAuthRoutes: Route[] = [
+export default [
   { path: 'login', component: LoginComponent },
 
   {
@@ -10,4 +10,4 @@ export const adrianBadillaUiAuthRoutes: Route[] = [
     component: RegisterComponent,
     pathMatch: 'full',
   },
-];
+]as Route[];

@@ -7,8 +7,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: '',
-    loadChildren: () =>
-      import('@adrian-badilla/auth').then((m) => m.adrianBadillaUiAuthRoutes),
+    loadChildren: () => import('@adrian-badilla/auth/routes'),
   },
   { path: '**', redirectTo: '' },
 ];
