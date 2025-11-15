@@ -1,19 +1,3 @@
-import { Directive, inject } from '@angular/core';
-import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
-
-import {
-  faBookOpenCover,
-  faPlateUtensils,
-  faTurkey,
-  faLayerPlus,
-  faTrashCan,
-  // faCaretRig  // faFilePen,
-  faXmark,
-  faPersonDress,
-  faPerson,
-  faJar,
-} from '@fortawesome/pro-duotone-svg-icons';
-
 import {
   faClipboardQuestion,
   faRightToBracket,
@@ -31,7 +15,6 @@ import {
 } from '@fortawesome/sharp-solid-svg-icons';
 
 import {
-  faArrowRight,
   faXmark as faXmarkSolid,
   faCheck,
 } from '@fortawesome/free-solid-svg-icons';
@@ -40,6 +23,7 @@ import {
   faTwitter,
   faFacebookF,
   faInstagram,
+  faWhatsappSquare,
 } from '@fortawesome/free-brands-svg-icons';
 
 import {
@@ -57,58 +41,43 @@ import {
   faTelescope,
   faHeartPulse,
   faPersonDollyEmpty,
+  faArrowRight,
 } from '@fortawesome/pro-solid-svg-icons';
 import { faHouseTree } from '@fortawesome/pro-regular-svg-icons';
-import { faWhatsappSquare } from '@fortawesome/free-brands-svg-icons';
 
-@Directive()
-export class Fontawesome {
-  private readonly library = inject(FaIconLibrary);
-  constructor() {
-    this.library?.addIcons(
-      faJar,
-      faBolt,
-      faPlus,
-      faUser,
-      faBars,
-      faXmark,
-      faSalad,
-      faCheck,
-      faShirt,
-      faPerson,
-      faGoogle,
-      faTurkey,
-      // faFilePen,
-      faPeanuts,
-      faPotFood,
-      faTwitter,
-      faDumbbell,
-      faTrashCan,
-      faBowlRice,
-      faGripLines,
-      faDrumstick,
-      faLayerPlus,
-      faTelescope,
-      faFacebookF,
-      faHouseTree,
-      faInstagram,
-      // faCaretRight,
-      faArrowRight,
-      faXmarkSolid,
-      faRotateBack,
-      faHeartPulse,
-      faPersonDress,
-      faCircleNotch,
-      faSpinnerThird,
-      faBookOpenCover,
-      faPlateUtensils,
-      faRightToBracket,
-      faWhatsappSquare,
-      faPersonDollyEmpty,
-      faClipboardQuestion,
-      faMessageExclamation,
-      faEnvelopeCircleCheck,
-      faCommentsQuestionCheck
-    );
-  }
-}
+export const FontAwesomeicons = [
+  faBolt,
+  faPlus,
+  faUser,
+  faBars,
+  faSalad,
+  faCheck,
+  faShirt,
+  faGoogle,
+  // faFilePen,
+  faPeanuts,
+  faPotFood,
+  faTwitter,
+  faDumbbell,
+  faBowlRice,
+  faGripLines,
+  faDrumstick,
+  faTelescope,
+  faFacebookF,
+  faHouseTree,
+  faInstagram,
+  // faCaretRight,
+  faArrowRight,
+  faXmarkSolid,
+  faRotateBack,
+  faHeartPulse,
+  faCircleNotch,
+  faSpinnerThird,
+  faRightToBracket,
+  faWhatsappSquare,
+  faPersonDollyEmpty,
+  faClipboardQuestion,
+  faMessageExclamation,
+  faEnvelopeCircleCheck,
+  faCommentsQuestionCheck,
+];

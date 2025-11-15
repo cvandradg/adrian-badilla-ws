@@ -1,14 +1,16 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+} from '@angular/core';
 
 type Carousel = { images: string[]; reverse: boolean };
 
 @Component({
   selector: 'adrian-badilla-gallery',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './gallery.component.html',
-  styleUrl: './gallery.component.scss',
+  styleUrls: ['./gallery.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GalleryComponent {

@@ -17,13 +17,11 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 export const MODULES = [
   // PushPipe,
   FormsModule,
-  CommonModule,
   RouterModule,
   // LetDirective,
   MatListModule,

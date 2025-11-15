@@ -1,28 +1,25 @@
-import { MODULES } from '../../exports/export-modules';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import {
   Component,
-  EventEmitter,
-  Input,
-  Output,
   ChangeDetectionStrategy,
+  input,
+  output,
 } from '@angular/core';
-import { Fontawesome } from '../../assets/icons/fontawesome';
+import { MODULES } from '../../exports';
 
 @Component({
-  standalone: true,
   selector: 'adrian-badilla-secondary-animated-button',
   templateUrl: './secondary-animated-button.component.html',
   styleUrls: ['./secondary-animated-button.component.scss'],
   imports: [MODULES],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SecondaryAnimatedButtonComponent extends Fontawesome {
-  @Output() submitEvent = new EventEmitter<never>();
+export class SecondaryAnimatedButtonComponent {
+  submitEvent = output<void>();
 
-  @Input() small = false;
-  @Input() buttonText = 'Some Text';
-  @Input() fontawesomeIcon: IconProp = ['fas', 'user'];
+  small = input(false);
+  buttonText = input('Some Text');
+  fontawesomeIcon = input<IconProp>(['fas', 'user']);
 
   onSubmit() {
     this.submitEvent.emit();

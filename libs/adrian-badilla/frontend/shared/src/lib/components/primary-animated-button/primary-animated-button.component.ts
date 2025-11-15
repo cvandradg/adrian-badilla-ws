@@ -1,27 +1,24 @@
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  Output,
+  input,
+  output,
 } from '@angular/core';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MODULES } from '../../exports';
 
 @Component({
-  standalone: true,
   selector: 'adrian-badilla-primary-animated-button',
   templateUrl: './primary-animated-button.component.html',
   styleUrls: ['./primary-animated-button.component.scss'],
-  imports: [CommonModule, MODULES],
+  imports: [MODULES],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PrimaryAnimatedButtonComponent extends FontAwesomeModule {
-  @Input() enable = false;
-  @Input() loading = false;
-  @Input() buttonText!: string;
-  @Output() submitEvent = new EventEmitter<never>();
+export class PrimaryAnimatedButtonComponent {
+  enable = input(false);
+  loading = input(false);
+  buttonText = input<string>();
+  success = input(false);
+  submitEvent = output<void>();
 
   onSubmit() {
     this.submitEvent.emit();
