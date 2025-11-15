@@ -1,6 +1,11 @@
 import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { COMPONENTS, MODULES } from '@adrian-badilla/ui/shared';
 import { firebaseAuthStore } from '../../data-access/stores/auth.store';
 
@@ -19,5 +24,4 @@ export class RequestPassResetComponent implements OnInit {
   ngOnInit() {
     this.firebaseAuthStore.initOobCode();
   }
-
 }
