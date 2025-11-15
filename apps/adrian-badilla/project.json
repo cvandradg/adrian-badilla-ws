@@ -23,14 +23,10 @@
             "output": "/global/assets"
           }
         ],
-        "styles": [
-          "apps/adrian-badilla/src/styles.scss"
-        ],
+        "styles": ["apps/adrian-badilla/src/styles.scss"],
         "scripts": [],
         "stylePreprocessorOptions": {
-          "includePaths": [
-            "libs/adrian-badilla/frontend/shared/src/lib/styles"
-          ]
+          "includePaths": ["libs/adrian-badilla/frontend/shared/src/lib/styles"]
         }
       },
       "configurations": {

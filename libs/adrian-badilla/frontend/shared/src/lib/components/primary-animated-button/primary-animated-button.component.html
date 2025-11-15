@@ -1,7 +1,4 @@
-<div
-  class="horizontal-animation clase"
-  [class.enabled-button]="enable()"
->
+<div class="horizontal-animation clase" [class.enabled-button]="enable()">
   <button
     class="custom-login-button"
     mat-button
@@ -13,19 +10,17 @@
       <p>{{ buttonText() }}</p>
 
       @if (!loading() && !success()) {
-        <fa-icon
-          [icon]="['fas', 'arrow-right']"
-          class="icon fa-xl fa-shake"
-          style="--fa-animation-iteration-count: 2"
-        ></fa-icon>
-      }
-
-      @if (loading()) {
-        <fa-icon
-          [icon]="['fas', 'spinner-third']"
-          class="icon fa-xl fa-spin"
-          style="--fa-animation-duration: 1s"
-        ></fa-icon>
+      <fa-icon
+        [icon]="['fas', 'arrow-right']"
+        class="icon fa-xl fa-shake"
+        style="--fa-animation-iteration-count: 2"
+      ></fa-icon>
+      } @if (loading()) {
+      <fa-icon
+        [icon]="['fas', 'spinner-third']"
+        class="icon fa-xl fa-spin"
+        style="--fa-animation-duration: 1s"
+      ></fa-icon>
       }
     </div>
   </button>

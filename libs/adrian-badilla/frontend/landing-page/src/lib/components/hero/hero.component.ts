@@ -9,4 +9,3 @@ import { NavbarComponent } from '../navbar/navbar.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeroComponent {}
-

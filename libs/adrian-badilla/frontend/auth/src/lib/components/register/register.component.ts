@@ -36,11 +36,11 @@ export class RegisterComponent {
   }) as Signal<Credentials>;
 }
 
-  // constructor() {
-  //   effect(() => {
-  //     console.log('form credentials:', this.credentials());
-  //   });
-  // }
+// constructor() {
+//   effect(() => {
+//     console.log('form credentials:', this.credentials());
+//   });
+// }
 
 // isValidUser$ = this.loginInputForm.valueChanges.pipe(
 //   map(() => !this.loginInputForm.controls.user.invalid)
@@ -49,4 +49,3 @@ export class RegisterComponent {
 // enableButton$ = combineLatest([this.isValidUser$, this.isPassStrong$]).pipe(
 //   map(([isValidUser, isPassStrong]) => isValidUser && isPassStrong)
 // );
-

@@ -16,7 +16,7 @@ import { AnnouncementComponent } from '../components/announcement/announcement.c
     GalleryComponent,
     TrainerInfoComponent,
     ReviewsComponent,
-    AnnouncementComponent
+    AnnouncementComponent,
   ],
   templateUrl: './adrian-badilla-ui-landing-page.component.html',
   styleUrl: './adrian-badilla-ui-landing-page.component.scss',

@@ -51,16 +51,14 @@
             class="icon fa-xl fa-spin"
             style="--fa-animation-duration: 1s"
           />
+          } @if (!firebaseAuthStore.isRegistering() &&
+          firebaseAuthStore.registerSuccess()) {
+          <fa-icon
+            [icon]="['fas', 'check']"
+            class="icon fa-xl fa-shake"
+            style="--fa-animation-iteration-count: 2"
+          />
           }
-
-          @if (!firebaseAuthStore.isRegistering() && firebaseAuthStore.registerSuccess()) {
-            <fa-icon
-              [icon]="['fas', 'check']"
-              class="icon fa-xl fa-shake"
-              style="--fa-animation-iteration-count: 2"
-            />
-          }
-
         </div>
       </button>
     </div>
