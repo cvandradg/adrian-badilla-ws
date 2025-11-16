@@ -36,7 +36,8 @@
             [enable]="!loginInputForm.invalid"
             [buttonText]="'Accede a Tu Cuenta'"
             (click)="firebaseAuthStore.login(credentials())"
-            [loading]="firebaseAuthStore.isLoginIn()"
+            (keydown)="firebaseAuthStore.login(credentials())"
+            [loading]="firebaseAuthStore.loginLoading()"
             [success]="firebaseAuthStore.loginSuccess()"
           />
 
@@ -67,6 +68,7 @@
           [buttonText]="'Accede con Google'"
           [fontawesomeIcon]="['fab', 'google']"
           (click)="firebaseAuthStore.googleSignIn()"
+          (keydown)="firebaseAuthStore.googleSignIn()"
         />
 
         <adrian-badilla-secondary-animated-button

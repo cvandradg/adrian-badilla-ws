@@ -39,7 +39,7 @@ export class LoginComponent {
 
   constructor() {
     effect(() => {
-      console.log('login', this.firebaseAuthStore.isLoginIn());
+      console.log('login', this.firebaseAuthStore.loginLoading());
     });
   }
 }
