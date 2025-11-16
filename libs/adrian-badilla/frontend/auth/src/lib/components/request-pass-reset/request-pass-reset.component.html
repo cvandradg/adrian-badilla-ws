@@ -35,7 +35,7 @@
             style="--fa-animation-iteration-count: 2"
           ></fa-icon>
 
-          @if (firebaseAuthStore.isReseting()) {
+          @if (firebaseAuthStore.requestPassResetLoading()) {
           <fa-icon
             [icon]="['fas', 'spinner-third']"
             class="icon fa-xl fa-spin"
@@ -46,7 +46,7 @@
       </button>
     </div>
 
-    @if (firebaseAuthStore.resetedSuccess()) {
+    @if (firebaseAuthStore.requestPassResetSuccess()) {
     <adrian-badilla-status-message
       [type]="'success'"
       [icon]="['fas', 'check']"
@@ -57,11 +57,11 @@
         <strong>Click acá</strong> para acceder
       </div>
     </adrian-badilla-status-message>
-    } @if (firebaseAuthStore.error()) {
+    } @if (firebaseAuthStore.requestPassResetError()) {
     <adrian-badilla-status-message
       [type]="'error'"
       [icon]="['fas', 'xmark']"
-      [message]="firebaseAuthStore.error()"
+      [message]="firebaseAuthStore.requestPassResetError()"
     ></adrian-badilla-status-message>
     }
   </div>

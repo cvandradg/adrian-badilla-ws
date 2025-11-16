@@ -1,25 +1,16 @@
-import {
-  withProps,
-  withState,
-  patchState,
-  withMethods,
-  signalStoreFeature,
-} from '@ngrx/signals';
 import { inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
-import { of, map, pipe, exhaustMap, distinctUntilChanged } from 'rxjs';
+import { map, pipe, exhaustMap, distinctUntilChanged } from 'rxjs';
+import { withCustomCallState } from './with-custom-call-state.feature';
+import { withProps, withMethods, signalStoreFeature } from '@ngrx/signals';
 
 export function withRequestPassResetResources() {
   return signalStoreFeature(
-    withState({
-      isReseting: false,
-      resetedSuccess: false,
-      error: null as string | null,
-    }),
+    withCustomCallState('requestPassReset'),
 
     withProps((_, route = inject(ActivatedRoute)) => ({
       firebaseAuthService: inject(FirebaseAuthService),
@@ -35,11 +26,7 @@ export function withRequestPassResetResources() {
       resetPassword: rxMethod<{ newPassword: string }>(
         pipe(
           exhaustMap(({ newPassword }) => {
-            patchState(store, {
-              isReseting: true,
-              resetedSuccess: false,
-              error: null,
-            });
+            store.requestPassResetSetLoading();
 
             return store.firebaseAuthService
               .resetPass(store.oobCode() ?? '', newPassword)
@@ -49,18 +36,13 @@ export function withRequestPassResetResources() {
                     console.log(
                       '✅ Firebase confirmó el cambio de contraseña.'
                     );
-                    patchState(store, {
-                      isReseting: false,
-                      resetedSuccess: true,
-                    });
+                    store.requestPassResetSetSuccess();
                   },
                   error: (err: Error) => {
                     console.error('❌ Error en Firebase:', err);
-                    patchState(store, {
-                      isReseting: false,
-                      error: err?.message || 'Error desconocido',
-                    });
-                    return of(null);
+                    store.requestPassResetSetError(
+                      err?.message || 'Error desconocido'
+                    );
                   },
                 })
               );
