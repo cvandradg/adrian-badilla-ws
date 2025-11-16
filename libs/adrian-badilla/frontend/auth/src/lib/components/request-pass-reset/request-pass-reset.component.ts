@@ -1,13 +1,7 @@
 import { RouterModule } from '@angular/router';
-import { Subject } from 'rxjs';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  OnInit,
-} from '@angular/core';
 import { COMPONENTS, MODULES } from '@adrian-badilla/ui/shared';
 import { firebaseAuthStore } from '../../data-access/stores/auth.store';
+import { inject, Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'adrian-badilla-request-pass-reset',
@@ -16,12 +10,6 @@ import { firebaseAuthStore } from '../../data-access/stores/auth.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterModule, MODULES, COMPONENTS],
 })
-export class RequestPassResetComponent implements OnInit {
+export class RequestPassResetComponent {
   firebaseAuthStore = inject(firebaseAuthStore);
-
-  isPassStrong$ = new Subject<boolean>();
-
-  ngOnInit() {
-    this.firebaseAuthStore.initOobCode();
-  }
 }

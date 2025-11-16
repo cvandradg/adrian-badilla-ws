@@ -38,6 +38,7 @@ __metadata:
     "@fortawesome/pro-solid-svg-icons": "npm:^7.1.0"
     "@fortawesome/pro-thin-svg-icons": "npm:^7.1.0"
     "@fortawesome/sharp-solid-svg-icons": "npm:^7.1.0"
+    "@ngrx/operators": "npm:^20.1.0"
     "@ngrx/signals": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
     "@nx/angular": "npm:22.0.2"
@@ -5515,6 +5516,17 @@ __metadata:
     "@emnapi/runtime": "npm:^1.4.3"
     "@tybys/wasm-util": "npm:^0.10.0"
   checksum: 10c0/6d07922c0613aab30c6a497f4df297ca7c54e5b480e00035e0209b872d5c6aab7162fc49477267556109c2c7ed1eb9c65a174e27e9b87568106a87b0a6e3ca7d
+  languageName: node
+  linkType: hard
+
+"@ngrx/operators@npm:^20.1.0":
+  version: 20.1.0
+  resolution: "@ngrx/operators@npm:20.1.0"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    rxjs: ^6.5.3 || ^7.4.0
+  checksum: 10c0/c590cab4105d8861282331f1c7e8ecb7bbfb0dedf48fa9be9e9fa55219945b37d2fad523454cae538bce6ed0d5e9551c5026ecc726dac163acd70ba6c0613e29
   languageName: node
   linkType: hard
 

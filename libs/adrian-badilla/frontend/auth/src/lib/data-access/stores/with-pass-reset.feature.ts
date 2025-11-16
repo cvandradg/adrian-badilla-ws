@@ -1,23 +1,14 @@
-import {
-  withProps,
-  withState,
-  patchState,
-  withMethods,
-  signalStoreFeature,
-} from '@ngrx/signals';
-import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, exhaustMap, of, pipe, tap } from 'rxjs';
 import { inject } from '@angular/core';
+import { exhaustMap, pipe, tap } from 'rxjs';
+import { tapResponse } from '@ngrx/operators';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
+import { withCustomCallState } from './with-custom-call-state.feature';
+import { withProps, withMethods, signalStoreFeature } from '@ngrx/signals';
 
 export function withPassResetResources() {
   return signalStoreFeature(
-    withState({
-      loading: false,
-      requested: false,
-      error: null as string | null,
-    }),
-
+    withCustomCallState('passReset'),
     withProps(() => ({
       firebaseAuthService: inject(FirebaseAuthService),
     })),
@@ -25,23 +16,12 @@ export function withPassResetResources() {
     withMethods((store) => ({
       passReset: rxMethod<string>(
         pipe(
-          tap(() => patchState(store, { loading: true, error: null })),
+          tap(() => store.passResetSetLoading()),
           exhaustMap((email) =>
             store.firebaseAuthService.recoverPassword(email).pipe(
-              tap(() => {
-                console.log('Correo de recuperación enviado');
-                patchState(store, {
-                  loading: false,
-                  requested: true,
-                });
-              }),
-              catchError((err) => {
-                console.error('Error al enviar correo:', err);
-                patchState(store, {
-                  loading: false,
-                  error: err.message ?? 'Error desconocido',
-                });
-                return of(null);
+              tapResponse({
+                next: () => store.passResetSetSuccess(),
+                error: (err: Error) => store.passResetSetError(err.message),
               })
             )
           )
