@@ -22,7 +22,6 @@
         mat-button
         (click)="
           firebaseAuthStore.resetPassword({
-            oobCode: firebaseAuthStore.oobCode(),
             newPassword: passInput.value
           })
         "
@@ -36,7 +35,7 @@
             style="--fa-animation-iteration-count: 2"
           ></fa-icon>
 
-          @if (firebaseAuthStore.loading()) {
+          @if (firebaseAuthStore.requestPassResetLoading()) {
           <fa-icon
             [icon]="['fas', 'spinner-third']"
             class="icon fa-xl fa-spin"
@@ -47,7 +46,7 @@
       </button>
     </div>
 
-    @if (firebaseAuthStore.reseted()) {
+    @if (firebaseAuthStore.requestPassResetSuccess()) {
     <adrian-badilla-status-message
       [type]="'success'"
       [icon]="['fas', 'check']"
@@ -58,7 +57,9 @@
         <strong>Click acá</strong> para acceder
       </div>
     </adrian-badilla-status-message>
-    } @if (firebaseAuthStore.error()) {
+    }
+
+    @if (firebaseAuthStore.requestPassResetError()) {
     <adrian-badilla-status-message
       [type]="'error'"
       [icon]="['fas', 'xmark']"

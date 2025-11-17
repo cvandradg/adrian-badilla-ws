@@ -11,7 +11,7 @@ export function withCustomCallState<Name extends string>(name: Name) {
     Record<`${Name}Success`, boolean> &
     Record<`${Name}Error`, string | null>;
 
-  type Methods = Record<`${Name}setLoading`, () => void> &
+  type Methods = Record<`${Name}SetLoading`, () => void> &
     Record<`${Name}SetSuccess`, () => void> &
     Record<`${Name}SetError`, (error: string | null) => void> &
     Record<`${Name}ResetState`, () => void>;
