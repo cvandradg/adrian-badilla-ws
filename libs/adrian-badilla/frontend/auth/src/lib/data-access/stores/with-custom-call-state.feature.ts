@@ -28,7 +28,7 @@ export function withCustomCallState<Name extends string>(name: Name) {
     withMethods(
       (store): Methods =>
         ({
-          [`${name}SetSuccess`]: () => {
+          [`${name}SetLoading`]: () => {
             patchState(
               store as WritableStateSource<State>,
               {
@@ -39,7 +39,7 @@ export function withCustomCallState<Name extends string>(name: Name) {
             );
           },
 
-          [`${name}SetLoading`]: () => {
+          [`${name}SetSuccess`]: () => {
             patchState(
               store as WritableStateSource<State>,
               {
@@ -54,7 +54,7 @@ export function withCustomCallState<Name extends string>(name: Name) {
             patchState(
               store as WritableStateSource<State>,
               {
-                [`${name}Loading`]: true,
+                [`${name}Loading`]: false,
                 [`${name}Success`]: false,
                 [`${name}Error`]: error,
               } as Partial<State>
@@ -64,7 +64,11 @@ export function withCustomCallState<Name extends string>(name: Name) {
           [`${name}ResetState`]: () => {
             patchState(
               store as WritableStateSource<State>,
-              baseState as Partial<State>
+              {
+                [`${name}Loading`]: false,
+                [`${name}Success`]: false,
+                [`${name}Error`]: null,
+              } as Partial<State>
             );
           },
         } as Methods)

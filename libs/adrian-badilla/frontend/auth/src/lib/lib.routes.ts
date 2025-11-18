@@ -11,4 +11,9 @@ export default [
     component: RegisterComponent,
     pathMatch: 'full',
   },
+    {
+    path: 'request-pass-reset',
+    component: RequestPassResetComponent,
+    pathMatch: 'full',
+  },
 ] as Route[];
