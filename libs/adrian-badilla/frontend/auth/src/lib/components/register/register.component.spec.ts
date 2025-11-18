@@ -18,11 +18,13 @@ describe('RegisterComponent', () => {
   let fixture: ComponentFixture<RegisterComponent>;
   let component: RegisterComponent;
 
-  const mockStore = {
-    createAccount: jest.fn(),
-    isRegistering: jest.fn().mockReturnValue(false),
-    registerSuccess: jest.fn().mockReturnValue(false),
-  };
+const mockStore = {
+  createAccount: jest.fn(),
+  registerLoading: jest.fn().mockReturnValue(false),
+  registerSuccess: jest.fn().mockReturnValue(false),
+  registerError: jest.fn().mockReturnValue(null),
+};
+
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
