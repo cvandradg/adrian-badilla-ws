@@ -31,11 +31,19 @@ export function withLoginResources() {
       login: rxMethod<Credentials>(
         pipe(
           tap(() => innerStore.loginSetLoading()),
-          exhaustMap((creds) => innerStore.firebaseAuthService.login(creds)),
-          tap((resp) => {
-            console.log('Login Firebase:', resp);
-            innerStore.loginSetSuccess();
-          })
+          exhaustMap((creds) =>
+            innerStore.firebaseAuthService.login(creds).pipe(
+              tapResponse({
+                next: (resp) => {
+                  console.log('Login Firebase:', resp);
+                  innerStore.loginSetSuccess();
+                },
+                error: (err: Error) => {
+                  innerStore.loginSetError(err.message);
+                },
+              })
+            )
+          )
         )
       ),
     }))
