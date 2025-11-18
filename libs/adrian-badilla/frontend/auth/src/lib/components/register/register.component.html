@@ -38,20 +38,20 @@
         <div class="register-button">
           <p>Crear Cuenta</p>
 
-          @if (!firebaseAuthStore.isRegistering() &&
+          @if (!firebaseAuthStore.registerLoading() &&
           !firebaseAuthStore.registerSuccess()) {
           <fa-icon
             [icon]="['fas', 'arrow-right']"
             class="icon fa-xl fa-shake"
             style="--fa-animation-iteration-count: 2"
           />
-          } @if (firebaseAuthStore.isRegistering()) {
+          } @if (firebaseAuthStore.registerLoading()) {
           <fa-icon
             [icon]="['fas', 'spinner-third']"
             class="icon fa-xl fa-spin"
             style="--fa-animation-duration: 1s"
           />
-          } @if (!firebaseAuthStore.isRegistering() &&
+          } @if (!firebaseAuthStore.registerLoading() &&
           firebaseAuthStore.registerSuccess()) {
           <fa-icon
             [icon]="['fas', 'check']"
