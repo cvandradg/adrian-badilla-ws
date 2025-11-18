@@ -36,7 +36,7 @@
             [enable]="!loginInputForm.invalid"
             [buttonText]="'Accede a Tu Cuenta'"
             (click)="firebaseAuthStore.login(credentials())"
-            [loading]="firebaseAuthStore.isLoginIn()"
+            [loading]="firebaseAuthStore.loginLoading()"
             [success]="firebaseAuthStore.loginSuccess()"
           />
 

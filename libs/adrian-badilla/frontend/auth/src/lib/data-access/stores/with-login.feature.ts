@@ -1,54 +1,40 @@
-import {
-  withProps,
-  withState,
-  patchState,
-  withMethods,
-  signalStoreFeature,
-} from '@ngrx/signals';
-import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { exhaustMap, pipe, tap } from 'rxjs';
 import { inject } from '@angular/core';
+import { exhaustMap, pipe, tap } from 'rxjs';
+import { tapResponse } from '@ngrx/operators';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { withCustomCallState } from './with-custom-call-state.feature';
+import { withProps, withMethods, signalStoreFeature } from '@ngrx/signals';
 import { Credentials, FirebaseAuthService } from '@adrian-badilla/ui/shared';
-import { withLoginInitialState } from '../types/with-login';
 
 export function withLoginResources() {
   return signalStoreFeature(
-    withState<withLoginInitialState>({
-      isLoginIn: false,
-      loginError: null,
-      loginSuccess: false,
-    }),
+    withCustomCallState('login'),
+
     withProps(() => ({
       firebaseAuthService: inject(FirebaseAuthService),
     })),
     withMethods((innerStore) => ({
       googleSignIn: rxMethod<void>(
         pipe(
-          tap(() =>
-            patchState(innerStore, { isLoginIn: true, loginSuccess: false })
-          ),
-          exhaustMap(() => innerStore.firebaseAuthService.googleSignin()),
-          tap(() =>
-            patchState(innerStore, { isLoginIn: false, loginSuccess: true })
+          tap(() => innerStore.loginSetLoading()),
+          exhaustMap(() =>
+            innerStore.firebaseAuthService.googleSignin().pipe(
+              tapResponse({
+                next: () => innerStore.loginSetSuccess(),
+                error: (err: Error) => innerStore.loginSetError(err.message),
+              })
+            )
           )
         )
       ),
 
       login: rxMethod<Credentials>(
         pipe(
-          tap(() =>
-            patchState(innerStore, {
-              isLoginIn: true,
-              loginSuccess: false,
-            })
-          ),
+          tap(() => innerStore.loginSetLoading()),
           exhaustMap((creds) => innerStore.firebaseAuthService.login(creds)),
           tap((resp) => {
             console.log('Login Firebase:', resp);
-            patchState(innerStore, {
-              isLoginIn: false,
-              loginSuccess: true,
-            });
+            innerStore.loginSetSuccess();
           })
         )
       ),
