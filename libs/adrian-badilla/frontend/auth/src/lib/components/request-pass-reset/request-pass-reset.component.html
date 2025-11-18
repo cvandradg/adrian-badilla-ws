@@ -57,9 +57,7 @@
         <strong>Click acá</strong> para acceder
       </div>
     </adrian-badilla-status-message>
-    }
-
-    @if (firebaseAuthStore.requestPassResetError()) {
+    } @if (firebaseAuthStore.requestPassResetError()) {
     <adrian-badilla-status-message
       [type]="'error'"
       [icon]="['fas', 'xmark']"

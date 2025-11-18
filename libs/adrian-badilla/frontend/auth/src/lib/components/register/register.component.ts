@@ -1,13 +1,13 @@
 import {
+  Signal,
   inject,
   Component,
   ChangeDetectionStrategy,
-  Signal,
 } from '@angular/core';
 import {
+  MODULES,
   COMPONENTS,
   Credentials,
-  MODULES,
   validations,
 } from '@adrian-badilla/ui/shared';
 import { RouterModule } from '@angular/router';

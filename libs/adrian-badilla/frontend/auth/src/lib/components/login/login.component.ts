@@ -1,15 +1,15 @@
 import {
-  ChangeDetectionStrategy,
-  Component,
   effect,
   inject,
   Signal,
+  Component,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
-  COMPONENTS,
-  Credentials,
   MODULES,
+  COMPONENTS,
   validations,
+  Credentials,
 } from '@adrian-badilla/ui/shared';
 import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';

@@ -1,8 +1,8 @@
 import {
-  patchState,
-  signalStoreFeature,
-  withMethods,
   withState,
+  patchState,
+  withMethods,
+  signalStoreFeature,
   WritableStateSource,
 } from '@ngrx/signals';
 
