@@ -1,0 +1,37 @@
+<div
+  class="container"
+>
+  <!-- *ngrxLet="{
+    user: facade.user$ | ngrxPush,
+    error: emailVerificationStore.error$ | ngrxPush,
+    loading: emailVerificationStore.loading$ | ngrxPush
+  } as vm" -->
+
+  <!-- *ngIf="!vm.error?.status && !vm.user?.emailVerified" -->
+  <div class="title">Verificacion de cuenta</div>
+  <fa-icon
+    [icon]="['fas', 'spinner-third']"
+    class="icon fa-spin fa-2xl default-color"
+    style="--fa-animation-duration: 1s"
+  />
+  <div class="description">
+    <adrian-badilla-status-message
+      [type]="'success'"
+      [routerLink]="'/'"
+      [icon]="['fas', 'check']"
+      [message]="'Verificación completada correctamente'"
+      >
+      <!-- [display]="vm.user?.emailVerified && !vm.loading && !vm.error?.status" -->
+
+      <p><strong> Click aqui</strong> para entrar.</p>
+    </adrian-badilla-status-message>
+
+    <adrian-badilla-status-message
+    [type]="'error'"
+    [icon]="['fas', 'exclamation-triangle']"
+    [message]="'Error al verificar la cuenta'"
+    />
+    <!-- [display]="vm.error?.status && !vm.loading" -->
+
+  </div>
+</div>
