@@ -1,93 +1,68 @@
 <div class="container">
-  <!-- *ngrxLet="{
-    error: requestPassResetStore.error$ | ngrxPush,
-    loading: requestPassResetStore.loading$ | ngrxPush,
-    reseted: requestPassResetStore.reseted$ | ngrxPush,
-    isButtonEnable: enableButton$ | ngrxPush
-  } as vm" -->
-
   <div class="title">Cambiar contraseña</div>
   <div class="description">
     Si no deseas cambiar la contraseña cierra esta ventana.
   </div>
 
-  <!-- [formGroup]="loginInputForm" -->
   <div class="reset-pass-input">
     <form class="form-pass-reset-inputs">
       <mat-form-field>
         <mat-label>Contraseña</mat-label>
-        <input matInput placeholder="EjemploDeClave1!" type="password" />
-        <!-- formControlName="pass" -->
-
-        <!-- (keyup.enter)="
-            requestPassResetStore.passReset$({
-              pass: loginInputForm.controls.pass.value || '',
-            })
-          " -->
+        <input
+          matInput
+          placeholder="EjemploDeClave1!"
+          type="password"
+          #passInput
+        />
       </mat-form-field>
     </form>
 
     <div class="horizontal-animation clase">
-      <!-- [ngClass]="{ 'enabled-button': vm.isButtonEnable || vm.reseted }" -->
-
-      <button mat-button>
-        <!-- [disabled]="vm.reseted"
+      <button
+        mat-button
         (click)="
-          vm.isButtonEnable &&
-            requestPassResetStore.passReset$({
-              pass: loginInputForm.controls.pass.value || '',
-            })
-        " -->
-
-        <!-- (keyup.enter)="
-          vm.isButtonEnable &&
-            requestPassResetStore.passReset$({
-              pass: loginInputForm.controls.pass.value || '',
-            })
-        " -->
-
+          firebaseAuthStore.resetPassword({
+            newPassword: passInput.value
+          })
+        "
+      >
         <div class="pass-reset-button">
           <p>Cambiar contraseña</p>
-          <!-- *ngIf="!vm.loading" -->
+
           <fa-icon
             [icon]="['fas', 'arrow-right']"
-            style="--fa-animation-iteration-count: 2"
             class="icon fa-xl fa-shake"
             style="--fa-animation-iteration-count: 2"
-          />
+          ></fa-icon>
 
-          <!-- *ngIf="vm.loading" -->
+          @if (firebaseAuthStore.requestPassResetLoading()) {
           <fa-icon
             [icon]="['fas', 'spinner-third']"
             class="icon fa-xl fa-spin"
             style="--fa-animation-duration: 1s"
-          />
+          ></fa-icon>
+          }
         </div>
       </button>
     </div>
 
+    @if (firebaseAuthStore.requestPassResetSuccess()) {
     <adrian-badilla-status-message
       [type]="'success'"
       [icon]="['fas', 'check']"
       [routerLink]="'/'"
       [message]="'Creaste una nueva contraseña..'"
     >
-      <!-- [display]="!vm.loading && vm.reseted" -->
-
       <div class="success-message centered">
-        <!-- *ngIf="!vm.loading && vm.reseted" -->
-        <strong> Click aca</strong> para acceder
+        <strong>Click acá</strong> para acceder
       </div>
     </adrian-badilla-status-message>
-
-    <adrian-badilla-status-message [type]="'error'" [icon]="['fas', 'xmark']" />
-    <!-- [message]="'vm.error?.message'"
-      [display]="!vm.loading && vm.error?.status" -->
-
-    <!-- <adrianbadilla-strength-meter
-      *ngIf="!vm.reseted && !vm.error?.status"
-      [password]="loginInputForm.get('pass')?.value || ''"
-      (enableButton)="isPassStrong$.next($event)"
-    /> -->
+    } @if (firebaseAuthStore.requestPassResetError()) {
+    <adrian-badilla-status-message
+      [type]="'error'"
+      [icon]="['fas', 'xmark']"
+      [message]="firebaseAuthStore.requestPassResetError()"
+    ></adrian-badilla-status-message>
+    }
   </div>
 </div>

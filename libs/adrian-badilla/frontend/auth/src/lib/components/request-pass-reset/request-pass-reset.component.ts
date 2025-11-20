@@ -1,7 +1,7 @@
-import { RouterModule } from '@angular/router';
-import { Subject } from 'rxjs';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { COMPONENTS, MODULES } from '@adrian-badilla/ui/shared';
+import { firebaseAuthStore } from '../../data-access/stores/auth.store';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 @Component({
   selector: 'adrian-badilla-request-pass-reset',
@@ -11,16 +11,6 @@ import { COMPONENTS, MODULES } from '@adrian-badilla/ui/shared';
   imports: [RouterModule, MODULES, COMPONENTS],
 })
 export class RequestPassResetComponent {
-  isPassStrong$ = new Subject<boolean>();
-
-  // isValidPassword$ = this.loginInputForm.valueChanges.pipe(
-  //   map(() => !this.loginInputForm.controls.pass.invalid)
-  // );
-
-  // enableButton$ = combineLatest([
-  //   this.isValidPassword$,
-  //   this.isPassStrong$,
-  // ]).pipe(
-  //   map(([isValidPassword, isPassStrong]) => isValidPassword && isPassStrong)
-  // );
+  route = inject(ActivatedRoute);
+  firebaseAuthStore = inject(firebaseAuthStore);
 }

@@ -20,8 +20,9 @@ describe('RegisterComponent', () => {
 
   const mockStore = {
     createAccount: jest.fn(),
-    isRegistering: jest.fn().mockReturnValue(false),
+    registerLoading: jest.fn().mockReturnValue(false),
     registerSuccess: jest.fn().mockReturnValue(false),
+    registerError: jest.fn().mockReturnValue(null),
   };
 
   beforeEach(async () => {

@@ -1,41 +1,29 @@
-import {
-  withProps,
-  withState,
-  patchState,
-  withMethods,
-  signalStoreFeature,
-} from '@ngrx/signals';
-import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { exhaustMap, pipe, tap } from 'rxjs';
 import { inject } from '@angular/core';
+import { exhaustMap, pipe, tap } from 'rxjs';
+import { tapResponse } from '@ngrx/operators';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { withCustomCallState } from './with-custom-call-state.feature';
+import { withProps, withMethods, signalStoreFeature } from '@ngrx/signals';
 import { Credentials, FirebaseAuthService } from '@adrian-badilla/ui/shared';
 
 export function withRegisterResources() {
   return signalStoreFeature(
-    withState({
-      isRegistering: false,
-      registerError: null,
-      registerSuccess: false,
-    }),
-
+    withCustomCallState('register'),
     withProps(() => ({
       firebaseAuthService: inject(FirebaseAuthService),
     })),
-
     withMethods((innerStore) => ({
       createAccount: rxMethod<Credentials>(
         pipe(
-          tap(() => patchState(innerStore, { isRegistering: true })),
+          tap(() => innerStore.registerSetLoading()),
           exhaustMap((creds) =>
-            innerStore.firebaseAuthService.createAccount(creds)
-          ),
-          tap((resp) => {
-            console.log('Cuenta creada Firebase:', resp);
-            patchState(innerStore, {
-              isRegistering: false,
-              registerSuccess: true,
-            });
-          })
+            innerStore.firebaseAuthService.createAccount(creds).pipe(
+              tapResponse({
+                next: () => innerStore.registerSetSuccess(),
+                error: (err: Error) => innerStore.registerSetError(err.message),
+              })
+            )
+          )
         )
       ),
     }))
