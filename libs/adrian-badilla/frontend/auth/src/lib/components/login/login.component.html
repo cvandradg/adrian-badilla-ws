@@ -15,9 +15,10 @@
               placeholder="algunCorreo@dominio.com"
               type="email"
               formControlName="user"
+              (keyup.enter)="firebaseAuthStore.login(credentials())"
             />
-            <!-- (keyup.enter)="loginStore.accessAccount$()" -->
           </mat-form-field>
+
           <mat-form-field>
             <mat-label>Contraseña</mat-label>
             <input
@@ -25,8 +26,8 @@
               placeholder="EjemploDeClave1!"
               type="password"
               formControlName="pass"
+              (keyup.enter)="firebaseAuthStore.login(credentials())"
             />
-            <!-- (keyup.enter)="loginStore.accessAccount$()" -->
           </mat-form-field>
         </form>
 
