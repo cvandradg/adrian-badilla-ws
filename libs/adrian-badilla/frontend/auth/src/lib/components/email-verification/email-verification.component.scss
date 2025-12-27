@@ -1,19 +1,18 @@
-@use 'index' as *;
+@use 'utilities/layout/helpers' as *;
 
 .default-color {
   color: rgb(126, 156, 255);
 }
 
 .container {
-  display: flex;
-  flex-direction: column;
+@include flex-column;
   align-items: center;
   width: 90%;
   margin: 5rem auto;
 }
 
 .container {
-  color: #fff;
+  color: var(--clr-neutral-100);
   .title {
     font-size: 3rem;
     font-weight: 700;

@@ -1,33 +1,42 @@
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { Component, inject } from '@angular/core';
-import { provideMockStore } from '@ngrx/store/testing';
-import { provideComponentStore } from '@ngrx/component-store';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MODULES } from '@adrianbadilla/shared/exports/export-modules';
 import {
-  BaseComponent,
-  MockComponentStore,
-} from '@adrianbadilla/shared/classes/tests-helper';
+  MODULES,
+  COMPONENTS,
+  FirebaseAuthService,
+} from '@adrian-badilla/ui/shared';
+import { EmailVerificationComponent } from './email-verification.component';
+import { inject, provideAppInitializer } from '@angular/core';
+import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { firebaseAuthStore } from '../../data-access/stores/auth.store';
+import { FontAwesomeicons } from '../../../../../shared/src/lib/assets/icons/fontawesome';
+import { RouterTestingModule } from '@angular/router/testing';
 
-@Component({
-  templateUrl: './email-verification.component.html',
-  standalone: true,
-  imports: [CommonModule, RouterModule, MODULES],
-})
-export class EmailVerificationComponent extends BaseComponent {
-  emailVerificationStore = inject(MockComponentStore);
-}
+jest.mock('firebase/auth', () => ({
+  GoogleAuthProvider: {},
+}));
+
 describe('EmailVerificationComponent', () => {
-  let component: EmailVerificationComponent;
   let fixture: ComponentFixture<EmailVerificationComponent>;
+  let component: EmailVerificationComponent;
+
+  const mockStore = {
+
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EmailVerificationComponent],
+      imports: [
+        EmailVerificationComponent,
+        COMPONENTS,
+        MODULES,
+        RouterTestingModule,
+      ],
       providers: [
-        provideMockStore({}),
-        provideComponentStore(MockComponentStore),
+        { provide: firebaseAuthStore, useValue: mockStore },
+        { provide: FirebaseAuthService, useValue: {} },
+        provideAppInitializer(() => {
+          inject(FaIconLibrary).addIcons(...FontAwesomeicons);
+        }),
       ],
     }).compileComponents();
 
