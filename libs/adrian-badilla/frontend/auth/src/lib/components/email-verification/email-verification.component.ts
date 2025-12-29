@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MODULES, COMPONENTS } from '@adrian-badilla/ui/shared';
+import { firebaseAuthStore } from '../../data-access/stores/auth.store';
 
 @Component({
   templateUrl: './email-verification.component.html',
@@ -12,4 +13,7 @@ import { MODULES, COMPONENTS } from '@adrian-badilla/ui/shared';
   imports: [CommonModule, RouterModule, MODULES, COMPONENTS],
 })
 export class EmailVerificationComponent {
+    firebaseAuthStore = inject(firebaseAuthStore);
+
+
 }
