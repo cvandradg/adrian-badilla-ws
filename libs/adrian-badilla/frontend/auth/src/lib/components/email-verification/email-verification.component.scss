@@ -5,7 +5,7 @@
 }
 
 .container {
-@include flex-column;
+  @include flex-column;
   align-items: center;
   width: 90%;
   margin: 5rem auto;

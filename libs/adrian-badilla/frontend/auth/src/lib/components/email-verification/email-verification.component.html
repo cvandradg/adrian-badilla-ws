@@ -1,6 +1,4 @@
-<div
-  class="container"
->
+<div class="container">
   <!-- *ngrxLet="{
     user: facade.user$ | ngrxPush,
     error: emailVerificationStore.error$ | ngrxPush,
@@ -20,23 +18,19 @@
       [routerLink]="'/'"
       [icon]="['fas', 'check']"
       [message]="'Verificación completada correctamente'"
-      >
+    >
       <!-- [display]="vm.user?.emailVerified && !vm.loading && !vm.error?.status" -->
 
       <p><strong> Click aqui</strong> para entrar.</p>
     </adrian-badilla-status-message>
 
     <adrian-badilla-status-message
-    [type]="'error'"
-    [icon]="['fas', 'exclamation-triangle']"
-    [message]="'Error al verificar la cuenta'"
+      [type]="'error'"
+      [icon]="['fas', 'exclamation-triangle']"
+      [message]="'Error al verificar la cuenta'"
     />
     <!-- [display]="vm.error?.status && !vm.loading" -->
-
   </div>
 </div>
 
-<button (click)="firebaseAuthStore.testLog()">
-  Probar SignalStore
-</button>
-
+<button (click)="firebaseAuthStore.testLog()">Probar SignalStore</button>

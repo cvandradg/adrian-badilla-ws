@@ -13,7 +13,5 @@ import { firebaseAuthStore } from '../../data-access/stores/auth.store';
   imports: [CommonModule, RouterModule, MODULES, COMPONENTS],
 })
 export class EmailVerificationComponent {
-    firebaseAuthStore = inject(firebaseAuthStore);
-
-
+  firebaseAuthStore = inject(firebaseAuthStore);
 }

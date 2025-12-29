@@ -19,9 +19,7 @@ describe('EmailVerificationComponent', () => {
   let fixture: ComponentFixture<EmailVerificationComponent>;
   let component: EmailVerificationComponent;
 
-  const mockStore = {
-
-  };
+  const mockStore = {};
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
