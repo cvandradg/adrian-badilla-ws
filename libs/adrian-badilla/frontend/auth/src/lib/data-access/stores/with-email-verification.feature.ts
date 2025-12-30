@@ -3,7 +3,8 @@ import { withCustomCallState } from './with-custom-call-state.feature';
 import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
 import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { from, tap } from 'rxjs';
+import { exhaustMap, pipe,} from 'rxjs';
+import { tapResponse } from '@ngrx/operators';
 
 export function withEmailVerificationResources() {
   return signalStoreFeature(
@@ -12,12 +13,23 @@ export function withEmailVerificationResources() {
       firebaseAuthService: inject(FirebaseAuthService),
     })),
 
-    withMethods(() => ({
-  testRx: rxMethod<void>(() =>
-    from(['hola']).pipe(
-      tap(x => console.log('probando log', x))
-    )
-  ),
+    withMethods((innerStore) => ({
+      verifyEmailFromRouteTest: rxMethod<void>(
+        pipe(
+          exhaustMap(() =>
+            innerStore.firebaseAuthService.verifyEmail('TEST_CODE').pipe(
+              tapResponse({
+                next: (res) => {
+                  console.log('resultado verifyEmail (test):', res);
+                },
+                error: (err: unknown) => {
+                  console.error('ERROR verifyEmail (test):', err);
+                },
+              })
+            )
+          )
+        )
+      ),
     }))
   );
 }
