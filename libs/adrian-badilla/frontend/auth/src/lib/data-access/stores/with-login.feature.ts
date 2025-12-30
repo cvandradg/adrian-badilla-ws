@@ -6,19 +6,19 @@ import { withCustomCallState } from './with-custom-call-state.feature';
 import { withProps, withMethods, signalStoreFeature } from '@ngrx/signals';
 import { Credentials, FirebaseAuthService } from '@adrian-badilla/ui/shared';
 
-export function withLoginResources() {
+export function withLoginResources({ store }: { store: any }) {
   return signalStoreFeature(
     withCustomCallState('login'),
 
-    withProps(() => ({
-      _firebaseAuthService: inject(FirebaseAuthService),
-    })),
+    // withProps(() => ({
+    //   _firebaseAuthService: inject(FirebaseAuthService),
+    // })),
     withMethods((innerStore) => ({
       googleSignIn: rxMethod<void>(
         pipe(
           tap(() => innerStore.loginSetLoading()),
           exhaustMap(() =>
-            innerStore._firebaseAuthService.googleSignin().pipe(
+            store._firebaseAuthService.googleSignin().pipe(
               tapResponse({
                 next: () => innerStore.loginSetSuccess(),
                 error: (err: Error) => innerStore.loginSetError(err.message),
@@ -32,7 +32,7 @@ export function withLoginResources() {
         pipe(
           tap(() => innerStore.loginSetLoading()),
           exhaustMap((creds) =>
-            innerStore._firebaseAuthService.login(creds).pipe(
+            store._firebaseAuthService.login(creds).pipe(
               tapResponse({
                 next: (resp) => {
                   console.log('Login Firebase:', resp);

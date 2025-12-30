@@ -8,49 +8,51 @@ import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { withCustomCallState } from './with-custom-call-state.feature';
 
-export function withEmailVerificationResources() {
+export function withEmailVerificationResources({
+  store,
+}: {
+  store: {
+    _firebaseAuthService: FirebaseAuthService;
+  };
+}) {
   return signalStoreFeature(
     withCustomCallState('emailVerification'),
 
-    withProps(
-      (
-        _,
-        route = inject(ActivatedRoute),
-      ) => ({
-        _firebaseAuthService:inject(FirebaseAuthService),
-        _oobCode: toSignal(
-          route.queryParamMap.pipe(
-            map((params) => params.get('oobCode')),
-            distinctUntilChanged()
-          )
-        ),
-      })
-    ),
+    withProps((_, route = inject(ActivatedRoute)) => ({
+      _oobCode: toSignal(
+        route.queryParamMap.pipe(
+          map((params) => params.get('oobCode')),
+          distinctUntilChanged()
+        )
+      ),
+    })),
 
-    withMethods((store) => ({
+    withMethods((innerStore) => ({
       verifyEmailFromRoute: rxMethod<void>(
         pipe(
           exhaustMap(() => {
-            store.emailVerificationSetLoading();
-
-            console.log('📩 oobCode leído desde la URL:', store._oobCode());
+            innerStore.emailVerificationSetLoading();
+            console.log(
+              '📩 oobCode leído desde la URL:',
+              innerStore._oobCode()
+            );
 
             return store._firebaseAuthService
-              .verifyEmail(store._oobCode() ?? '')
+              .verifyEmail(innerStore._oobCode() ?? '')
               .pipe(
                 tapResponse({
                   next: () => {
                     console.log(
                       '✅ Firebase confirmó la verificación de correo'
                     );
-                    store.emailVerificationSetSuccess();
+                    innerStore.emailVerificationSetSuccess();
                   },
                   error: (err: Error) => {
                     console.error(
                       '❌ Error al verificar el correo en Firebase:',
                       err
                     );
-                    store.emailVerificationSetError(
+                    innerStore.emailVerificationSetError(
                       err?.message ||
                         'Error desconocido al verificar el correo.'
                     );

@@ -8,12 +8,11 @@ import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { withCustomCallState } from './with-custom-call-state.feature';
 
-export function withRequestPassResetResources() {
+export function withRequestPassResetResources({ store }: { store: any }) {
   return signalStoreFeature(
     withCustomCallState('requestPassReset'),
 
     withProps((_, route = inject(ActivatedRoute)) => ({
-      _firebaseAuthService: inject(FirebaseAuthService),
       oobCode: toSignal(
         route.queryParamMap.pipe(
           map((params) => params.get('oobCode')),
@@ -22,11 +21,11 @@ export function withRequestPassResetResources() {
       ),
     })),
 
-    withMethods((store) => ({
+    withMethods((innerStore) => ({
       resetPassword: rxMethod<{ newPassword: string }>(
         pipe(
           exhaustMap(({ newPassword }) => {
-            store.requestPassResetSetLoading();
+            innerStore.requestPassResetSetLoading();
 
             return store._firebaseAuthService
               .resetPass(store.oobCode() ?? '', newPassword)

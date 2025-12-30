@@ -6,18 +6,14 @@ import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
 import { withCustomCallState } from './with-custom-call-state.feature';
 import { withProps, withMethods, signalStoreFeature } from '@ngrx/signals';
 
-export function withPassResetResources() {
+export function withPassResetResources({ store }: { store: any }) {
   return signalStoreFeature(
     withCustomCallState('passReset'),
 
-    withProps(() => ({
-      _firebaseAuthService: inject(FirebaseAuthService),
-    })),
-
-    withMethods((store) => ({
+    withMethods((innerStore) => ({
       passReset: rxMethod<string>(
         pipe(
-          tap(() => store.passResetSetLoading()),
+          tap(() => innerStore.passResetSetLoading()),
           exhaustMap((email) =>
             store._firebaseAuthService.recoverPassword(email).pipe(
               tapResponse({
