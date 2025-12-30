@@ -13,7 +13,7 @@ export function withRequestPassResetResources() {
     withCustomCallState('requestPassReset'),
 
     withProps((_, route = inject(ActivatedRoute)) => ({
-      firebaseAuthService: inject(FirebaseAuthService),
+      _firebaseAuthService: inject(FirebaseAuthService),
       oobCode: toSignal(
         route.queryParamMap.pipe(
           map((params) => params.get('oobCode')),
@@ -28,7 +28,7 @@ export function withRequestPassResetResources() {
           exhaustMap(({ newPassword }) => {
             store.requestPassResetSetLoading();
 
-            return store.firebaseAuthService
+            return store._firebaseAuthService
               .resetPass(store.oobCode() ?? '', newPassword)
               .pipe(
                 tapResponse({

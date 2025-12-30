@@ -11,7 +11,7 @@ export function withPassResetResources() {
     withCustomCallState('passReset'),
 
     withProps(() => ({
-      firebaseAuthService: inject(FirebaseAuthService),
+      _firebaseAuthService: inject(FirebaseAuthService),
     })),
 
     withMethods((store) => ({
@@ -19,7 +19,7 @@ export function withPassResetResources() {
         pipe(
           tap(() => store.passResetSetLoading()),
           exhaustMap((email) =>
-            store.firebaseAuthService.recoverPassword(email).pipe(
+            store._firebaseAuthService.recoverPassword(email).pipe(
               tapResponse({
                 next: () => store.passResetSetSuccess(),
                 error: (err: Error) => store.passResetSetError(err.message),

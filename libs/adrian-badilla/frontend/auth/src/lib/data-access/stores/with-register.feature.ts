@@ -10,14 +10,14 @@ export function withRegisterResources() {
   return signalStoreFeature(
     withCustomCallState('register'),
     withProps(() => ({
-      firebaseAuthService: inject(FirebaseAuthService),
+      _firebaseAuthService: inject(FirebaseAuthService),
     })),
     withMethods((innerStore) => ({
       createAccount: rxMethod<Credentials>(
         pipe(
           tap(() => innerStore.registerSetLoading()),
           exhaustMap((creds) =>
-            innerStore.firebaseAuthService.createAccount(creds).pipe(
+            innerStore._firebaseAuthService.createAccount(creds).pipe(
               tapResponse({
                 next: () => innerStore.registerSetSuccess(),
                 error: (err: Error) => innerStore.registerSetError(err.message),

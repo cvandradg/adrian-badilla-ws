@@ -11,14 +11,14 @@ export function withLoginResources() {
     withCustomCallState('login'),
 
     withProps(() => ({
-      firebaseAuthService: inject(FirebaseAuthService),
+      _firebaseAuthService: inject(FirebaseAuthService),
     })),
     withMethods((innerStore) => ({
       googleSignIn: rxMethod<void>(
         pipe(
           tap(() => innerStore.loginSetLoading()),
           exhaustMap(() =>
-            innerStore.firebaseAuthService.googleSignin().pipe(
+            innerStore._firebaseAuthService.googleSignin().pipe(
               tapResponse({
                 next: () => innerStore.loginSetSuccess(),
                 error: (err: Error) => innerStore.loginSetError(err.message),
@@ -32,7 +32,7 @@ export function withLoginResources() {
         pipe(
           tap(() => innerStore.loginSetLoading()),
           exhaustMap((creds) =>
-            innerStore.firebaseAuthService.login(creds).pipe(
+            innerStore._firebaseAuthService.login(creds).pipe(
               tapResponse({
                 next: (resp) => {
                   console.log('Login Firebase:', resp);
