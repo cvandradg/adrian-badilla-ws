@@ -26,7 +26,5 @@ export const firebaseAuthStore = signalStore(
       withRequestPassResetResources({ store }),
       withEmailVerificationResources({ store })
     )
-  ),
-
+  )
 );
-

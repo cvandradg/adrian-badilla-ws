@@ -3,12 +3,16 @@ import { tapResponse } from '@ngrx/operators';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { distinctUntilChanged, exhaustMap, map, pipe } from 'rxjs';
 import { inject } from '@angular/core';
-import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
 import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { withCustomCallState } from './with-custom-call-state.feature';
+import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
 
-export function withRequestPassResetResources({ store }: { store: any }) {
+export function withRequestPassResetResources({
+  store,
+}: {
+  store: { _firebaseAuthService: FirebaseAuthService };
+}) {
   return signalStoreFeature(
     withCustomCallState('requestPassReset'),
 
@@ -28,16 +32,16 @@ export function withRequestPassResetResources({ store }: { store: any }) {
             innerStore.requestPassResetSetLoading();
 
             return store._firebaseAuthService
-              .resetPass(store.oobCode() ?? '', newPassword)
+              .resetPass(innerStore.oobCode() ?? '', newPassword)
               .pipe(
                 tapResponse({
                   next: () => {
                     console.log('✅ Firebase confirmo el cambio de contraseña');
-                    store.requestPassResetSetSuccess();
+                    innerStore.requestPassResetSetSuccess();
                   },
                   error: (err: Error) => {
                     console.error('❌ Error en firebase', err);
-                    store.requestPassResetSetError(
+                    innerStore.requestPassResetSetError(
                       err?.message || 'Error desconocido'
                     );
                   },
