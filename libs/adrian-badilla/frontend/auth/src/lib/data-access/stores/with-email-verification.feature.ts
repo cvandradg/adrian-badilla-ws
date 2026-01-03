@@ -7,6 +7,7 @@ import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
 import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { withCustomCallState } from './with-custom-call-state.feature';
+import { User } from 'firebase/auth';
 
 export function withEmailVerificationResources({
   store,
@@ -28,6 +29,31 @@ export function withEmailVerificationResources({
     })),
 
     withMethods((innerStore) => ({
+      sendEmailVerification: rxMethod<void>(
+        pipe(
+          exhaustMap(() => {
+            console.log('📨 intentando enviar correo');
+
+            return store._firebaseAuthService.getUserSession().pipe(
+              exhaustMap((user) =>
+                store._firebaseAuthService
+                  .sendEmailVerification(user as User)
+                  .pipe(
+                    tapResponse({
+                      next: () => {
+                        console.log('✅ correo enviado');
+                      },
+                      error: (err: Error) => {
+                        console.error('❌ error enviando correo', err);
+                      },
+                    })
+                  )
+              )
+            );
+          })
+        )
+      ),
+
       verifyEmailFromRoute: rxMethod<void>(
         pipe(
           exhaustMap(() => {
