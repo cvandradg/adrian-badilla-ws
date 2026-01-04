@@ -1,39 +1,45 @@
 <div class="container">
-  <!-- *ngrxLet="{
-    user: facade.user$ | ngrxPush,
-    error: emailVerificationStore.error$ | ngrxPush,
-    loading: emailVerificationStore.loading$ | ngrxPush
-  } as vm" -->
 
-  <!-- *ngIf="!vm.error?.status && !vm.user?.emailVerified" -->
   <div class="title">Verificacion de cuenta</div>
+
+  @if (firebaseAuthStore.emailVerificationLoading()) {
   <fa-icon
     [icon]="['fas', 'spinner-third']"
     class="icon fa-spin fa-2xl default-color"
     style="--fa-animation-duration: 1s"
   />
+  }
+
   <div class="description">
-    <adrian-badilla-status-message
-      [type]="'success'"
-      [routerLink]="'/'"
-      [icon]="['fas', 'check']"
-      [message]="'Verificación completada correctamente'"
-    >
-      <!-- [display]="vm.user?.emailVerified && !vm.loading && !vm.error?.status" -->
+@if (firebaseAuthStore.emailVerificationSuccess()) {
+  <adrian-badilla-status-message
+    [type]="'success'"
+    [icon]="['fas', 'check']"
+    [message]="'Verificación completada correctamente'"
+    [routerLink]="'/'"
+    [display]="!firebaseAuthStore.emailVerificationError()"
+  >
+    <p><strong>Click aquí</strong> para entrar.</p>
+  </adrian-badilla-status-message>
+}
 
-      <p><strong> Click aqui</strong> para entrar.</p>
-    </adrian-badilla-status-message>
 
-    <adrian-badilla-status-message
-      [type]="'error'"
-      [icon]="['fas', 'exclamation-triangle']"
-      [message]="'Error al verificar la cuenta'"
-    />
-    <!-- [display]="vm.error?.status && !vm.loading" -->
+@if (firebaseAuthStore.emailVerificationError()) {
+  <adrian-badilla-status-message
+    [type]="'error'"
+    [icon]="['fas', 'exclamation-triangle']"
+    [message]="firebaseAuthStore.emailVerificationError()!"
+    [display]="!!firebaseAuthStore.emailVerificationError()"
+
+  />
+}
+
   </div>
 </div>
 
-<!-- @if (firebaseAuthStore.verifyEmailFromRoute();) {} -->
 
-<button (click)="firebaseAuthStore.verifyEmailFromRoute()"
->boton</button>
+<p>loading: {{ firebaseAuthStore.emailVerificationLoading() }}</p>
+<p>success: {{ firebaseAuthStore.emailVerificationSuccess() }}</p>
+<p>error: {{ firebaseAuthStore.emailVerificationError() }}</p>
+
+<button (click)="firebaseAuthStore.verifyEmailFromRoute()">boton</button>
