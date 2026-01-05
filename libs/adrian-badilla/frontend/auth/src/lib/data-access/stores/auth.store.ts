@@ -18,6 +18,10 @@ export const firebaseAuthStore = signalStore(
     _firebaseAuthService: inject(FirebaseAuthService),
   })),
 
+  // withMethods((store) => ({
+  //   checkEmailVerification: store._firebaseAuthService.getUserSession(),
+  // })),
+
   withFeature((store) =>
     signalStoreFeature(
       withLoginResources({ store }),

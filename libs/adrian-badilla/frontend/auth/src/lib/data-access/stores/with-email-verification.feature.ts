@@ -4,7 +4,7 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { distinctUntilChanged, exhaustMap, map, pipe } from 'rxjs';
 import { inject } from '@angular/core';
 import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { withCustomCallState } from './with-custom-call-state.feature';
 import { User } from 'firebase/auth';
@@ -20,6 +20,7 @@ export function withEmailVerificationResources({
     withCustomCallState('emailVerification'),
 
     withProps((_, route = inject(ActivatedRoute)) => ({
+      _router: inject(Router),
       _oobCode: toSignal(
         route.queryParamMap.pipe(
           map((params) => params.get('oobCode')),
@@ -88,6 +89,33 @@ export function withEmailVerificationResources({
           })
         )
       ),
+
+      // checkUserEmailVerified: rxMethod<void>(
+      //   pipe(
+      //     exhaustMap(() =>
+      //       store._firebaseAuthService.getUserSession().pipe(
+      //         filter((user): user is User => !!user),
+
+      //         exhaustMap((user) =>
+      //           from(user.reload()).pipe(
+      //             tap(() => console.log('🔄 Usuario recargado')),
+      //             map(() => user)
+      //           )
+      //         ),
+
+      //         filter((user) => user.emailVerified === true),
+
+      //         tap(() =>
+      //           console.log('✅ emailVerified === true, navegando a /dashboard')
+      //         ),
+
+      //         exhaustMap(() =>
+      //           from(innerStore._router.navigate(['/dashboard']))
+      //         )
+      //       )
+      //     )
+      //   )
+      // ),
     }))
   );
 }
