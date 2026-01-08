@@ -23,8 +23,6 @@ import {
   createUserWithEmailAndPassword,
 } from '@angular/fire/auth';
 
-
-
 @Injectable({
   providedIn: 'root',
 })
@@ -33,8 +31,7 @@ export class FirebaseAuthService {
 
   readonly user$ = user(this.auth);
   readonly authState$ = authState(this.auth);
-    // esto debe de ser with computed
-
+  // esto debe de ser with computed
 
   getCurrentUser() {
     return this.user$;
@@ -42,8 +39,6 @@ export class FirebaseAuthService {
 
   getUserSession() {
     return this.authState$;
-         //!hacer que sea un exhaustmap
-
   }
 
   signOut() {

@@ -1,18 +1,24 @@
-import { withProps, withMethods, signalStoreFeature } from '@ngrx/signals';
-import { tapResponse } from '@ngrx/operators';
-import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { distinctUntilChanged, exhaustMap, map, pipe } from 'rxjs';
+import {
+  withProps,
+  withMethods,
+  signalStoreFeature,
+  WritableStateSource,
+} from '@ngrx/signals';
 import { inject } from '@angular/core';
+import { tapResponse } from '@ngrx/operators';
 import { ActivatedRoute } from '@angular/router';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { FirebaseAuthOut } from '../utils/firebase-auth';
+import { distinctUntilChanged, exhaustMap, map, pipe } from 'rxjs';
 import { withCustomCallState } from './with-custom-call-state.feature';
-import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
 
-export function withRequestPassResetResources({
-  store,
-}: {
-  store: { _firebaseAuthService: FirebaseAuthService };
-}) {
+type RequestPassResetDeps = WritableStateSource<FirebaseAuthOut['state']> &
+  Pick<FirebaseAuthOut['methods'], '_resetPass'>;
+
+export function withRequestPassResetResources<T extends RequestPassResetDeps>(
+  store: T
+) {
   return signalStoreFeature(
     withCustomCallState('requestPassReset'),
 
@@ -31,8 +37,8 @@ export function withRequestPassResetResources({
           exhaustMap(({ newPassword }) => {
             innerStore.requestPassResetSetLoading();
 
-            return store._firebaseAuthService
-              .resetPass(innerStore.oobCode() ?? '', newPassword)
+            return store
+              ._resetPass(innerStore.oobCode() ?? '', newPassword)
               .pipe(
                 tapResponse({
                   next: () => {

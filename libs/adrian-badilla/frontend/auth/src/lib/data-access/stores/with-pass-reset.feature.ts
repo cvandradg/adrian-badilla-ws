@@ -1,15 +1,18 @@
+import {
+  withMethods,
+  signalStoreFeature,
+  WritableStateSource,
+} from '@ngrx/signals';
 import { exhaustMap, pipe, tap } from 'rxjs';
 import { tapResponse } from '@ngrx/operators';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { FirebaseAuthOut } from '../utils/firebase-auth';
 import { withCustomCallState } from './with-custom-call-state.feature';
-import { withMethods, signalStoreFeature } from '@ngrx/signals';
-import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
 
-export function withPassResetResources({
-  store,
-}: {
-  store: { _firebaseAuthService: FirebaseAuthService };
-}) {
+type PassResetDeps = WritableStateSource<FirebaseAuthOut['state']> &
+  Pick<FirebaseAuthOut['methods'], '_recoverPassword'>;
+
+export function withPassResetResources<T extends PassResetDeps>(store: T) {
   return signalStoreFeature(
     withCustomCallState('passReset'),
 
@@ -18,7 +21,7 @@ export function withPassResetResources({
         pipe(
           tap(() => innerStore.passResetSetLoading()),
           exhaustMap((email) =>
-            store._firebaseAuthService.recoverPassword(email).pipe(
+            store._recoverPassword(email).pipe(
               tapResponse({
                 next: () => innerStore.passResetSetSuccess(),
                 error: (err: Error) =>

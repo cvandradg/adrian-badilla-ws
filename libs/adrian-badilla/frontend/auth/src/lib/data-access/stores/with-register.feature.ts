@@ -2,14 +2,18 @@ import { exhaustMap, pipe, tap } from 'rxjs';
 import { tapResponse } from '@ngrx/operators';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { withCustomCallState } from './with-custom-call-state.feature';
-import { withMethods, signalStoreFeature } from '@ngrx/signals';
-import { Credentials, FirebaseAuthService } from '@adrian-badilla/ui/shared';
+import {
+  withMethods,
+  signalStoreFeature,
+  WritableStateSource,
+} from '@ngrx/signals';
+import { Credentials } from '@adrian-badilla/ui/shared';
+import { FirebaseAuthOut } from '../utils/firebase-auth';
 
-export function withRegisterResources({
-  store,
-}: {
-  store: { _firebaseAuthService: FirebaseAuthService };
-}) {
+type RegisterDeps = WritableStateSource<FirebaseAuthOut['state']> &
+  Pick<FirebaseAuthOut['methods'], '_createAccount'>;
+
+export function withRegisterResources<T extends RegisterDeps>(store: T) {
   return signalStoreFeature(
     withCustomCallState('register'),
 
@@ -18,7 +22,7 @@ export function withRegisterResources({
         pipe(
           tap(() => innerStore.registerSetLoading()),
           exhaustMap((creds) =>
-            store._firebaseAuthService.createAccount(creds).pipe(
+            store._createAccount(creds).pipe(
               tapResponse({
                 next: () => innerStore.registerSetSuccess(),
                 error: (err: Error) => innerStore.registerSetError(err.message),

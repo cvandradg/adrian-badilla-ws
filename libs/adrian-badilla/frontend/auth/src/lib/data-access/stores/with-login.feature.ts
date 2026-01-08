@@ -1,12 +1,19 @@
+import {
+  withMethods,
+  signalStoreFeature,
+  WritableStateSource,
+} from '@ngrx/signals';
 import { exhaustMap, pipe, tap } from 'rxjs';
 import { tapResponse } from '@ngrx/operators';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { withCustomCallState } from './with-custom-call-state.feature';
-import { withMethods, signalStoreFeature } from '@ngrx/signals';
 import { Credentials } from '@adrian-badilla/ui/shared';
-import type { FirebaseAuthStore } from './auth.store'; // ajusta el path real
+import { FirebaseAuthOut } from '../utils/firebase-auth';
+import { withCustomCallState } from './with-custom-call-state.feature';
 
-export function withLoginResources(store: FirebaseAuthStore) {
+type LoginDeps = WritableStateSource<FirebaseAuthOut['state']> &
+  Pick<FirebaseAuthOut['methods'], '_googleSignin' | '_login'>;
+
+export function withLoginResources<T extends LoginDeps>(store: T) {
   return signalStoreFeature(
     withCustomCallState('login'),
 
@@ -14,33 +21,25 @@ export function withLoginResources(store: FirebaseAuthStore) {
       googleSignIn: rxMethod<void>(
         pipe(
           tap(() => innerStore.loginSetLoading()),
-          exhaustMap(() =>
-            store.googleSignin().pipe(
-              tapResponse({
-                next: () => innerStore.loginSetSuccess(),
-                error: (err: Error) => innerStore.loginSetError(err.message),
-              })
-            )
-          )
+          exhaustMap(() => store._googleSignin()),
+          tapResponse({
+            next: () => innerStore.loginSetSuccess(),
+            error: (err: Error) => innerStore.loginSetError(err.message),
+          })
         )
       ),
 
       login: rxMethod<Credentials>(
         pipe(
           tap(() => innerStore.loginSetLoading()),
-          exhaustMap((creds) =>
-            store.login(creds).pipe(
-              tapResponse({
-                next: (resp) => {
-                  console.log('Login Firebase:', resp);
-                  innerStore.loginSetSuccess();
-                },
-                error: (err: Error) => {
-                  innerStore.loginSetError(err.message);
-                },
-              })
-            )
-          )
+          exhaustMap((creds) => store._login(creds)),
+          tapResponse({
+            next: (resp) => {
+              console.log('Login Firebase:', resp);
+              innerStore.loginSetSuccess();
+            },
+            error: (err: Error) => innerStore.loginSetError(err.message),
+          })
         )
       ),
     }))
