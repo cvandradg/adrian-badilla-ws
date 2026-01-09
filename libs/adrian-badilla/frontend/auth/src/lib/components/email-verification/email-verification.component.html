@@ -1,5 +1,4 @@
 <div class="container">
-
   <div class="title">Verificacion de cuenta</div>
 
   @if (firebaseAuthStore.emailVerificationLoading()) {
@@ -11,32 +10,26 @@
   }
 
   <div class="description">
-@if (firebaseAuthStore.emailVerificationSuccess()) {
-  <adrian-badilla-status-message
-    [type]="'success'"
-    [icon]="['fas', 'check']"
-    [message]="'Verificación completada correctamente'"
-    [routerLink]="'/'"
-    [display]="!firebaseAuthStore.emailVerificationError()"
-  >
-    <p><strong>Click aquí</strong> para entrar.</p>
-  </adrian-badilla-status-message>
-}
-
-
-@if (firebaseAuthStore.emailVerificationError()) {
-  <adrian-badilla-status-message
-    [type]="'error'"
-    [icon]="['fas', 'exclamation-triangle']"
-    [message]="firebaseAuthStore.emailVerificationError()!"
-    [display]="!!firebaseAuthStore.emailVerificationError()"
-
-  />
-}
-
+    @if (firebaseAuthStore.emailVerificationSuccess()) {
+    <adrian-badilla-status-message
+      [type]="'success'"
+      [icon]="['fas', 'check']"
+      [message]="'Verificación completada correctamente'"
+      [routerLink]="'/'"
+      [display]="!firebaseAuthStore.emailVerificationError()"
+    >
+      <p><strong>Click aquí</strong> para entrar.</p>
+    </adrian-badilla-status-message>
+    } @if (firebaseAuthStore.emailVerificationError()) {
+    <adrian-badilla-status-message
+      [type]="'error'"
+      [icon]="['fas', 'exclamation-triangle']"
+      [message]="firebaseAuthStore.emailVerificationError()!"
+      [display]="!!firebaseAuthStore.emailVerificationError()"
+    />
+    }
   </div>
 </div>
-
 
 <p>loading: {{ firebaseAuthStore.emailVerificationLoading() }}</p>
 <p>success: {{ firebaseAuthStore.emailVerificationSuccess() }}</p>

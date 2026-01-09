@@ -1,7 +1,4 @@
-import {
-  MODULES,
-  COMPONENTS,
-} from '@adrian-badilla/ui/shared';
+import { MODULES, COMPONENTS } from '@adrian-badilla/ui/shared';
 import { EmailVerificationComponent } from './email-verification.component';
 import { inject, provideAppInitializer } from '@angular/core';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
@@ -21,11 +18,7 @@ describe('EmailVerificationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        EmailVerificationComponent,
-        COMPONENTS,
-        MODULES,
-      ],
+      imports: [EmailVerificationComponent, COMPONENTS, MODULES],
       providers: [
         { provide: firebaseAuthStore, useValue: mockStore },
         provideAppInitializer(() => {

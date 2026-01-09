@@ -22,5 +22,4 @@ export default [
     component: EmailVerificationComponent,
     pathMatch: 'full',
   },
-
 ] as Route[];
