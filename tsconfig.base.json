@@ -36,6 +36,9 @@
       ],
       "@shared/styles/*": [
         "libs/adrian-badilla/frontend/shared/src/lib/styles/*"
+      ],
+      "adrian-badilla/dashboard": [
+        "libs/adrian-badilla/frontend/dashboard/src/index.ts"
       ]
     }
   },

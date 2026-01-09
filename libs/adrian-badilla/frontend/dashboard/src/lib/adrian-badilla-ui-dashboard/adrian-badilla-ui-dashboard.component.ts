@@ -2,11 +2,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'adrian-badilla-dashboard',
-  standalone: true,
   imports: [],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss',
+  templateUrl: './adrian-badilla-ui-dashboard.component.html',
+  styleUrl: './adrian-badilla-ui-dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardComponent {}
-
+export class AdrianBadillaUiDashboardComponent {}

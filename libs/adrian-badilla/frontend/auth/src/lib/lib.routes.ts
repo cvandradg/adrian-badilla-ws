@@ -3,7 +3,6 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { RequestPassResetComponent } from './components/request-pass-reset/request-pass-reset.component';
 import { EmailVerificationComponent } from './components/email-verification/email-verification.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 export default [
   { path: 'login', component: LoginComponent },
@@ -23,9 +22,5 @@ export default [
     component: EmailVerificationComponent,
     pathMatch: 'full',
   },
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-    pathMatch: 'full',
-  },
+
 ] as Route[];
