@@ -3,7 +3,7 @@ import { DashboardComponent } from './adrian-badilla-ui-dashboard/adrian-badilla
 
 export default [
   {
-    path: 'dashboard',
+    path: '',
     component: DashboardComponent,
   },
 ] as Route[];
