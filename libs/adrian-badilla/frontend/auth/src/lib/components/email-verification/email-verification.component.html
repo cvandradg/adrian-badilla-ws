@@ -1,38 +1,36 @@
 <div class="container">
   <div class="title">Verificacion de cuenta</div>
 
-  @if (firebaseAuthStore.emailVerificationLoading()) {
-  <fa-icon
-    [icon]="['fas', 'spinner-third']"
-    class="icon fa-spin fa-2xl default-color"
-    style="--fa-animation-duration: 1s"
-  />
-  }
-
   <div class="description">
-    @if (firebaseAuthStore.emailVerificationSuccess()) {
-    <adrian-badilla-status-message
-      [type]="'success'"
-      [icon]="['fas', 'check']"
-      [message]="'Verificación completada correctamente'"
-      [routerLink]="'/'"
-      [display]="!firebaseAuthStore.emailVerificationError()"
-    >
-      <p><strong>Click aquí</strong> para entrar.</p>
-    </adrian-badilla-status-message>
-    } @if (firebaseAuthStore.emailVerificationError()) {
+    @if (firebaseAuthStore.emailVerificationLoading()) {
+      <fa-icon
+        [icon]="['fas', 'spinner-third']"
+        class="icon fa-spin fa-2xl default-color"
+        style="--fa-animation-duration: 1s"
+      />
+      <adrian-badilla-status-message
+        [type]="'info'"
+        [icon]="['fas', 'circle-info']"
+        [message]="'Verificando tu cuenta...'"
+        [display]="true"
+      />
+    }
+
     <adrian-badilla-status-message
       [type]="'error'"
       [icon]="['fas', 'exclamation-triangle']"
-      [message]="firebaseAuthStore.emailVerificationError()!"
+      [message]="firebaseAuthStore.emailVerificationError() || ''"
       [display]="!!firebaseAuthStore.emailVerificationError()"
     />
-    }
+
+    <adrian-badilla-status-message
+      [type]="'success'"
+      [icon]="['fas', 'check']"
+      [message]="'Cuenta verificada. Redirigiendo...'"
+      [display]="
+        firebaseAuthStore.emailVerificationSuccess() &&
+        !firebaseAuthStore.emailVerificationError()
+      "
+    />
   </div>
 </div>
-
-<p>loading: {{ firebaseAuthStore.emailVerificationLoading() }}</p>
-<p>success: {{ firebaseAuthStore.emailVerificationSuccess() }}</p>
-<p>error: {{ firebaseAuthStore.emailVerificationError() }}</p>
-
-<button (click)="firebaseAuthStore.verifyEmailFromRoute()">boton</button>

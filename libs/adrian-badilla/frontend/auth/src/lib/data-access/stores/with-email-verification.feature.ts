@@ -3,6 +3,7 @@ import {
   withMethods,
   signalStoreFeature,
   WritableStateSource,
+  withHooks,
 } from '@ngrx/signals';
 import { User } from 'firebase/auth';
 import { inject } from '@angular/core';
@@ -74,6 +75,8 @@ export function withEmailVerificationResources<
                 next: () => {
                   console.log('✅ Firebase confirmó la verificación de correo');
                   innerStore.emailVerificationSetSuccess();
+
+                  innerStore._router.navigate(['/dashboard']);
                 },
                 error: (err: Error) => {
                   console.error(
@@ -89,6 +92,13 @@ export function withEmailVerificationResources<
           })
         )
       ),
+    })),
+
+        withHooks((s) => ({
+      onInit() {
+        s.verifyEmailFromRoute();
+      },
     }))
+
   );
 }
