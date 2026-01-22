@@ -28,12 +28,10 @@
     </form>
 
     <div class="horizontal-animation">
-      <!-- [ngClass]="{
-        'enabled-button': vm.enableButton || vm.user
-      }" -->
       <button
         mat-button
         (click)="firebaseAuthStore.createAccount(credentials())"
+        [disabled]="firebaseAuthStore.registerLoading()"
       >
         <div class="register-button">
           <p>Crear Cuenta</p>
@@ -62,31 +60,59 @@
         </div>
       </button>
     </div>
+
     <div class="centered">
       <adrian-badilla-status-message
-        [type]="'warning'"
-        [icon]="['fas', 'message-exclamation']"
-        [message]="'Revisa tu correo para activar tu cuenta.'"
+        [type]="'info'"
+        [icon]="['fas', 'circle-info']"
+        [message]="'Creando tu cuenta...'"
+        [display]="firebaseAuthStore.registerLoading()"
       />
-      <!-- [display]="!vm.loading && !!vm.user" -->
+
+      <adrian-badilla-status-message
+        [type]="'error'"
+        [icon]="['fas', 'xmark']"
+        [message]="firebaseAuthStore.registerError() || ''"
+        [display]="
+          !!firebaseAuthStore.registerError() &&
+          !firebaseAuthStore.registerLoading()
+        "
+      />
 
       <adrian-badilla-status-message
         [type]="'success'"
         [icon]="['fas', 'check']"
-        [message]="'Creaste una nueva cuenta.'"
+        [message]="
+          'Cuenta creada. Te enviamos un correo para verificar tu cuenta. Revisa Spam/Promociones.'
+        "
+        [display]="
+          firebaseAuthStore.registerSuccess() &&
+          !firebaseAuthStore.registerLoading()
+        "
       />
-      <!-- [display]="!vm.loading && !!vm.user" -->
     </div>
 
-    <adrian-badilla-status-message [type]="'error'" [icon]="['fas', 'xmark']" />
-    <!-- [message]="vm.error?.message"
-      [display]="!vm.loading && vm.error?.status" -->
+    @if (firebaseAuthStore.registerSuccess() &&
+    !firebaseAuthStore.registerLoading()) {
+    <div class="horizontal-animation">
+      <button mat-button [routerLink]="'/login'">
+        <div class="register-button">
+          <p>Volver al Login</p>
+          <fa-icon [icon]="['fas', 'arrow-right']" class="icon fa-xl" />
+        </div>
+      </button>
+    </div>
+
+    <div class="horizontal-animation">
+      <button mat-button (click)="firebaseAuthStore.sendEmailVerification()">
+        <div class="register-button">
+          <p>Reenviar verificación</p>
+          <fa-icon [icon]="['fas', 'paper-plane']" class="icon fa-xl" />
+        </div>
+      </button>
+    </div>
+    }
 
     <adrian-badilla-strength-meter></adrian-badilla-strength-meter>
-
-    <!-- <adrian-badilla-strength-meter
-      [password]="loginInputForm.get('pass')?.value || ''"
-      (enableButton)="isPassStrong$.next($event)"
-    /> -->
   </div>
 </div>

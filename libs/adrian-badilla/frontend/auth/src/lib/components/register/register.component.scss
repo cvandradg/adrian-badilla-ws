@@ -56,7 +56,7 @@ button {
 
 .register-login-inputs {
   min-width: 22rem;
-
+ max-width: 22rem;
   button {
     width: 100%;
     height: 4rem;
@@ -79,7 +79,10 @@ button {
 .centered {
   display: flex;
   flex-direction: row;
+
 }
+
+
 
 :host ::ng-deep {
   .mdc-button__label {
