@@ -26,11 +26,25 @@
     <adrian-badilla-status-message
       [type]="'success'"
       [icon]="['fas', 'check']"
-      [message]="'Cuenta verificada. Redirigiendo...'"
+      [message]="'Cuenta verificada correctamente.'"
       [display]="
         firebaseAuthStore.emailVerificationSuccess() &&
         !firebaseAuthStore.emailVerificationError()
       "
     />
+
+    @if (
+      firebaseAuthStore.emailVerificationSuccess() &&
+      !firebaseAuthStore.emailVerificationError() &&
+      !firebaseAuthStore.emailVerificationLoading()
+    ) {
+      <button type="button" (click)="firebaseAuthStore.goToDashboard()">
+        Ir al dashboard
+      </button>
+    }
   </div>
+
+  <button type="button" (click)="firebaseAuthStore.verifyEmailFromRoute()">
+    Verificar ahora
+  </button>
 </div>

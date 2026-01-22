@@ -3,7 +3,6 @@ import {
   withMethods,
   signalStoreFeature,
   WritableStateSource,
-  withHooks,
 } from '@ngrx/signals';
 import { User } from 'firebase/auth';
 import { inject } from '@angular/core';
@@ -12,7 +11,7 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FirebaseAuthOut } from '../utils/firebase-auth';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, pipe, exhaustMap, distinctUntilChanged } from 'rxjs';
+import { map, pipe, exhaustMap, distinctUntilChanged, filter, tap } from 'rxjs';
 import { withCustomCallState } from './with-custom-call-state.feature';
 
 type EmailVerificationResetDeps = WritableStateSource<
@@ -40,49 +39,38 @@ export function withEmailVerificationResources<
     withMethods((innerStore) => ({
       sendEmailVerification: rxMethod<void>(
         pipe(
-          exhaustMap(() => {
-            console.log('📨 intentando enviar correo');
-
-            return store._getUserSession$().pipe(
+          exhaustMap(() =>
+            store._getUserSession$().pipe(
+              filter((user): user is User => !!user),
               exhaustMap((user) =>
-                store._sendEmailVerification(user as User).pipe(
+                store._sendEmailVerification(user).pipe(
                   tapResponse({
-                    next: () => {
-                      console.log('✅ correo enviado');
-                    },
-                    error: (err: Error) => {
-                      console.error('❌ error enviando correo', err);
-                    },
+                    next: () => console.log('✅ correo enviado'),
+                    error: (err: Error) =>
+                      console.error('❌ error enviando correo', err),
                   })
                 )
               )
-            );
-          })
+            )
+          )
         )
       ),
 
       verifyEmailFromRoute: rxMethod<void>(
         pipe(
+          tap(() => innerStore.emailVerificationSetLoading()),
           exhaustMap(() => {
-            innerStore.emailVerificationSetLoading();
-            console.log(
-              '📩 oobCode leído desde la URL:',
-              innerStore._oobCode()
-            );
+            const code = innerStore._oobCode();
+            console.log('📩 oobCode leído desde la URL:', code);
 
-            return store._verifyEmail(innerStore._oobCode() ?? '').pipe(
+            return store._verifyEmail(code ?? '').pipe(
               tapResponse({
                 next: () => {
                   console.log('✅ Firebase confirmó la verificación de correo');
                   innerStore.emailVerificationSetSuccess();
-
-                  innerStore._router.navigate(['/dashboard']);
                 },
                 error: (err: Error) => {
-                  console.error(
-                    '❌ Error al verificar el correo en Firebase:',
-                    err
-                  );
+                  console.error('❌ Error al verificar el correo:', err);
                   innerStore.emailVerificationSetError(
                     err?.message || 'Error desconocido al verificar el correo.'
                   );
@@ -92,13 +80,10 @@ export function withEmailVerificationResources<
           })
         )
       ),
-    })),
 
-        withHooks((s) => ({
-      onInit() {
-        s.verifyEmailFromRoute();
-      },
+      goToDashboard: rxMethod<void>(
+        pipe(exhaustMap(() => innerStore._router.navigate(['/dashboard'])))
+      ),
     }))
-
   );
 }
