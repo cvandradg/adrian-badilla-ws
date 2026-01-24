@@ -1,21 +1,10 @@
-import {
-  effect,
-  inject,
-  Signal,
-  Component,
-  ChangeDetectionStrategy,
-} from '@angular/core';
-import {
-  MODULES,
-  COMPONENTS,
-  validations,
-  Credentials,
-} from '@adrian-badilla/ui/shared';
-import { Router } from '@angular/router';
+import { inject, Signal, Component, ChangeDetectionStrategy } from '@angular/core';
+import { MODULES, COMPONENTS, validations, Credentials } from '@adrian-badilla/ui/shared';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, Validators } from '@angular/forms';
 import { firebaseAuthStore } from '../../data-access/stores/auth.store';
 import { PassResetComponent } from '../pass-reset/pass-reset.component';
+
 @Component({
   selector: 'adrian-badilla-login',
   templateUrl: './login.component.html',
@@ -25,21 +14,14 @@ import { PassResetComponent } from '../pass-reset/pass-reset.component';
 })
 export class LoginComponent {
   readonly firebaseAuthStore = inject(firebaseAuthStore);
-  router = inject(Router);
-  formBuilder = inject(FormBuilder);
+  readonly formBuilder = inject(FormBuilder);
 
-  loginInputForm = this.formBuilder.group({
+  readonly loginInputForm = this.formBuilder.group({
     user: validations(Validators.email),
     pass: validations(),
   });
 
-  credentials = toSignal(this.loginInputForm.valueChanges, {
+  readonly credentials = toSignal(this.loginInputForm.valueChanges, {
     initialValue: this.loginInputForm.value,
   }) as Signal<Credentials>;
-
-  constructor() {
-    effect(() => {
-      console.log('login', this.firebaseAuthStore.loginLoading());
-    });
-  }
 }
