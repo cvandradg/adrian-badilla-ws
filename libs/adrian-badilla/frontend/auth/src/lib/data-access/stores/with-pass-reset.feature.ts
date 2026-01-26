@@ -8,6 +8,7 @@ import { tapResponse } from '@ngrx/operators';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { FirebaseAuthOut } from '../utils/firebase-auth';
 import { withCustomCallState } from './with-custom-call-state.feature';
+import { mapFirebaseAuthErrorToMessage } from '../errors';
 
 type PassResetDeps = WritableStateSource<FirebaseAuthOut['state']> &
   Pick<FirebaseAuthOut['methods'], '_recoverPassword'>;
@@ -24,8 +25,10 @@ export function withPassResetResources<T extends PassResetDeps>(store: T) {
             store._recoverPassword(email).pipe(
               tapResponse({
                 next: () => innerStore.passResetSetSuccess(),
-                error: (err: Error) =>
-                  innerStore.passResetSetError(err.message),
+                error: (err: unknown) =>
+                  innerStore.passResetSetError(
+                    mapFirebaseAuthErrorToMessage(err)
+                  ),
               })
             )
           )

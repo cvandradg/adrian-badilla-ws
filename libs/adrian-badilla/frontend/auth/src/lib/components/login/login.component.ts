@@ -1,5 +1,15 @@
-import { inject, Signal, Component, ChangeDetectionStrategy } from '@angular/core';
-import { MODULES, COMPONENTS, validations, Credentials } from '@adrian-badilla/ui/shared';
+import {
+  inject,
+  Signal,
+  Component,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import {
+  MODULES,
+  COMPONENTS,
+  validations,
+  Credentials,
+} from '@adrian-badilla/ui/shared';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, Validators } from '@angular/forms';
 import { firebaseAuthStore } from '../../data-access/stores/auth.store';

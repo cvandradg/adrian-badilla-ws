@@ -1,4 +1,9 @@
-import { signalStoreFeature, withMethods, withState, patchState } from '@ngrx/signals';
+import {
+  signalStoreFeature,
+  withMethods,
+  withState,
+  patchState,
+} from '@ngrx/signals';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { exhaustMap, pipe, tap } from 'rxjs';
@@ -7,9 +12,9 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { Credentials } from '@adrian-badilla/ui/shared';
 import { FirebaseAuthOut } from '../utils/firebase-auth';
 import { withCustomCallState } from './with-custom-call-state.feature';
+import { mapFirebaseAuthErrorToMessage } from '../errors';
 
-type LoginDeps =
-  FirebaseAuthOut['state'] &
+type LoginDeps = FirebaseAuthOut['state'] &
   Pick<FirebaseAuthOut['methods'], '_googleSignin' | '_login'>;
 
 type LoginUiState = { loginNeedsVerification: boolean };
@@ -39,7 +44,8 @@ export function withLoginResources<T extends LoginDeps>(store: T) {
               s.loginSetSuccess();
               router.navigateByUrl('/dashboard', { replaceUrl: true });
             },
-            error: (err: Error) => s.loginSetError(err.message),
+            error: (err: unknown) =>
+              s.loginSetError(mapFirebaseAuthErrorToMessage(err)),
           })
         )
       ),
@@ -61,7 +67,8 @@ export function withLoginResources<T extends LoginDeps>(store: T) {
               s.loginSetSuccess();
               router.navigateByUrl('/dashboard', { replaceUrl: true });
             },
-            error: (err: Error) => s.loginSetError(err.message),
+            error: (err: unknown) =>
+              s.loginSetError(mapFirebaseAuthErrorToMessage(err)),
           })
         )
       ),

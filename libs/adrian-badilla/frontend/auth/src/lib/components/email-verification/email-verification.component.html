@@ -3,17 +3,17 @@
 
   <div class="description">
     @if (firebaseAuthStore.emailVerificationLoading()) {
-      <fa-icon
-        [icon]="['fas', 'spinner-third']"
-        class="icon fa-spin fa-2xl default-color"
-        style="--fa-animation-duration: 1s"
-      />
-      <adrian-badilla-status-message
-        [type]="'info'"
-        [icon]="['fas', 'circle-info']"
-        [message]="'Verificando tu cuenta...'"
-        [display]="true"
-      />
+    <fa-icon
+      [icon]="['fas', 'spinner-third']"
+      class="icon fa-spin fa-2xl default-color"
+      style="--fa-animation-duration: 1s"
+    />
+    <adrian-badilla-status-message
+      [type]="'info'"
+      [icon]="['fas', 'circle-info']"
+      [message]="'Verificando tu cuenta...'"
+      [display]="true"
+    />
     }
 
     <adrian-badilla-status-message
@@ -33,18 +33,22 @@
       "
     />
 
-    @if (
-      firebaseAuthStore.emailVerificationSuccess() &&
-      !firebaseAuthStore.emailVerificationError() &&
-      !firebaseAuthStore.emailVerificationLoading()
-    ) {
-      <button type="button" (click)="firebaseAuthStore.goToDashboard()">
-        Ir al dashboard
-      </button>
+    @if ( firebaseAuthStore.emailVerificationSuccess() &&
+    !firebaseAuthStore.emailVerificationError() &&
+    !firebaseAuthStore.emailVerificationLoading() ) {
+    <adrian-badilla-primary-animated-button
+      [enable]="true"
+      [buttonText]="'Ir al dashboard'"
+      (click)="firebaseAuthStore.goToDashboard()"
+    />
+
     }
   </div>
 
-  <button type="button" (click)="firebaseAuthStore.verifyEmailFromRoute()">
-    Verificar ahora
-  </button>
+  <adrian-badilla-primary-animated-button
+    [enable]="!firebaseAuthStore.emailVerificationLoading()"
+    [buttonText]="'Verificar ahora'"
+    (click)="firebaseAuthStore.verifyEmailFromRoute()"
+    [success]="firebaseAuthStore.emailVerificationSuccess()"
+  />
 </div>

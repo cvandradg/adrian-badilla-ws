@@ -23,95 +23,58 @@
           type="password"
           required="true"
           formControlName="pass"
+          (keyup.enter)="firebaseAuthStore.createAccount(credentials())"
         />
       </mat-form-field>
     </form>
 
-    <div class="horizontal-animation">
-      <button
-        mat-button
-        (click)="firebaseAuthStore.createAccount(credentials())"
-        (keyup.enter)="firebaseAuthStore.createAccount(credentials())"
-        [disabled]="firebaseAuthStore.registerLoading()"
-      >
-        <div class="register-button">
-          <p>Crear Cuenta</p>
+    <adrian-badilla-primary-animated-button
+      [enable]="!loginInputForm.invalid"
+      [buttonText]="'Crear Cuenta'"
+      (click)="firebaseAuthStore.createAccount(credentials())"
+      [loading]="firebaseAuthStore.registerLoading()"
+      [success]="firebaseAuthStore.registerSuccess()"
+    />
 
-          @if (!firebaseAuthStore.registerLoading() &&
-          !firebaseAuthStore.registerSuccess()) {
-          <fa-icon
-            [icon]="['fas', 'arrow-right']"
-            class="icon fa-xl fa-shake"
-            style="--fa-animation-iteration-count: 2"
-          />
-          } @if (firebaseAuthStore.registerLoading()) {
-          <fa-icon
-            [icon]="['fas', 'spinner-third']"
-            class="icon fa-xl fa-spin"
-            style="--fa-animation-duration: 1s"
-          />
-          } @if (!firebaseAuthStore.registerLoading() &&
-          firebaseAuthStore.registerSuccess()) {
-          <fa-icon
-            [icon]="['fas', 'check']"
-            class="icon fa-xl fa-shake"
-            style="--fa-animation-iteration-count: 2"
-          />
-          }
-        </div>
-      </button>
-    </div>
+    @if (firebaseAuthStore.registerLoading()) {
+    <adrian-badilla-status-message
+      [type]="'info'"
+      [icon]="['fas', 'circle-info']"
+      [message]="'Creando tu cuenta...'"
+      [display]="true"
+    />
+    } @if (!firebaseAuthStore.registerLoading() &&
+    firebaseAuthStore.registerError()) {
+    <adrian-badilla-status-message
+      [type]="'error'"
+      [icon]="['fas', 'xmark']"
+      [message]="firebaseAuthStore.registerError()!"
+      [display]="true"
+    />
+    } @if ( !firebaseAuthStore.registerLoading() &&
+    !firebaseAuthStore.registerError() && firebaseAuthStore.registerSuccess() )
+    {
+    <adrian-badilla-status-message
+      [type]="'success'"
+      [icon]="['fas', 'check']"
+      [message]="
+        'Cuenta creada. Te enviamos un correo para verificar tu cuenta. Revisa Spam/Promociones.'
+      "
+      [display]="true"
+    />
+    } @if ( firebaseAuthStore.registerSuccess() &&
+    !firebaseAuthStore.registerLoading() ) {
+    <adrian-badilla-secondary-animated-button
+      [routerLink]="'/login'"
+      [buttonText]="'Volver al Login'"
+      [fontawesomeIcon]="['fas', 'arrow-right']"
+    />
 
-    <div class="centered">
-      <adrian-badilla-status-message
-        [type]="'info'"
-        [icon]="['fas', 'circle-info']"
-        [message]="'Creando tu cuenta...'"
-        [display]="firebaseAuthStore.registerLoading()"
-      />
-
-      <adrian-badilla-status-message
-        [type]="'error'"
-        [icon]="['fas', 'xmark']"
-        [message]="firebaseAuthStore.registerError() || ''"
-        [display]="
-          !!firebaseAuthStore.registerError() &&
-          !firebaseAuthStore.registerLoading()
-        "
-      />
-
-      <adrian-badilla-status-message
-        [type]="'success'"
-        [icon]="['fas', 'check']"
-        [message]="
-          'Cuenta creada. Te enviamos un correo para verificar tu cuenta. Revisa Spam/Promociones.'
-        "
-        [display]="
-          firebaseAuthStore.registerSuccess() &&
-          !firebaseAuthStore.registerLoading()
-        "
-      />
-    </div>
-
-    @if (firebaseAuthStore.registerSuccess() &&
-    !firebaseAuthStore.registerLoading()) {
-    <div class="horizontal-animation">
-      <button mat-button [routerLink]="'/login'">
-        <div class="register-button">
-          <p>Volver al Login</p>
-          <fa-icon [icon]="['fas', 'arrow-right']" class="icon fa-xl" />
-        </div>
-      </button>
-    </div>
-
-    <div class="horizontal-animation">
-      <button mat-button (click)="firebaseAuthStore.sendEmailVerification()">
-        <div class="register-button">
-          <p>Reenviar verificación</p>
-          <fa-icon [icon]="['fas', 'paper-plane']" class="icon fa-xl" />
-        </div>
-      </button>
-    </div>
+    <adrian-badilla-secondary-animated-button
+      [buttonText]="'Reenviar verificación'"
+      [fontawesomeIcon]="['fas', 'paper-plane']"
+      (click)="firebaseAuthStore.sendEmailVerification()"
+    />
     }
 
     <adrian-badilla-strength-meter></adrian-badilla-strength-meter>

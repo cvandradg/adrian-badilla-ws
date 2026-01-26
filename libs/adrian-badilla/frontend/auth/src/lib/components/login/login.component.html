@@ -40,20 +40,30 @@
           [success]="firebaseAuthStore.loginSuccess()"
         />
 
-        @if (firebaseAuthStore.loginNeedsVerification()) {
-          <adrian-badilla-status-message
-            [type]="'warning'"
-            [icon]="['fal', 'envelope-circle-check']"
-            [message]="'Verifica tu cuenta, te hemos enviado un link al correo.'"
-          />
-        }
-
-        @if (firebaseAuthStore.loginError()) {
-          <adrian-badilla-status-message
-            [type]="'error'"
-            [icon]="['fas', 'xmark']"
-            [message]="firebaseAuthStore.loginError()!"
-          />
+        @if (firebaseAuthStore.loginLoading()) {
+        <adrian-badilla-status-message
+          [type]="'info'"
+          [icon]="['fas', 'circle-info']"
+          [message]="'Iniciando sesión...'"
+          [display]="true"
+        />
+        } @if (!firebaseAuthStore.loginLoading() &&
+        firebaseAuthStore.loginError()) {
+        <adrian-badilla-status-message
+          [type]="'error'"
+          [icon]="['fas', 'xmark']"
+          [message]="firebaseAuthStore.loginError()!"
+          [display]="true"
+        />
+        } @if ( !firebaseAuthStore.loginLoading() &&
+        !firebaseAuthStore.loginError() &&
+        firebaseAuthStore.loginNeedsVerification() ) {
+        <adrian-badilla-status-message
+          [type]="'warning'"
+          [icon]="['fal', 'envelope-circle-check']"
+          [message]="'Verifica tu cuenta, te hemos enviado un link al correo.'"
+          [display]="true"
+        />
         }
       </div>
 

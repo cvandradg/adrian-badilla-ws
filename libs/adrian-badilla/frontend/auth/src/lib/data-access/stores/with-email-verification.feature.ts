@@ -13,6 +13,7 @@ import { FirebaseAuthOut } from '../utils/firebase-auth';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, pipe, exhaustMap, distinctUntilChanged, filter, tap } from 'rxjs';
 import { withCustomCallState } from './with-custom-call-state.feature';
+import { mapFirebaseAuthErrorToMessage } from '../errors';
 
 type EmailVerificationResetDeps = WritableStateSource<
   FirebaseAuthOut['state']
@@ -39,15 +40,18 @@ export function withEmailVerificationResources<
     withMethods((innerStore) => ({
       sendEmailVerification: rxMethod<void>(
         pipe(
+          tap(() => innerStore.emailVerificationSetLoading()),
           exhaustMap(() =>
             store._getUserSession$().pipe(
               filter((user): user is User => !!user),
               exhaustMap((user) =>
                 store._sendEmailVerification(user).pipe(
                   tapResponse({
-                    next: () => console.log('✅ correo enviado'),
-                    error: (err: Error) =>
-                      console.error('❌ error enviando correo', err),
+                    next: () => innerStore.emailVerificationSetSuccess(),
+                    error: (err: unknown) =>
+                      innerStore.emailVerificationSetError(
+                        mapFirebaseAuthErrorToMessage(err)
+                      ),
                   })
                 )
               )
@@ -69,10 +73,9 @@ export function withEmailVerificationResources<
                   console.log('✅ Firebase confirmó la verificación de correo');
                   innerStore.emailVerificationSetSuccess();
                 },
-                error: (err: Error) => {
-                  console.error('❌ Error al verificar el correo:', err);
+                error: (err: unknown) => {
                   innerStore.emailVerificationSetError(
-                    err?.message || 'Error desconocido al verificar el correo.'
+                    mapFirebaseAuthErrorToMessage(err)
                   );
                 },
               })

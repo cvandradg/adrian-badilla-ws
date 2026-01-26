@@ -12,6 +12,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FirebaseAuthOut } from '../utils/firebase-auth';
 import { distinctUntilChanged, exhaustMap, map, pipe } from 'rxjs';
 import { withCustomCallState } from './with-custom-call-state.feature';
+import { mapFirebaseAuthErrorToMessage } from '../errors';
 
 type RequestPassResetDeps = WritableStateSource<FirebaseAuthOut['state']> &
   Pick<FirebaseAuthOut['methods'], '_resetPass'>;
@@ -45,12 +46,10 @@ export function withRequestPassResetResources<T extends RequestPassResetDeps>(
                     console.log('✅ Firebase confirmo el cambio de contraseña');
                     innerStore.requestPassResetSetSuccess();
                   },
-                  error: (err: Error) => {
-                    console.error('❌ Error en firebase', err);
+                  error: (err: unknown) =>
                     innerStore.requestPassResetSetError(
-                      err?.message || 'Error desconocido'
-                    );
-                  },
+                      mapFirebaseAuthErrorToMessage(err)
+                    ),
                 })
               );
           })
