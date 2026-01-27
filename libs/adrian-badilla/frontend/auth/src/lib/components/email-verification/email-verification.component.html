@@ -33,15 +33,12 @@
       "
     />
 
-    @if ( firebaseAuthStore.emailVerificationSuccess() &&
-    !firebaseAuthStore.emailVerificationError() &&
-    !firebaseAuthStore.emailVerificationLoading() ) {
+    @if ( firebaseAuthStore.emailVerificationSuccess() ) {
     <adrian-badilla-primary-animated-button
       [enable]="true"
       [buttonText]="'Ir al dashboard'"
       (click)="firebaseAuthStore.goToDashboard()"
     />
-
     }
   </div>
 
