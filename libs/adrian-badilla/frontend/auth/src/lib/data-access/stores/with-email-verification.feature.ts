@@ -4,14 +4,22 @@ import {
   signalStoreFeature,
   WritableStateSource,
 } from '@ngrx/signals';
-import { User } from 'firebase/auth';
 import { inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FirebaseAuthOut } from '../utils/firebase-auth';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, pipe, exhaustMap, distinctUntilChanged, filter, tap } from 'rxjs';
+import {
+  map,
+  pipe,
+  exhaustMap,
+  distinctUntilChanged,
+  tap,
+  EMPTY,
+  switchMap,
+  take,
+} from 'rxjs';
 import { withCustomCallState } from './with-custom-call-state.feature';
 import { mapFirebaseAuthErrorToMessage } from '../errors';
 
@@ -43,9 +51,14 @@ export function withEmailVerificationResources<
           tap(() => innerStore.emailVerificationSetLoading()),
           exhaustMap(() =>
             store._getUserSession$().pipe(
-              filter((user): user is User => !!user),
-              exhaustMap((user) =>
-                store._sendEmailVerification(user).pipe(
+              take(1),
+              switchMap((user) => {
+                if (!user) {
+                  innerStore.emailVerificationSetError('Usuario actual faltante.');
+                  return EMPTY;
+                }
+
+                return store._sendEmailVerification(user).pipe(
                   tapResponse({
                     next: () => innerStore.emailVerificationSetSuccess(),
                     error: (err: unknown) =>
@@ -53,8 +66,8 @@ export function withEmailVerificationResources<
                         mapFirebaseAuthErrorToMessage(err)
                       ),
                   })
-                )
-              )
+                );
+              })
             )
           )
         )
