@@ -26,26 +26,26 @@ export function withLoginResources<T extends LoginDeps>(store: T) {
     withCustomCallState('login'),
     withState<LoginUiState>({ loginNeedsVerification: false }),
 
-    withMethods((s) => ({
+    withMethods((innerStore) => ({
       googleSignIn: rxMethod<void>(
         pipe(
           tap(() => {
-            s.loginSetLoading();
-            patchState(s, { loginNeedsVerification: false });
+            innerStore.loginSetLoading();
+            patchState(innerStore, { loginNeedsVerification: false });
           }),
           exhaustMap(() => store._googleSignin()),
           tapResponse({
             next: (cred) => {
               if (!cred.user.emailVerified) {
-                s.loginSetError(null);
-                patchState(s, { loginNeedsVerification: true });
+                innerStore.loginSetError(null);
+                patchState(innerStore, { loginNeedsVerification: true });
                 return;
               }
-              s.loginSetSuccess();
+              innerStore.loginSetSuccess();
               router.navigateByUrl('/dashboard', { replaceUrl: true });
             },
             error: (err: unknown) =>
-              s.loginSetError(mapFirebaseAuthErrorToMessage(err)),
+              innerStore.loginSetError(mapFirebaseAuthErrorToMessage(err)),
           })
         )
       ),
@@ -53,22 +53,22 @@ export function withLoginResources<T extends LoginDeps>(store: T) {
       login: rxMethod<Credentials>(
         pipe(
           tap(() => {
-            s.loginSetLoading();
-            patchState(s, { loginNeedsVerification: false });
+            innerStore.loginSetLoading();
+            patchState(innerStore, { loginNeedsVerification: false });
           }),
           exhaustMap((creds) => store._login(creds)),
           tapResponse({
             next: (cred) => {
               if (!cred.user.emailVerified) {
-                s.loginSetError(null);
-                patchState(s, { loginNeedsVerification: true });
+                innerStore.loginSetError(null);
+                patchState(innerStore, { loginNeedsVerification: true });
                 return;
               }
-              s.loginSetSuccess();
+              innerStore.loginSetSuccess();
               router.navigateByUrl('/dashboard', { replaceUrl: true });
             },
             error: (err: unknown) =>
-              s.loginSetError(mapFirebaseAuthErrorToMessage(err)),
+              innerStore.loginSetError(mapFirebaseAuthErrorToMessage(err)),
           })
         )
       ),
