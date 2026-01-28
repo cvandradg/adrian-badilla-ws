@@ -41,7 +41,8 @@ export function withEmailVerificationResources<
         route.queryParamMap.pipe(
           map((params) => params.get('oobCode')),
           distinctUntilChanged()
-        )
+        ),
+        { initialValue: null }
       ),
     })),
 
@@ -54,7 +55,9 @@ export function withEmailVerificationResources<
               take(1),
               switchMap((user) => {
                 if (!user) {
-                  innerStore.emailVerificationSetError('Usuario actual faltante.');
+                  innerStore.emailVerificationSetError(
+                    'Usuario actual faltante.'
+                  );
                   return EMPTY;
                 }
 
@@ -78,19 +81,21 @@ export function withEmailVerificationResources<
           tap(() => innerStore.emailVerificationSetLoading()),
           exhaustMap(() => {
             const code = innerStore._oobCode();
-            console.log('📩 oobCode leído desde la URL:', code);
 
-            return store._verifyEmail(code ?? '').pipe(
+            if (!code) {
+              innerStore.emailVerificationSetError(
+                'Falta el código de verificación en el enlace.'
+              );
+              return EMPTY;
+            }
+
+            return store._verifyEmail(code).pipe(
               tapResponse({
-                next: () => {
-                  console.log('✅ Firebase confirmó la verificación de correo');
-                  innerStore.emailVerificationSetSuccess();
-                },
-                error: (err: unknown) => {
+                next: () => innerStore.emailVerificationSetSuccess(),
+                error: (err: unknown) =>
                   innerStore.emailVerificationSetError(
                     mapFirebaseAuthErrorToMessage(err)
-                  );
-                },
+                  ),
               })
             );
           })
