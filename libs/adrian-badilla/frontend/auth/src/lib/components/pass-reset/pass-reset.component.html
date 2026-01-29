@@ -13,19 +13,22 @@
     </button>
   </div>
 
-  @if (firebaseAuthStore.passResetSuccess()) {
+@if (firebaseAuthStore.passResetSuccess()) {
   <adrian-badilla-status-message
     [type]="'success'"
     [icon]="['fas', 'check']"
-    [message]="
-      'Si el correo es válido te llegará un link para cambiar tu contraseña.'
-    "
+    [message]="'Si el correo es válido te llegará un link para cambiar tu contraseña.'"
+    [display]="true"
   />
-  } @if (firebaseAuthStore.passResetError()) {
+}
+
+@if (firebaseAuthStore.passResetError()) {
   <adrian-badilla-status-message
     [type]="'error'"
     [icon]="['fas', 'xmark']"
     [message]="firebaseAuthStore.passResetError()"
+    [display]="true"
   />
-  }
+}
+
 </ng-container>

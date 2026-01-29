@@ -1,15 +1,31 @@
-import type { FirebaseError } from 'firebase/app';
+type WithCode = { code?: unknown; error?: unknown; cause?: unknown };
 
-function isFirebaseError(error: unknown): error is FirebaseError {
-  return (
-    !!error &&
-    typeof error === 'object' &&
-    (error as any).name === 'FirebaseError'
-  );
+function extractFirebaseCode(err: unknown): string | undefined {
+  // Caso directo: { code: 'auth/...' }
+  if (err && typeof err === 'object') {
+    const direct = (err as WithCode).code;
+    if (typeof direct === 'string') return direct;
+
+    // Caso envuelto: { error: { code } }
+    const nestedError = (err as WithCode).error;
+    if (nestedError && typeof nestedError === 'object') {
+      const nestedCode = (nestedError as WithCode).code;
+      if (typeof nestedCode === 'string') return nestedCode;
+    }
+
+    // Caso con cause: { cause: { code } } (cada vez más común)
+    const cause = (err as WithCode).cause;
+    if (cause && typeof cause === 'object') {
+      const causeCode = (cause as WithCode).code;
+      if (typeof causeCode === 'string') return causeCode;
+    }
+  }
+
+  return undefined;
 }
 
 export function mapFirebaseAuthErrorToMessage(error: unknown): string {
-  const code = isFirebaseError(error) ? error.code : undefined;
+  const code = extractFirebaseCode(error);
 
   switch (code) {
     case 'auth/email-already-in-use':
@@ -23,7 +39,9 @@ export function mapFirebaseAuthErrorToMessage(error: unknown): string {
     case 'auth/wrong-password':
       return 'La contraseña es incorrecta.';
     case 'auth/invalid-login-credentials':
-      return 'Credenciales inválidos.';
+      return 'Credenciales inválidas.';
+    case 'auth/invalid-credential':
+      return 'La contraseña es incorrecta.'; 
     case 'auth/user-disabled':
       return 'El usuario está deshabilitado.';
     case 'auth/invalid-email':

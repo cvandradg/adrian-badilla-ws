@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FirebaseAuthOut } from '../utils/firebase-auth';
-import { distinctUntilChanged, exhaustMap, map, pipe } from 'rxjs';
+import { distinctUntilChanged, exhaustMap, map, pipe, filter, tap } from 'rxjs';
 import { withCustomCallState } from './with-custom-call-state.feature';
 import { mapFirebaseAuthErrorToMessage } from '../errors';
 
@@ -28,31 +28,48 @@ export function withRequestPassResetResources<T extends RequestPassResetDeps>(
         route.queryParamMap.pipe(
           map((params) => params.get('oobCode')),
           distinctUntilChanged()
-        )
+        ),
+        { initialValue: null }
       ),
     })),
 
     withMethods((innerStore) => ({
       resetPassword: rxMethod<{ newPassword: string }>(
         pipe(
-          exhaustMap(({ newPassword }) => {
-            innerStore.requestPassResetSetLoading();
+          map(({ newPassword }) => ({
+            code: innerStore.oobCode(),
+            password: newPassword.trim(),
+          })),
 
-            return store
-              ._resetPass(innerStore.oobCode() ?? '', newPassword)
-              .pipe(
-                tapResponse({
-                  next: () => {
-                    console.log('✅ Firebase confirmo el cambio de contraseña');
-                    innerStore.requestPassResetSetSuccess();
-                  },
-                  error: (err: unknown) =>
-                    innerStore.requestPassResetSetError(
-                      mapFirebaseAuthErrorToMessage(err)
-                    ),
-                })
+          tap(({ code, password }) => {
+            if (!code) {
+              innerStore.requestPassResetSetError(
+                'Falta el código de verificación en el enlace.'
               );
-          })
+            } else if (!password) {
+              innerStore.requestPassResetSetError(
+                'Escribe una nueva contraseña para continuar.'
+              );
+            }
+          }),
+
+          filter(
+            (value): value is { code: string; password: string } =>
+              !!value.code && !!value.password
+          ),
+          tap(() => innerStore.requestPassResetSetLoading()),
+
+          exhaustMap(({ code, password }) =>
+            store._resetPass(code, password).pipe(
+              tapResponse({
+                next: () => innerStore.requestPassResetSetSuccess(),
+                error: (err: unknown) =>
+                  innerStore.requestPassResetSetError(
+                    mapFirebaseAuthErrorToMessage(err)
+                  ),
+              })
+            )
+          )
         )
       ),
     }))
