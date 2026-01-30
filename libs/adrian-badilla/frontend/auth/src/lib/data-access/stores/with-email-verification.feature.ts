@@ -1,49 +1,40 @@
 import {
-  withProps,
-  withMethods,
   signalStoreFeature,
+  withMethods,
+  withProps,
   WritableStateSource,
 } from '@ngrx/signals';
 import { inject } from '@angular/core';
-import { tapResponse } from '@ngrx/operators';
-import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FirebaseAuthOut } from '../utils/firebase-auth';
 import { ActivatedRoute, Router } from '@angular/router';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { tapResponse } from '@ngrx/operators';
 import {
-  map,
-  pipe,
-  exhaustMap,
-  distinctUntilChanged,
-  tap,
   EMPTY,
+  exhaustMap,
+  pipe,
   switchMap,
   take,
+  tap,
+  from,
 } from 'rxjs';
+
+import { FirebaseAuthOut } from '../utils/firebase-auth';
 import { withCustomCallState } from './with-custom-call-state.feature';
 import { mapFirebaseAuthErrorToMessage } from '../errors';
 
-type EmailVerificationResetDeps = WritableStateSource<
-  FirebaseAuthOut['state']
-> &
+type EmailVerificationDeps = WritableStateSource<FirebaseAuthOut['state']> &
   Pick<FirebaseAuthOut['methods'], '_sendEmailVerification' | '_verifyEmail'> &
   Pick<FirebaseAuthOut['props'], '_getUserSession$'>;
 
-export function withEmailVerificationResources<
-  T extends EmailVerificationResetDeps
->(store: T) {
+export function withEmailVerificationResources<T extends EmailVerificationDeps>(
+  store: T
+) {
   return signalStoreFeature(
     withCustomCallState('emailVerification'),
 
-    withProps((_, route = inject(ActivatedRoute)) => ({
+    withProps(() => ({
       _router: inject(Router),
-      _oobCode: toSignal(
-        route.queryParamMap.pipe(
-          map((params) => params.get('oobCode')),
-          distinctUntilChanged()
-        ),
-        { initialValue: null }
-      ),
+      _route: inject(ActivatedRoute),
     })),
 
     withMethods((innerStore) => ({
@@ -80,16 +71,16 @@ export function withEmailVerificationResources<
         pipe(
           tap(() => innerStore.emailVerificationSetLoading()),
           exhaustMap(() => {
-            const code = innerStore._oobCode();
+            const oobCode = innerStore._route.snapshot.queryParamMap.get('oobCode');
 
-            if (!code) {
+            if (!oobCode) {
               innerStore.emailVerificationSetError(
                 'Falta el código de verificación en el enlace.'
               );
               return EMPTY;
             }
 
-            return store._verifyEmail(code).pipe(
+            return store._verifyEmail(oobCode).pipe(
               tapResponse({
                 next: () => innerStore.emailVerificationSetSuccess(),
                 error: (err: unknown) =>
@@ -103,7 +94,7 @@ export function withEmailVerificationResources<
       ),
 
       goToDashboard: rxMethod<void>(
-        pipe(exhaustMap(() => innerStore._router.navigate(['/dashboard'])))
+        pipe(exhaustMap(() => from(innerStore._router.navigate(['/dashboard']))))
       ),
     }))
   );

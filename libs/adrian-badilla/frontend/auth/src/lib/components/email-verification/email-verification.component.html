@@ -1,51 +1,50 @@
 <div class="container">
-  <div class="title">Verificacion de cuenta</div>
+  <div class="title">Verificación de cuenta</div>
 
   <div class="description">
     @if (firebaseAuthStore.emailVerificationLoading()) {
-    <fa-icon
-      [icon]="['fas', 'spinner-third']"
-      class="icon fa-spin fa-2xl default-color"
-      style="--fa-animation-duration: 1s"
-    />
-    <adrian-badilla-status-message
-      [type]="'info'"
-      [icon]="['fas', 'circle-info']"
-      [message]="'Verificando tu cuenta...'"
-      [display]="true"
-    />
+      <fa-icon
+        [icon]="['fas', 'spinner-third']"
+        class="icon fa-spin fa-2xl default-color"
+        style="--fa-animation-duration: 1s"
+      />
+      <adrian-badilla-status-message
+        type="info"
+        [icon]="['fas', 'circle-info']"
+        message="Verificando tu cuenta..."
+        [display]="true"
+      />
     }
 
     <adrian-badilla-status-message
-      [type]="'error'"
+      type="error"
       [icon]="['fas', 'exclamation-triangle']"
       [message]="firebaseAuthStore.emailVerificationError() || ''"
       [display]="!!firebaseAuthStore.emailVerificationError()"
     />
 
     <adrian-badilla-status-message
-      [type]="'success'"
+      type="success"
       [icon]="['fas', 'check']"
-      [message]="'Cuenta verificada correctamente.'"
-      [display]="
-        firebaseAuthStore.emailVerificationSuccess() &&
-        !firebaseAuthStore.emailVerificationError()
-      "
+      message="Cuenta verificada correctamente."
+      [display]="firebaseAuthStore.emailVerificationSuccess()"
     />
 
-    @if ( firebaseAuthStore.emailVerificationSuccess() ) {
-    <adrian-badilla-primary-animated-button
-      [enable]="true"
-      [buttonText]="'Ir al dashboard'"
-      (click)="firebaseAuthStore.goToDashboard()"
-    />
+    @if (firebaseAuthStore.emailVerificationSuccess()) {
+      <adrian-badilla-primary-animated-button
+        [enable]="true"
+        buttonText="Ir al dashboard"
+        (click)="firebaseAuthStore.goToDashboard()"
+      />
     }
   </div>
 
-  <adrian-badilla-primary-animated-button
-    [enable]="!firebaseAuthStore.emailVerificationLoading()"
-    [buttonText]="'Verificar ahora'"
-    (click)="firebaseAuthStore.verifyEmailFromRoute()"
-    [success]="firebaseAuthStore.emailVerificationSuccess()"
-  />
+  @if (!firebaseAuthStore.emailVerificationSuccess()) {
+    <adrian-badilla-primary-animated-button
+      [enable]="!firebaseAuthStore.emailVerificationLoading()"
+      buttonText="Verificar ahora"
+      (click)="firebaseAuthStore.verifyEmailFromRoute()"
+      [success]="firebaseAuthStore.emailVerificationSuccess()"
+    />
+  }
 </div>

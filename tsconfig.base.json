@@ -39,6 +39,9 @@
       ],
       "@adrian-badilla/dashboard/routes": [
         "libs/adrian-badilla/frontend/dashboard/src/lib/lib.routes.ts"
+      ],
+      "@adrian-badilla/auth/guards/firebase-action.guard": [
+        "libs/adrian-badilla/frontend/shared/src/lib/guards/firebase-action.guard.ts"
       ]
     }
   },
