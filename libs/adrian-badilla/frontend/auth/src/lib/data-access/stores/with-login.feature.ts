@@ -56,20 +56,23 @@ export function withLoginResources<T extends LoginDeps>(store: T) {
             innerStore.loginSetLoading();
             patchState(innerStore, { loginNeedsVerification: false });
           }),
-          exhaustMap((creds) => store._login(creds)),
-          tapResponse({
-            next: (cred) => {
-              if (!cred.user.emailVerified) {
-                innerStore.loginSetError(null);
-                patchState(innerStore, { loginNeedsVerification: true });
-                return;
-              }
-              innerStore.loginSetSuccess();
-              router.navigateByUrl('/dashboard', { replaceUrl: true });
-            },
-            error: (err: unknown) =>
-              innerStore.loginSetError(mapFirebaseAuthErrorToMessage(err)),
-          })
+          exhaustMap((creds) =>
+            store._login(creds).pipe(
+              tapResponse({
+                next: (cred) => {
+                  if (!cred.user.emailVerified) {
+                    innerStore.loginSetError(null);
+                    patchState(innerStore, { loginNeedsVerification: true });
+                    return;
+                  }
+                  innerStore.loginSetSuccess();
+                  router.navigateByUrl('/dashboard', { replaceUrl: true });
+                },
+                error: (err: unknown) =>
+                  innerStore.loginSetError(mapFirebaseAuthErrorToMessage(err)),
+              })
+            )
+          )
         )
       ),
     }))
