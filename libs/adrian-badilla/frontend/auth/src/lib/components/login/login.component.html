@@ -13,6 +13,7 @@
           <mat-form-field>
             <mat-label>Correo</mat-label>
             <input
+              data-cy="login-email"
               matInput
               placeholder="algunCorreo@dominio.com"
               type="email"
@@ -23,6 +24,7 @@
           <mat-form-field>
             <mat-label>Contraseña</mat-label>
             <input
+              data-cy="login-password"
               matInput
               placeholder="EjemploDeClave1!"
               type="password"
@@ -33,6 +35,7 @@
         </form>
 
         <adrian-badilla-primary-animated-button
+          data-cy="login-submit"
           [enable]="!loginInputForm.invalid"
           [buttonText]="'Accede a Tu Cuenta'"
           (click)="firebaseAuthStore.login(credentials())"
@@ -77,6 +80,7 @@
         />
 
         <adrian-badilla-secondary-animated-button
+          data-cy="go-register"
           [routerLink]="['/auth/register']"
           [buttonText]="'Crear Cuenta'"
           [fontawesomeIcon]="['fas', 'user']"

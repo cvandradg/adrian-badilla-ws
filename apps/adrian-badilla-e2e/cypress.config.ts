@@ -14,4 +14,10 @@ export default defineConfig({
     }),
     baseUrl: 'http://localhost:4200',
   },
+      env: {
+      E2E_VERIFIED_EMAIL: ' gafretriffaru-5726@yopmail.com',
+      E2E_VERIFIED_PASSWORD: '123456789',
+      E2E_UNVERIFIED_EMAIL: 'email-no-verificado@yopmail.com',
+      E2E_UNVERIFIED_PASSWORD: '123456789',
+    },
 });
