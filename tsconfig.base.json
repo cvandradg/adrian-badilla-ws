@@ -19,7 +19,7 @@
         "libs/adrian-badilla/frontend/landing-page/src/index.ts"
       ],
       "@adrian-badilla/ui/landing-page/routes": [
-        "libs/adrian-badilla/frontend/landing-page/src/lib/lib.routes"
+        "libs/adrian-badilla/frontend/landing-page/src/lib/lib.routes.ts"
       ],
       "@adrian-badilla/ui/shared": [
         "libs/adrian-badilla/frontend/shared/src/index.ts"
@@ -32,7 +32,7 @@
         "libs/adrian-badilla/frontend/auth/src/index.ts"
       ],
       "@adrian-badilla/auth/routes": [
-        "libs/adrian-badilla/frontend/auth/src/lib/lib.routes"
+        "libs/adrian-badilla/frontend/auth/src/lib/lib.routes.ts"
       ],
       "@shared/styles/*": [
         "libs/adrian-badilla/frontend/shared/src/lib/styles/*"
