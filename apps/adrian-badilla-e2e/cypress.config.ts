@@ -1,5 +1,13 @@
 import { nxE2EPreset } from '@nx/cypress/plugins/cypress-preset';
 import { defineConfig } from 'cypress';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+
+function loadLocalEnv() {
+  const p = path.join(__dirname, 'cypress.env.json');
+  if (!fs.existsSync(p)) return {};
+  return JSON.parse(fs.readFileSync(p, 'utf8'));
+}
 
 export default defineConfig({
   e2e: {
@@ -14,10 +22,6 @@ export default defineConfig({
     }),
     baseUrl: 'http://localhost:4200',
   },
-      env: {
-      E2E_VERIFIED_EMAIL: ' gafretriffaru-5726@yopmail.com',
-      E2E_VERIFIED_PASSWORD: '123456789',
-      E2E_UNVERIFIED_EMAIL: 'email-no-verificado@yopmail.com',
-      E2E_UNVERIFIED_PASSWORD: '123456789',
-    },
+
+  env: loadLocalEnv(),
 });

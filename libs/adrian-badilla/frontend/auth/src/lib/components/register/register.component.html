@@ -12,6 +12,7 @@
           type="email"
           required="true"
           formControlName="user"
+          data-cy="register-email"
         />
       </mat-form-field>
 
@@ -23,12 +24,14 @@
           type="password"
           required="true"
           formControlName="pass"
+          data-cy="register-password"
           (keyup.enter)="firebaseAuthStore.createAccount(credentials())"
         />
       </mat-form-field>
     </form>
 
     <adrian-badilla-primary-animated-button
+      data-cy="register-submit"
       [enable]="!loginInputForm.invalid"
       [buttonText]="'Crear Cuenta'"
       (click)="firebaseAuthStore.createAccount(credentials())"
