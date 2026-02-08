@@ -41,7 +41,7 @@ export function mapFirebaseAuthErrorToMessage(error: unknown): string {
     case 'auth/invalid-login-credentials':
       return 'Credenciales inválidas.';
     case 'auth/invalid-credential':
-      return 'La contraseña es incorrecta.'; 
+      return 'La contraseña es incorrecta.';
     case 'auth/user-disabled':
       return 'El usuario está deshabilitado.';
     case 'auth/invalid-email':

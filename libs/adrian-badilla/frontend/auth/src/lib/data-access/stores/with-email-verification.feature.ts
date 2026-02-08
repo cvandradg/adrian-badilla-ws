@@ -8,15 +8,7 @@ import { inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { tapResponse } from '@ngrx/operators';
-import {
-  EMPTY,
-  exhaustMap,
-  pipe,
-  switchMap,
-  take,
-  tap,
-  from,
-} from 'rxjs';
+import { EMPTY, exhaustMap, pipe, switchMap, take, tap, from } from 'rxjs';
 
 import { FirebaseAuthOut } from '../utils/firebase-auth';
 import { withCustomCallState } from './with-custom-call-state.feature';
@@ -71,7 +63,8 @@ export function withEmailVerificationResources<T extends EmailVerificationDeps>(
         pipe(
           tap(() => innerStore.emailVerificationSetLoading()),
           exhaustMap(() => {
-            const oobCode = innerStore._route.snapshot.queryParamMap.get('oobCode');
+            const oobCode =
+              innerStore._route.snapshot.queryParamMap.get('oobCode');
 
             if (!oobCode) {
               innerStore.emailVerificationSetError(
@@ -94,7 +87,9 @@ export function withEmailVerificationResources<T extends EmailVerificationDeps>(
       ),
 
       goToDashboard: rxMethod<void>(
-        pipe(exhaustMap(() => from(innerStore._router.navigate(['/dashboard']))))
+        pipe(
+          exhaustMap(() => from(innerStore._router.navigate(['/dashboard'])))
+        )
       ),
     }))
   );

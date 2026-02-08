@@ -7,7 +7,9 @@ describe('Auth - Login', () => {
   } as const;
 
   function creds(kind: 'verified' | 'unverified') {
-    const email = Cypress.env(kind === 'verified' ? 'E2E_VERIFIED_EMAIL' : 'E2E_UNVERIFIED_EMAIL');
+    const email = Cypress.env(
+      kind === 'verified' ? 'E2E_VERIFIED_EMAIL' : 'E2E_UNVERIFIED_EMAIL'
+    );
     const password = Cypress.env(
       kind === 'verified' ? 'E2E_VERIFIED_PASSWORD' : 'E2E_UNVERIFIED_PASSWORD'
     );
@@ -60,7 +62,9 @@ describe('Auth - Login', () => {
     cy.get(sel.pass).type('wrong-pass', { log: false });
     cy.get(sel.pass).type('{enter}');
 
-    cy.contains(/error|invalid|incorrect|contraseña|correo/i, { timeout: 15000 }).should('exist');
+    cy.contains(/error|invalid|incorrect|contraseña|correo/i, {
+      timeout: 15000,
+    }).should('exist');
   });
 
   it('desde login navega a register', () => {

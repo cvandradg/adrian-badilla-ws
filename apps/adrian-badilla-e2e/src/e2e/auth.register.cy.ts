@@ -78,7 +78,7 @@ describe('Auth - Register', () => {
   });
 
   it('registro con email existente: muestra error', () => {
- const existingEmail = Cypress.env('E2E_VERIFIED_EMAIL');
+    const existingEmail = Cypress.env('E2E_VERIFIED_EMAIL');
 
     expect(existingEmail, 'E2E_VERIFIED_EMAIL').to.not.equal(undefined);
 
