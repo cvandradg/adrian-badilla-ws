@@ -6,6 +6,10 @@ export default [
   ...baseConfig,
   {
     // Override or add rules here
-    rules: {},
+    rules: {
+      'no-unused-expressions': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
+
+    },
   },
 ];
