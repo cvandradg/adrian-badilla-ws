@@ -1,6 +1,10 @@
 <ng-container>
   <div class="forgot-password">
-    <button mat-button (click)="firebaseAuthStore.passReset(user)">
+    <button
+      mat-button
+      data-cy="go-passreset"
+      (click)="firebaseAuthStore.passReset(user)"
+    >
       <p>Recuperar Contraseña</p>
 
       @if (firebaseAuthStore.passResetLoading()) {

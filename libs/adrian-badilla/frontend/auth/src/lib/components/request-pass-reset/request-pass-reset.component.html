@@ -10,6 +10,7 @@
         <mat-label>Contraseña</mat-label>
         <input
           matInput
+          data-cy="resetpass-password"
           placeholder="EjemploDeClave1!"
           type="password"
           #passInput
@@ -18,6 +19,7 @@
     </form>
 
     <adrian-badilla-primary-animated-button
+      data-cy="resetpass-submit"
       [enable]="!firebaseAuthStore.requestPassResetLoading()"
       [buttonText]="'Cambiar contraseña'"
       (click)="
