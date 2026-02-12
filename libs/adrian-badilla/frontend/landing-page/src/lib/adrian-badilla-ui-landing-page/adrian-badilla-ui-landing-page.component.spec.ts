@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LandingPageComponent } from './adrian-badilla-ui-landing-page.component';
+import { provideRouter } from '@angular/router';
 
 describe('LandingPageComponent', () => {
   let component: LandingPageComponent;
@@ -8,6 +9,7 @@ describe('LandingPageComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [LandingPageComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LandingPageComponent);
