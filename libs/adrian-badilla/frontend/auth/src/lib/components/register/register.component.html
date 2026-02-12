@@ -68,7 +68,7 @@
     } @if ( firebaseAuthStore.registerSuccess() &&
     !firebaseAuthStore.registerLoading() ) {
     <adrian-badilla-secondary-animated-button
-      [routerLink]="'/login'"
+      [routerLink]="'/auth/login'"
       [buttonText]="'Volver al Login'"
       [fontawesomeIcon]="['fas', 'arrow-right']"
     />

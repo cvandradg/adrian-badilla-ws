@@ -8,7 +8,7 @@ import { inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { tapResponse } from '@ngrx/operators';
-import { EMPTY, exhaustMap, pipe, switchMap, take, tap, from } from 'rxjs';
+import { EMPTY, exhaustMap, pipe, switchMap, take, tap, from, filter } from 'rxjs';
 
 import { FirebaseAuthOut } from '../utils/firebase-auth';
 import { withCustomCallState } from './with-custom-call-state.feature';
@@ -35,6 +35,7 @@ export function withEmailVerificationResources<T extends EmailVerificationDeps>(
           tap(() => innerStore.emailVerificationSetLoading()),
           exhaustMap(() =>
             store._getUserSession$().pipe(
+              filter((user): user is NonNullable<typeof user> => !!user),
               take(1),
               switchMap((user) => {
                 if (!user) {
