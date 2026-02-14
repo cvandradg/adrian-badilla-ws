@@ -6,16 +6,21 @@ import {
 } from '@ngrx/signals';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { exhaustMap, pipe, tap } from 'rxjs';
+import { exhaustMap, pipe, tap, throwError } from 'rxjs';
 import { tapResponse } from '@ngrx/operators';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { Credentials } from '@adrian-badilla/ui/shared';
 import { FirebaseAuthOut } from '../utils/firebase-auth';
 import { withCustomCallState } from './with-custom-call-state.feature';
 import { mapFirebaseAuthErrorToMessage } from '../errors';
+import { User } from 'firebase/auth';
 
 type LoginDeps = FirebaseAuthOut['state'] &
-  Pick<FirebaseAuthOut['methods'], '_googleSignin' | '_login'>;
+  Pick<
+    FirebaseAuthOut['methods'],
+    '_googleSignin' | '_login' | '_sendEmailVerification'
+  > &
+  Pick<FirebaseAuthOut['props'], '_auth'>;
 
 type LoginUiState = { loginNeedsVerification: boolean };
 
@@ -24,6 +29,7 @@ export function withLoginResources<T extends LoginDeps>(store: T) {
 
   return signalStoreFeature(
     withCustomCallState('login'),
+    withCustomCallState('resendVerification'),
     withState<LoginUiState>({ loginNeedsVerification: false }),
 
     withMethods((innerStore) => ({
@@ -75,6 +81,34 @@ export function withLoginResources<T extends LoginDeps>(store: T) {
           )
         )
       ),
+
+      resendVerificationEmail: rxMethod<void>(
+        pipe(
+          tap(() => innerStore.resendVerificationSetLoading()),
+          exhaustMap(() => {
+            const currentUser = store._auth.currentUser as User | null;
+
+            if (!currentUser) {
+              return throwError(() => ({ code: 'auth/user-not-found' }));
+            }
+
+            return store._sendEmailVerification(currentUser);
+          }),
+          tapResponse({
+            next: () => innerStore.resendVerificationSetSuccess(),
+            error: (err: unknown) =>
+              innerStore.resendVerificationSetError(
+                mapFirebaseAuthErrorToMessage(err)
+              ),
+          })
+        )
+      ),
+
+      resetLoginUi: () => {
+        innerStore.loginResetState();
+        innerStore.resendVerificationResetState();
+        patchState(innerStore, { loginNeedsVerification: false });
+      },
     }))
   );
 }

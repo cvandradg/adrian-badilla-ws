@@ -29,7 +29,7 @@
               placeholder="EjemploDeClave1!"
               type="password"
               formControlName="pass"
-              (keyup.enter)="firebaseAuthStore.login(credentials())"
+              (keyup.enter)="!loginInputForm.invalid && firebaseAuthStore.login(credentials())"
             />
           </mat-form-field>
         </form>
@@ -44,29 +44,56 @@
         />
 
         @if (firebaseAuthStore.loginLoading()) {
-        <adrian-badilla-status-message
-          [type]="'info'"
-          [icon]="['fas', 'circle-info']"
-          [message]="'Iniciando sesión...'"
-          [display]="true"
-        />
-        } @if (!firebaseAuthStore.loginLoading() &&
-        firebaseAuthStore.loginError()) {
-        <adrian-badilla-status-message
-          [type]="'error'"
-          [icon]="['fas', 'xmark']"
-          [message]="firebaseAuthStore.loginError()!"
-          [display]="true"
-        />
-        } @if ( !firebaseAuthStore.loginLoading() &&
-        !firebaseAuthStore.loginError() &&
-        firebaseAuthStore.loginNeedsVerification() ) {
-        <adrian-badilla-status-message
-          [type]="'warning'"
-          [icon]="['fal', 'envelope-circle-check']"
-          [message]="'Verifica tu cuenta, te hemos enviado un link al correo.'"
-          [display]="true"
-        />
+          <adrian-badilla-status-message
+            [type]="'info'"
+            [icon]="['fas', 'circle-info']"
+            [message]="'Iniciando sesión...'"
+            [display]="true"
+          />
+        } @else if (firebaseAuthStore.loginError()) {
+          <adrian-badilla-status-message
+            [type]="'error'"
+            [icon]="['fas', 'xmark']"
+            [message]="firebaseAuthStore.loginError()!"
+            [display]="true"
+          />
+        } @else if (firebaseAuthStore.loginNeedsVerification()) {
+          <adrian-badilla-status-message
+            [type]="'warning'"
+            [icon]="['fal', 'envelope-circle-check']"
+            [message]="'Tu correo aún no está verificado. Si el link expiró, puedes reenviar el correo.'"
+            [display]="true"
+          />
+
+          <adrian-badilla-secondary-animated-button
+            data-cy="resend-verification"
+            [buttonText]="'Reenviar correo de verificación'"
+            [fontawesomeIcon]="['fas', 'paper-plane']"
+            (click)="firebaseAuthStore.resendVerificationEmail()"
+          />
+
+          @if (firebaseAuthStore.resendVerificationLoading()) {
+            <adrian-badilla-status-message
+              [type]="'info'"
+              [icon]="['fas', 'circle-info']"
+              [message]="'Enviando correo...'"
+              [display]="true"
+            />
+          } @else if (firebaseAuthStore.resendVerificationError()) {
+            <adrian-badilla-status-message
+              [type]="'error'"
+              [icon]="['fas', 'xmark']"
+              [message]="firebaseAuthStore.resendVerificationError()!"
+              [display]="true"
+            />
+          } @else if (firebaseAuthStore.resendVerificationSuccess()) {
+            <adrian-badilla-status-message
+              [type]="'success'"
+              [icon]="['fas', 'check']"
+              [message]="'Listo. Te reenviamos el correo. Revisa Spam/Promociones.'"
+              [display]="true"
+            />
+          }
         }
       </div>
 
