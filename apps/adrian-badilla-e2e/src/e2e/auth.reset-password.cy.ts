@@ -128,6 +128,14 @@ describe('Auth - Verify Email + Reset Password (YOPmail) + Login', () => {
     // 3) Ir a login (directo, como pediste)
     cy.visit('/auth/login');
 
+    //  intento FALLIDO — sin email
+cy.get(sel.goPassReset).click({ force: true });
+
+// depende de tu mapper / UI
+cy.contains('Escribe tu correo arriba', { timeout: 10000 })
+  .should('exist');
+
+
     // 4) Desde login, pedir reset (tu UI actual: botón usa user)
     // Para que funcione, el login tiene que tener el email en un input que el componente use como "user".
     cy.get(sel.loginEmail).clear();
@@ -148,14 +156,24 @@ describe('Auth - Verify Email + Reset Password (YOPmail) + Login', () => {
       cy.visit(String(resetUrl), { timeout: 30000 });
     });
 
-    // 6) Cambiar contraseña
-    cy.get(sel.resetPassInput).clear();
-    cy.get(sel.resetPassInput).type(newPassword, { log: false });
+// 6) Cambiar contraseña
 
-    cy.get(sel.resetPassSubmit).click({ force: true });
+cy.get(sel.resetPassInput).clear();
+cy.get(sel.resetPassInput).type('123', { log: false });
 
-    cy.contains('Creaste una nueva contraseña.', { timeout: 30000 }).should('exist');
+cy.get(sel.resetPassSubmit).click({ force: true });
 
+cy.contains('La contraseña es muy débil.', { timeout: 30000 })
+  .should('exist');
+
+
+cy.get(sel.resetPassInput).clear();
+cy.get(sel.resetPassInput).type(newPassword, { log: false });
+
+cy.get(sel.resetPassSubmit).click({ force: true });
+
+cy.contains('Creaste una nueva contraseña.', { timeout: 30000 })
+  .should('exist');
     // 7) Volver a login (tu status message tiene routerLink="/")
     cy.contains(/click acá/i, { timeout: 30000 }).click({ force: true });
 
