@@ -17,7 +17,12 @@
     <li role="none"><a href="#" role="menuitem">Regístrate</a></li>
   </ul>
 
-  <button class="cta" aria-label="Inicia tu proyecto">
+  <button
+    class="cta"
+    type="button"
+    [routerLink]="'/auth/login'"
+    aria-label="Inicia tu proyecto"
+  >
     Inicia tu proyecto
   </button>
 </nav>

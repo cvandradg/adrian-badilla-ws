@@ -1,28 +1,44 @@
-import { inject } from '@angular/core';
-import { exhaustMap, pipe, tap } from 'rxjs';
-import { tapResponse } from '@ngrx/operators';
+import {
+  withMethods,
+  signalStoreFeature,
+  WritableStateSource,
+} from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
+import { tapResponse } from '@ngrx/operators';
+import { pipe } from 'rxjs';
+import { map, filter, tap, exhaustMap } from 'rxjs/operators';
+import { FirebaseAuthOut } from '../utils/firebase-auth';
 import { withCustomCallState } from './with-custom-call-state.feature';
-import { withProps, withMethods, signalStoreFeature } from '@ngrx/signals';
+import { mapFirebaseAuthErrorToMessage } from '../errors';
 
-export function withPassResetResources() {
+type PassResetDeps = WritableStateSource<FirebaseAuthOut['state']> &
+  Pick<FirebaseAuthOut['methods'], '_recoverPassword'>;
+
+export function withPassResetResources<T extends PassResetDeps>(store: T) {
   return signalStoreFeature(
     withCustomCallState('passReset'),
 
-    withProps(() => ({
-      firebaseAuthService: inject(FirebaseAuthService),
-    })),
-
-    withMethods((store) => ({
+    withMethods((innerStore) => ({
       passReset: rxMethod<string>(
         pipe(
-          tap(() => store.passResetSetLoading()),
+          map((email) => email.trim()),
+          tap((email) => {
+            if (!email) {
+              innerStore.passResetSetError(
+                "Escribe tu correo arriba y presiona de nuevo 'Recuperar Contraseña."
+              );
+            }
+          }),
+          filter((email) => !!email),
+          tap(() => innerStore.passResetSetLoading()),
           exhaustMap((email) =>
-            store.firebaseAuthService.recoverPassword(email).pipe(
+            store._recoverPassword(email).pipe(
               tapResponse({
-                next: () => store.passResetSetSuccess(),
-                error: (err: Error) => store.passResetSetError(err.message),
+                next: () => innerStore.passResetSetSuccess(),
+                error: (err: unknown) =>
+                  innerStore.passResetSetError(
+                    mapFirebaseAuthErrorToMessage(err)
+                  ),
               })
             )
           )

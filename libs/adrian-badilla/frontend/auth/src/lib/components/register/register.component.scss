@@ -55,7 +55,7 @@ button {
 }
 
 .register-login-inputs {
-  min-width: 22rem;
+  width: clamp(16rem, 90vw, 22rem);
 
   button {
     width: 100%;

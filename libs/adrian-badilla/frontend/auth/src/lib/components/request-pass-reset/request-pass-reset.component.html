@@ -10,6 +10,7 @@
         <mat-label>Contraseña</mat-label>
         <input
           matInput
+          data-cy="resetpass-password"
           placeholder="EjemploDeClave1!"
           type="password"
           #passInput
@@ -17,52 +18,48 @@
       </mat-form-field>
     </form>
 
-    <div class="horizontal-animation clase">
-      <button
-        mat-button
-        (click)="
-          firebaseAuthStore.resetPassword({
-            newPassword: passInput.value
-          })
-        "
-      >
-        <div class="pass-reset-button">
-          <p>Cambiar contraseña</p>
+    <adrian-badilla-primary-animated-button
+      data-cy="resetpass-submit"
+      [enable]="!firebaseAuthStore.requestPassResetLoading()"
+      [buttonText]="'Cambiar contraseña'"
+      (click)="
+        firebaseAuthStore.resetPassword({
+          newPassword: passInput.value
+        })
+      "
+      [loading]="firebaseAuthStore.requestPassResetLoading()"
+      [success]="firebaseAuthStore.requestPassResetSuccess()"
+    />
 
-          <fa-icon
-            [icon]="['fas', 'arrow-right']"
-            class="icon fa-xl fa-shake"
-            style="--fa-animation-iteration-count: 2"
-          ></fa-icon>
-
-          @if (firebaseAuthStore.requestPassResetLoading()) {
-          <fa-icon
-            [icon]="['fas', 'spinner-third']"
-            class="icon fa-xl fa-spin"
-            style="--fa-animation-duration: 1s"
-          ></fa-icon>
-          }
-        </div>
-      </button>
-    </div>
-
-    @if (firebaseAuthStore.requestPassResetSuccess()) {
+    @if (firebaseAuthStore.requestPassResetLoading()) {
+    <adrian-badilla-status-message
+      [type]="'info'"
+      [icon]="['fas', 'circle-info']"
+      [message]="'Cambiando contraseña...'"
+      [display]="true"
+    />
+    } @if ( !firebaseAuthStore.requestPassResetLoading() &&
+    firebaseAuthStore.requestPassResetError() ) {
+    <adrian-badilla-status-message
+      [type]="'error'"
+      [icon]="['fas', 'xmark']"
+      [message]="firebaseAuthStore.requestPassResetError()!"
+      [display]="true"
+    />
+    } @if ( !firebaseAuthStore.requestPassResetLoading() &&
+    !firebaseAuthStore.requestPassResetError() &&
+    firebaseAuthStore.requestPassResetSuccess() ) {
     <adrian-badilla-status-message
       [type]="'success'"
       [icon]="['fas', 'check']"
       [routerLink]="'/'"
-      [message]="'Creaste una nueva contraseña..'"
+      [message]="'Creaste una nueva contraseña.'"
+      [display]="true"
     >
       <div class="success-message centered">
         <strong>Click acá</strong> para acceder
       </div>
     </adrian-badilla-status-message>
-    } @if (firebaseAuthStore.requestPassResetError()) {
-    <adrian-badilla-status-message
-      [type]="'error'"
-      [icon]="['fas', 'xmark']"
-      [message]="firebaseAuthStore.requestPassResetError()"
-    ></adrian-badilla-status-message>
     }
   </div>
 </div>

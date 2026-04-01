@@ -42,6 +42,7 @@ import {
   faHeartPulse,
   faPersonDollyEmpty,
   faArrowRight,
+  faPaperPlane,
 } from '@fortawesome/pro-solid-svg-icons';
 import { faHouseTree } from '@fortawesome/pro-regular-svg-icons';
 
@@ -67,6 +68,7 @@ export const FontAwesomeicons = [
   faHouseTree,
   faInstagram,
   // faCaretRight,
+  faPaperPlane,
   faArrowRight,
   faXmarkSolid,
   faRotateBack,

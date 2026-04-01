@@ -1,6 +1,10 @@
 <ng-container>
   <div class="forgot-password">
-    <button mat-button (click)="firebaseAuthStore.passReset(user)">
+    <button
+      mat-button
+      data-cy="go-passreset"
+      (click)="firebaseAuthStore.passReset(user)"
+    >
       <p>Recuperar Contraseña</p>
 
       @if (firebaseAuthStore.passResetLoading()) {
@@ -20,12 +24,14 @@
     [message]="
       'Si el correo es válido te llegará un link para cambiar tu contraseña.'
     "
+    [display]="true"
   />
   } @if (firebaseAuthStore.passResetError()) {
   <adrian-badilla-status-message
     [type]="'error'"
     [icon]="['fas', 'xmark']"
     [message]="firebaseAuthStore.passResetError()"
+    [display]="true"
   />
   }
 </ng-container>

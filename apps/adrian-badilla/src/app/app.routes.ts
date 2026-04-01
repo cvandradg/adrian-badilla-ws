@@ -6,8 +6,13 @@ export const appRoutes: Route[] = [
     loadChildren: () => import('@adrian-badilla/ui/landing-page/routes'),
   },
   {
-    path: '',
+    path: 'auth',
     loadChildren: () => import('@adrian-badilla/auth/routes'),
   },
+  {
+    path: 'dashboard',
+    loadChildren: () => import('@adrian-badilla/dashboard/routes'),
+  },
+
   { path: '**', redirectTo: '' },
 ];

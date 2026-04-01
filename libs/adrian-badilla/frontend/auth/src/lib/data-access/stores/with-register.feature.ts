@@ -1,26 +1,45 @@
-import { inject } from '@angular/core';
-import { exhaustMap, pipe, tap } from 'rxjs';
-import { tapResponse } from '@ngrx/operators';
+import {
+  signalStoreFeature,
+  withMethods,
+  WritableStateSource,
+} from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { withCustomCallState } from './with-custom-call-state.feature';
-import { withProps, withMethods, signalStoreFeature } from '@ngrx/signals';
-import { Credentials, FirebaseAuthService } from '@adrian-badilla/ui/shared';
+import { tapResponse } from '@ngrx/operators';
+import { exhaustMap, pipe, tap } from 'rxjs';
+import { User, UserCredential } from 'firebase/auth';
 
-export function withRegisterResources() {
+import { Credentials } from '@adrian-badilla/ui/shared';
+import { FirebaseAuthOut } from '../utils/firebase-auth';
+import { withCustomCallState } from './with-custom-call-state.feature';
+import { mapFirebaseAuthErrorToMessage } from '../errors';
+
+type RegisterDeps = WritableStateSource<FirebaseAuthOut['state']> &
+  Pick<
+    FirebaseAuthOut['methods'],
+    '_createAccount' | '_sendEmailVerification'
+  > &
+  Pick<FirebaseAuthOut['props'], '_getUserSession$'>;
+
+export function withRegisterResources<T extends RegisterDeps>(store: T) {
   return signalStoreFeature(
     withCustomCallState('register'),
-    withProps(() => ({
-      firebaseAuthService: inject(FirebaseAuthService),
-    })),
+
     withMethods((innerStore) => ({
       createAccount: rxMethod<Credentials>(
         pipe(
           tap(() => innerStore.registerSetLoading()),
+
           exhaustMap((creds) =>
-            innerStore.firebaseAuthService.createAccount(creds).pipe(
+            store._createAccount(creds).pipe(
+              exhaustMap((cred: UserCredential) =>
+                store._sendEmailVerification(cred.user as User)
+              ),
               tapResponse({
                 next: () => innerStore.registerSetSuccess(),
-                error: (err: Error) => innerStore.registerSetError(err.message),
+                error: (err: unknown) =>
+                  innerStore.registerSetError(
+                    mapFirebaseAuthErrorToMessage(err)
+                  ),
               })
             )
           )

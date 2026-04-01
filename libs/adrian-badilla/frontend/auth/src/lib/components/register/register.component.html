@@ -12,6 +12,7 @@
           type="email"
           required="true"
           formControlName="user"
+          data-cy="register-email"
         />
       </mat-form-field>
 
@@ -23,70 +24,62 @@
           type="password"
           required="true"
           formControlName="pass"
+          data-cy="register-password"
+          (keyup.enter)="firebaseAuthStore.createAccount(credentials())"
         />
       </mat-form-field>
     </form>
 
-    <div class="horizontal-animation">
-      <!-- [ngClass]="{
-        'enabled-button': vm.enableButton || vm.user
-      }" -->
-      <button
-        mat-button
-        (click)="firebaseAuthStore.createAccount(credentials())"
-      >
-        <div class="register-button">
-          <p>Crear Cuenta</p>
+    <adrian-badilla-primary-animated-button
+      data-cy="register-submit"
+      [enable]="!loginInputForm.invalid"
+      [buttonText]="'Crear Cuenta'"
+      (click)="firebaseAuthStore.createAccount(credentials())"
+      [loading]="firebaseAuthStore.registerLoading()"
+      [success]="firebaseAuthStore.registerSuccess()"
+    />
 
-          @if (!firebaseAuthStore.registerLoading() &&
-          !firebaseAuthStore.registerSuccess()) {
-          <fa-icon
-            [icon]="['fas', 'arrow-right']"
-            class="icon fa-xl fa-shake"
-            style="--fa-animation-iteration-count: 2"
-          />
-          } @if (firebaseAuthStore.registerLoading()) {
-          <fa-icon
-            [icon]="['fas', 'spinner-third']"
-            class="icon fa-xl fa-spin"
-            style="--fa-animation-duration: 1s"
-          />
-          } @if (!firebaseAuthStore.registerLoading() &&
-          firebaseAuthStore.registerSuccess()) {
-          <fa-icon
-            [icon]="['fas', 'check']"
-            class="icon fa-xl fa-shake"
-            style="--fa-animation-iteration-count: 2"
-          />
-          }
-        </div>
-      </button>
-    </div>
-    <div class="centered">
-      <adrian-badilla-status-message
-        [type]="'warning'"
-        [icon]="['fas', 'message-exclamation']"
-        [message]="'Revisa tu correo para activar tu cuenta.'"
-      />
-      <!-- [display]="!vm.loading && !!vm.user" -->
+    @if (firebaseAuthStore.registerLoading()) {
+    <adrian-badilla-status-message
+      [type]="'info'"
+      [icon]="['fas', 'circle-info']"
+      [message]="'Creando tu cuenta...'"
+      [display]="true"
+    />
+    } @if (!firebaseAuthStore.registerLoading() &&
+    firebaseAuthStore.registerError()) {
+    <adrian-badilla-status-message
+      [type]="'error'"
+      [icon]="['fas', 'xmark']"
+      [message]="firebaseAuthStore.registerError()!"
+      [display]="true"
+    />
+    } @if ( !firebaseAuthStore.registerLoading() &&
+    !firebaseAuthStore.registerError() && firebaseAuthStore.registerSuccess() )
+    {
+    <adrian-badilla-status-message
+      [type]="'success'"
+      [icon]="['fas', 'check']"
+      [message]="
+        'Cuenta creada. Te enviamos un correo para verificar tu cuenta. Revisa Spam/Promociones.'
+      "
+      [display]="true"
+    />
+    } @if ( firebaseAuthStore.registerSuccess() &&
+    !firebaseAuthStore.registerLoading() ) {
+    <adrian-badilla-secondary-animated-button
+      [routerLink]="'/auth/login'"
+      [buttonText]="'Volver al Login'"
+      [fontawesomeIcon]="['fas', 'arrow-right']"
+    />
 
-      <adrian-badilla-status-message
-        [type]="'success'"
-        [icon]="['fas', 'check']"
-        [message]="'Creaste una nueva cuenta.'"
-      />
-      <!-- [display]="!vm.loading && !!vm.user" -->
-    </div>
-
-    <adrian-badilla-status-message [type]="'error'" [icon]="['fas', 'xmark']" />
-    <!-- [message]="vm.error?.message"
-      [display]="!vm.loading && vm.error?.status" -->
+    <adrian-badilla-secondary-animated-button
+      [buttonText]="'Reenviar verificación'"
+      [fontawesomeIcon]="['fas', 'paper-plane']"
+      (click)="firebaseAuthStore.sendEmailVerification()"
+    />
+    }
 
     <adrian-badilla-strength-meter></adrian-badilla-strength-meter>
-
-    <!-- <adrian-badilla-strength-meter
-      [password]="loginInputForm.get('pass')?.value || ''"
-      (enableButton)="isPassStrong$.next($event)"
-    /> -->
   </div>
 </div>

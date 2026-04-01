@@ -1,50 +1,75 @@
-import { withProps, withMethods, signalStoreFeature } from '@ngrx/signals';
-import { tapResponse } from '@ngrx/operators';
-import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { distinctUntilChanged, exhaustMap, map, pipe } from 'rxjs';
+import {
+  withProps,
+  withMethods,
+  signalStoreFeature,
+  WritableStateSource,
+} from '@ngrx/signals';
 import { inject } from '@angular/core';
-import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
+import { tapResponse } from '@ngrx/operators';
 import { ActivatedRoute } from '@angular/router';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { FirebaseAuthOut } from '../utils/firebase-auth';
+import { distinctUntilChanged, exhaustMap, map, pipe, filter, tap } from 'rxjs';
 import { withCustomCallState } from './with-custom-call-state.feature';
+import { mapFirebaseAuthErrorToMessage } from '../errors';
 
-export function withRequestPassResetResources() {
+type RequestPassResetDeps = WritableStateSource<FirebaseAuthOut['state']> &
+  Pick<FirebaseAuthOut['methods'], '_resetPass'>;
+
+export function withRequestPassResetResources<T extends RequestPassResetDeps>(
+  store: T
+) {
   return signalStoreFeature(
     withCustomCallState('requestPassReset'),
 
     withProps((_, route = inject(ActivatedRoute)) => ({
-      firebaseAuthService: inject(FirebaseAuthService),
       oobCode: toSignal(
         route.queryParamMap.pipe(
           map((params) => params.get('oobCode')),
           distinctUntilChanged()
-        )
+        ),
+        { initialValue: null }
       ),
     })),
 
-    withMethods((store) => ({
+    withMethods((innerStore) => ({
       resetPassword: rxMethod<{ newPassword: string }>(
         pipe(
-          exhaustMap(({ newPassword }) => {
-            store.requestPassResetSetLoading();
+          map(({ newPassword }) => ({
+            code: innerStore.oobCode(),
+            password: newPassword.trim(),
+          })),
 
-            return store.firebaseAuthService
-              .resetPass(store.oobCode() ?? '', newPassword)
-              .pipe(
-                tapResponse({
-                  next: () => {
-                    console.log('✅ Firebase confirmo el cambio de contraseña');
-                    store.requestPassResetSetSuccess();
-                  },
-                  error: (err: Error) => {
-                    console.error('❌ Error en firebase', err);
-                    store.requestPassResetSetError(
-                      err?.message || 'Error desconocido'
-                    );
-                  },
-                })
+          tap(({ code, password }) => {
+            if (!code) {
+              innerStore.requestPassResetSetError(
+                'Falta el código de verificación en el enlace.'
               );
-          })
+            } else if (!password) {
+              innerStore.requestPassResetSetError(
+                'Escribe una nueva contraseña para continuar.'
+              );
+            }
+          }),
+
+          filter(
+            (value): value is { code: string; password: string } =>
+              !!value.code && !!value.password
+          ),
+          tap(() => innerStore.requestPassResetSetLoading()),
+
+          exhaustMap(({ code, password }) =>
+            store._resetPass(code, password).pipe(
+              tapResponse({
+                next: () => innerStore.requestPassResetSetSuccess(),
+                error: (err: unknown) =>
+                  innerStore.requestPassResetSetError(
+                    mapFirebaseAuthErrorToMessage(err)
+                  ),
+              })
+            )
+          )
         )
       ),
     }))

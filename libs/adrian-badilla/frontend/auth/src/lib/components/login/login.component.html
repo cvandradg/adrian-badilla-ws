@@ -1,67 +1,104 @@
 <div class="login-container">
   <div class="container">
     <div class="title">Accede a Tu Cuenta</div>
+
     <div class="description">
       Cambia Tu vida con la guía de Adrian Badilla y su repertorio de dietas y
       rutinas que decenas de personas por dia estan adquiriendo.
     </div>
+
     <div class="login-components-container">
       <div class="manual-login-inputs">
         <form [formGroup]="loginInputForm" class="form-login-inputs">
           <mat-form-field>
             <mat-label>Correo</mat-label>
             <input
+              data-cy="login-email"
               matInput
               placeholder="algunCorreo@dominio.com"
               type="email"
               formControlName="user"
             />
-            <!-- (keyup.enter)="loginStore.accessAccount$()" -->
           </mat-form-field>
+
           <mat-form-field>
             <mat-label>Contraseña</mat-label>
             <input
+              data-cy="login-password"
               matInput
               placeholder="EjemploDeClave1!"
               type="password"
               formControlName="pass"
+              (keyup.enter)="!loginInputForm.invalid && firebaseAuthStore.login(credentials())"
             />
-            <!-- (keyup.enter)="loginStore.accessAccount$()" -->
           </mat-form-field>
         </form>
 
-        <ng-container #loginComponents>
-          <adrian-badilla-primary-animated-button
-            #loginButton
-            [enable]="!loginInputForm.invalid"
-            [buttonText]="'Accede a Tu Cuenta'"
-            (click)="firebaseAuthStore.login(credentials())"
-            [loading]="firebaseAuthStore.loginLoading()"
-            [success]="firebaseAuthStore.loginSuccess()"
-          />
+        <adrian-badilla-primary-animated-button
+          data-cy="login-submit"
+          [enable]="!loginInputForm.invalid"
+          [buttonText]="'Accede a Tu Cuenta'"
+          (click)="firebaseAuthStore.login(credentials())"
+          [loading]="firebaseAuthStore.loginLoading()"
+          [success]="firebaseAuthStore.loginSuccess()"
+        />
 
+        @if (firebaseAuthStore.loginLoading()) {
           <adrian-badilla-status-message
-            [type]="'warning'"
-            [icon]="['fal', 'envelope-circle-check']"
-            [message]="
-              'Verifica tu cuenta, te hemos enviado un link al correo.'
-            "
+            [type]="'info'"
+            [icon]="['fas', 'circle-info']"
+            [message]="'Iniciando sesión...'"
+            [display]="true"
           />
-          <!-- [display]="
-              !vm.loading &&
-              vm.user?.emailVerified === false &&
-              !vm.error?.status
-            " -->
-
+        } @else if (firebaseAuthStore.loginError()) {
           <adrian-badilla-status-message
             [type]="'error'"
             [icon]="['fas', 'xmark']"
+            [message]="firebaseAuthStore.loginError()!"
+            [display]="true"
           />
-          <!-- [message]="vm.error?.message"
-            [display]="!vm.loading && vm.error?.status" -->
-        </ng-container>
+        } @else if (firebaseAuthStore.loginNeedsVerification()) {
+          <adrian-badilla-status-message
+            [type]="'warning'"
+            [icon]="['fal', 'envelope-circle-check']"
+            [message]="'Tu correo aún no está verificado. Si el link expiró, puedes reenviar el correo.'"
+            [display]="true"
+          />
+
+          <adrian-badilla-secondary-animated-button
+            data-cy="resend-verification"
+            [buttonText]="'Reenviar correo de verificación'"
+            [fontawesomeIcon]="['fas', 'paper-plane']"
+            (click)="firebaseAuthStore.resendVerificationEmail()"
+          />
+
+          @if (firebaseAuthStore.resendVerificationLoading()) {
+            <adrian-badilla-status-message
+              [type]="'info'"
+              [icon]="['fas', 'circle-info']"
+              [message]="'Enviando correo...'"
+              [display]="true"
+            />
+          } @else if (firebaseAuthStore.resendVerificationError()) {
+            <adrian-badilla-status-message
+              [type]="'error'"
+              [icon]="['fas', 'xmark']"
+              [message]="firebaseAuthStore.resendVerificationError()!"
+              [display]="true"
+            />
+          } @else if (firebaseAuthStore.resendVerificationSuccess()) {
+            <adrian-badilla-status-message
+              [type]="'success'"
+              [icon]="['fas', 'check']"
+              [message]="'Listo. Te reenviamos el correo. Revisa Spam/Promociones.'"
+              [display]="true"
+            />
+          }
+        }
       </div>
+
       <div class="divison">/</div>
+
       <div class="automatic-signin-tools">
         <adrian-badilla-secondary-animated-button
           [buttonText]="'Accede con Google'"
@@ -70,7 +107,8 @@
         />
 
         <adrian-badilla-secondary-animated-button
-          [routerLink]="'/register'"
+          data-cy="go-register"
+          [routerLink]="['/auth/register']"
           [buttonText]="'Crear Cuenta'"
           [fontawesomeIcon]="['fas', 'user']"
         />
@@ -79,6 +117,7 @@
 
     <adrian-badilla-pass-reset [user]="credentials().user" />
   </div>
+
   <footer class="login-footer">
     <p>Privacy Policy</p>
     <p>Copyright &#64;AdrianBadilla 2022</p>

@@ -43,12 +43,12 @@
 
 // 🔹 Navbar capa superior (posición respecto al Hero)
 @mixin layer-navbar {
+  top: 0;
   left: 0;
   z-index: 2;
-  width: 95%;
-  position: relative;
+  width: 90%;
+  position: absolute;
   background-color: transparent;
-  top: calc(-2.5 * clamp(1rem, 5vw, 4rem));
 }
 
 // 🔹 Navbar layout (reemplazo de %flex-space-between)
