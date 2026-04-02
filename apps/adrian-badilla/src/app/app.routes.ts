@@ -11,7 +11,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'dashboard',
-    loadChildren: () => import('@adrian-badilla/dashboard/routes'),
+    loadChildren: () => import('@adrian-badilla/dashboard/routes').then((m) => m.adrianBadillaDashboardRoutes),
   },
 
   { path: '**', redirectTo: '' },

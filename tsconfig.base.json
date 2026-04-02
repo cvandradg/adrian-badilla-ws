@@ -39,6 +39,9 @@
       ],
       "@adrian-badilla/dashboard/routes": [
         "libs/adrian-badilla/frontend/dashboard/src/lib/lib.routes.ts"
+      ],
+      "adrian-badilla/products": [
+        "libs/adrian-badilla/frontend/products/src/index.ts"
       ]
     }
   },

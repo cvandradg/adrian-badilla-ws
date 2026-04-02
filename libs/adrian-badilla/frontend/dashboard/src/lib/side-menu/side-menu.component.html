@@ -1,0 +1,24 @@
+<div class="sidenav-header">
+  <div>Adrian Badilla</div>
+</div>
+<mat-nav-list>
+  @for (item of menuItems(); track item) {
+  <a
+    mat-list-item
+    [routerLink]="item.route"
+    routerLinkActive="menu-item--active"
+    [routerLinkActiveOptions]="{ exact: item.exact }"
+    #rla="routerLinkActive"
+    [activated]="rla.isActive"
+    class="menu-item"
+  >
+    <!-- @if (item.icon) {
+    <fa-icon matListItemIcon [icon]="item.icon"></fa-icon>
+    }  -->
+    
+    @if (!sideNavCollapsed()) {
+    <span matListItemTitle>{{ item.label }}</span>
+    }
+  </a>
+  }
+</mat-nav-list>
