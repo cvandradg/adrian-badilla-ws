@@ -4,6 +4,9 @@
   --mat-list-list-item-hover-label-text-color: hsla(0, 0%, 100%, 0.6);
 }
 
+.container {
+  min-height: 388px;
+}
 
 .sidenav-header {
   padding: 1rem;
@@ -41,9 +44,6 @@
 }
 
 .menu-item {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   border-radius: 0 !important;
   border-left: 3px solid transparent;
 
@@ -58,13 +58,6 @@
   border: 0.01em solid rgba(200, 220, 255, 0.2);
   position: relative;
   overflow: hidden;
-
-  span {
-    font-size: 0.875rem;
-
-    font-family:
-      'Google Sans Flex', Roboto, Avenir, Helvetica, Arial, sans-serif !important;
-  }
 }
 
 .menu-item::after {
@@ -129,8 +122,18 @@ a {
   clip-path: polygon(100% 0, 0 100%, 100% 100%);
 }
 
-:host ::ng-deep {
-  .mdc-list-item--with-leading-icon .mdc-list-item__start {
-    height: auto;
-  }
+.description-subtitle {
+  color: #fff;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.7));
+}
+
+.description-content {
+  padding: 1rem 1.2rem;
+  color: hsla(0, 0%, 100%, 0.8);
+  font-size: 0.875rem;
+  line-height: 1.5;
 }

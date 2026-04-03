@@ -6,6 +6,7 @@ export const adrianBadillaDashboardRoutes: Route[] = [
     path: '',
     component: DashboardComponent,
     children: [
+      
       {
         path: 'products',
         title: 'Productos',
