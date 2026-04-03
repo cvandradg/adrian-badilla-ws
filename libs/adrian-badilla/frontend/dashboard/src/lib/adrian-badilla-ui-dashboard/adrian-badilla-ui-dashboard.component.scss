@@ -36,10 +36,11 @@ mat-sidenav-content {
     0 0 0 0 rgba(0, 0, 0, 0.12) !important;
   line-height: 1.5;
 }
-
+// agregado por steven para que se aline el texto de moofy vip e ingresar
 .inline-flex {
   display: flex;
   align-items: center;
+  gap: 1rem;
 }
 
 .login-button {

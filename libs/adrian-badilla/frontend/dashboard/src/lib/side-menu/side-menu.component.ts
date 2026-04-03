@@ -29,19 +29,19 @@ export class SideMenuComponent {
   }
 readonly menuItems = signal<MenuItem[]>([
   {
-    icon: ['fas', 'home'],
+    icon: ['fas', 'telescope'],
     label: 'Inicio',
     route: '/dashboard',
     exact: true,
   },
   {
-    icon: ['fas', 'pen-to-square'],
+    icon: ['fas', 'bars'],
     label: 'Productos',
     route: '/dashboard/products',
     exact: false,
   },
   {
-    icon: ['fas', 'right-from-bracket'],
+    icon: ['fas', 'bars'],
     label: 'Salir',
     route: '/',
     exact: false,
