@@ -45,6 +45,8 @@ import {
   faPaperPlane,
 } from '@fortawesome/pro-solid-svg-icons';
 import { faHouseTree } from '@fortawesome/pro-regular-svg-icons';
+import { faBicep } from '@fortawesome/pro-regular-svg-icons';
+
 
 export const FontAwesomeicons = [
   faBolt,
@@ -82,4 +84,6 @@ export const FontAwesomeicons = [
   faMessageExclamation,
   faEnvelopeCircleCheck,
   faCommentsQuestionCheck,
+  //steven imports
+  faBicep
 ];

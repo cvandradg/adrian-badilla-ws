@@ -1,0 +1,28 @@
+<lib-additional-info-column />
+
+<div class="purchase-orders-tabs">
+  <div class="card">
+    <p-tabs value="rutas" class="purchase-orders-tabs-root">
+      <p-tablist class="purchase-orders-tablist">
+        @for (tab of tabs; track tab.route) {
+        <p-tab
+          [value]="tab.route"
+          class="flex items-center !gap-2 text-inherit"
+        >
+          <fa-icon [icon]="tab.icon" class="tab-icon fa-xl" />
+          <span>{{ tab.label }}</span>
+        </p-tab>
+        }
+      </p-tablist>
+      <p-tabpanels>
+        <p-tabpanel value="rutas"> <moofyvip-ui-moofy-routes /> </p-tabpanel>
+        <p-tabpanel value="productos">
+          <moofyvip-ui-moofy-products />
+        </p-tabpanel>
+        <p-tabpanel value="apariencia">
+          <moofyvip-ui-settings-configuration />
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  </div>
+</div>

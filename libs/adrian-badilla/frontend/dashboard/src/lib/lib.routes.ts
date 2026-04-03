@@ -15,6 +15,14 @@ export const adrianBadillaDashboardRoutes: Route[] = [
             (m) => m.productsRoutes
           ),
       },
+            {
+        path: 'planificacion',
+        title: 'Planificación',
+        loadChildren: () =>
+          import('../../../settings/src/lib/lib.routes').then(
+            (m) => m.settingsRoutes
+          ),
+      },
     ],
   },
 ];

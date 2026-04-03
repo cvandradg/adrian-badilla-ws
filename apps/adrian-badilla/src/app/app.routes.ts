@@ -2,6 +2,11 @@ import { Route } from '@angular/router';
 
 export const appRoutes: Route[] = [
   {
+    path: 'settings',
+    loadChildren: () =>
+      import('adrian-badilla/settings').then((m) => m.settingsRoutes),
+  },
+  {
     path: '',
     loadChildren: () => import('@adrian-badilla/ui/landing-page/routes'),
   },
@@ -11,7 +16,10 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'dashboard',
-    loadChildren: () => import('@adrian-badilla/dashboard/routes').then((m) => m.adrianBadillaDashboardRoutes),
+    loadChildren: () =>
+      import('@adrian-badilla/dashboard/routes').then(
+        (m) => m.adrianBadillaDashboardRoutes
+      ),
   },
 
   { path: '**', redirectTo: '' },
