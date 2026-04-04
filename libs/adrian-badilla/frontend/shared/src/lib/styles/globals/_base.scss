@@ -1,3 +1,7 @@
+@use '../settings/tokens' as tokens;
+
+// Global reset and app-wide background primitives.
+
 * {
   margin: 0;
   padding: 0;
@@ -10,14 +14,12 @@ body {
   overflow-x: hidden;
   font-family: var(--font-primary);
   color: var(--clr-neutral-100, rgba(55, 65, 81, 1));
-  background-color: black;
-
+  background-color: tokens.$app-background-color;
   background-position: center center;
   background-repeat: repeat;
-  background-size: clamp(90%, 100%, 110%);
-  background-image: url('/global/assets/img/background.jpg');
+  background-size: tokens.$app-background-size;
+  background-image: tokens.$app-background-image;
 }
-
 
 /* Scrollbar */
 ::-webkit-scrollbar {
@@ -25,13 +27,12 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgb(19, 23, 39);
+  background: tokens.$scrollbar-track;
   border-radius: 100vw;
   margin-block: 1rem;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(48, 58, 95);
+  background: tokens.$scrollbar-thumb;
   border-radius: 100vw;
 }
-

@@ -1,16 +1,18 @@
-// 🔹 Efecto glass translúcido
+@use '../settings/tokens' as tokens;
+
+// Visual effects and decorative overlays.
+
 @mixin glass-effect {
-  background: hsla(0, 0%, 100%, 0.048);
-  border: 1px solid hsl(0 0% 100% / 0.06);
+  background: tokens.$glass-surface-bg;
+  border: 1px solid tokens.$glass-border;
   box-shadow:
-    0 clamp(1rem, 3vw, 1.25rem) clamp(2rem, 5vw, 2.5rem) hsl(0, 0%, 0%),
-    0 1px 0 hsl(0 0% 100% / 0.05) inset,
-    0 -1px 0 hsl(0 0% 100% / 0.02) inset;
-  backdrop-filter: blur(clamp(4px, 5vw, 6px));
-  -webkit-backdrop-filter: blur(clamp(4px, 1vw, 6px));
+    0 clamp(1rem, 3vw, 1.25rem) clamp(2rem, 5vw, 2.5rem) tokens.$glass-shadow-outer,
+    0 1px 0 tokens.$glass-shadow-inset-top inset,
+    0 -1px 0 tokens.$glass-shadow-inset-bottom inset;
+  backdrop-filter: blur(tokens.$glass-blur);
+  -webkit-backdrop-filter: blur(tokens.$glass-blur-webkit);
 }
 
-// 🔹 Gradiente inferior para overlays (cards, secciones, etc.)
 @mixin card-gradient {
   content: '';
   left: 0;
@@ -18,25 +20,16 @@
   width: 100%;
   position: absolute;
   height: clamp(10rem, 25%, 15rem);
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 0.98) 10%,
-    rgba(0, 0, 0, 0.95) 20%,
-    rgba(0, 0, 0, 0.9) 30%,
-    rgba(0, 0, 0, 0.8) 40%,
-    rgba(0, 0, 0, 0.6) 50%,
-    rgba(0, 0, 0, 0.4) 60%,
-    rgba(0, 0, 0, 0.2) 70%,
-    rgba(0, 0, 0, 0.1) 80%,
-    rgba(0, 0, 0, 0.05) 90%,
-    rgba(0, 0, 0, 0) 100%
-  );
+  background: tokens.$card-gradient-overlay;
   z-index: 1;
 }
 
 @mixin horizontal-animation {
-  background: linear-gradient(to left, rgb(126, 156, 255), rgb(143, 18, 18))
+  background: linear-gradient(
+      to left,
+      tokens.$horizontal-animation-start,
+      tokens.$horizontal-animation-end
+    )
     right;
   background-size: 200%;
   transition: background-position 1s ease-out;
@@ -50,10 +43,16 @@
   background-clip: padding-box, border-box;
   background-origin: border-box;
   border-radius: 0.3rem;
-  background-image: linear-gradient(90deg, #222222, #222222),
-    linear-gradient(90deg, hsla(226, 78%, 67%, 0.397), rgb(163, 31, 31));
-  background-clip: padding-box, border-box;
-  background-origin: border-box;
+  background-image: linear-gradient(
+      90deg,
+      tokens.$signup-surface-base,
+      tokens.$signup-surface-base
+    ),
+    linear-gradient(
+      90deg,
+      tokens.$signup-border-start,
+      tokens.$signup-border-end
+    );
   border: 1px solid transparent;
 
   &:hover {
@@ -73,12 +72,13 @@
     animation: rotation 5s linear infinite;
     z-index: 1;
     background-color: transparent;
-    border: 0px solid transparent;
+    border: 0 solid transparent;
     background: linear-gradient(
       90deg,
-      hsla(226, 78%, 67%, 0.397),
-      rgb(163, 31, 31)
+      tokens.$signup-border-start,
+      tokens.$signup-border-end
     );
+
     @media (pointer: coarse) {
       filter: blur(0);
     }

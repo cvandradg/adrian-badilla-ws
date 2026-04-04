@@ -1,5 +1,4 @@
-@use 'utilities/layout/helpers' as *;
-@use 'utilities/components/visual' as *;
+@use 'mixins' as *;
 
 @property --gradient-angle {
   syntax: '<angle>';

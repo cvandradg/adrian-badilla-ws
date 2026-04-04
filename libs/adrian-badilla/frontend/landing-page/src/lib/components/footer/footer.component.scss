@@ -1,5 +1,4 @@
-@use 'utilities/layout/helpers' as *;
-@use 'utilities/mixins' as *;
+@use 'mixins' as *;
 
 $gap-horizontal: clamp(2rem, 4vw, 4rem);
 

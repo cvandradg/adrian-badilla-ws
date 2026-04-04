@@ -1,4 +1,4 @@
-@use 'utilities/layout/helpers' as *;
+@use 'mixins' as *;
 
 .page {
   @include flex-column;

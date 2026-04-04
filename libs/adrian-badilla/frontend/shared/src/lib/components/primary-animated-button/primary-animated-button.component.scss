@@ -1,5 +1,4 @@
-@use 'utilities/layout/structure' as *;
-@use 'utilities/components/visual' as *;
+@use 'mixins' as *;
 
 .login-button {
   @include flex-center(row, space-between, center);

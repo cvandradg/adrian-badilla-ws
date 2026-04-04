@@ -1,0 +1,32 @@
+@use '../settings/tokens' as tokens;
+@use '../mixins/primitives' as primitives;
+
+// Button and CTA patterns.
+
+@mixin cta-link {
+  @include primitives.link-clean;
+  display: inline-block;
+  margin-top: clamp(1rem, 2.5vw, 2rem);
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+@mixin cta-button {
+  display: inline-block;
+  color: var(--clr-neutral-900);
+  background-color: var(--clr-neutral-100);
+  border: none;
+  border-radius: tokens.$cta-radius;
+  cursor: pointer;
+  font-size: tokens.$cta-font-size;
+  padding-block: tokens.$cta-padding-block;
+  padding-inline: tokens.$cta-padding-inline;
+  transition: background 0.3s ease, transform 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    background: var(--clr-accent-400);
+    transform: translateY(-0.03rem);
+  }
+}

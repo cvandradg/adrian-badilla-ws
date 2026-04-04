@@ -1,8 +1,4 @@
-@use 'utilities/layout/helpers' as *;
-@use 'utilities/layout/structure' as *;
-@use 'utilities/layout/text' as *;
-@use 'utilities/mixins' as *;
-@use 'components/angular-material-overrides' as *;
+@use 'mixins' as *;
 
 .login-container {
   font-family: var(--font-roboto);

@@ -1,0 +1,71 @@
+@use 'sass:map';
+@use 'sass:meta';
+@use '../settings/tokens' as tokens;
+
+// Foundational helpers shared by all patterns.
+
+@mixin link-clean {
+  color: inherit;
+  text-decoration-color: currentColor;
+  transition: opacity 0.25s ease, transform 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 0.8;
+  }
+}
+
+// Keeps current behavior: unknown breakpoints are ignored silently.
+@mixin respond-to($breakpoint) {
+  @if map.has-key(tokens.$breakpoints, $breakpoint) {
+    @media #{meta.inspect(map.get(tokens.$breakpoints, $breakpoint))} {
+      @content;
+    }
+  }
+}
+
+// The current argument order is intentionally preserved.
+@mixin flex-center($direction: row, $justify: center, $align: center) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-start {
+  @include flex-center(row, flex-start, center);
+}
+
+@mixin flex-space-between {
+  @include flex-center(row, space-between, center);
+}
+
+@mixin flex-wrap($justify: flex-start, $align: center, $gap: null) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: $justify;
+  align-items: $align;
+
+  @if $gap != null {
+    gap: $gap;
+  }
+}
+
+@mixin container(
+  $max-width: tokens.$container-max-width,
+  $padding-inline: tokens.$container-padding-inline
+) {
+  width: 100%;
+  max-width: $max-width;
+  margin-inline: auto;
+  padding-inline: $padding-inline;
+}
+
+@mixin section-spacing {
+  margin-top: tokens.$section-spacing-margin-top;
+}

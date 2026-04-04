@@ -1,6 +1,4 @@
-@use 'utilities/layout/helpers' as *;
-@use 'utilities/components/visual' as *;
-@use 'components/angular-material-overrides' as *;
+@use 'mixins' as *;
 
 .container {
   @include flex-column;

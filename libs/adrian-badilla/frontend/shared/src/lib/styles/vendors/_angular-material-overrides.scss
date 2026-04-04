@@ -1,9 +1,9 @@
+// Angular Material and MDC overrides that must stay global.
+
 .mdc-text-field:not(.mdc-text-field--disabled) {
   .mdc-text-field__input::placeholder {
     color: #88898e !important;
   }
-
-
 
   .mdc-floating-label {
     color: #88898e !important;
@@ -30,7 +30,7 @@
 .mdc-text-field--disabled.mdc-text-field--filled {
   padding: 0.6rem;
   background-color: #222222c9 !important;
-}T
+}
 
 input,
 mat-select {
@@ -43,7 +43,7 @@ mat-form-field {
 
 ::ng-deep .mdc-button,
 .mdc-text-field--filled {
-  background-color: #222222 ;
+  background-color: #222222;
   color: #fff !important;
   z-index: 1;
 }

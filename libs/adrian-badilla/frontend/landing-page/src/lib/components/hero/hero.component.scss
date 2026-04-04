@@ -1,7 +1,4 @@
-@use 'utilities/layout/structure' as *;
-@use 'utilities/layout/text' as *;
-@use 'utilities/layout/components' as *;
-@use 'utilities/mixins' as *;
+@use 'mixins' as *;
 
 .navbar {
   @include layer-navbar;

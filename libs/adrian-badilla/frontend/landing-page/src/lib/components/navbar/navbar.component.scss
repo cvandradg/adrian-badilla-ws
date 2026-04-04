@@ -1,5 +1,4 @@
-@use 'utilities/layout/components' as *;
-@use 'utilities/mixins' as *;
+@use 'mixins' as *;
 
 .navbar {
   @include navbar-layout;

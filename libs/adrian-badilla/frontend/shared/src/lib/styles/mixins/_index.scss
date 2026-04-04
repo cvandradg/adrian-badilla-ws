@@ -1,0 +1,9 @@
+// Core reusable mixins for component styles.
+//
+// Import this folder from component styles with:
+// @use 'mixins' as *;
+
+@forward 'primitives';
+@forward 'typography';
+@forward 'effects';
+@forward '../patterns';
