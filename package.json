@@ -36,8 +36,11 @@
     "@fortawesome/sharp-solid-svg-icons": "^7.1.0",
     "@ngrx/operators": "^20.1.0",
     "@ngrx/signals": "^20.1.0",
+    "@primeuix/themes": "^2.0.3",
     "firebase": "^11.0.2",
     "firebase-tools": "^13.27.0",
+    "primeicons": "^7.0.0",
+    "primeng": "^20.0.0",
     "punycode": "^2.3.1",
     "rxjs": "~7.8.0",
     "zone.js": "~0.15.0"

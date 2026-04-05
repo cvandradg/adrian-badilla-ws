@@ -1,1 +1,294 @@
-<p>adrian-badilla-diets works!</p>
+
+@let routes = filteredRoutes(); @let routeSupercenters =
+selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
+(routes.length) {
+<form>
+  <div class="mt-3">
+    <div class="sub-title">Bucador y acciones generales</div>
+
+    <div class="actions-row mt-2">
+      <div class="left-actions">
+        <p-floatlabel variant="in" class="date-picker-container">
+          <p-iconfield>
+            <p-inputicon class="pi pi-search" />
+            <input
+              #routeSearchInput
+              pInputText
+              class="route-search-input"
+              id="on_label"
+              autocomplete="off"
+              [value]="routeSearchQuery()"
+              (input)="updateRouteSearchQuery(routeSearchInput.value)"
+            />
+
+            @if (routeSearchQuery()) {
+            <button
+              type="button"
+              class="route-search-clear"
+              (click)="clearRouteSearchQuery(routeSearchInput)"
+              aria-label="Limpiar búsqueda de rutas"
+            >
+              <i class="pi pi-times"></i>
+            </button>
+            }
+          </p-iconfield>
+          <label for="on_label">Buscador de ruta</label>
+        </p-floatlabel>
+
+        <p-button
+          icon="pi pi-filter"
+          type="button"
+          variant="text"
+          [raised]="true"
+          size="large"
+        />
+      </div>
+
+      <div>
+        <div>
+          <p-button
+            label="Supercenter"
+            icon="pi pi-home"
+            type="button"
+            variant="text"
+            [raised]="true"
+            (onClick)="openAddSupercenterDialog()"
+            size="large"
+            styleClass="add-route-btn"
+            class="mr-3"
+          />
+
+          <p-button
+            label="Ruta"
+            icon="pi pi-plus"
+            type="button"
+            variant="text"
+            [raised]="true"
+            (onClick)="openAddRouteDialog()"
+            size="large"
+            styleClass="add-route-btn"
+            class="mr-3"
+          />
+
+          @if (!isEditing()) {
+          <p-button
+            label="Modo Editor"
+            icon="pi pi-pencil"
+            type="button"
+            variant="text"
+            [raised]="true"
+            (onClick)="enableEditMode()"
+            size="large"
+            styleClass="add-route-btn"
+            class="mr-3"
+          />
+          } @else {
+          <p-button
+            label="Descartar"
+            icon="pi pi-times"
+            type="button"
+            [raised]="true"
+            (onClick)="discardEditMode()"
+            size="large"
+            styleClass="add-route-btn discard-btn"
+            class="mr-3"
+          />
+
+          <p-button
+            label="Guardar"
+            icon="pi pi-check"
+            type="submit"
+            [raised]="true"
+            [loading]="isSavingRoute()"
+            [disabled]="isSavingRoute()"
+            size="large"
+            styleClass="add-route-btn save-btn"
+            class="mr-3"
+          />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="sub-title mt-3 mb-3">Rutas</div>
+  </div>
+  <div class="routes-layout">
+    <lib-adrian-badilla-diets-details
+      [routes]="routes"
+      [selectedRouteId]="selectedRouteItem?.id ?? null"
+      [isEditorMode]="isEditing()"
+      (routeSelected)="selectRoute($event)"
+      (routeDeleteRequested)="openDeleteRouteDialog($event)"
+    />
+
+    @if (selectedRouteItem; as activeRoute) {
+    <section class="routes-content">
+      <div class="edit-title mb-3">Ajustes de Ruta</div>
+
+      <div class="editor-layout">
+        <div class="editor-layout__top">
+          <p-floatlabel variant="in" class="date-picker-container">
+            <p-iconfield>
+              <p-inputicon class="pi pi-map" />
+              <input
+                pInputText
+                class="route-editor-input"
+                id="route_number"
+                autocomplete="off"
+              />
+            </p-iconfield>
+            <label for="route_number">Nombre de ruta</label>
+          </p-floatlabel>
+
+          <p-floatlabel variant="in" class="date-picker-container">
+            <p-iconfield>
+              <p-inputicon class="pi pi-file-edit" />
+              <input
+                pInputText
+                class="route-editor-input"
+                id="route_name"
+                autocomplete="off"
+              />
+            </p-iconfield>
+            <label for="route_name">Descripción</label>
+          </p-floatlabel>
+
+          @if ( isEditing() && routeForm.routeName().dirty() &&
+          routeForm.routeName().invalid() ) {
+          <ul class="p-error p-1 m-0">
+            @for (error of routeForm.routeName().errors(); track error.kind) {
+            <li>{{ error.message }}</li>
+            }
+          </ul>
+          } @if ( isEditing() && routeForm.routeDescription().dirty() &&
+          routeForm.routeDescription().invalid() ) {
+          <ul class="p-error p-1 m-0">
+            @for (error of routeForm.routeDescription().errors(); track
+            error.kind) {
+            <li>{{ error.message }}</li>
+            }
+          </ul>
+          }
+        </div>
+
+        @if (!routeSupercenters.length) {
+        <div class="editor-layout__bottom">
+          <div class="card">
+            <div class="editor-bottom-form">
+              <div class="editor-empty-state">
+                <div class="editor-empty-state__content">
+                  <i class="pi pi-map editor-empty-state__icon"></i>
+                  <div class="editor-empty-state__title">
+                    Esta ruta aún no tiene supercenters asignados
+                  </div>
+                  <div class="editor-empty-state__text">
+                    Cuando agregues supercenters a esta ruta, se reflejarán
+                    aquí.
+                  </div>
+
+                  <p-button
+                    label="Agregar supercenters"
+                    icon="pi pi-plus"
+                    type="button"
+                    variant="text"
+                    [raised]="true"
+                    (onClick)="openAddSupercenterDialog()"
+                    size="large"
+                    styleClass="add-route-btn"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+
+      <div>
+        @if (routeSupercenters.length) {
+        <div class="card mt-4">
+          <p-timeline
+            [value]="routeSupercenters"
+            class="align-items-start route-timeline"
+          >
+            <ng-template #marker let-supercenter>
+              <button
+                type="button"
+                class="timeline-marker timeline-marker-button"
+                (click)="openSupercenterDialog(supercenter)"
+                [attr.aria-label]="'Abrir supercenter ' + supercenter.name"
+              >
+                <i class="pi pi-warehouse"></i>
+              </button>
+            </ng-template>
+
+            <ng-template #content let-supercenter>
+              <button
+                type="button"
+                class="route-supercenter-card"
+                (click)="openSupercenterDialog(supercenter)"
+                [attr.aria-label]="'Editar supercenter ' + supercenter.name"
+              >
+                <div class="supercenter-row">
+                  <span class="supercenter-name"
+                    >Supercenter {{ supercenter.name }}</span
+                  >
+                  @if (supercenter.lastModifiedLabel) {
+                  <span class="ultima-edicion"
+                    >&middot; {{ supercenter.lastModifiedLabel }}</span
+                  >
+                  }
+                </div>
+                @if (supercenter.exactLocation || supercenter.estimateLocation)
+                {
+                <div class="route-supercenter-location">
+                  {{
+                    supercenter.exactLocation || supercenter.estimateLocation
+                  }}
+                </div>
+                }
+              </button>
+            </ng-template>
+          </p-timeline>
+        </div>
+        }
+      </div>
+    </section>
+    }
+  </div>
+</form>
+} @else if (sortedRoutes().length) {
+<div class="routes-empty">
+  <div class="routes-empty__content">
+    <i class="pi pi-search routes-empty__icon"></i>
+    <div class="routes-empty__title">No encontramos rutas con esa búsqueda</div>
+    <div class="routes-empty__text">
+      Prueba con el nombre o descripción de la ruta, o con datos del supercenter
+      como provincia, ubicación estimada o ubicación exacta.
+    </div>
+  </div>
+</div>
+} @else {
+<div class="routes-empty">
+  <div class="routes-empty__content">
+    <i class="pi pi-map routes-empty__icon"></i>
+    <div class="routes-empty__title">Aún no tienes rutas creadas</div>
+    <div class="routes-empty__text">
+      Cuando agregues una ruta, aparecerá aquí para que puedas editarla y
+      administrarla.
+    </div>
+
+    <p-button
+      label="Crear ruta"
+      icon="pi pi-plus"
+      variant="text"
+      [raised]="true"
+      (onClick)="openAddRouteDialog()"
+      size="large"
+      styleClass="add-route-btn"
+    />
+  </div>
+</div>
+}

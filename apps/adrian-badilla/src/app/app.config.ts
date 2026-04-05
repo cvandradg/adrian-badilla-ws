@@ -1,3 +1,5 @@
+import Aura from '@primeuix/themes/aura';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {
   ApplicationConfig,
   inject,
@@ -11,10 +13,19 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { provideRouter } from '@angular/router';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { FontAwesomeicons } from '@adrian-badilla/ui/shared/assets/icons/fontawesome';
+import { providePrimeNG } from 'primeng/config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
+    provideAnimationsAsync(),
+    
+    providePrimeNG({
+      ripple: true,
+      theme: {
+        preset: Aura,
+      },
+    }),
     provideRouter(appRoutes),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth()),
