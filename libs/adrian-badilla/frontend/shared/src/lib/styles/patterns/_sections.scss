@@ -39,14 +39,6 @@
   padding-block: 0;
 }
 
-@mixin hero-layout {
-  @include section-base($min-height: 100vh);
-  @include primitives.flex-center(column, center, flex-start);
-  background-color: tokens.$color-neutral-900;
-  font-family: tokens.$font-primary;
-  z-index: 2;
-}
-
 @mixin video-background {
   position: absolute;
   inset: 0;

@@ -33,8 +33,8 @@
     right;
   background-size: 200%;
   transition: background-position 1s ease-out;
-  border-bottom-right-radius: 0.3rem;
-  border-bottom-left-radius: 0.3rem;
+  border-bottom-right-radius: tokens.$radius-control;
+  border-bottom-left-radius: tokens.$radius-control;
   background-position: left;
 }
 
@@ -42,7 +42,7 @@
   position: relative;
   background-clip: padding-box, border-box;
   background-origin: border-box;
-  border-radius: 0.3rem;
+  border-radius: tokens.$radius-control;
   background-image: linear-gradient(
       90deg,
       tokens.$signup-surface-base,

@@ -1,0 +1,19 @@
+// Shared feedback and status-message patterns.
+
+@mixin feedback-message(
+  $color,
+  $justify: center,
+  $direction: row,
+  $align: center,
+  $gap: 0.5rem,
+  $margin: 0 0.5rem
+) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  gap: $gap;
+  width: 100%;
+  margin: $margin;
+  color: $color;
+}

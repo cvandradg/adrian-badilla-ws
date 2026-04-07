@@ -34,7 +34,7 @@ button {
   background: transparent;
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  border-radius: 0.3rem;
+  border-radius: tokens.$radius-control;
   z-index: 2;
 
   @media (pointer: coarse) {

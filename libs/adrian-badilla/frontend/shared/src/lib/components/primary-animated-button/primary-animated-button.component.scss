@@ -1,3 +1,4 @@
+@use 'settings/tokens' as tokens;
 @use 'mixins' as mixins;
 
 .login-button {
@@ -19,7 +20,7 @@ button {
   width: 100%;
   height: 4rem;
   background: transparent;
-  border-radius: 0.3rem;
+  border-radius: tokens.$radius-control;
 }
 
 .horizontal-animation {

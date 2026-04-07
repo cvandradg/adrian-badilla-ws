@@ -1,12 +1,14 @@
+@use '../settings/tokens' as tokens;
+
 // Angular Material and MDC overrides that must stay global.
 
 .mdc-text-field:not(.mdc-text-field--disabled) {
   .mdc-text-field__input::placeholder {
-    color: #88898e !important;
+    color: tokens.$color-text-muted !important;
   }
 
   .mdc-floating-label {
-    color: #88898e !important;
+    color: tokens.$color-text-muted !important;
     text-align: center !important;
   }
 }
@@ -14,7 +16,7 @@
 .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-floating-label,
 .mdc-text-field--filled:not(.mdc-text-field--disabled)
   .mdc-floating-label--float-above {
-  color: #88898e !important;
+  color: tokens.$color-text-muted !important;
 }
 
 .mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label,
@@ -29,7 +31,7 @@
 .mdc-text-field--filled:not(.mdc-text-field--disabled),
 .mdc-text-field--disabled.mdc-text-field--filled {
   padding: 0.6rem;
-  background-color: #222222c9 !important;
+  background-color: tokens.$surface-control-muted !important;
 }
 
 input,
@@ -43,8 +45,8 @@ mat-form-field {
 
 .mdc-button,
 .mdc-text-field--filled {
-  background-color: #222222;
-  color: #fff !important;
+  background-color: tokens.$surface-control-base;
+  color: tokens.$color-neutral-100 !important;
   z-index: 1;
 }
 

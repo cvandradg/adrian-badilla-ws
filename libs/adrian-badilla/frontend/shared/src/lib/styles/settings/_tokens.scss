@@ -20,6 +20,10 @@ $font-weight-bold: 800;
 $color-accent-400: hsl(142 90% 61%);
 $color-neutral-100: hsl(0 0% 100%);
 $color-neutral-900: hsl(0 0% 0%);
+$color-text-muted: #88898e;
+$color-status-error: rgb(235, 116, 116);
+$color-status-success: rgb(126, 207, 160);
+$color-status-warning: rgb(207, 199, 126);
 
 /* ==========================================================================
    Layout sizing
@@ -32,9 +36,6 @@ $section-spacing-margin-top: clamp(4rem, 8vw, 10rem);
 $section-radius: clamp(0.75rem, 1.5vw, 1.25rem);
 $section-full-padding: clamp(1rem, 5vw, 4rem);
 $section-content-padding: clamp(1rem, 5vw, 8rem);
-
-$container-max-width: clamp(70rem, 90vw, 90rem);
-$container-padding-inline: clamp(2rem, 8vw, 10rem);
 
 $navbar-width: 90%;
 $navbar-mobile-width: 85%;
@@ -66,6 +67,9 @@ $app-background-size: clamp(90%, 100%, 110%);
 
 $scrollbar-track: rgb(19, 23, 39);
 $scrollbar-thumb: rgb(48, 58, 95);
+$surface-control-base: #222222;
+$surface-control-muted: #222222c9;
+$radius-control: 0.3rem;
 
 /* ==========================================================================
    Surfaces and effects
@@ -96,6 +100,6 @@ $card-gradient-overlay: linear-gradient(
 $horizontal-animation-start: rgb(126, 156, 255);
 $horizontal-animation-end: rgb(143, 18, 18);
 
-$signup-surface-base: #222222;
+$signup-surface-base: $surface-control-base;
 $signup-border-start: hsla(226, 78%, 67%, 0.397);
 $signup-border-end: rgb(163, 31, 31);

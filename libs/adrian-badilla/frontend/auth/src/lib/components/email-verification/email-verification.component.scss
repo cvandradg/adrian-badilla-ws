@@ -6,10 +6,7 @@
 }
 
 .container {
-  @include mixins.flex-column;
-  align-items: center;
-  width: 90%;
-  margin: 5rem auto;
+  @include mixins.auth-shell($align-items: center);
 }
 
 .container {
@@ -26,32 +23,27 @@
     font-weight: 400;
     text-align: center;
     max-width: 70%;
-    color: #88898e;
+    color: tokens.$color-text-muted;
     margin-bottom: 5%;
   }
 }
 
 .error-message {
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-  align-items: center;
-  margin: 0rem 0.5rem;
-  gap: 0.5rem;
-  width: 100%;
-  color: rgb(235, 116, 116);
+  @include mixins.feedback-message(
+    $color: tokens.$color-status-error,
+    $justify: flex-end,
+    $direction: row-reverse
+  );
 }
 
 .success-message {
   cursor: pointer;
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: center;
-  align-items: center;
-  margin: 0rem 0.5rem;
-  gap: 1.3rem;
-  width: 100%;
-  color: rgb(126, 207, 160);
+  @include mixins.feedback-message(
+    $color: tokens.$color-status-success,
+    $justify: center,
+    $direction: row-reverse,
+    $gap: 1.3rem
+  );
 }
 
 .centered {
@@ -61,7 +53,7 @@
 
 p {
   margin: 0.2rem;
-  color: rgb(126, 207, 160);
+  color: tokens.$color-status-success;
 }
 
 @media screen and (min-width: 0px) and (max-width: 600px) {

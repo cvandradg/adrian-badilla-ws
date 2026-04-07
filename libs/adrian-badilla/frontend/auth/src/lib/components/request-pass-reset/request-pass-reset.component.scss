@@ -2,9 +2,7 @@
 @use 'mixins' as mixins;
 
 .container {
-  @include mixins.flex-column;
-  width: 90%;
-  margin: 5rem auto;
+  @include mixins.auth-shell;
 }
 
 .container {
@@ -22,7 +20,7 @@
     align-items: center;
     font-size: 1.3rem;
     font-weight: 400;
-    color: #88898e;
+    color: tokens.$color-text-muted;
     margin-bottom: 5%;
   }
 }
@@ -44,7 +42,7 @@
 }
 
 button {
-  border-radius: 0.3rem;
+  border-radius: tokens.$radius-control;
   background: transparent;
 }
 
@@ -65,7 +63,7 @@ adrian-badilla-primary-animated-button {
   max-width: 30rem;
 
   button {
-    border-radius: 0.3rem;
+    border-radius: tokens.$radius-control;
     background: transparent;
   }
 
@@ -81,25 +79,19 @@ adrian-badilla-primary-animated-button {
 }
 
 .error-message {
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-  align-items: center;
-  margin: 0rem 0.5rem;
-  gap: 0.5rem;
-  width: 100%;
-  color: rgb(235, 116, 116);
+  @include mixins.feedback-message(
+    $color: tokens.$color-status-error,
+    $justify: flex-end,
+    $direction: row-reverse
+  );
 }
 
 .success-message {
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-  align-items: center;
-  margin: 0rem 0.5rem;
-  gap: 0.5rem;
-  width: 100%;
-  color: rgb(126, 207, 160);
+  @include mixins.feedback-message(
+    $color: tokens.$color-status-success,
+    $justify: flex-end,
+    $direction: row-reverse
+  );
 }
 
 @media screen and (min-width: 0px) and (max-width: 600px) {
