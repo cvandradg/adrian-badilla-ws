@@ -100,7 +100,7 @@ dietas-adrian-nx-workspace-strength-meter::after {
   filter: alpha(opacity= '20');
 }
 
-@media screen and (min-width: 0px) and (max-width: 600px) {
+@include mixins.respond-to('mobile-compact') {
   .container {
     .description {
       margin-bottom: 3rem;

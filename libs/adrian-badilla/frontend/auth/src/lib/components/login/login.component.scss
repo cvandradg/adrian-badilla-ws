@@ -100,7 +100,7 @@
   }
 }
 
-@include mixins.respond-to('desktop-sm') {
+@include mixins.respond-to('laptop') {
   .container,
   .login-container {
     width: 95%;

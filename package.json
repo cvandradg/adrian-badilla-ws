@@ -67,6 +67,7 @@
     "@types/node": "18.16.9",
     "@typescript-eslint/utils": "^8.40.0",
     "angular-eslint": "20.3.0",
+    "baseline-browser-mapping": "^2.10.16",
     "cypress": "^14.2.1",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",

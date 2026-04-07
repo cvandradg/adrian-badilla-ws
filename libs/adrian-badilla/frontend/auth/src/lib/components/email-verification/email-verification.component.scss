@@ -56,7 +56,7 @@ p {
   color: tokens.$color-status-success;
 }
 
-@media screen and (min-width: 0px) and (max-width: 600px) {
+@include mixins.respond-to('mobile-compact') {
   .container {
     .description {
       margin-bottom: 3rem;

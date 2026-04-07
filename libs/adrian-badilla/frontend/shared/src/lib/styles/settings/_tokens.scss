@@ -52,6 +52,7 @@ $cta-padding-inline: clamp(1rem, 3vw, 2rem);
    Responsive breakpoints
    ========================================================================== */
 $breakpoints: (
+   mobile-compact: (max-width: 600px),
   mobile: (max-width: 768px),
   tablet: (min-width: 769px) and (max-width: 1023px),
   laptop: (min-width: 1024px) and (max-width: 1439px),
