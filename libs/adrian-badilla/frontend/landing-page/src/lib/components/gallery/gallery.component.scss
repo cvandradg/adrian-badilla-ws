@@ -1,12 +1,12 @@
-@use 'mixins' as *;
+@use 'mixins' as mixins;
 
 
 .title {
-  @include section-layout(center);
+  @include mixins.section-layout(center);
   padding-bottom: 3rem;
 
   h2 {
-    @include section-title;
+    @include mixins.section-title;
   }
 }
 

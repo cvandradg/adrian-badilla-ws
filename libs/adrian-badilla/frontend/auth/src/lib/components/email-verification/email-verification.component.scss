@@ -1,18 +1,19 @@
-@use 'mixins' as *;
+@use 'settings/tokens' as tokens;
+@use 'mixins' as mixins;
 
 .default-color {
   color: rgb(126, 156, 255);
 }
 
 .container {
-  @include flex-column;
+  @include mixins.flex-column;
   align-items: center;
   width: 90%;
   margin: 5rem auto;
 }
 
 .container {
-  color: var(--clr-neutral-100);
+  color: tokens.$color-neutral-100;
   .title {
     font-size: 3rem;
     font-weight: 700;

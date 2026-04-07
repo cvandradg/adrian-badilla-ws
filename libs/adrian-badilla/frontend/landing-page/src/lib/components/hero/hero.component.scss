@@ -1,28 +1,28 @@
-@use 'mixins' as *;
+@use 'mixins' as mixins;
 
 .navbar {
-  @include layer-navbar;
+  @include mixins.layer-navbar;
 }
 
 .hero {
-  @include section-full;
+  @include mixins.section-full;
 
   .video-bg {
-    @include video-background;
+    @include mixins.video-background;
   }
 
   .hero-content {
-    @include section-content();
+    @include mixins.section-content();
 
         padding-top: calc(clamp(1rem, 5vw, 8rem) + clamp(4.5rem, 8vh, 7rem));
 
 
     h1,
     h2 {
-      @include section-heading(clamp(2rem, 6vw, 6rem));
+      @include mixins.section-heading(clamp(2rem, 6vw, 6rem));
     }
     p {
-      @include section-text(
+      @include mixins.section-text(
         38rem,
         clamp(1rem, 1.125rem + 0.2vw, 1.125rem),
         clamp(1rem, 2vw, 4rem)
@@ -30,15 +30,15 @@
     }
 
     .see-how {
-      @include link-clean;
-      @include cta-link;
+      @include mixins.link-clean;
+      @include mixins.cta-link;
     }
   }
 }
 
-@include respond-to('mobile') {
+@include mixins.respond-to('mobile') {
   .navbar {
-    @include navbar-mobile;
+    @include mixins.navbar-mobile;
   }
 }
 

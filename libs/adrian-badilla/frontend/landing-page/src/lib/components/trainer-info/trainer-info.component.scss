@@ -1,12 +1,13 @@
-@use 'mixins' as *;
+@use 'settings/tokens' as tokens;
+@use 'mixins' as mixins;
 
 .trainer-info {
-  @include section-spacing;
-  @include flex-column;
+  @include mixins.section-spacing;
+  @include mixins.flex-column;
 
   align-items: center;
   justify-content: center;
-  color: var(--clr-neutral-100);
+  color: tokens.$color-neutral-100;
   gap: clamp(0.25rem, 0.8vh, 1rem);
   padding-inline: clamp(1rem, 4vw, 3rem);
   padding-block: clamp(1.5rem, 6vh, 3.5rem);
@@ -18,16 +19,16 @@
 }
 
 .trainer-info__title {
-  @include section-heading(clamp(2rem, 4vw, 6rem));
+  @include mixins.section-heading(clamp(2rem, 4vw, 6rem));
   letter-spacing: 0.1rem;
   margin: 0;
 }
 
 .trainer-info__subtitle {
-  @include text-style(
+  @include mixins.text-style(
     clamp(1rem, 2.2vw, 1.6rem),
-    var(--fw-medium),
-    var(--font-secondary)
+    tokens.$font-weight-medium,
+    tokens.$font-secondary
   );
   letter-spacing: 0.2rem;
   text-align: center;
@@ -42,10 +43,10 @@
 }
 
 .trainer-info__description {
-  @include text-style(
+  @include mixins.text-style(
     clamp(1rem, 1.8vw, 1.25rem),
-    var(--fw-medium),
-    var(--font-secondary)
+    tokens.$font-weight-medium,
+    tokens.$font-secondary
   );
   color: inherit;
   text-align: center;
@@ -54,7 +55,7 @@
   margin: 0;
 }
 
-@include respond-to('mobile') {
+@include mixins.respond-to('mobile') {
   .trainer-info {
     gap: clamp(0.25rem, 2vh, 0.75rem);
     padding-inline: clamp(1rem, 6vw, 2rem);

@@ -1,9 +1,11 @@
+@use '../settings/tokens' as tokens;
+
 // Shared text and heading mixins.
 
 @mixin text-style(
   $size: clamp(1rem, 1.6vw, 1.125rem),
-  $weight: var(--fw-medium),
-  $family: var(--font-secondary),
+  $weight: tokens.$font-weight-medium,
+  $family: tokens.$font-secondary,
   $color: inherit
 ) {
   font-size: $size;
@@ -18,8 +20,8 @@
   $spacing: -0.02em
 ) {
   color: inherit;
-  font-family: var(--font-primary);
-  font-weight: var(--fw-bold);
+  font-family: tokens.$font-primary;
+  font-weight: tokens.$font-weight-bold;
   line-height: $line-height;
   letter-spacing: $spacing;
   font-size: $size;
@@ -46,8 +48,8 @@
 
 @mixin section-title($size: clamp(2rem, 5vw, 4rem)) {
   letter-spacing: 0.1rem;
-  font-weight: var(--fw-bold);
-  color: var(--clr-neutral-100);
-  font-family: var(--font-primary);
+  font-weight: tokens.$font-weight-bold;
+  color: tokens.$color-neutral-100;
+  font-family: tokens.$font-primary;
   font-size: $size;
 }

@@ -1,12 +1,13 @@
-@use 'mixins' as *;
+@use 'settings/tokens' as tokens;
+@use 'mixins' as mixins;
 
 .navbar {
-  @include navbar-layout;
+  @include mixins.navbar-layout;
 
   .logo {
-    font-weight: var(--fw-bold);
+    font-weight: tokens.$font-weight-bold;
     font-size: clamp(1.5rem, 5vw, 3rem);
-    -webkit-text-stroke: 0.0625rem var(--clr-neutral-100);
+    -webkit-text-stroke: 0.0625rem tokens.$color-neutral-100;
 
     .logo-img {
       width: clamp(3rem, 10vw, 7rem);
@@ -20,7 +21,7 @@
     display: none;
     border: none;
     background: none;
-    color: var(--clr-neutral-100);
+    color: tokens.$color-neutral-100;
     font-size: clamp(2rem, 5vw, 2.5rem);
     cursor: pointer;
   }
@@ -32,18 +33,18 @@
     gap: clamp(2rem, 5vw, 3.5rem);
 
     li a {
-      @include link-clean;
+      @include mixins.link-clean;
       font-size: clamp(1rem, 2.5vw, 1.2rem);
     }
   }
 
   .cta {
-    @include cta-button;
+    @include mixins.cta-button;
     margin-left: clamp(2rem, 5vw, 3rem);
   }
 }
 
-@include respond-to('mobile') {
+@include mixins.respond-to('mobile') {
   .navbar {
     .navbar-toggle {
       display: block;

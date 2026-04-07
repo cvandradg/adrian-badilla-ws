@@ -99,17 +99,3 @@ $horizontal-animation-end: rgb(143, 18, 18);
 $signup-surface-base: #222222;
 $signup-border-start: hsla(226, 78%, 67%, 0.397);
 $signup-border-end: rgb(163, 31, 31);
-
-// Keeps the current runtime CSS variable API stable for the rest of the app.
-@mixin export-legacy-css-variables {
-  --clr-accent-400: #{$color-accent-400};
-  --clr-neutral-100: #{$color-neutral-100};
-  --clr-neutral-900: #{$color-neutral-900};
-
-  --font-primary: #{$font-primary};
-  --font-secondary: #{$font-secondary};
-  --font-roboto: #{$font-roboto};
-
-  --fw-medium: #{$font-weight-medium};
-  --fw-bold: #{$font-weight-bold};
-}

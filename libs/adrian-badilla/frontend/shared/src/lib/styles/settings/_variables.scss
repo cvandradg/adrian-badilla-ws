@@ -1,7 +1,0 @@
-@use './tokens' as tokens;
-
-// Runtime CSS variables consumed by existing component styles.
-
-:root {
-  @include tokens.export-legacy-css-variables();
-}

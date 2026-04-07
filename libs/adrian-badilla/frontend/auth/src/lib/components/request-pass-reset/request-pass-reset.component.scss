@@ -1,13 +1,14 @@
-@use 'mixins' as *;
+@use 'settings/tokens' as tokens;
+@use 'mixins' as mixins;
 
 .container {
-  @include flex-column;
+  @include mixins.flex-column;
   width: 90%;
   margin: 5rem auto;
 }
 
 .container {
-  color: var(--clr-neutral-100);
+  color: tokens.$color-neutral-100;
   .title {
     font-size: 3rem;
     font-weight: 700;
@@ -28,7 +29,7 @@
 
 .reset-pass-input,
 .form-pass-reset-inputs {
-  @include flex-column;
+  @include mixins.flex-column;
   justify-content: space-between;
   align-self: flex-start;
 
@@ -48,8 +49,14 @@ button {
 }
 
 .pass-reset-button {
-  @include flex-space-between;
+  @include mixins.flex-space-between;
   flex-direction: row;
+}
+
+adrian-badilla-primary-animated-button {
+  --primary-button-text-color: inherit;
+  --primary-button-font-weight: 300;
+  --primary-button-line-height: 1.5rem;
 }
 
 .reset-pass-input {
@@ -64,18 +71,12 @@ button {
 
   .horizontal-animation {
     color: inherit;
-    @include horizontal-animation;
+    @include mixins.horizontal-animation;
   }
 
   .enabled-button {
     background-size: 400%;
     background-position: 100%;
-  }
-
-  ::ng-deep {
-    .mdc-button__label {
-      width: 80%;
-    }
   }
 }
 
@@ -99,17 +100,6 @@ button {
   gap: 0.5rem;
   width: 100%;
   color: rgb(126, 207, 160);
-}
-
-::ng-deep {
-  .mdc-button__label {
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: inherit;
-    font-weight: 300;
-    line-height: 1.5rem;
-    width: 100%;
-  }
 }
 
 @media screen and (min-width: 0px) and (max-width: 600px) {

@@ -1,10 +1,11 @@
-@use 'mixins' as *;
+@use 'settings/tokens' as tokens;
+@use 'mixins' as mixins;
 
 .login-container {
-  font-family: var(--font-roboto);
-  color: var(--crl-neutral-100);
+  font-family: tokens.$font-roboto;
+  color: tokens.$color-neutral-100;
   max-width: 100%;
-  @include flex-column;
+  @include mixins.flex-column;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
@@ -12,24 +13,24 @@
 }
 
 .container {
-  @include flex-column;
+  @include mixins.flex-column;
   align-items: center;
   justify-content: center;
   width: 90%;
   margin: 0 auto;
 
   .title {
-    @include heading-style(clamp(1.5rem, 4vw, 3rem));
-  font-family: var(--font-roboto);
+    @include mixins.heading-style(clamp(1.5rem, 4vw, 3rem));
+    font-family: tokens.$font-roboto;
     text-align: center;
     margin-block: 5.5%;
   }
 
   .description {
-    @include text-style(
+    @include mixins.text-style(
       clamp(1rem, 2vw, 1.3rem),
       400,
-      var(--font-roboto),
+      tokens.$font-roboto,
       #88898e
     );
     text-align: center;
@@ -39,7 +40,7 @@
 }
 
 .login-components-container {
-  @include flex-center;
+  @include mixins.flex-center;
   flex-direction: row;
   justify-content: space-around;
   align-items: flex-start;
@@ -57,7 +58,7 @@
   .manual-login-inputs,
   .form-login-inputs,
   .automatic-signin-tools {
-    @include flex-column;
+    @include mixins.flex-column;
     justify-content: space-between;
     align-self: flex-start;
   }
@@ -79,7 +80,7 @@
 }
 
 .login-footer {
-  @include flex-center;
+  @include mixins.flex-center;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -93,7 +94,7 @@
   }
 }
 
-@include respond-to('tablet') {
+@include mixins.respond-to('tablet') {
   .container .description {
     font-size: 1.2rem;
     margin-bottom: 10%;
@@ -105,7 +106,7 @@
   }
 }
 
-@include respond-to('desktop-sm') {
+@include mixins.respond-to('desktop-sm') {
   .container,
   .login-container {
     width: 95%;

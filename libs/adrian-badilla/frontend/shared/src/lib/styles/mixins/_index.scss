@@ -1,7 +1,7 @@
 // Core reusable mixins for component styles.
 //
 // Import this folder from component styles with:
-// @use 'mixins' as *;
+// @use 'mixins' as mixins;
 
 @forward 'primitives';
 @forward 'typography';

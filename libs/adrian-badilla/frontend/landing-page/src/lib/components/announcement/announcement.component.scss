@@ -1,9 +1,10 @@
-@use 'mixins' as *;
+@use 'settings/tokens' as tokens;
+@use 'mixins' as mixins;
 
 
 .mobile-app {
-  @include section-spacing;
-  @include glass-effect;
+  @include mixins.section-spacing;
+  @include mixins.glass-effect;
 
   width: 100%;
   position: relative;
@@ -24,49 +25,49 @@
 }
 
 .mobile-app__content {
-  @include flex-wrap(center, center);
+  @include mixins.flex-wrap(center, center);
   margin-inline: auto;
   max-width: min(68.75rem, 92vw); // Igual que Reviews
 }
 
 
 .mobile-app__left {
-  @include flex-column;
+  @include mixins.flex-column;
   gap: clamp(0.75rem, 1.2vw, 1rem);
   flex: 0 0 clamp(20rem, 40vw, 29rem);
   max-width: clamp(20rem, 40vw, 29rem);
 }
 
 .mobile-app__right {
-  @include flex-center(row, flex-start, center);
+  @include mixins.flex-center(row, flex-start, center);
 }
 
 .mobile-app__header {
-  @include flex-column;
+  @include mixins.flex-column;
   gap: clamp(0.25rem, 0.8vw, 0.75rem);
 }
 
 .mobile-app__title {
-  @include heading-style(clamp(2.2rem, 5vw, 3.5rem));
+  @include mixins.heading-style(clamp(2.2rem, 5vw, 3.5rem));
   max-width: 16ch;
   margin: 0 0 clamp(0.5rem, 1vw, 0.75rem);
 }
 
 .mobile-app__subtitle {
-  @include text-style(
+  @include mixins.text-style(
     clamp(1rem, 1.6vw, 1.125rem),
-    var(--fw-medium),
-    var(--font-secondary)
+    tokens.$font-weight-medium,
+    tokens.$font-secondary
   );
   opacity: 0.9;
   max-width: 42ch;
 }
 
 .mobile-app__label {
-  @include text-style(
+  @include mixins.text-style(
     clamp(0.9rem, 1.2vw, 1rem),
-    var(--fw-medium),
-    var(--font-secondary)
+    tokens.$font-weight-medium,
+    tokens.$font-secondary
   );
   opacity: 0.75;
   letter-spacing: 0.02em;
@@ -74,13 +75,13 @@
 }
 
 .mobile-app__stores {
-  @include flex-center(row, flex-start, center);
+  @include mixins.flex-center(row, flex-start, center);
   gap: clamp(0.9rem, 2vw, 1.25rem);
 }
 
 .store-badge {
-  @include link-clean;
-  @include flex-center(row, center, center);
+  @include mixins.link-clean;
+  @include mixins.flex-center(row, center, center);
 
   color: inherit;
   background: hsl(0 0% 100% / 0.08);
@@ -116,7 +117,7 @@
   );
 }
 
-@include respond-to('mobile') {
+@include mixins.respond-to('mobile') {
   .mobile-app {
     min-height: auto;
     margin: clamp(8vh, 10vh, 14vh) auto 0;
