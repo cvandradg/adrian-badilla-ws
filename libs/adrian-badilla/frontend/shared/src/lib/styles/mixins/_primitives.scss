@@ -2,7 +2,8 @@
 @use 'sass:meta';
 @use '../settings/tokens' as tokens;
 
-// Foundational helpers shared by all patterns.
+// Low-level helpers shared by all patterns and components.
+// Use this layer for mechanical layout behavior, not for domain-specific styling.
 
 @mixin link-clean {
   color: inherit;
@@ -15,7 +16,8 @@
   }
 }
 
-// Keeps current behavior: unknown breakpoints are ignored silently.
+// Centralizes responsive behavior behind named breakpoint keys from `tokens.$breakpoints`.
+// Unknown keys are ignored silently to preserve existing consumer behavior.
 @mixin respond-to($breakpoint) {
   @if map.has-key(tokens.$breakpoints, $breakpoint) {
     @media #{meta.inspect(map.get(tokens.$breakpoints, $breakpoint))} {
@@ -24,7 +26,8 @@
   }
 }
 
-// The current argument order is intentionally preserved.
+// Base flex helper used by the narrower flex utilities below.
+// The current argument order is intentionally preserved to avoid breaking callers.
 @mixin flex-center($direction: row, $justify: center, $align: center) {
   display: flex;
   flex-direction: $direction;

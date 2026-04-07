@@ -1,4 +1,5 @@
 // Shared feedback and status-message patterns.
+// Consumers choose the semantic color token; this mixin keeps the layout contract consistent.
 
 @mixin feedback-message(
   $color,

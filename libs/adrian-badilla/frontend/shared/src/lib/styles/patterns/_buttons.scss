@@ -2,6 +2,7 @@
 @use '../mixins/primitives' as primitives;
 
 // Button and CTA patterns.
+// Use this layer when the intent is "primary call to action" instead of generic button styling.
 
 @mixin cta-link {
   @include primitives.link-clean;
@@ -12,6 +13,7 @@
 }
 
 @mixin cta-button {
+  // Shared interaction contract for CTA elements across landing and auth surfaces.
   display: inline-block;
   color: tokens.$color-neutral-900;
   background-color: tokens.$color-neutral-100;

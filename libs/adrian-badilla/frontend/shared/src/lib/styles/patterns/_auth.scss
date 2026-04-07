@@ -1,6 +1,7 @@
 @use '../mixins/primitives' as primitives;
 
 // Auth-specific layout patterns reused across auth screens.
+// This mixin intentionally handles only shell layout so individual screens keep control of local details.
 
 @mixin auth-shell($margin: 5rem auto, $align-items: null, $width: 90%) {
   @include primitives.flex-column;

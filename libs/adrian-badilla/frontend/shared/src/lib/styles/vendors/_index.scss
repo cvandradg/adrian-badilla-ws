@@ -1,3 +1,4 @@
 // Third-party overrides and adapters.
+// Keep vendor coupling here so component styles do not depend on Angular Material internals.
 
 @use 'angular-material-overrides';

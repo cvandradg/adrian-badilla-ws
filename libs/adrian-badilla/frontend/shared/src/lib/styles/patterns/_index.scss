@@ -1,4 +1,9 @@
 // App-facing style patterns.
+//
+// Why:
+// - Groups higher-level, semantic mixins built on top of primitives and tokens.
+// - Keeps components reading like business/UI intent instead of low-level CSS assembly.
+//
 // Add future categories here, such as sidebar, cards, route-panel or timeline.
 
 @forward 'sections';

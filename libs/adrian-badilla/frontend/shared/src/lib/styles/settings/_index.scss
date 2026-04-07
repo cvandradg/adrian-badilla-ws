@@ -1,3 +1,6 @@
-// Design tokens.
+// Settings layer.
+//
+// This entrypoint forwards design tokens only.
+// It exists to keep value imports stable and to guarantee this layer never emits CSS.
 
 @forward 'tokens';

@@ -1,6 +1,9 @@
 @use '../settings/tokens' as tokens;
 
 // Angular Material and MDC overrides that must stay global.
+// Why:
+// - These selectors target third-party DOM that component encapsulation cannot own.
+// - `!important` is used intentionally here to beat library specificity in a single place.
 
 .mdc-text-field:not(.mdc-text-field--disabled) {
   .mdc-text-field__input::placeholder {

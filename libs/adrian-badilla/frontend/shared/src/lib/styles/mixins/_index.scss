@@ -1,7 +1,12 @@
-// Core reusable mixins for component styles.
+// Core reusable mixin API for component styles.
 //
-// Import this folder from component styles with:
-// @use 'mixins' as mixins;
+// Why:
+// - Gives components a single stable import for mechanical helpers and semantic patterns.
+// - Keeps tokens explicit; values still come from `settings/tokens` instead of leaking through this layer.
+//
+// How:
+// - Import this file as `@use 'mixins' as mixins;` from component styles.
+// - Use `settings/tokens` directly when you need raw design values.
 
 @forward 'primitives';
 @forward 'typography';

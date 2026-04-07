@@ -1,4 +1,5 @@
-/* Roboto font-face declarations used by auth and shared controls. */
+/* Roboto font-face declarations used by auth and shared controls.
+  They stay global because font-face rules are application infrastructure, not component styles. */
 
 /* cyrillic-ext */
 @font-face {

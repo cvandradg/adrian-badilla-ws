@@ -1,8 +1,12 @@
 // Shared SCSS tokens.
 //
-// Keep only stable design values here so they are easy to find and change.
-// This file does not emit CSS by itself, which makes it safe to import from
-// component-level mixin files.
+// Why:
+// - Centralize stable design decisions such as fonts, colors, sizing and breakpoints.
+// - Keep component and pattern styles free of repeated hardcoded literals.
+//
+// How:
+// - Import tokens from mixins/patterns/components when a value is semantic and reused.
+// - Do not put selectors here; this module never emits CSS and is safe to import anywhere.
 
 /* ==========================================================================
    Typography
@@ -51,8 +55,9 @@ $cta-padding-inline: clamp(1rem, 3vw, 2rem);
 /* ==========================================================================
    Responsive breakpoints
    ========================================================================== */
+// `respond-to()` reads these named keys so components can share one responsive vocabulary.
 $breakpoints: (
-   mobile-compact: (max-width: 600px),
+  mobile-compact: (max-width: 600px),
   mobile: (max-width: 768px),
   tablet: (min-width: 769px) and (max-width: 1023px),
   laptop: (min-width: 1024px) and (max-width: 1439px),

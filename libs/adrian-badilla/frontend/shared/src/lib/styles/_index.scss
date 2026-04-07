@@ -1,3 +1,12 @@
+// Root entrypoint for the shared style system.
+//
+// Why:
+// - Exposes the reusable Sass API through `@forward 'mixins'`.
+// - Emits one-time global CSS and third-party overrides through `@use`.
+//
+// How:
+// - Component styles should consume mixins from this module tree.
+// - The application should load this file once so global and vendor CSS is emitted.
 @forward 'mixins';
 
 @use 'globals';

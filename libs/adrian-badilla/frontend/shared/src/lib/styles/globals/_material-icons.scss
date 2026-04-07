@@ -1,4 +1,5 @@
-/* Material Icons fallback font face and utility class. */
+/* Material Icons fallback font face and utility class.
+  The font is served locally so icon rendering does not depend on an external CDN. */
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;

@@ -2,6 +2,7 @@
 @use '../mixins/primitives' as primitives;
 
 // Shared section and content layout patterns.
+// These mixins define the common page skeleton used by landing-style sections.
 
 @mixin section-base(
   $padding-block: tokens.$section-padding-block,
@@ -10,6 +11,7 @@
   $radius: tokens.$section-radius,
   $min-height: null
 ) {
+  // Centers a bounded content block and keeps spacing decisions token-driven.
   width: 100%;
   max-width: tokens.$section-max-width;
   margin: $margin-top auto 0;
@@ -28,6 +30,7 @@
   $padding: tokens.$section-full-padding,
   $min-height: 100vh
 ) {
+  // Creates the outer full-screen section shell; combine with `section-base` or `section-content` inside it.
   @include primitives.flex-center(column, center, flex-start);
   position: relative;
   z-index: 2;
@@ -73,6 +76,7 @@
   $color: tokens.$color-neutral-100,
   $padding: tokens.$section-content-padding
 ) {
+  // Lifts content above decorative backgrounds such as videos or overlays.
   position: relative;
   z-index: 2;
   color: $color;

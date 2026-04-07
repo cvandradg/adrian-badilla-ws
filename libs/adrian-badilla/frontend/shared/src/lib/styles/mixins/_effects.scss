@@ -1,6 +1,7 @@
 @use '../settings/tokens' as tokens;
 
 // Visual effects and decorative overlays.
+// Keep these as mixins so effects remain centralized without forcing global utility classes.
 
 @mixin glass-effect {
   background: tokens.$glass-surface-bg;
@@ -39,6 +40,8 @@
 }
 
 @mixin signup-animation {
+  // Creates the animated gradient border shell used by auth/signup controls.
+  // The pseudo-elements inherit the host radius so consumers only style one element.
   position: relative;
   background-clip: padding-box, border-box;
   background-origin: border-box;

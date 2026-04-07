@@ -1,6 +1,8 @@
 @use '../settings/tokens' as tokens;
 
-// Shared text and heading mixins.
+// Shared text and heading primitives.
+// These defaults are token-driven so components can stay visually consistent
+// while still overriding size or spacing when a local variation is needed.
 
 @mixin text-style(
   $size: clamp(1rem, 1.6vw, 1.125rem),
