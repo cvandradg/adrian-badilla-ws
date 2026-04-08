@@ -15,7 +15,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
 
   .footer-top {
     width: 100%;
-    max-width: min(68.75rem, 92vw);
+    max-width: tokens.$section-content-max-width;
     display: flex;
     position: relative;
     align-items: flex-start;
@@ -127,7 +127,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
   .footer-bottom {
     @include mixins.flex-space-between;
     width: 100%;
-    max-width: min(68.75rem, 92vw);
+    max-width: tokens.$section-content-max-width;
     margin-top: 4rem;
     gap: clamp(1rem, 3vw, 2rem);
 

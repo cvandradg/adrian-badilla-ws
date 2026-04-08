@@ -12,6 +12,16 @@
   transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
+@mixin control-button-shell(
+  $height: tokens.$control-height,
+  $radius: tokens.$radius-control,
+  $background: transparent
+) {
+  height: $height;
+  background: $background;
+  border-radius: $radius;
+}
+
 @mixin cta-button {
   // Shared interaction contract for CTA elements across landing and auth surfaces.
   display: inline-block;

@@ -27,7 +27,7 @@
 .mobile-app__content {
   @include mixins.flex-wrap(center, center);
   margin-inline: auto;
-  max-width: min(68.75rem, 92vw); // Igual que Reviews
+  max-width: tokens.$section-content-max-width;
 }
 
 

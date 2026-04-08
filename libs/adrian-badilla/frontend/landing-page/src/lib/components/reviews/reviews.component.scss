@@ -14,7 +14,7 @@
   color: tokens.$color-neutral-100;
   font-weight: tokens.$font-weight-medium;
   font-family: tokens.$font-secondary;
-  max-width: min(68.75rem, 92vw);
+  max-width: tokens.$section-content-max-width;
 
   @include mixins.glass-effect;
 

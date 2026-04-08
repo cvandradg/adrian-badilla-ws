@@ -40,6 +40,7 @@ $section-spacing-margin-top: clamp(4rem, 8vw, 10rem);
 $section-radius: clamp(0.75rem, 1.5vw, 1.25rem);
 $section-full-padding: clamp(1rem, 5vw, 4rem);
 $section-content-padding: clamp(1rem, 5vw, 8rem);
+$section-content-max-width: min(68.75rem, 92vw);
 
 $navbar-width: 90%;
 $navbar-mobile-width: 85%;
@@ -75,6 +76,7 @@ $scrollbar-track: rgb(19, 23, 39);
 $scrollbar-thumb: rgb(48, 58, 95);
 $surface-control-base: #222222;
 $surface-control-muted: #222222c9;
+$control-height: 4rem;
 $radius-control: 0.3rem;
 
 /* ==========================================================================

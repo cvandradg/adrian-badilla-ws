@@ -15,16 +15,3 @@
     $margin: 0 2rem
   );
 }
-
-.aligment {
-  @include mixins.flex-center;
-  width: 100%;
-}
-
-.error-message {
-  @include mixins.feedback-message(
-    $color: tokens.$color-status-error,
-    $justify: flex-end,
-    $direction: row-reverse
-  );
-}

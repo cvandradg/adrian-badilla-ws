@@ -7,21 +7,18 @@
 
 .container {
   color: tokens.$color-neutral-100;
+
   .title {
-    font-size: 3rem;
-    font-weight: 700;
-    text-align: center;
-    margin: 4% 0;
+    @include mixins.auth-title;
   }
 
   .description {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 1.3rem;
-    font-weight: 400;
-    color: tokens.$color-text-muted;
-    margin-bottom: 5%;
+    @include mixins.auth-description(
+      $display: flex,
+      $direction: column,
+      $align-items: center,
+      $max-width: none
+    );
   }
 }
 
@@ -30,25 +27,10 @@
   @include mixins.flex-column;
   justify-content: space-between;
   align-self: flex-start;
-
-  button {
-    width: 100%;
-    height: 4rem;
-  }
 }
 
 .form-pass-reset-inputs {
   width: 100%;
-}
-
-button {
-  border-radius: tokens.$radius-control;
-  background: transparent;
-}
-
-.pass-reset-button {
-  @include mixins.flex-space-between;
-  flex-direction: row;
 }
 
 adrian-badilla-primary-animated-button {
@@ -61,37 +43,6 @@ adrian-badilla-primary-animated-button {
   width: 100%;
   margin: auto;
   max-width: 30rem;
-
-  button {
-    border-radius: tokens.$radius-control;
-    background: transparent;
-  }
-
-  .horizontal-animation {
-    color: inherit;
-    @include mixins.horizontal-animation;
-  }
-
-  .enabled-button {
-    background-size: 400%;
-    background-position: 100%;
-  }
-}
-
-.error-message {
-  @include mixins.feedback-message(
-    $color: tokens.$color-status-error,
-    $justify: flex-end,
-    $direction: row-reverse
-  );
-}
-
-.success-message {
-  @include mixins.feedback-message(
-    $color: tokens.$color-status-success,
-    $justify: flex-end,
-    $direction: row-reverse
-  );
 }
 
 @include mixins.respond-to('mobile-compact') {

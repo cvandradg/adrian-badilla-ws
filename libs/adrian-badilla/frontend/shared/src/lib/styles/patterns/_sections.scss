@@ -72,6 +72,16 @@
   margin-top: $margin-top;
 }
 
+@mixin section-header(
+  $align: center,
+  $padding-bottom: 3rem,
+  $padding-block: tokens.$section-padding-block,
+  $margin-top: tokens.$section-spacing-margin-top
+) {
+  @include section-layout($align, $padding-block, $margin-top);
+  padding-bottom: $padding-bottom;
+}
+
 @mixin section-content(
   $color: tokens.$color-neutral-100,
   $padding: tokens.$section-content-padding

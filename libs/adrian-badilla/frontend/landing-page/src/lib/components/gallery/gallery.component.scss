@@ -2,8 +2,7 @@
 
 
 .title {
-  @include mixins.section-layout(center);
-  padding-bottom: 3rem;
+  @include mixins.section-header;
 
   h2 {
     @include mixins.section-title;

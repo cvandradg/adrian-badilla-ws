@@ -11,49 +11,14 @@
 
 .container {
   color: tokens.$color-neutral-100;
+
   .title {
-    font-size: 3rem;
-    font-weight: 700;
-    text-align: center;
-    margin: 4% 0;
+    @include mixins.auth-title;
   }
 
   .description {
-    font-size: 1.3rem;
-    font-weight: 400;
-    text-align: center;
-    max-width: 70%;
-    color: tokens.$color-text-muted;
-    margin-bottom: 5%;
+    @include mixins.auth-description($text-align: center);
   }
-}
-
-.error-message {
-  @include mixins.feedback-message(
-    $color: tokens.$color-status-error,
-    $justify: flex-end,
-    $direction: row-reverse
-  );
-}
-
-.success-message {
-  cursor: pointer;
-  @include mixins.feedback-message(
-    $color: tokens.$color-status-success,
-    $justify: center,
-    $direction: row-reverse,
-    $gap: 1.3rem
-  );
-}
-
-.centered {
-  display: flex;
-  flex-direction: row-reverse;
-}
-
-p {
-  margin: 0.2rem;
-  color: tokens.$color-status-success;
 }
 
 @include mixins.respond-to('mobile-compact') {

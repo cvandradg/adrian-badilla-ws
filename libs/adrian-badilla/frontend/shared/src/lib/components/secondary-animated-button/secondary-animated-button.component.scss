@@ -30,11 +30,9 @@
 
 button {
   @include mixins.flex-start;
-  height: 4rem;
-  background: transparent;
+  @include mixins.control-button-shell;
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  border-radius: tokens.$radius-control;
   z-index: 2;
 
   @media (pointer: coarse) {
