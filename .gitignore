@@ -50,3 +50,6 @@ Thumbs.db
 
 # e2e cyprress
 apps/adrian-badilla-e2e/cypress.env.json
+
+.claude/worktrees
+.claude/settings.local.json
