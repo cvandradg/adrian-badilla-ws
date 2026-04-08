@@ -1,0 +1,44 @@
+@use '../settings/tokens' as tokens;
+@use '../mixins/primitives' as primitives;
+
+// Button and CTA patterns.
+// Use this layer when the intent is "primary call to action" instead of generic button styling.
+
+@mixin cta-link {
+  @include primitives.link-clean;
+  display: inline-block;
+  margin-top: clamp(1rem, 2.5vw, 2rem);
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+@mixin control-button-shell(
+  $height: tokens.$control-height,
+  $radius: tokens.$radius-control,
+  $background: transparent
+) {
+  height: $height;
+  background: $background;
+  border-radius: $radius;
+}
+
+@mixin cta-button {
+  // Shared interaction contract for CTA elements across landing and auth surfaces.
+  display: inline-block;
+  color: tokens.$color-neutral-900;
+  background-color: tokens.$color-neutral-100;
+  border: none;
+  border-radius: tokens.$cta-radius;
+  cursor: pointer;
+  font-size: tokens.$cta-font-size;
+  padding-block: tokens.$cta-padding-block;
+  padding-inline: tokens.$cta-padding-inline;
+  transition: background 0.3s ease, transform 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    background: tokens.$color-accent-400;
+    transform: translateY(-0.03rem);
+  }
+}

@@ -1,21 +1,21 @@
-@use 'utilities/layout/helpers' as *;
-@use 'utilities/mixins' as *;
+@use 'settings/tokens' as tokens;
+@use 'mixins' as mixins;
 
 $gap-horizontal: clamp(2rem, 4vw, 4rem);
 
 .footer {
-  @include section-spacing;
+  @include mixins.section-spacing;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   background: #000;
-  color: var(--clr-neutral-100);
-  font-family: var(--font-secondary);
+  color: tokens.$color-neutral-100;
+  font-family: tokens.$font-secondary;
   padding: clamp(1rem, 1vw, 2.5rem) clamp(2rem, 8vw, 10rem) 2rem;
 
   .footer-top {
     width: 100%;
-    max-width: min(68.75rem, 92vw);
+    max-width: tokens.$section-content-max-width;
     display: flex;
     position: relative;
     align-items: flex-start;
@@ -35,7 +35,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
 
     h3 {
       color: inherit;
-      font-weight: var(--fw-bold);
+      font-weight: tokens.$font-weight-bold;
       letter-spacing: 0.02em;
       margin: 0 0 clamp(0.4rem, 1vw, 0.75rem);
     }
@@ -47,7 +47,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
       font-size: clamp(1rem, 1.125vw, 1.125rem);
 
       ul {
-        @include flex-column;
+        @include mixins.flex-column;
         margin: 0;
         padding-left: 1.25rem;
         list-style: disc;
@@ -56,7 +56,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
       }
 
       ul li a {
-        @include link-clean;
+        @include mixins.link-clean;
       }
 
       @media (min-width: 1024px) {
@@ -89,7 +89,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
       }
 
       a {
-        @include link-clean;
+        @include mixins.link-clean;
         display: block;
         padding: 0.25em 0;
         line-height: inherit;
@@ -97,7 +97,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
       }
     }
 
-    @include respond-to('mobile') {
+    @include mixins.respond-to('mobile') {
       flex-direction: column;
       align-items: center;
       gap: clamp(1rem, 4vw, 1.5rem);
@@ -112,7 +112,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
       }
     }
 
-    @include respond-to('tablet') {
+    @include mixins.respond-to('tablet') {
       flex-wrap: wrap;
       justify-content: center;
       gap: $gap-horizontal;
@@ -125,9 +125,9 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
   }
 
   .footer-bottom {
-    @include flex-space-between;
+    @include mixins.flex-space-between;
     width: 100%;
-    max-width: min(68.75rem, 92vw);
+    max-width: tokens.$section-content-max-width;
     margin-top: 4rem;
     gap: clamp(1rem, 3vw, 2rem);
 
@@ -137,7 +137,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
       font-weight: 300;
       line-height: 1.2;
       letter-spacing: 0.125rem;
-      font-family: var(--font-secondary);
+      font-family: tokens.$font-secondary;
     }
 
     .socials {
@@ -150,7 +150,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
       color: inherit;
 
       &__link {
-        @include link-clean;
+        @include mixins.link-clean;
         opacity: 0.9;
         line-height: 1;
         transition: transform 120ms ease, opacity 120ms ease;
@@ -169,7 +169,7 @@ $gap-horizontal: clamp(2rem, 4vw, 4rem);
       }
     }
 
-    @include respond-to('tablet') {
+    @include mixins.respond-to('tablet') {
       flex-direction: column;
       text-align: center;
     }

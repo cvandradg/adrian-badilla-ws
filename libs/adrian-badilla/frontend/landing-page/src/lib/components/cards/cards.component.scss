@@ -1,7 +1,5 @@
-@use 'utilities/layout/helpers' as *;
-@use 'utilities/layout/sections' as *;
-@use 'utilities/mixins' as *;
-@use 'utilities/components/visual' as *;
+@use 'settings/tokens' as tokens;
+@use 'mixins' as mixins;
 
 :host {
   --padding: 2rem;
@@ -9,11 +7,10 @@
 }
 
 .title {
-  @include section-layout(center);
-  padding-bottom: 3rem;
+  @include mixins.section-header;
 
   h1 {
-    @include section-title;
+    @include mixins.section-title;
   }
 }
 
@@ -34,7 +31,7 @@
   background-repeat: no-repeat;
   background-attachment: initial;
   will-change: flex;
-  color: var(--clr-neutral-100);
+  color: tokens.$color-neutral-100;
 
   &.card--nutrition {
     background-image: url('/global/assets/img/adelgazar.jpg');
@@ -50,7 +47,7 @@
   }
 
   &::before {
-    @include card-gradient;
+    @include mixins.card-gradient;
   }
 }
 
@@ -67,7 +64,7 @@
 }
 
 .card__header {
-  @include flex-column;
+  @include mixins.flex-column;
   gap: 0.25rem;
   padding-top: var(--padding);
 }
@@ -90,7 +87,7 @@
     transform-origin: left;
     left: calc(var(--padding) * -1);
     transition: transform 0.4s ease;
-    background: var(--clr-accent-400);
+    background: tokens.$color-accent-400;
     width: calc(100% + var(--padding));
   }
 }
@@ -104,7 +101,7 @@
   padding-right: 0.5rem;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
-  font-family: var(--font-secondary);
+  font-family: tokens.$font-secondary;
   font-size: clamp(0.875rem, 1.125vw, 1rem);
   line-height: 1.45;
   font-weight: 600;
@@ -145,7 +142,7 @@
 }
 
 .card__footer {
-  @include flex-space-between;
+  @include mixins.flex-space-between;
   gap: 1rem;
   padding: 1rem var(--padding);
 }
@@ -162,7 +159,7 @@
   }
   .price__value {
     font-size: clamp(1.25rem, 3.2vw, 1.75rem);
-    font-weight: var(--fw-bold);
+    font-weight: tokens.$font-weight-bold;
     line-height: 1;
   }
   .price__unit {
@@ -180,15 +177,15 @@
   text-decoration: none;
   padding: 0.5em 1.25em;
   justify-content: center;
-  color: var(--clr-neutral-900);
-  background: var(--clr-accent-400);
+  color: tokens.$color-neutral-900;
+  background: tokens.$color-accent-400;
   text-decoration-color: currentColor;
   transition: background 0.3s ease, transform 0.15s ease;
 
   &:hover,
   &:focus-visible {
     outline: none;
-    background: var(--clr-neutral-100);
+    background: tokens.$color-neutral-100;
     transform: translateY(-0.03rem);
   }
 }
@@ -242,7 +239,7 @@
   }
 }
 
-@include respond-to('mobile') {
+@include mixins.respond-to('mobile') {
   .cards {
     flex-direction: column;
     padding-inline: clamp(1rem, 5vw, 3rem);
