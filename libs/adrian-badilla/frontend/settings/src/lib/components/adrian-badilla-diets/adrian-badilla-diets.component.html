@@ -125,7 +125,7 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
 
     @if (selectedRouteItem; as activeRoute) {
     <section class="routes-content">
-      <div class="edit-title mb-3">Ajustes de Ruta</div>
+      <div class="edit-title mb-3">Dieta: Maria Castrillo</div>
 
       <div class="editor-layout">
         <div class="editor-layout__top">
@@ -220,7 +220,7 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
                 (click)="openSupercenterDialog(supercenter)"
                 [attr.aria-label]="'Abrir supercenter ' + supercenter.name"
               >
-                <i class="pi pi-warehouse"></i>
+                <i [class]="supercenter.imgPrimeng"></i>
               </button>
             </ng-template>
 
@@ -233,7 +233,7 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
               >
                 <div class="supercenter-row">
                   <span class="supercenter-name"
-                    >Supercenter {{ supercenter.name }}</span
+                    > {{ supercenter.name }}</span
                   >
                   @if (supercenter.lastModifiedLabel) {
                   <span class="ultima-edicion"

@@ -1,0 +1,65 @@
+<div class="food-dialog-container">
+  <h2 class="food-dialog-title">{{ foodName() }}</h2>
+  
+  <div *ngIf="foodData$ | async as food; else loading" class="food-info">
+
+    <div class="nutrition-grid">
+
+      <!-- 🟢 MODO SIMPLE -->
+      <ng-container *ngIf="!isDetailed(); else detailed">
+
+        <div class="nutrition-section">
+          <h3 class="section-title">Macronutrientes</h3>
+
+          <p>🔥 Calorías: <strong>{{ food.calories?.value }} kcal</strong></p>
+          <p>🍗 Proteína: <strong>{{ food.protein?.value }} g</strong></p>
+          <p>🥑 Grasas: <strong>{{ food.fat?.value }} g</strong></p>
+          <p>🍞 Carbohidratos: <strong>{{ food.carbs?.value }} g</strong></p>
+        </div>
+
+        <button (click)="loadFullData()">
+          🔍 Ver detalles completos
+        </button>
+
+      </ng-container>
+
+      <!-- 🔵 MODO DETALLADO -->
+      <ng-template #detailed>
+
+        <div class="nutrition-section">
+          <h3>Macronutrientes</h3>
+          <p>🔥 {{ food.calories?.amount }} kcal</p>
+          <p>🍗 {{ food.protein?.amount }} g</p>
+          <p>🥑 {{ food.fat?.amount }} g</p>
+          <p>🍞 {{ food.carbs?.amount }} g</p>
+        </div>
+
+        <div class="nutrition-section">
+          <h3>Otros</h3>
+          <p>🌾 Fibra: {{ food.fiber?.amount }} g</p>
+          <p>🍬 Azúcar: {{ food.sugar?.amount }} g</p>
+        </div>
+
+        <div class="nutrition-section">
+          <h3>Minerales</h3>
+          <p>🩸 Hierro: {{ food.iron?.amount }} mg</p>
+          <p>🦴 Calcio: {{ food.calcium?.amount }} mg</p>
+          <p>⚡ Potasio: {{ food.potassium?.amount }} mg</p>
+        </div>
+
+        <div class="nutrition-section">
+          <h3>Vitaminas</h3>
+          <p>🍊 Vitamina C: {{ food.vitaminC?.amount }}</p>
+          <p>👁️ Vitamina A: {{ food.vitaminA?.amount }}</p>
+          <p>☀️ Vitamina D: {{ food.vitaminD?.amount }}</p>
+        </div>
+
+      </ng-template>
+
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <p>Cargando...</p>
+  </ng-template>
+</div>

@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angu
 import { AdditionalInfoColumnComponent } from '../additional-info-column/additional-info-column.component';
 import { TabsModule } from 'primeng/tabs';
 import { AdrianBadillaDietsComponent } from '../adrian-badilla-diets/adrian-badilla-diets.component';
+import { DialogService } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'lib-settings',
@@ -12,6 +13,7 @@ import { AdrianBadillaDietsComponent } from '../adrian-badilla-diets/adrian-badi
     FontAwesomeModule,
     AdrianBadillaDietsComponent,
   ],
+  providers:[DialogService],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

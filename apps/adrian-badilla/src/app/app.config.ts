@@ -14,18 +14,23 @@ import { provideRouter } from '@angular/router';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { FontAwesomeicons } from '@adrian-badilla/ui/shared/assets/icons/fontawesome';
 import { providePrimeNG } from 'primeng/config';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { DialogService } from 'primeng/dynamicdialog';
+import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideAnimationsAsync(),
-    
+    provideFirestore(() => getFirestore()),
+    provideHttpClient(),
     providePrimeNG({
       ripple: true,
       theme: {
         preset: Aura,
       },
     }),
+    DialogService,
     provideRouter(appRoutes),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth()),

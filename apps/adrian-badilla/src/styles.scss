@@ -2,3 +2,49 @@
 @use 'themes/custom-theme';
 @import "primeicons/primeicons.css";
 
+
+
+.p-dialog-mask.add-edit-mask {
+  background: rgba(0, 0, 0, 0.08) !important;
+  backdrop-filter: blur(10px) saturate(1.1) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(1.1) !important;
+}
+
+// .p-dialog.add-edit-dialog .p-dialog-header {
+//   border-bottom: 2px solid #fff !important;
+// }
+
+.p-dialog.add-edit-dialog,
+.add-edit-dialog.p-dialog {
+  background: rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(10px) saturate(1.15) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(1.15) !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.45);
+}
+
+.p-dialog.add-edit-dialog .p-dialog-header,
+.p-dialog.add-edit-dialog .p-dialog-content,
+.p-dialog.add-edit-dialog .p-dialog-footer {
+  background: transparent !important;
+}
+
+.p-dialog.add-edit-dialog .p-dialog-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.p-dialog.add-edit-dialog .p-dialog-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.p-dialog.add-edit-dialog .p-dialog-header {
+  background: rgba(0, 0, 0, 0.35) !important;
+}
+
+.p-dialog.add-edit-dialog .p-dialog-title {
+  color: #e4e4e7 !important;
+}
+
+::ng-deep .p-dialog.add-edit-dialog .p-dialog-header {
+  background: rgba(0, 0, 0, 0.35) !important;
+}
