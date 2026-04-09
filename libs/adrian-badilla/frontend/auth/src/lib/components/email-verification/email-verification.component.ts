@@ -1,4 +1,3 @@
-
 import { RouterModule } from '@angular/router';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MODULES, COMPONENTS } from '@adrian-badilla/ui/shared';
