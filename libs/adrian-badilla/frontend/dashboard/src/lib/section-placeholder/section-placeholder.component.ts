@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
@@ -20,6 +25,6 @@ export class DashboardSectionPlaceholderComponent {
   readonly description = computed(
     () =>
       this.#data()['description'] ??
-      'Contenido en preparación dentro del dashboard.',
+      'Contenido en preparación dentro del dashboard.'
   );
 }

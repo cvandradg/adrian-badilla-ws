@@ -33,11 +33,8 @@ mat-nav-list {
   border: 0.01em solid tokens.$dashboard-border-subtle;
   color: tokens.$dashboard-text-muted;
   text-decoration: none;
-  transition:
-    background-color 100ms ease-in-out,
-    box-shadow 100ms ease-in-out,
-    color 100ms ease-in-out,
-    border-color 100ms ease-in-out;
+  transition: background-color 100ms ease-in-out, box-shadow 100ms ease-in-out,
+    color 100ms ease-in-out, border-color 100ms ease-in-out;
 
   &::after {
     @include surfaces.corner-notch(
@@ -53,8 +50,7 @@ mat-nav-list {
   &.menu-item--active {
     color: tokens.$dashboard-text-primary;
     border-left-color: tokens.$dashboard-glow-outer;
-    box-shadow:
-      inset 0 0 30px tokens.$dashboard-glow-outer,
+    box-shadow: inset 0 0 30px tokens.$dashboard-glow-outer,
       0 0 3px tokens.$dashboard-glow-outer;
 
     &::after {

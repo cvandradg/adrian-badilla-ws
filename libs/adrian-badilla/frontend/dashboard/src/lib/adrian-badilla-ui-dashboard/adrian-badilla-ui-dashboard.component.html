@@ -47,7 +47,10 @@
           <div class="header-login-group">
             @if (isScraperRunning()) {
             <div class="header-run-indicator" aria-live="polite">
-              <i class="pi pi-spinner pi-spin header-run-indicator__icon" aria-hidden="true"></i>
+              <i
+                class="pi pi-spinner pi-spin header-run-indicator__icon"
+                aria-hidden="true"
+              ></i>
               <span>Actualizando Órdenes</span>
             </div>
             }
@@ -61,9 +64,11 @@
             [icon]="['fass', 'toggle-on']"
             class="fa-lg ml-2"
             [class.fa-rotate-180]="!isNarrow() && !rightPinnedOpen()"
-            [style.color]="!isNarrow() && rightPinnedOpen()
-              ? '#6b7280'
-              : 'var(--dashboard-text-soft)'"
+            [style.color]="
+              !isNarrow() && rightPinnedOpen()
+                ? '#6b7280'
+                : 'var(--dashboard-text-soft)'
+            "
             (click)="onRightToggle(right)"
           ></fa-icon>
         </div>

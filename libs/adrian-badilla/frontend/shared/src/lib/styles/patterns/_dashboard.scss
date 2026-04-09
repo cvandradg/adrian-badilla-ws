@@ -30,13 +30,10 @@
 @mixin dashboard-glass-shell($radius: tokens.$dashboard-panel-radius) {
   border: 1px solid tokens.$dashboard-border-subtle;
   border-radius: $radius;
-  background:
-    linear-gradient(180deg, hsl(0 0% 100% / 0.03), transparent 22%),
+  background: linear-gradient(180deg, hsl(0 0% 100% / 0.03), transparent 22%),
     tokens.$dashboard-panel-surface;
-  box-shadow:
-    inset 0 1px 0 tokens.$dashboard-glow-inner,
-    0 18px 40px hsl(0 0% 0% / 0.25),
-    0 0 0 1px tokens.$dashboard-border-strong,
+  box-shadow: inset 0 1px 0 tokens.$dashboard-glow-inner,
+    0 18px 40px hsl(0 0% 0% / 0.25), 0 0 0 1px tokens.$dashboard-border-strong,
     0 0 24px tokens.$dashboard-glow-outer;
 }
 

@@ -58,11 +58,29 @@ $cta-padding-inline: clamp(1rem, 3vw, 2rem);
    ========================================================================== */
 // `respond-to()` reads these named keys so components can share one responsive vocabulary.
 $breakpoints: (
-  mobile-compact: (max-width: 600px),
-  mobile: (max-width: 768px),
-  tablet: (min-width: 769px) and (max-width: 1023px),
-  laptop: (min-width: 1024px) and (max-width: 1439px),
-  desktop: (min-width: 1440px),
+  mobile-compact: (
+    max-width: 600px,
+  ),
+  mobile: (
+    max-width: 768px,
+  ),
+  tablet: (
+    min-width: 769px,
+  )
+  and
+  (
+    max-width: 1023px,
+  ),
+  laptop: (
+    min-width: 1024px,
+  )
+  and
+  (
+    max-width: 1439px,
+  ),
+  desktop: (
+    min-width: 1440px,
+  ),
 );
 
 /* ==========================================================================
@@ -94,7 +112,7 @@ $glass-blur-webkit: clamp(4px, 1vw, 6px);
     Dashboard shell
    ========================================================================== */
 $dashboard-font-family: 'Google Sans Flex', Roboto, Avenir, Helvetica, Arial,
-   sans-serif;
+  sans-serif;
 $dashboard-text-primary: #fff;
 $dashboard-text-muted: hsla(0 0% 100% / 0.6);
 $dashboard-text-soft: hsla(0 0% 100% / 0.7);
