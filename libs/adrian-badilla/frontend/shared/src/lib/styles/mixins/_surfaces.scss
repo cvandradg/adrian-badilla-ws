@@ -1,0 +1,51 @@
+@use '../settings/tokens' as tokens;
+
+// Dashboard surface helpers replicated from the MoofyVIP shell.
+
+@mixin panel-header($padding: 1rem, $radius: null, $text-align: null) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $padding;
+
+  @if $text-align != null {
+    text-align: $text-align;
+  }
+
+  background-color: tokens.$dashboard-header-surface;
+  border-color: tokens.$dashboard-header-surface;
+  box-shadow:
+    0 0 0 0 rgba(0, 0, 0, 0.2),
+    0 0 0 0 rgba(0, 0, 0, 0.14),
+    0 0 0 0 rgba(0, 0, 0, 0.12);
+  line-height: 1.5;
+
+  @if $radius != null {
+    border-radius: $radius;
+  }
+}
+
+@mixin glass-panel-shell($radius: 5px) {
+  border-radius: $radius;
+  border: 0.05em solid tokens.$dashboard-border-strong;
+  box-shadow:
+    inset 0 0 15px tokens.$dashboard-glow-inner,
+    0 0 5px tokens.$dashboard-glow-outer;
+  background: tokens.$dashboard-panel-surface;
+}
+
+@mixin corner-notch-base($size: 12px) {
+  content: '';
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block-end: 0;
+  width: $size;
+  height: $size;
+  pointer-events: none;
+  clip-path: polygon(100% 0, 0 100%, 100% 100%);
+}
+
+@mixin corner-notch($size: 12px, $bg: rgba(255, 255, 255, 0.144)) {
+  @include corner-notch-base($size);
+  background: $bg;
+}

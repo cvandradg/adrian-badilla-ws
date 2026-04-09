@@ -1,15 +1,3 @@
-<!-- <mat-sidenav-container class="layout-container">
-
-  <mat-sidenav mode="side" opened>
-    <adrian-badilla-side-menu></adrian-badilla-side-menu>
-  </mat-sidenav>
-
-  <mat-sidenav-content>
-    <router-outlet></router-outlet>
-  </mat-sidenav-content>
-
-</mat-sidenav-container> -->
-
 <mat-sidenav-container class="dashboard-shell" [autosize]="true">
   <mat-sidenav
     #left
@@ -40,15 +28,14 @@
     [style.margin-left]="marginLeft()"
     [style.margin-right]="marginRight()"
   >
-    <div class="gap"></div>
+    <div class="dashboard-spacer"></div>
 
     <div class="dashboard-container">
       <div class="container-header">
         <div class="inline-flex gap-3">
           <fa-icon
             [icon]="['fas', 'bars']"
-            class="fa-lg"
-            style="cursor: pointer"
+            class="fa-lg menu-toggle"
             (click)="onMenuClick(left)"
             (keydown.enter)="onMenuClick(left)"
             tabindex="0"
@@ -56,17 +43,27 @@
           <div class="title">{{ headerTitle() }}</div>
         </div>
 
-        <div class="inline-flex gap-2 align-items-center">
-          <div class="login-button">Ingresar</div>
+        <div class="header-actions">
+          <div class="header-login-group">
+            @if (isScraperRunning()) {
+            <div class="header-run-indicator" aria-live="polite">
+              <i class="pi pi-spinner pi-spin header-run-indicator__icon" aria-hidden="true"></i>
+              <span>Actualizando Órdenes</span>
+            </div>
+            }
+
+            <div class="login-button">Ingresar</div>
+          </div>
+
           <fa-icon [icon]="['fas', 'user']"></fa-icon>
 
           <fa-icon
-            [icon]="['fas', 'toggle-on']"
+            [icon]="['fass', 'toggle-on']"
             class="fa-lg ml-2"
             [class.fa-rotate-180]="!isNarrow() && !rightPinnedOpen()"
             [style.color]="!isNarrow() && rightPinnedOpen()
               ? '#6b7280'
-              : 'hsla(0, 0%, 100%, 0.7)'"
+              : 'var(--dashboard-text-soft)'"
             (click)="onRightToggle(right)"
           ></fa-icon>
         </div>
@@ -77,6 +74,6 @@
       </div>
     </div>
 
-    <div class="gap"></div>
+    <div class="dashboard-spacer"></div>
   </mat-sidenav-content>
 </mat-sidenav-container>

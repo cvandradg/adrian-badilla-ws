@@ -90,6 +90,38 @@ $glass-shadow-inset-bottom: hsl(0 0% 100% / 0.02);
 $glass-blur: clamp(4px, 5vw, 6px);
 $glass-blur-webkit: clamp(4px, 1vw, 6px);
 
+/* ==========================================================================
+    Dashboard shell
+   ========================================================================== */
+$dashboard-font-family: 'Google Sans Flex', Roboto, Avenir, Helvetica, Arial,
+   sans-serif;
+$dashboard-text-primary: #fff;
+$dashboard-text-muted: hsla(0 0% 100% / 0.6);
+$dashboard-text-soft: hsla(0 0% 100% / 0.7);
+$dashboard-text-secondary: hsla(0 0% 100% / 0.8);
+
+$dashboard-shell-max-inline-size: 125rem;
+$dashboard-shell-spacing: 1.5rem;
+$dashboard-panel-radius: 5px;
+$dashboard-panel-mobile-inline-size: 260px;
+$dashboard-panel-inline-size: 14.625rem;
+$dashboard-panel-collapsed-inline-size: 6.062rem;
+$dashboard-panel-gap: 1.2rem;
+$dashboard-panel-min-block-size: 24.25rem;
+$dashboard-content-blur: 18px;
+
+$dashboard-header-surface: rgba(220, 240, 255, 0.05);
+$dashboard-divider-subtle: rgba(220, 240, 255, 0.2);
+$dashboard-border-subtle: rgba(200, 220, 255, 0.2);
+$dashboard-border-strong: rgba(220, 240, 255, 0.9);
+$dashboard-panel-surface: rgba(0, 5, 8, 0.33);
+$dashboard-content-surface: rgba(0, 5, 8, 0.5);
+$dashboard-hover-surface: rgba(255, 255, 255, 0.06);
+$dashboard-backdrop: rgba(0, 0, 0, 0.35);
+$dashboard-glow-inner: rgba(200, 220, 255, 0.6);
+$dashboard-glow-outer: rgba(200, 220, 255, 0.9);
+$dashboard-subtitle-shadow: drop-shadow(0 0 10px rgba(0, 0, 0, 0.7));
+
 $card-gradient-overlay: linear-gradient(
   to top,
   rgba(0, 0, 0, 1) 0%,

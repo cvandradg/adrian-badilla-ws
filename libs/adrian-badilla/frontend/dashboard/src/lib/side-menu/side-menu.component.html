@@ -12,7 +12,7 @@
     [activated]="rla.isActive"
     class="menu-item"
   >
-    <!-- <fa-icon [icon]="item.icon"></fa-icon> -->
+    <fa-icon matListItemIcon [icon]="item.icon"></fa-icon>
 
     @if (!sideNavCollapsed()) {
     <span matListItemTitle>{{ item.label }}</span>

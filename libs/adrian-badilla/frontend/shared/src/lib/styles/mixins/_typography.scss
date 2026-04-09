@@ -4,6 +4,11 @@
 // These defaults are token-driven so components can stay visually consistent
 // while still overriding size or spacing when a local variation is needed.
 
+@mixin font-sans {
+  font-family: tokens.$dashboard-font-family;
+  text-rendering: optimizeLegibility;
+}
+
 @mixin text-style(
   $size: clamp(1rem, 1.6vw, 1.125rem),
   $weight: tokens.$font-weight-medium,
