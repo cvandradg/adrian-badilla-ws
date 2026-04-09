@@ -1,0 +1,101 @@
+@use '../settings/tokens' as tokens;
+
+// Visual effects and decorative overlays.
+// Keep these as mixins so effects remain centralized without forcing global utility classes.
+
+@mixin glass-effect {
+  background: tokens.$glass-surface-bg;
+  border: 1px solid tokens.$glass-border;
+  box-shadow:
+    0 clamp(1rem, 3vw, 1.25rem) clamp(2rem, 5vw, 2.5rem) tokens.$glass-shadow-outer,
+    0 1px 0 tokens.$glass-shadow-inset-top inset,
+    0 -1px 0 tokens.$glass-shadow-inset-bottom inset;
+  backdrop-filter: blur(tokens.$glass-blur);
+  -webkit-backdrop-filter: blur(tokens.$glass-blur-webkit);
+}
+
+@mixin card-gradient {
+  content: '';
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  position: absolute;
+  height: clamp(10rem, 25%, 15rem);
+  background: tokens.$card-gradient-overlay;
+  z-index: 1;
+}
+
+@mixin horizontal-animation {
+  background: linear-gradient(
+      to left,
+      tokens.$horizontal-animation-start,
+      tokens.$horizontal-animation-end
+    )
+    right;
+  background-size: 200%;
+  transition: background-position 1s ease-out;
+  border-bottom-right-radius: tokens.$radius-control;
+  border-bottom-left-radius: tokens.$radius-control;
+  background-position: left;
+}
+
+@mixin signup-animation {
+  // Creates the animated gradient border shell used by auth/signup controls.
+  // The pseudo-elements inherit the host radius so consumers only style one element.
+  position: relative;
+  background-clip: padding-box, border-box;
+  background-origin: border-box;
+  border-radius: tokens.$radius-control;
+  background-image: linear-gradient(
+      90deg,
+      tokens.$signup-surface-base,
+      tokens.$signup-surface-base
+    ),
+    linear-gradient(
+      90deg,
+      tokens.$signup-border-start,
+      tokens.$signup-border-end
+    );
+  border: 1px solid transparent;
+
+  &:hover {
+    border: 1px solid transparent;
+  }
+
+  &::after,
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+  }
+
+  &:hover::after,
+  &:hover::before {
+    animation: rotation 5s linear infinite;
+    z-index: 1;
+    background-color: transparent;
+    border: 0 solid transparent;
+    background: linear-gradient(
+      90deg,
+      tokens.$signup-border-start,
+      tokens.$signup-border-end
+    );
+
+    @media (pointer: coarse) {
+      filter: blur(0);
+    }
+  }
+
+  &:hover::after {
+    background: linear-gradient(
+      var(--gradient-angle),
+      hsl(226, 78%, 67%),
+      rgb(163, 31, 31)
+    );
+
+    @media (pointer: coarse) {
+      filter: blur(0);
+    }
+  }
+}

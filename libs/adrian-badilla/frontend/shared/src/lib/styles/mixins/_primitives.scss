@@ -1,0 +1,64 @@
+@use 'sass:map';
+@use 'sass:meta';
+@use '../settings/tokens' as tokens;
+
+// Low-level helpers shared by all patterns and components.
+// Use this layer for mechanical layout behavior, not for domain-specific styling.
+
+@mixin link-clean {
+  color: inherit;
+  text-decoration-color: currentColor;
+  transition: opacity 0.25s ease, transform 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 0.8;
+  }
+}
+
+// Centralizes responsive behavior behind named breakpoint keys from `tokens.$breakpoints`.
+// Unknown keys are ignored silently to preserve existing consumer behavior.
+@mixin respond-to($breakpoint) {
+  @if map.has-key(tokens.$breakpoints, $breakpoint) {
+    @media #{meta.inspect(map.get(tokens.$breakpoints, $breakpoint))} {
+      @content;
+    }
+  }
+}
+
+// Base flex helper used by the narrower flex utilities below.
+// The current argument order is intentionally preserved to avoid breaking callers.
+@mixin flex-center($direction: row, $justify: center, $align: center) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-start {
+  @include flex-center(row, flex-start, center);
+}
+
+@mixin flex-space-between {
+  @include flex-center(row, space-between, center);
+}
+
+@mixin flex-wrap($justify: flex-start, $align: center, $gap: null) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: $justify;
+  align-items: $align;
+
+  @if $gap != null {
+    gap: $gap;
+  }
+}
+
+@mixin section-spacing {
+  margin-top: tokens.$section-spacing-margin-top;
+}

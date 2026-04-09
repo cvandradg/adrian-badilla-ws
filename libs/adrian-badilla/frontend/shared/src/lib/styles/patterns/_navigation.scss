@@ -1,0 +1,32 @@
+@use '../settings/tokens' as tokens;
+
+// Navigation and navbar patterns.
+// This layer keeps navbar sizing and placement consistent across variants.
+
+@mixin layer-navbar {
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: tokens.$navbar-width;
+  position: absolute;
+  background-color: transparent;
+}
+
+@mixin navbar-layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  letter-spacing: 0.125rem;
+  padding-inline: tokens.$navbar-padding-inline;
+  padding-block: tokens.$navbar-padding-block;
+}
+
+@mixin navbar-mobile {
+  // Mobile variant keeps the same visual language while allowing independent width/padding tokens.
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: tokens.$navbar-mobile-width;
+  padding: tokens.$navbar-mobile-padding;
+}

@@ -1,0 +1,75 @@
+@use '../settings/tokens' as tokens;
+@use '../mixins/primitives' as primitives;
+
+// Auth-specific layout patterns reused across auth screens.
+// This mixin intentionally handles only shell layout so individual screens keep control of local details.
+
+@mixin auth-shell($margin: 5rem auto, $align-items: null, $width: 90%) {
+  @include primitives.flex-column;
+  width: $width;
+  margin: $margin;
+
+  @if $align-items != null {
+    align-items: $align-items;
+  }
+}
+
+@mixin auth-title(
+  $size: 3rem,
+  $weight: 700,
+  $margin: 4% 0,
+  $spacing: null,
+  $family: null
+) {
+  font-size: $size;
+  font-weight: $weight;
+  text-align: center;
+  margin: $margin;
+
+  @if $spacing != null {
+    letter-spacing: $spacing;
+  }
+
+  @if $family != null {
+    font-family: $family;
+  }
+}
+
+@mixin auth-description(
+  $size: 1.3rem,
+  $weight: 400,
+  $max-width: 70%,
+  $color: tokens.$color-text-muted,
+  $margin-bottom: 5%,
+  $text-align: null,
+  $display: null,
+  $direction: null,
+  $align-items: null,
+  $margin-top: null
+) {
+  font-size: $size;
+  font-weight: $weight;
+  color: $color;
+  max-width: $max-width;
+  margin-bottom: $margin-bottom;
+
+  @if $text-align != null {
+    text-align: $text-align;
+  }
+
+  @if $display != null {
+    display: $display;
+  }
+
+  @if $direction != null {
+    flex-direction: $direction;
+  }
+
+  @if $align-items != null {
+    align-items: $align-items;
+  }
+
+  @if $margin-top != null {
+    margin-top: $margin-top;
+  }
+}
