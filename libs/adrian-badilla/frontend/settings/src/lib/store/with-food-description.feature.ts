@@ -119,11 +119,15 @@ export function withFoodDescription() {
       initializeFoodDescriptionDialog: async (
         dialogData?: FoodDescriptionDialogData,
       ) => {
-        const estimatedName = dialogData?.diet?.estimateLocation || 'chicken breast';
-        const exactName = dialogData?.diet?.exactLocation || estimatedName;
+        // Usar displayName (en español) para el título si está disponible
+        // Usar exactLocation (en inglés) para la consulta de la API
+        const displayName = dialogData?.diet?.displayName || 
+                           dialogData?.diet?.estimateLocation || 
+                           'chicken breast';
+        const exactName = dialogData?.diet?.exactLocation || displayName;
 
         patchState(store, {
-          foodName: estimatedName,
+          foodName: displayName,
           foodData: null,
           isDetailed: false,
           isLoading: true,

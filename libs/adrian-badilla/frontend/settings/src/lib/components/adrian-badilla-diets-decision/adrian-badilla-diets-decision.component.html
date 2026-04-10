@@ -1,0 +1,96 @@
+<div class="meal-card">
+
+  <!-- HEADER -->
+  <div class="meal-header">
+    <div>
+      <div class="meal-title">
+        {{ meal.baseName }}@if (meal.selectedFoodName) {
+        <span class="meal-title-selection">: {{ meal.selectedFoodName }}</span>
+        }
+      </div>
+      <div class="meal-time">{{ meal.time }}</div>
+    </div>
+
+    <div class="meal-macros">
+      <span>🥩 {{ meal.macros.protein }}g</span>
+      <span>🍞 {{ meal.macros.carbs }}g</span>
+      <span>🥑 {{ meal.macros.fats }}g</span>
+    </div>
+  </div>
+
+  <!-- RECOMENDACIÓN -->
+  <div class="meal-recommendation">
+    ⭐ Recomendado: {{ recommended() }}
+  </div>
+
+  <!-- DECISIONES -->
+  <div class="decision-buttons">
+
+    <button
+      type="button"
+      (click)="selectDecision('light')"
+      class="neon-btn light"
+      [class.active]="meal.decision === 'light' || isDecisionOpen('light')"
+    >
+      🥗 Ligero
+    </button>
+
+    <button
+      type="button"
+      (click)="selectDecision('balanced')"
+      class="neon-btn balanced"
+      [class.active]="meal.decision === 'balanced' || isDecisionOpen('balanced')"
+    >
+      ⚖️ Balanceado
+    </button>
+
+    <button
+      type="button"
+      (click)="selectDecision('high-protein')"
+      class="neon-btn protein"
+      [class.active]="meal.decision === 'high-protein' || isDecisionOpen('high-protein')"
+    >
+      🥩 Proteico
+    </button>
+
+    <button
+      type="button"
+      (click)="openMealDialog()"
+      class="neon-btn meal-dialog-btn"
+      aria-label="Ver detalles nutricionales"
+      title="Ver detalles nutricionales"
+    >
+      <i class="pi pi-search"></i>
+    </button>
+
+  </div>
+
+  @if (openedDecision(); as currentDecision) {
+  <div
+    class="meal-options-menu"
+    [ngClass]="{
+      'meal-options-menu--light': currentDecision === 'light',
+      'meal-options-menu--balanced': currentDecision === 'balanced',
+      'meal-options-menu--protein': currentDecision === 'high-protein'
+    }"
+  >
+    <div class="meal-options-title">Selecciona una comida</div>
+
+    <div class="meal-options-list">
+      @for (option of getOptionsForDecision(currentDecision); track option.name) {
+      <button
+        type="button"
+        class="meal-option-btn"
+        (click)="selectMealOption(option)"
+      >
+        <span class="meal-option-name">{{ option.name }}</span>
+        <span class="meal-option-macros">
+          🥩 {{ option.macros.protein }}g · 🍞 {{ option.macros.carbs }}g · 🥑 {{ option.macros.fats }}g
+        </span>
+      </button>
+      }
+    </div>
+  </div>
+  }
+
+</div>

@@ -17,6 +17,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AdrianBadillaDietsDetailsComponent } from '../adrian-badilla-diets-details/adrian-badilla-diets-details.component';
 import { settingsStoreDev } from '../../store/settings.store';
 import { FoodDescriptionDialogComponent } from '../../dialog/food-description-dialog/food-description-dialog.component';
+import { MealTranslationService } from '../../services/meal-translation.service';
 import {
   getMockRouteSupercenters,
   MOCK_ROUTES,
@@ -27,8 +28,137 @@ import type {
   SupercenterDoc,
   WithId,
 } from '../../types/diets.types';
+import type {
+  DietMeal,
+  MealDecision,
+  MealOption,
+} from '../../types/diet-decision.types';
 import { NgClass, CommonModule } from '@angular/common';
+import { AdrianBadillaDietsDecisionComponent } from '../adrian-badilla-diets-decision/adrian-badilla-diets-decision.component';
 type MealStatus = 'pending' | 'completed' | 'skipped';
+
+type MealCategory =
+  | 'breakfast'
+  | 'morning-snack'
+  | 'lunch'
+  | 'afternoon-snack'
+  | 'dinner'
+  | 'night-snack';
+
+const mealOption = (
+  name: string,
+  protein: number,
+  carbs: number,
+  fats: number,
+): MealOption => ({
+  name,
+  macros: { protein, carbs, fats },
+});
+
+const MEAL_OPTIONS_BY_CATEGORY: Record<MealCategory, Record<MealDecision, MealOption[]>> = {
+  breakfast: {
+    light: [
+      mealOption('Yogurt griego con fresas', 18, 14, 6),
+      mealOption('Batido verde con proteina', 22, 12, 5),
+      mealOption('Claras con espinaca', 20, 8, 4),
+    ],
+    balanced: [
+      mealOption('Avena con banano y nueces', 20, 30, 10),
+      mealOption('Tostadas integrales con huevo', 24, 28, 11),
+      mealOption('Pancakes de avena', 21, 32, 9),
+    ],
+    'high-protein': [
+      mealOption('Omelette de pavo y queso', 32, 10, 14),
+      mealOption('Bowl de yogurt con whey', 35, 18, 8),
+      mealOption('Huevos revueltos con pollo', 34, 9, 12),
+    ],
+  },
+  'morning-snack': {
+    light: [
+      mealOption('Pepino con hummus', 8, 12, 5),
+      mealOption('Fresas con yogurt light', 10, 14, 4),
+      mealOption('Manzana con canela', 4, 18, 3),
+    ],
+    balanced: [
+      mealOption('Yogurt con granola', 15, 24, 8),
+      mealOption('Banano con mantequilla de mani', 12, 22, 9),
+      mealOption('Sandwich mini de pavo', 16, 20, 7),
+    ],
+    'high-protein': [
+      mealOption('Shake de proteina', 28, 10, 5),
+      mealOption('Rollitos de pavo y queso', 24, 6, 8),
+      mealOption('Cottage con almendras', 26, 9, 10),
+    ],
+  },
+  lunch: {
+    light: [
+      mealOption('Ensalada de atun', 24, 16, 9),
+      mealOption('Pollo con vegetales salteados', 27, 18, 8),
+      mealOption('Wrap de lechuga con pavo', 25, 14, 7),
+    ],
+    balanced: [
+      mealOption('Pollo con arroz integral', 30, 34, 11),
+      mealOption('Carne magra con pure', 29, 32, 12),
+      mealOption('Salmon con quinoa', 28, 30, 14),
+    ],
+    'high-protein': [
+      mealOption('Pechuga con camote y broccoli', 38, 24, 10),
+      mealOption('Bowl de res con arroz', 40, 22, 12),
+      mealOption('Tilapia con lentejas', 36, 20, 9),
+    ],
+  },
+  'afternoon-snack': {
+    light: [
+      mealOption('Gelatina light con yogurt', 12, 10, 3),
+      mealOption('Palitos de apio con dip', 9, 11, 4),
+      mealOption('Kiwi con semillas', 7, 13, 5),
+    ],
+    balanced: [
+      mealOption('Tostada integral con aguacate', 11, 20, 9),
+      mealOption('Yogurt con fruta', 14, 22, 6),
+      mealOption('Queso cottage con galletas de arroz', 16, 19, 5),
+    ],
+    'high-protein': [
+      mealOption('Batido de proteina con cacao', 30, 12, 6),
+      mealOption('Huevos duros con pavo', 26, 4, 9),
+      mealOption('Yogurt griego con whey', 32, 11, 4),
+    ],
+  },
+  dinner: {
+    light: [
+      mealOption('Crema de vegetales con pollo', 20, 14, 7),
+      mealOption('Pescado blanco con ensalada', 24, 12, 8),
+      mealOption('Tortilla de claras con hongos', 22, 10, 6),
+    ],
+    balanced: [
+      mealOption('Pollo con quinoa y vegetales', 28, 26, 10),
+      mealOption('Tacos integrales de res', 27, 28, 11),
+      mealOption('Pasta integral con atun', 25, 30, 9),
+    ],
+    'high-protein': [
+      mealOption('Salmon con espinaca', 34, 12, 15),
+      mealOption('Pollo grillado con huevo', 37, 10, 12),
+      mealOption('Carne magra con esparragos', 36, 11, 13),
+    ],
+  },
+  'night-snack': {
+    light: [
+      mealOption('Leche de almendra con chia', 8, 10, 4),
+      mealOption('Infusion con yogurt light', 10, 9, 3),
+      mealOption('Gelatina zero con queso cottage', 12, 8, 2),
+    ],
+    balanced: [
+      mealOption('Yogurt con avena', 14, 18, 5),
+      mealOption('Fruta con nueces', 9, 20, 8),
+      mealOption('Tostada integral con ricotta', 13, 16, 6),
+    ],
+    'high-protein': [
+      mealOption('Caseina con agua', 27, 5, 2),
+      mealOption('Yogurt griego con mani', 24, 8, 7),
+      mealOption('Queso cottage proteico', 26, 6, 4),
+    ],
+  },
+};
 
 interface Meal {
   name: string;
@@ -42,6 +172,7 @@ interface Meal {
   styleUrls: ['./adrian-badilla-diets.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    AdrianBadillaDietsDecisionComponent,
     ButtonModule,
     PrimeTimeline,
     InputIconModule,
@@ -56,7 +187,8 @@ interface Meal {
 ],
 })
 export class AdrianBadillaDietsComponent {
-  private cdr = inject(ChangeDetectorRef);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly mealTranslationService = inject(MealTranslationService);
   settingsStoreDev = inject(settingsStoreDev)
 
   // 🔥 MOCK STORE
@@ -198,8 +330,18 @@ export class AdrianBadillaDietsComponent {
   }
 
   openDietDialog(diet: RouteSupercenterItem): void {
+    // Usar el nombre en inglés si fue seleccionado, de lo contrario usar el nombre original
+    const foodNameForApi = diet.selectedFoodNameInEnglish || 
+                          this.mealTranslationService.translateMealToEnglish(diet.name) ||
+                          diet.name;
+    
+    // Usar el nombre en español para mostrar en el título del dialog
+    const foodDisplayName = diet.selectedFoodDisplayName || diet.selectedFoodName || diet.name;
+    
     const fullDiet = {
       ...diet,
+      name: foodNameForApi,
+      displayName: foodDisplayName,
       createdDate: new Date(),
       lastModifiedDate: new Date(),
     } as WithId<SupercenterDoc>;
@@ -207,6 +349,14 @@ export class AdrianBadillaDietsComponent {
       FoodDescriptionDialogComponent,
       fullDiet,
     );
+  }
+
+  openDietDialogFromChild(mealId: string): void {
+    const meal = this.selectedRouteSupercenters().find((item: any) => item.id === mealId);
+
+    if (meal) {
+      this.openDietDialog(meal);
+    }
   }
 
   openDeleteRouteDialog(route: RouteNavItem): void {
@@ -264,23 +414,13 @@ export class AdrianBadillaDietsComponent {
       
       if (!connector) return;
 
-      const current = list[i];
-      
       // Remover todas las clases
-      connector.classList.remove('completed-line', 'skipped-line', 'pending-line');
+      connector.classList.remove('completed-line', 'skipped-line', 'pending-line', 'balanced-line');
 
-      // La lógica correcta: colorea el conector basado en el estado ACTUAL del marker
-      if (current.status === 'completed') {
-        connector.classList.add('completed-line');
-      } else if (current.status === 'skipped') {
-        connector.classList.add('skipped-line');
-      } else {
-        // Si está pending, pero hay un skipped ANTES, sigue siendo pending (gris)
-        const hasErrorBefore = list
-          .slice(0, i)
-          .some((item: any) => item.status === 'skipped');
-        
-        connector.classList.add(hasErrorBefore ? 'pending-line' : 'pending-line');
+      // Aplicar clase basada en getConnectorClass
+      const connectorClass = this.getConnectorClass(i);
+      if (connectorClass) {
+        connector.classList.add(connectorClass);
       }
     });
   }
@@ -292,7 +432,7 @@ getConnectorClass(index: number): string {
 
   const current = list[index];
 
-  // si hay algún anterior skipped → todo lo siguiente gris
+  // si hay algún anterior skipped, el resto queda en gris
   const hasErrorBefore = list
     .slice(0, index)
     .some((i:any) => i.status === 'skipped');
@@ -301,6 +441,13 @@ getConnectorClass(index: number): string {
 
   if (current.status === 'completed') return 'completed-line';
   if (current.status === 'skipped') return 'skipped-line';
+
+  // Si tiene decision seleccionada (pendiente), colorear por tipo de decisión
+  if (current.status === 'pending' && current.decision) {
+    if (current.decision === 'light') return 'completed-line'; // Verde
+    if (current.decision === 'balanced') return 'balanced-line'; // Amarillo
+    if (current.decision === 'high-protein') return 'skipped-line'; // Rojo
+  }
 
   return 'pending-line';
 }
@@ -320,16 +467,27 @@ getConnectorClass(index: number): string {
     return '';
   }
 
-  getMarkerClasses(item: any, index: number): any {
-    return {
-      'completed': item.status === 'completed',
-      'skipped': item.status === 'skipped',
-      'pending': item.status === 'pending',
-      'next': this.isNext(index),
-      'pulse-completed': item.status === 'completed',
-      'pulse-skipped': item.status === 'skipped'
-    };
+getMarkerClasses(item: any, index: number): any {
+  const classes: any = {
+    completed: item.status === 'completed',
+    skipped: item.status === 'skipped',
+    pending: item.status === 'pending',
+    next: this.isNext(index),
+  };
+
+  // Agregar clase de color basada en decision si el item está pendiente
+  if (item.status === 'pending' && item.decision) {
+    if (item.decision === 'light') {
+      classes['decision-light'] = true;
+    } else if (item.decision === 'balanced') {
+      classes['decision-balanced'] = true;
+    } else if (item.decision === 'high-protein') {
+      classes['decision-protein'] = true;
+    }
   }
+
+  return classes;
+}
   scrollToIndex(index: number) {
   const elements = document.querySelectorAll('.timeline-marker');
   const el = elements[index] as HTMLElement;
@@ -355,6 +513,98 @@ getConnectorClass(index: number): string {
   const percent = (completedCount / list.length) * 100;
 
   return `${percent}%`;
+  }
+  
+  // FUNCIONES DEL ENGINE
+
+mapToMeal(supercenter: any): DietMeal {
+  const baseName = supercenter.baseName ?? supercenter.name;
+
+  return {
+    id: supercenter.id,
+    baseName,
+    name: supercenter.name,
+    time: '08:00',
+    status: supercenter.status ?? 'pending',
+    decision: supercenter.decision ?? null,
+    selectedFoodName: supercenter.selectedFoodName ?? null,
+    decisionOptions: this.getDecisionOptionsForMeal(baseName),
+    macros: supercenter.macros ?? {
+      protein: 20,
+      carbs: 30,
+      fats: 10
+    }
+  };
+}
+  
+  updateStatusFromChild(event: any) {
+  this.updateStatus(
+    this.selectedRouteSupercenters().find((m:any) => m.id === event.id),
+    event.status
+    );
+      console.log('🔥 EVENTO RECIBIDO', event);
+}
+
+applyDecisionFromChild(event: {
+  id: string;
+  decision: MealDecision;
+  option: MealOption;
+  optionNameInSpanish: string;
+  optionNameInEnglish: string;
+}) {
+  const updated = this.selectedRouteSupercenters().map((m: any) => {
+    if (m.id === event.id) {
+      const baseName = m.baseName ?? m.name;
+
+      return {
+        ...m,
+        baseName,
+        decision: event.decision,
+        name: baseName,
+        selectedFoodName: event.option.name,
+        selectedFoodNameInEnglish: event.optionNameInEnglish,
+        selectedFoodDisplayName: event.optionNameInSpanish,
+        exactLocation: event.option.name,
+        macros: event.option.macros,
+      };
+    }
+    return m;
+  });
+
+  this.selectedRouteSupercenters.set(updated);
+  this.cdr.detectChanges();
+
+  // PrimeNG reconstruye eventos del timeline al actualizar decisiones;
+  // volvemos a aplicar clases del conector para evitar huecos visuales.
+  requestAnimationFrame(() => {
+    this.updateConnectorClasses();
+  });
+}
+
+getDecisionOptionsForMeal(baseName: string): Record<MealDecision, MealOption[]> {
+  const normalized = baseName.toLowerCase();
+
+  if (normalized.includes('desayuno')) {
+    return MEAL_OPTIONS_BY_CATEGORY.breakfast;
+  }
+
+  if (normalized.includes('manana')) {
+    return MEAL_OPTIONS_BY_CATEGORY['morning-snack'];
+  }
+
+  if (normalized.includes('almuerzo')) {
+    return MEAL_OPTIONS_BY_CATEGORY.lunch;
+  }
+
+  if (normalized.includes('tarde')) {
+    return MEAL_OPTIONS_BY_CATEGORY['afternoon-snack'];
+  }
+
+  if (normalized.includes('cena')) {
+    return MEAL_OPTIONS_BY_CATEGORY.dinner;
+  }
+
+  return MEAL_OPTIONS_BY_CATEGORY['night-snack'];
 }
 
 }

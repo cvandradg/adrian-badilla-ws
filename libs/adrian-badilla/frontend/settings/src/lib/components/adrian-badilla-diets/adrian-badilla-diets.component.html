@@ -210,10 +210,11 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
       <div>
         @if (routeSupercenters.length) {
         <div class="card mt-4">
-          <p-timeline
-            [value]="routeSupercenters"
-            class="align-items-start route-timeline"
-          >
+
+<p-timeline
+  [value]="routeSupercenters"
+  class="align-items-start route-timeline"
+  >
 <ng-template #marker let-supercenter let-i="index">
   <div class="marker-with-actions">
     <button
@@ -247,33 +248,17 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
   </div>
 </ng-template>
 
-            <ng-template #content let-supercenter>
-              <button
-                type="button"
-                class="route-supercenter-card"
-                (click)="openDietDialog(supercenter)"
-                [attr.aria-label]="'Editar supercenter ' + supercenter.name"
-              >
-                <div class="supercenter-row">
-                  <span class="supercenter-name"
-                    > {{ supercenter.name }}</span
-                  >
-                  @if (supercenter.lastModifiedLabel) {
-                  <span class="ultima-edicion"
-                    >&middot; {{ supercenter.lastModifiedLabel }}</span
-                  >
-                  }
-                </div>
-                @if (supercenter.exactLocation || supercenter.estimateLocation)
-                {
-                <div class="route-supercenter-location">
-                  {{
-                    supercenter.exactLocation || supercenter.estimateLocation
-                  }}
-                </div>
-                }
-              </button>
-            </ng-template>
+<ng-template #content let-supercenter>
+
+  <!-- 🔥 TU PANEL NUEVO -->
+  <lib-adrian-badilla-diets-decision
+    [meal]="mapToMeal(supercenter)"
+    (statusChange)="updateStatusFromChild($event)"
+    (decisionChange)="applyDecisionFromChild($event)"
+    (mealDialogRequested)="openDietDialogFromChild($event)"
+  />
+
+</ng-template>
           </p-timeline>
         </div>
         }

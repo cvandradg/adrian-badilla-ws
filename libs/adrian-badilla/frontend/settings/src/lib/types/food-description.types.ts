@@ -1,6 +1,7 @@
 export type FoodDialogDiet = {
   id: string;
   name: string;
+  displayName?: string;
   estimateLocation: string;
   exactLocation?: string;
 };

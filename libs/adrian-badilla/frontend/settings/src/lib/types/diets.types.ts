@@ -30,4 +30,14 @@ export type RouteSupercenterItem = Pick<
   | 'status'
 > & {
   lastModifiedLabel: string | null;
+  baseName?: string;
+  selectedFoodName?: string | null;
+  selectedFoodNameInEnglish?: string | null;
+  selectedFoodDisplayName?: string | null;
+  decision?: 'light' | 'balanced' | 'high-protein' | null;
+  macros?: {
+    protein: number;
+    carbs: number;
+    fats: number;
+  };
 };

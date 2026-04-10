@@ -2,13 +2,15 @@ import { signalStore, withFeature } from '@ngrx/signals';
 import { withDiets } from './with-diets.feature';
 import { withFirestoreCrud } from '../../../../shared/src/lib/stores/firestoreStore/utils/with-firestore-crud.feature';
 import { withFoodDescription } from './with-food-description.feature';
+import { withDietDecisionEngine } from './with-diet-decision-engine.feature';
 
 export const settingsStoreDev = signalStore(
   {providedIn: 'root'},
   // withDevtools('settingsStore'),
-   withFirestoreCrud(),
-   withFeature(() => withFoodDescription()),
-   withFeature((store) => withDiets(store)),
+    withFirestoreCrud(),
+    withFeature(() => withFoodDescription()),
+    withFeature((store) => withDiets(store)),
+    withFeature(() => withDietDecisionEngine()),
   // withFeature((store) => withRoutes(store)),
   // withFeature((store) => withProducts(store)),
 );
