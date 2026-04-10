@@ -23,6 +23,7 @@ const ROUTE_1_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Oat',
     lastModifiedLabel: '6/4/26, 7:00 a. m.',
     imgPrimeng: 'pi pi-sun',
+    status: 'pending',
   },
   {
     id: '2',
@@ -33,6 +34,8 @@ const ROUTE_1_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Natural Yogurt',
     lastModifiedLabel: '6/4/26, 10:00 a. m.',
     imgPrimeng: 'pi pi-heart',
+    status: 'pending',
+
   },
   {
     id: '3',
@@ -43,6 +46,8 @@ const ROUTE_1_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Chicken Breast',
     lastModifiedLabel: '6/4/26, 1:00 p. m.',
     imgPrimeng: 'pi pi-briefcase',
+    status: 'pending',
+
   },
   {
     id: '4',
@@ -53,6 +58,8 @@ const ROUTE_1_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'whole wheat toast with peanut butter',
     lastModifiedLabel: '6/4/26, 4:00 p. m.',
     imgPrimeng: 'pi pi-sparkles',
+    status: 'pending',
+
   },
   {
     id: '5',
@@ -63,6 +70,8 @@ const ROUTE_1_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Tuna',
     lastModifiedLabel: '6/4/26, 7:00 p. m.',
     imgPrimeng: 'pi pi-moon',
+    status: 'pending',
+
   },
   {
     id: '6',
@@ -73,6 +82,8 @@ const ROUTE_1_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Dried Fruits',
     lastModifiedLabel: '6/4/26, 9:00 p. m.',
     imgPrimeng: 'pi pi-clock',
+    status: 'pending',
+
   },
 ];
 
@@ -86,6 +97,8 @@ const ROUTE_2_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Scrambled eggs with whole wheat tortilla',
     lastModifiedLabel: '7/4/26, 7:00 a. m.',
     imgPrimeng: 'pi pi-sun',
+    status: 'pending',
+
   },
   {
     id: '202',
@@ -96,6 +109,8 @@ const ROUTE_2_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Green apple with peanut butter',
     lastModifiedLabel: '7/4/26, 10:00 a. m.',
     imgPrimeng: 'pi pi-heart',
+    status: 'pending',
+
   },
   {
     id: '203',
@@ -106,6 +121,8 @@ const ROUTE_2_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Grilled salmon with sweet potato mash',
     lastModifiedLabel: '7/4/26, 1:00 p. m.',
     imgPrimeng: 'pi pi-briefcase',
+    status: 'pending',
+
   },
   {
     id: '204',
@@ -116,6 +133,8 @@ const ROUTE_2_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Protein shake with banana',
     lastModifiedLabel: '7/4/26, 4:00 p. m.',
     imgPrimeng: 'pi pi-sparkles',
+    status: 'pending',
+
   },
   {
     id: '205',
@@ -126,6 +145,8 @@ const ROUTE_2_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Chicken breast with steamed vegetables',
     lastModifiedLabel: '7/4/26, 7:00 p. m.',
     imgPrimeng: 'pi pi-moon',
+    status: 'pending',
+
   },
   {
     id: '206',
@@ -136,6 +157,8 @@ const ROUTE_2_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Greek yogurt with cacao nibs',
     lastModifiedLabel: '7/4/26, 9:00 p. m.',
     imgPrimeng: 'pi pi-clock',
+    status: 'pending',
+
   },
 ];
 
@@ -149,6 +172,8 @@ const ROUTE_4_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Overnight oats with chia and strawberries',
     lastModifiedLabel: '9/4/26, 7:00 a. m.',
     imgPrimeng: 'pi pi-sun',
+    status: 'pending',
+
   },
   {
     id: '402',
@@ -159,6 +184,8 @@ const ROUTE_4_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Carrot sticks with hummus',
     lastModifiedLabel: '9/4/26, 10:00 a. m.',
     imgPrimeng: 'pi pi-heart',
+    status: 'pending',
+
   },
   {
     id: '403',
@@ -169,6 +196,8 @@ const ROUTE_4_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Brown rice with tuna and avocado',
     lastModifiedLabel: '9/4/26, 1:00 p. m.',
     imgPrimeng: 'pi pi-briefcase',
+    status: 'pending',
+
   },
   {
     id: '404',
@@ -179,6 +208,8 @@ const ROUTE_4_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Rice cakes with cottage cheese',
     lastModifiedLabel: '9/4/26, 4:00 p. m.',
     imgPrimeng: 'pi pi-sparkles',
+    status: 'pending',
+
   },
   {
     id: '405',
@@ -189,6 +220,8 @@ const ROUTE_4_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Lentil soup with boiled egg',
     lastModifiedLabel: '9/4/26, 7:00 p. m.',
     imgPrimeng: 'pi pi-moon',
+    status: 'pending',
+
   },
   {
     id: '406',
@@ -199,6 +232,8 @@ const ROUTE_4_SUPERCENTERS: RouteSupercenterItem[] = [
     exactLocation: 'Kiwi with almonds',
     lastModifiedLabel: '9/4/26, 9:00 p. m.',
     imgPrimeng: 'pi pi-clock',
+    status: 'pending',
+
   },
 ];
 

@@ -19,12 +19,10 @@ export const adrianBadillaDashboardRoutes: Route[] = [
       {
         path: 'dietas',
         title: 'Dietas',
-        component: DashboardSectionPlaceholderComponent,
-        data: {
-          title: 'Dietas',
-          description:
-            'Espacio reservado para planes de alimentación, seguimiento nutricional y organización de dietas.',
-        },
+        loadChildren: () =>
+          import('../../../settings/src/lib/lib.routes').then(
+            (module) => module.settingsRoutes
+          ),
       },
       {
         path: 'rutinas',

@@ -1,4 +1,5 @@
 
+
 @let routes = filteredRoutes(); @let routeSupercenters =
 selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
 (routes.length) {
@@ -213,16 +214,38 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
             [value]="routeSupercenters"
             class="align-items-start route-timeline"
           >
-            <ng-template #marker let-supercenter>
-              <button
-                type="button"
-                class="timeline-marker timeline-marker-button"
-                (click)="openDietDialog(supercenter)"
-                [attr.aria-label]="'Abrir supercenter ' + supercenter.name"
-              >
-                <i [class]="supercenter.imgPrimeng"></i>
-              </button>
-            </ng-template>
+<ng-template #marker let-supercenter let-i="index">
+  <div class="marker-with-actions">
+    <button
+      type="button"
+      class="timeline-marker timeline-marker-button"
+      [ngClass]="getMarkerClasses(supercenter, i)"
+      (click)="openDietDialog(supercenter)"
+    >
+      <i [class]="supercenter.imgPrimeng"></i>
+    </button>
+    <div class="marker-actions">
+      <button 
+        type="button" 
+        class="action-btn action-btn--complete" 
+        (click)="updateStatus(supercenter, 'completed')"
+        pRipple
+        title="Completado"
+      >
+        <i class="pi pi-check"></i>
+      </button>
+      <button 
+        type="button" 
+        class="action-btn action-btn--skip" 
+        (click)="updateStatus(supercenter, 'skipped')"
+        pRipple
+        title="Saltado"
+      >
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+  </div>
+</ng-template>
 
             <ng-template #content let-supercenter>
               <button

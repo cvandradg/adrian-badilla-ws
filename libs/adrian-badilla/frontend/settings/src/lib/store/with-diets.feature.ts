@@ -12,6 +12,10 @@ import {
 import {
   withDietsDialogs,
 } from './with-diets-dialogs.feature';
+import {
+  buildDietSubmitCommand,
+} from './diets-domain.utils';
+import { withCustomCallState } from '../../../../auth/src/lib/data-access/stores/with-custom-call-state.feature';
 
 type SettingsStoreDeps = DietsCrudParentDeps;
 
@@ -24,39 +28,20 @@ export type DietDraft = Omit<EditableDiet, 'id'> & {
   id?: string | null;
 };
 
-function buildDietSubmitCommand(
-  draft: DietDraft,
-): { kind: 'save'; payload: EditableDiet } | { kind: 'create'; payload: Omit<DietDraft, 'id'> } {
-  const id = draft.id?.trim();
+function withDietsCallState<_>() {
+  const unusedType: _ | undefined = undefined;
+  void unusedType;
 
-  if (id) {
-    return {
-      kind: 'save',
-      payload: {
-        id,
-        name: draft.name,
-        route: draft.route,
-        province: draft.province,
-        estimateLocation: draft.estimateLocation,
-        exactLocation: draft.exactLocation,
-      },
-    };
-  }
-
-  return {
-    kind: 'create',
-    payload: {
-      name: draft.name,
-      route: draft.route,
-      province: draft.province,
-      estimateLocation: draft.estimateLocation,
-      exactLocation: draft.exactLocation,
-    },
-  };
+  return signalStoreFeature(
+    withCustomCallState('createDiet'),
+    withCustomCallState('saveDiet'),
+    withCustomCallState('removeDiet'),
+  );
 }
 
 export function withDiets<T extends SettingsStoreDeps>(settingsStore: T) {
   return signalStoreFeature(
+    withDietsCallState(),
     withFeature((innerStore) =>
       withDietsCrud(innerStore, settingsStore),
     ),
@@ -79,7 +64,6 @@ export function withDiets<T extends SettingsStoreDeps>(settingsStore: T) {
         if (!diet?.id) {
           return;
         }
-
         innerStore.openDialogToDeleteDiet(component, {
           ...diet,
         } as WithDietId<DietDoc>);

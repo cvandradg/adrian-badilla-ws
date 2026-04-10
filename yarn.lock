@@ -34,7 +34,7 @@ __metadata:
     "@fortawesome/free-brands-svg-icons": "npm:^7.1.0"
     "@fortawesome/free-solid-svg-icons": "npm:^7.1.0"
     "@fortawesome/pro-light-svg-icons": "npm:^7.1.0"
-    "@fortawesome/pro-regular-svg-icons": "npm:^7.1.0"
+    "@fortawesome/pro-regular-svg-icons": "npm:^7.2.0"
     "@fortawesome/pro-solid-svg-icons": "npm:^7.1.0"
     "@fortawesome/pro-thin-svg-icons": "npm:^7.1.0"
     "@fortawesome/sharp-solid-svg-icons": "npm:^7.1.0"
@@ -49,6 +49,7 @@ __metadata:
     "@nx/js": "npm:22.6.4"
     "@nx/web": "npm:22.6.4"
     "@nx/workspace": "npm:22.6.4"
+    "@primeuix/themes": "npm:^2.0.3"
     "@schematics/angular": "npm:21.2.7"
     "@swc-node/register": "npm:1.11.1"
     "@swc/core": "npm:1.15.5"
@@ -71,6 +72,7 @@ __metadata:
     node-fetch: "npm:^3.3.2"
     nx: "npm:22.6.4"
     prettier: "npm:^2.6.2"
+    primeicons: "npm:^7.0.0"
     primeng: "npm:^21.1.5"
     punycode: "npm:^2.3.1"
     rxjs: "npm:~7.8.0"
@@ -4313,6 +4315,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fortawesome/fontawesome-common-types@npm:7.2.0":
+  version: 7.2.0
+  resolution: "@fortawesome/fontawesome-common-types@npm:7.2.0"
+  checksum: 10c0/991ca1390c078d973e92034cf7dbae2fc3aa50cd7ff322b7b23e4c54ec84dae12979bada9a782bdaea11a1577ae74d802aa651c590f41d2e1b1126c17e6cd413
+  languageName: node
+  linkType: hard
+
 "@fortawesome/fontawesome-svg-core@npm:^7.0.0, @fortawesome/fontawesome-svg-core@npm:^7.0.1":
   version: 7.1.0
   resolution: "@fortawesome/fontawesome-svg-core@npm:7.1.0"
@@ -4349,12 +4358,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/pro-regular-svg-icons@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "@fortawesome/pro-regular-svg-icons@npm:7.1.0"
+"@fortawesome/pro-regular-svg-icons@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "@fortawesome/pro-regular-svg-icons@npm:7.2.0"
   dependencies:
-    "@fortawesome/fontawesome-common-types": "npm:7.1.0"
-  checksum: 10c0/1707b75623e190c74e1c839168e058ce6f783c7b9419d6064ce8991e9016d162c5076a462edb985b52e5b5adbe9122e7e486c8d16aeeef8d8fbca1c17db3d51d
+    "@fortawesome/fontawesome-common-types": "npm:7.2.0"
+  checksum: 10c0/eb5fa5669412f6ea635539ae5e64113485f7a7756022288f9f063b6f2604f91c453307f24fe14616bc32a4063a9f668eef37aff0933c28199f7655e3704a21be
   languageName: node
   linkType: hard
 
@@ -7425,6 +7434,15 @@ __metadata:
   dependencies:
     "@primeuix/styled": "npm:^0.7.4"
   checksum: 10c0/d1b0f4b9cb9bad3099dac57efc5dbf2648712ddf914801a43cc21d1bbf4512aec3703e2fb2430fabba70684f73e797e9ff68fe54f60d7b7c2e5a79a1a9a76b7a
+  languageName: node
+  linkType: hard
+
+"@primeuix/themes@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "@primeuix/themes@npm:2.0.3"
+  dependencies:
+    "@primeuix/styled": "npm:^0.7.4"
+  checksum: 10c0/4e51aa7ce0a73946b5605c485c281e3e5d82937efa5da1881e31aaae810ccbef34e29b888d24823428ad3303fa2825c99a88dfcb53718e15bfee18b63a12a53d
   languageName: node
   linkType: hard
 
@@ -20139,6 +20157,13 @@ __metadata:
     ansi-styles: "npm:^5.2.0"
     react-is: "npm:^18.3.1"
   checksum: 10c0/719b27d70cd8b01013485054c5d094e1fe85e093b09ee73553e3b19302da3cf54fbd6a7ea9577d6471aeff8d372200e56979ffc4c831e2133520bd18060895fb
+  languageName: node
+  linkType: hard
+
+"primeicons@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "primeicons@npm:7.0.0"
+  checksum: 10c0/a7f6344d6db49e785d2040b35f8cae761d15bb8f8ee70ade8981d45438245414e913fe7235921122aade2b0a11a032c98b44dc527be2da11aa791ff145099c06
   languageName: node
   linkType: hard
 

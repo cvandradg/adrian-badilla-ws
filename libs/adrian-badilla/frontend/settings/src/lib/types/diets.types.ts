@@ -9,6 +9,7 @@ export type SupercenterDoc = {
   createdDate: unknown;
   lastModifiedDate: unknown;
   imgPrimeng: string;
+  status: 'pending' | 'completed' | 'skipped';
 };
 
 export type RouteNavItem = {
@@ -26,6 +27,7 @@ export type RouteSupercenterItem = Pick<
   | 'estimateLocation'
   | 'exactLocation'
   | 'imgPrimeng'
+  | 'status'
 > & {
   lastModifiedLabel: string | null;
 };
