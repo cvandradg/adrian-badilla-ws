@@ -1,4 +1,4 @@
-@use 'utilities/layout/helpers' as *;
+@use 'settings/tokens' as tokens;
 
 .container {
   position: relative;
@@ -13,7 +13,7 @@
     margin: 0.5rem 0;
     font-size: 1.1rem;
     font-weight: 400;
-    font-family: var(--font-roboto);
+    font-family: tokens.$font-roboto;
   }
 
   .margin {

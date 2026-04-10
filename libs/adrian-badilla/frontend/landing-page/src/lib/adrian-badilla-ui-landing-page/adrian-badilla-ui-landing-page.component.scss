@@ -1,6 +1,6 @@
-@use 'utilities/layout/helpers' as *;
+@use 'mixins' as mixins;
 
 .page {
-  @include flex-column;
+  @include mixins.flex-column;
   min-height: 100vh;
 }

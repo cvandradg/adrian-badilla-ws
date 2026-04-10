@@ -1,0 +1,94 @@
+@use '../settings/tokens' as tokens;
+@use '../mixins/primitives' as primitives;
+
+// Shared section and content layout patterns.
+// These mixins define the common page skeleton used by landing-style sections.
+
+@mixin section-base(
+  $padding-block: tokens.$section-padding-block,
+  $padding-inline: tokens.$section-padding-inline,
+  $margin-top: tokens.$section-margin-top,
+  $radius: tokens.$section-radius,
+  $min-height: null
+) {
+  // Centers a bounded content block and keeps spacing decisions token-driven.
+  width: 100%;
+  max-width: tokens.$section-max-width;
+  margin: $margin-top auto 0;
+  padding: $padding-block $padding-inline;
+  border-radius: $radius;
+  position: relative;
+
+  @if $min-height != null {
+    min-height: $min-height;
+  }
+}
+
+@mixin section-full(
+  $bg: tokens.$color-neutral-900,
+  $font: tokens.$font-primary,
+  $padding: tokens.$section-full-padding,
+  $min-height: 100vh
+) {
+  // Creates the outer full-screen section shell; combine with `section-base` or `section-content` inside it.
+  @include primitives.flex-center(column, center, flex-start);
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  min-height: $min-height;
+  background-color: $bg;
+  font-family: $font;
+  padding: $padding;
+  padding-block: 0;
+}
+
+@mixin video-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+
+  video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.3;
+  }
+}
+
+@mixin section-layout(
+  $align: center,
+  $padding-block: tokens.$section-padding-block,
+  $margin-top: tokens.$section-spacing-margin-top
+) {
+  display: flex;
+  flex-direction: column;
+  align-items: $align;
+  justify-content: center;
+  text-align: center;
+  padding-block: $padding-block;
+  margin-top: $margin-top;
+}
+
+@mixin section-header(
+  $align: center,
+  $padding-bottom: 3rem,
+  $padding-block: tokens.$section-padding-block,
+  $margin-top: tokens.$section-spacing-margin-top
+) {
+  @include section-layout($align, $padding-block, $margin-top);
+  padding-bottom: $padding-bottom;
+}
+
+@mixin section-content(
+  $color: tokens.$color-neutral-100,
+  $padding: tokens.$section-content-padding
+) {
+  // Lifts content above decorative backgrounds such as videos or overlays.
+  position: relative;
+  z-index: 2;
+  color: $color;
+  padding: $padding;
+}

@@ -1,15 +1,25 @@
-@use 'utilities/layout/structure' as *;
-@use 'utilities/components/visual' as *;
+@use 'mixins' as mixins;
 
 .login-button {
-  @include flex-center(row, space-between, center);
+  @include mixins.flex-center(row, space-between, center);
+  width: 100%;
+  padding-inline: var(--primary-button-inline-padding, 3.3rem);
+
+  p {
+    margin: 0;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: var(--primary-button-text-color, inherit);
+    font-weight: var(--primary-button-font-weight, inherit);
+    line-height: var(--primary-button-line-height, inherit);
+  }
 }
 
 button {
-  height: 4rem;
-  background: transparent;
+  width: 100%;
+  @include mixins.control-button-shell;
 }
 
 .horizontal-animation {
-  @include horizontal-animation;
+  @include mixins.horizontal-animation;
 }

@@ -1,18 +1,35 @@
-import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { SideMenuComponent } from '../side-menu/side-menu.component';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, startWith } from 'rxjs';
 import { DescriptionSidePanelComponent } from '../description-side-panel/description-side-panel.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { BreakpointObserver } from '@angular/cdk/layout';
+import { SideMenuComponent } from '../side-menu/side-menu.component';
 
+const DASHBOARD_MOBILE_WIDTH = 'var(--dashboard-panel-mobile-inline-size)';
+const DASHBOARD_EXPANDED_WIDTH = 'var(--dashboard-panel-inline-size)';
+const DASHBOARD_COLLAPSED_WIDTH =
+  'var(--dashboard-panel-collapsed-inline-size)';
+const DASHBOARD_SIDENAV_GAP = 'var(--dashboard-panel-gap)';
 
 @Component({
   selector: 'adrian-badilla-dashboard',
   standalone: true,
-  imports: [SideMenuComponent,RouterModule, MatSidenavModule,DescriptionSidePanelComponent,FontAwesomeModule],
+  imports: [
+    SideMenuComponent,
+    RouterModule,
+    MatSidenavModule,
+    DescriptionSidePanelComponent,
+    FontAwesomeModule,
+  ],
   templateUrl: './adrian-badilla-ui-dashboard.component.html',
   styleUrl: './adrian-badilla-ui-dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,41 +37,47 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 export class DashboardComponent {
   readonly #router = inject(Router);
 
-
-    private readonly bpState = toSignal(
+  private readonly bpState = toSignal(
     inject(BreakpointObserver).observe('(max-width:1681px)'),
     {
       initialValue: { matches: false, breakpoints: {} },
-    },
+    }
   );
 
   readonly isNarrow = computed(() => this.bpState().matches);
   readonly collapsed = signal(false);
   readonly rightPinnedOpen = signal(true);
+  readonly isScraperRunning = signal(false);
 
-  readonly gap = computed(() => (this.isNarrow() ? '0' : '1.2rem'));
-
-    readonly leftWidth = computed(() =>
-    this.isNarrow() ? '260px' : this.collapsed() ? '6.062rem' : '14.625rem',
+  readonly gap = computed(() =>
+    this.isNarrow() ? '0' : DASHBOARD_SIDENAV_GAP
   );
 
-    readonly rightWidth = computed(() =>
-    this.isNarrow() ? '260px' : '14.625rem',
+  readonly leftWidth = computed(() =>
+    this.isNarrow()
+      ? DASHBOARD_MOBILE_WIDTH
+      : this.collapsed()
+      ? DASHBOARD_COLLAPSED_WIDTH
+      : DASHBOARD_EXPANDED_WIDTH
   );
 
-    readonly marginLeft = computed(() =>
-    this.isNarrow() ? '0' : `calc(${this.leftWidth()} + ${this.gap()})`,
+  readonly rightWidth = computed(() =>
+    this.isNarrow() ? DASHBOARD_MOBILE_WIDTH : DASHBOARD_EXPANDED_WIDTH
   );
 
-    readonly marginRight = computed(() =>
+  readonly marginLeft = computed(() =>
+    this.isNarrow() ? '0' : `calc(${this.leftWidth()} + ${this.gap()})`
+  );
+
+  readonly marginRight = computed(() =>
     this.isNarrow()
       ? '0'
       : this.rightPinnedOpen()
-        ? `calc(${this.rightWidth()} + ${this.gap()})`
-        : '0',
+      ? `calc(${this.rightWidth()} + ${this.gap()})`
+      : '0'
   );
 
-    onMenuClick(left: MatSidenav) {
+  onMenuClick(left: MatSidenav) {
     return this.isNarrow()
       ? left.toggle()
       : this.collapsed.update((isCollapsed) => !isCollapsed);
@@ -66,21 +89,20 @@ export class DashboardComponent {
       : this.rightPinnedOpen.update((isPinnedOpen) => !isPinnedOpen);
   }
 
-    private readonly navEnd = toSignal(
+  private readonly navEnd = toSignal(
     this.#router.events.pipe(
       filter((e): e is NavigationEnd => e instanceof NavigationEnd),
-      startWith(null),
+      startWith(null)
     ),
-    { initialValue: null },
+    { initialValue: null }
   );
 
   readonly headerTitle = computed(() => {
     this.navEnd();
 
-    let r = this.#router.routerState.snapshot.root;
-    while (r.firstChild) r = r.firstChild;
+    let routeSnapshot = this.#router.routerState.snapshot.root;
+    while (routeSnapshot.firstChild) routeSnapshot = routeSnapshot.firstChild;
 
-    return r.title ?? 'MoofyVIP';
+    return routeSnapshot.title ?? 'Adrián Badilla';
   });
-
 }

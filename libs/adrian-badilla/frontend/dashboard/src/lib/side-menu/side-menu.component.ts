@@ -1,7 +1,12 @@
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { Component, computed, Input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  signal,
+} from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 type MenuItem = {
@@ -16,38 +21,38 @@ type MenuItem = {
   imports: [MatListModule, MatIconModule, RouterModule, FontAwesomeModule],
   templateUrl: './side-menu.component.html',
   styleUrl: './side-menu.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SideMenuComponent {
-  sideNavCollapsed = signal(false);
-  @Input() set collapsed(val: boolean) {
-    this.sideNavCollapsed.set(val);
+  readonly sideNavCollapsed = signal(false);
+  @Input() set collapsed(value: boolean) {
+    this.sideNavCollapsed.set(value);
   }
+
   readonly menuItems = signal<MenuItem[]>([
     {
-      icon: ['fas', 'telescope'],
+      icon: ['far', 'house-tree'],
       label: 'Inicio',
       route: '/dashboard',
       exact: true,
     },
     {
-      icon: ['fas', 'bars'],
+      icon: ['fas', 'shirt'],
       label: 'Productos',
       route: '/dashboard/products',
       exact: false,
     },
     {
-      icon: ['far', 'bicep'],
-      label: 'Planificación',
-      route: '/dashboard/planificacion',
+      icon: ['fas', 'salad'],
+      label: 'Dietas',
+      route: '/dashboard/dietas',
       exact: false,
     },
     {
-      icon: ['fas', 'bars'],
-      label: 'Salir',
-      route: '/',
+      icon: ['fas', 'dumbbell'],
+      label: 'Rutinas',
+      route: '/dashboard/rutinas',
       exact: false,
     },
   ]);
-
-  profilePicSize = computed(() => (this.sideNavCollapsed() ? '32' : '100'));
 }

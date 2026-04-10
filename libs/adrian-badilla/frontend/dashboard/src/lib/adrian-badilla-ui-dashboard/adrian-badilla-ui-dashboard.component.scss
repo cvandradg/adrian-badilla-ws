@@ -1,46 +1,76 @@
+@use 'settings/tokens' as tokens;
+@use 'mixins/surfaces' as surfaces;
+
 :host {
-  color: #fff;
+  color: tokens.$dashboard-text-primary;
   display: block;
   box-sizing: border-box;
-  padding: 0 1.5rem; // top + sides + bottom gap
-  height: 100vh; // fill viewport
-  margin: 0 auto;
+  padding-inline: tokens.$dashboard-shell-spacing;
+  height: 100svh;
+  margin-inline: auto;
   --mat-sidenav-container-shape: none;
+  --dashboard-text-soft: #{tokens.$dashboard-text-soft};
+  --dashboard-panel-radius: #{tokens.$dashboard-panel-radius};
+  --dashboard-shell-max-inline-size: #{tokens.$dashboard-shell-max-inline-size};
+  --dashboard-shell-spacing: #{tokens.$dashboard-shell-spacing};
+  --dashboard-panel-mobile-inline-size: #{tokens.$dashboard-panel-mobile-inline-size};
+  --dashboard-panel-inline-size: #{tokens.$dashboard-panel-inline-size};
+  --dashboard-panel-collapsed-inline-size: #{tokens.$dashboard-panel-collapsed-inline-size};
+  --dashboard-panel-gap: #{tokens.$dashboard-panel-gap};
+  --dashboard-panel-min-block-size: #{tokens.$dashboard-panel-min-block-size};
+  --dashboard-content-blur: #{tokens.$dashboard-content-blur};
 }
 
-/* the shell fills the host */
 mat-sidenav-container.dashboard-shell {
-  width: 100%;
-  max-width: 2000px;
-  margin: 0 auto;
-  height: 100%;
+  inline-size: 100%;
+  max-inline-size: var(--dashboard-shell-max-inline-size);
+  margin-inline: auto;
+  block-size: 100%;
 }
 
-/* only the middle column scrolls */
-mat-sidenav-content {
-  height: 100%;
-  overflow: hidden;
-}
-
-.container-header {
-  flex: 0 0 auto;
+.dashboard-content {
+  block-size: 100%;
+  overflow-x: hidden;
+  min-block-size: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.7rem 1rem;
-  background-color: rgba(220, 240, 255, 0.05);
-  border-color: rgba(220, 240, 255, 0.05);
-  box-shadow:
-    0 0 0 0 rgba(0, 0, 0, 0.2),
-    0 0 0 0 rgba(0, 0, 0, 0.14),
-    0 0 0 0 rgba(0, 0, 0, 0.12) !important;
-  line-height: 1.5;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.dashboard-content::-webkit-scrollbar {
+  inline-size: 0;
+  block-size: 0;
 }
 // agregado por steven para que se aline el texto de moofy vip e ingresar
 .inline-flex {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.gap-3 {
+  gap: 1rem;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
+.container-header {
+  flex: 0 0 auto;
+  @include surfaces.panel-header(0.7rem 1rem);
+}
+
+.menu-toggle {
+  cursor: pointer;
+}
+
+.title {
+  font-family: tokens.$dashboard-font-family;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .login-button {
@@ -53,348 +83,101 @@ mat-sidenav-content {
   text-align: center;
 }
 
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.header-login-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-run-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgba(125, 224, 151, 0.92);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.header-run-indicator__icon {
+  font-size: 0.8rem;
+}
+
 .content {
   padding: 24px;
 }
 
-/* big center card always stretches from top gap to bottom gap */
 .dashboard-container {
-  border-radius: 5px;
-  border: 0.05em solid rgba(220, 240, 255, 0.9) !important;
-  box-shadow:
-    inset 0 0 15px rgba(200, 220, 255, 0.6),
-    0 0 5px rgba(200, 220, 255, 0.9) !important;
-  background: rgba(0, 5, 8, 0.33);
+  @include surfaces.glass-panel-shell();
 
   display: flex;
-  flex-direction: column;
-
   flex: 1 1 auto;
+  flex-direction: column;
+  background: tokens.$dashboard-content-surface;
+  backdrop-filter: blur(var(--dashboard-content-blur));
+  -webkit-backdrop-filter: blur(var(--dashboard-content-blur));
 }
 
 .router-slot {
   flex: 1 1 auto;
-  min-height: 0;
+  min-block-size: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  min-height: 0;
 }
 
-/* keep your existing styles below this */
-mat-toolbar {
-  position: relative;
-  z-index: 5;
-  border-right-style: solid;
+.dashboard-spacer {
+  flex: 0 0 var(--dashboard-shell-spacing);
+  block-size: var(--dashboard-shell-spacing);
 }
 
-:host ::ng-deep mat-sidenav-content,
-:host ::ng-deep mat-sidenav {
-  transition: all 500ms ease-in-out !important;
+:host ::ng-deep .dashboard-shell > .mat-drawer-content,
+:host ::ng-deep .dashboard-shell > .mat-drawer {
+  transition: width 500ms ease-in-out, margin-left 500ms ease-in-out,
+    margin-right 500ms ease-in-out, transform 500ms ease-in-out;
 }
 
-:host ::ng-deep mat-sidenav {
-  border: 1px solid white;
-  border-radius: 5px !important;
-}
+:host ::ng-deep .dashboard-shell .left-sidenav.mat-drawer,
+:host ::ng-deep .dashboard-shell .right-sidenav.mat-drawer {
+  @include surfaces.glass-panel-shell(var(--dashboard-panel-radius));
 
-:host ::ng-deep .mat-drawer-side {
-  border-right: 1px solid white !important;
-}
-
-:host ::ng-deep .mat-drawer {
-  border-radius: 5px;
-  border: 0.05em solid rgba(220, 240, 255, 0.9) !important;
-  box-shadow:
-    inset 0 0 30px rgba(200, 220, 255, 0.6),
-    0 0 5px rgba(200, 220, 255, 0.9) !important;
-  background: rgba(0, 5, 8, 0.33);
+  min-block-size: var(--dashboard-panel-min-block-size);
 }
 
 :host ::ng-deep .mat-drawer-backdrop.mat-drawer-shown {
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  background: rgba(0, 0, 0, 0.35);
+  background: tokens.$dashboard-backdrop;
 }
 
 .right-sidenav {
   padding: 0;
-  border-left: 0.05em solid rgba(220, 240, 255, 0.2);
+  border-inline-start: 0.05em solid tokens.$dashboard-divider-subtle;
 }
 
-.right-sidenav-content {
-  height: 100%;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.left-sidenav,
+.right-sidenav {
+  min-block-size: var(--dashboard-panel-min-block-size);
 }
 
-.gap {
-  flex: 0 0 1.5rem;
-  height: 1.5rem;
-  background: transparent;
-}
-
-:host ::ng-deep .mat-drawer {
-  border-radius: 5px;
-  border: 0.05em solid rgba(220, 240, 255, 0.9) !important;
-  box-shadow:
-    inset 0 0 15px rgba(200, 220, 255, 0.6),
-    0 0 5px rgba(200, 220, 255, 0.9) !important;
-  background: rgba(0, 5, 8, 0.33);
+.dashboard-spacer {
+  flex: 0 0 var(--dashboard-shell-spacing);
+  block-size: var(--dashboard-shell-spacing);
 }
 
 @media (min-width: 960px) {
   :host ::ng-deep .left-sidenav.mat-drawer,
   :host ::ng-deep .right-sidenav.mat-drawer {
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-block: var(--dashboard-shell-spacing);
   }
 }
 
-.dashboard-content {
-  height: 100%;
-  overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.dashboard-content::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-}
-
 :host ::ng-deep .left-sidenav.is-collapsed .mdc-list-item {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-
-/////////////////////////////////////
-///
-:host .routes-layout {
-  --tab-row-height: 4.5rem;
-  display: grid;
-  grid-template-columns: 250px minmax(0, 1fr);
-  align-items: stretch;
-  border-radius: 8px;
-  min-height: 22rem;
-  height: 100%;
-  overflow: hidden;
-}
-
-.sub-title {
-  filter: drop-shadow(0 0 10px rgba(200, 220, 255, 0.4));
-  letter-spacing: 0.009375em;
-  line-height: 1.75rem;
-  font-weight: 500;
-  font-size: 1rem;
-}
-
-:host .routes-nav,
-:host .routes-content {
-  min-width: 0;
-  height: 100%;
-}
-
-:host .routes-nav {
-  position: relative;
-  height: 100%;
-  overflow: hidden;
-}
-
-:host .routes-nav__scroll {
-  height: 100%;
-  max-height: 100%; /* key: stop using 70vh / 10 rows here */
-  overflow-y: auto;
-
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-:host .routes-nav__scroll::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-}
-
-:host .routes-nav__arrow {
-  --arrow-size: 1.5rem;
-  --arrow-icon-size: 0.75rem;
-
-  position: absolute;
-  left: -2.25rem;
-  width: var(--arrow-size);
-  height: var(--arrow-size);
-  border-radius: 999px;
-  border: none;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  color: #ffffff;
-  cursor: pointer;
-  z-index: 2;
-  transition:
-    background 150ms ease,
-    opacity 150ms ease,
-    transform 150ms ease,
-    width 150ms ease,
-    height 150ms ease;
-}
-
-:host .routes-nav__arrow--up {
-  top: -0.25rem;
-}
-
-:host .routes-nav__arrow--down {
-  bottom: -0.25rem;
-}
-
-:host .routes-nav__arrow-icon {
-  font-size: 0.75rem;
-}
-
-:host .routes-nav__arrow:not(.routes-nav__arrow--disabled) {
-  --arrow-size: 30px;
-  --arrow-icon-size: 1.1rem;
-}
-
-:host .routes-nav__arrow:not(.routes-nav__arrow--disabled):hover {
-  background: rgba(0, 0, 0, 0.9);
-  transform: translateY(-1px);
-}
-:host .routes-nav__arrow--down:not(.routes-nav__arrow--disabled):hover {
-  transform: translateY(1px);
-}
-
-:host .routes-nav__arrow--disabled {
-  opacity: 0.25;
-  cursor: default;
-}
-
-:host .routes-nav__list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  position: relative;
-  --active-index: 0;
-}
-
-:host .routes-nav__item-wrapper {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.tabs-inner-content {
-  flex: 1;
-  width: 100%;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 1rem;
-}
-
-:host .routes-nav__item {
-  width: 100%;
-  height: var(--tab-row-height);
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  border: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 0;
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  background: transparent;
-  color: #ffffff;
-  cursor: pointer;
-  text-align: left;
-}
-
-:host .routes-nav__item:last-child {
-  border-bottom: none;
-}
-
-:host .routes-nav__item--active {
-  font-weight: 500;
-  background: rgba(220, 240, 255, 0.05) !important;
-}
-
-:host .routes-content {
-  background: rgba(220, 240, 255, 0.05) !important;
-  min-height: 20rem;
-  overflow-y: auto;
-  padding: 1.5rem 2rem;
-
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.212) transparent;
-}
-
-:host .routes-content {
-  isolation: isolate;
-  backface-visibility: hidden;
-  will-change: transform, opacity;
-  transform: translateZ(0);
-}
-
-:host .routes-content::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-:host .routes-content::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.25);
-  border-radius: 999px;
-
-  border: 3px solid transparent;
-  background-clip: padding-box;
-}
-
-.tab-description {
-  font-size: 0.65rem;
-  color: rgba(255, 255, 255, 0.8);
-  text-transform: none;
-  white-space: normal;
-  word-break: break-word;
-  letter-spacing: 0.0992857143em;
-  line-height: normal;
-  max-width: 8rem;
-  text-align: left;
-}
-
-.route-name {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 0;
-}
-
-:host .routes-nav__list::before {
-  content: '';
-  position: absolute;
-  left: 0.25rem;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  pointer-events: none;
-}
-
-:host .routes-nav__list::after {
-  content: '';
-  position: absolute;
-  left: 0.1rem;
-  top: calc(var(--active-index, 0) * var(--tab-row-height));
-  width: 2px;
-  height: var(--tab-row-height);
-  background: #37aadf;
-  border-radius: 999px;
-  transition: top 125ms ease-out;
-  pointer-events: none;
+  padding-inline: 0;
 }

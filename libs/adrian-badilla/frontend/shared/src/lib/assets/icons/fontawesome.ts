@@ -1,4 +1,7 @@
 import {
+  faSliders,
+  faChartColumn,
+  faMoneyCheckPen,
   faClipboardQuestion,
   faRightToBracket,
   faEnvelopeCircleCheck,
@@ -9,6 +12,7 @@ import { faGripLines } from '@fortawesome/pro-thin-svg-icons';
 import {
   faPlus,
   faBolt,
+  faToggleOn,
   faDrumstick,
   faBowlRice,
   faPeanuts,
@@ -17,6 +21,7 @@ import {
 import {
   faXmark as faXmarkSolid,
   faCheck,
+  faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faGoogle,
@@ -51,6 +56,7 @@ import { faBicep } from '@fortawesome/pro-regular-svg-icons';
 export const FontAwesomeicons = [
   faBolt,
   faPlus,
+  faToggleOn,
   faUser,
   faBars,
   faSalad,
@@ -60,9 +66,11 @@ export const FontAwesomeicons = [
   // faFilePen,
   faPeanuts,
   faPotFood,
+  faSliders,
   faTwitter,
   faDumbbell,
   faBowlRice,
+  faChartColumn,
   faGripLines,
   faDrumstick,
   faTelescope,
@@ -75,9 +83,11 @@ export const FontAwesomeicons = [
   faXmarkSolid,
   faRotateBack,
   faHeartPulse,
+  faMoneyCheckPen,
   faCircleNotch,
   faSpinnerThird,
   faRightToBracket,
+  faMagnifyingGlass,
   faWhatsappSquare,
   faPersonDollyEmpty,
   faClipboardQuestion,

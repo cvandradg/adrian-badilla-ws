@@ -1,0 +1,40 @@
+@use '../settings/tokens' as tokens;
+
+// Global reset and app-wide background primitives.
+// This file emits real global CSS, so keep it limited to document-level concerns.
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  // Establishes the default app chrome so feature styles can assume a dark base surface.
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  font-family: tokens.$font-primary;
+  color: tokens.$color-neutral-100;
+  background-color: tokens.$app-background-color;
+  background-position: center center;
+  background-repeat: repeat;
+  background-size: tokens.$app-background-size;
+  background-image: tokens.$app-background-image;
+}
+
+/* Scrollbar: global by design because browser pseudo-elements cannot be scoped usefully. */
+::-webkit-scrollbar {
+  width: 0.2rem;
+}
+
+::-webkit-scrollbar-track {
+  background: tokens.$scrollbar-track;
+  border-radius: 100vw;
+  margin-block: 1rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background: tokens.$scrollbar-thumb;
+  border-radius: 100vw;
+}

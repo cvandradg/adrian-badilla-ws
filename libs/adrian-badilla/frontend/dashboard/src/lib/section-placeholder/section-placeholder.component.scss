@@ -1,0 +1,43 @@
+@use 'settings/tokens' as tokens;
+@use 'mixins/surfaces' as surfaces;
+@use 'mixins/text' as text;
+@use 'mixins/typography' as typography;
+
+.section-placeholder {
+  @include surfaces.glass-panel-shell(tokens.$dashboard-panel-radius);
+
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  min-block-size: 100%;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  background: rgba(0, 5, 8, 0.28);
+}
+
+.section-placeholder__eyebrow {
+  @include text.caps-label($font-size: 0.72rem, $font-weight: 600);
+
+  color: tokens.$dashboard-text-muted;
+  margin: 0 0 0.75rem;
+}
+
+.section-placeholder__title {
+  @include typography.font-sans;
+
+  color: tokens.$dashboard-text-primary;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 600;
+  line-height: 1.05;
+  margin: 0 0 1rem;
+}
+
+.section-placeholder__description {
+  @include typography.font-sans;
+
+  color: tokens.$dashboard-text-secondary;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  max-inline-size: 42rem;
+  margin: 0;
+}
