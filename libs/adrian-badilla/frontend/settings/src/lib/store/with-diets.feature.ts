@@ -1,86 +1,89 @@
-import { inject, Type } from '@angular/core';
-import { patchState, signalStoreFeature, withMethods } from '@ngrx/signals';
-import { Observable } from 'rxjs';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Type } from '@angular/core';
+import {
+  signalStoreFeature,
+  withFeature,
+  withMethods,
+} from '@ngrx/signals';
+import type { SupercenterDoc as DietDoc, WithId as WithDietId } from '../types/diets.types';
+import {
+  type DietsCrudParentDeps,
+  withDietsCrud,
+} from './with-diets-crud.feature';
+import {
+  withDietsDialogs,
+} from './with-diets-dialogs.feature';
 
-export type WithId<T> = T & { id: string };
-export type SupercenterDoc = {
-  name: string;
-  route: string;
-  province: string;
-  estimateLocation: string;
-  exactLocation: string;
-  createdDate: unknown;
-  lastModifiedDate: unknown;
+type SettingsStoreDeps = DietsCrudParentDeps;
+
+export type EditableDiet = Pick<
+  WithDietId<DietDoc>,
+  'id' | 'name' | 'route' | 'province' | 'estimateLocation' | 'exactLocation'
+>;
+
+export type DietDraft = Omit<EditableDiet, 'id'> & {
+  id?: string | null;
 };
 
-type SupercentersDialogsState = {
-  _supercenterAddDialogRef: DynamicDialogRef | null;
-  _supercenterDeleteDialogRef: DynamicDialogRef | null;
-};
+function buildDietSubmitCommand(
+  draft: DietDraft,
+): { kind: 'save'; payload: EditableDiet } | { kind: 'create'; payload: Omit<DietDraft, 'id'> } {
+  const id = draft.id?.trim();
 
-export type RoutesCrudParentDeps = {
-  _create: <T extends object>(params: {
-    collectionPath: string;
-    data: T;
-  }) => Observable<unknown>;
-  _remove: (params: { collectionPath: string; id: string }) => Observable<void>;
-  _update: <T extends object>(params: {
-    collectionPath: string;
-    id: string;
-    data: Partial<T>;
-  }) => Observable<void>;
-};
+  if (id) {
+    return {
+      kind: 'save',
+      payload: {
+        id,
+        name: draft.name,
+        route: draft.route,
+        province: draft.province,
+        estimateLocation: draft.estimateLocation,
+        exactLocation: draft.exactLocation,
+      },
+    };
+  }
 
-type SettingsStoreDeps = RoutesCrudParentDeps & {
-  supercenters: {
-    value: () => WithId<SupercenterDoc>[];
-    hasValue: () => boolean;
+  return {
+    kind: 'create',
+    payload: {
+      name: draft.name,
+      route: draft.route,
+      province: draft.province,
+      estimateLocation: draft.estimateLocation,
+      exactLocation: draft.exactLocation,
+    },
   };
-  openDialogToEditSupercenter: (
-    component: Type<unknown>,
-    supercenter: WithId<SupercenterDoc>,
-  ) => void;
-};
+}
 
-export function withDiets(settingsStore: any) {
-  const dialog = inject(DialogService);
-
+export function withDiets<T extends SettingsStoreDeps>(settingsStore: T) {
   return signalStoreFeature(
-    withMethods(() => ({
-      openDialogToEditRouteSupercenter: (
-        component: Type<unknown>,
-        supercenterOrId: WithId<SupercenterDoc> | string,
-      ) => {
-        let supercenter: WithId<SupercenterDoc> | undefined;
+    withFeature((innerStore) =>
+      withDietsCrud(innerStore, settingsStore),
+    ),
+    withFeature((innerStore) => withDietsDialogs(innerStore)),
+    withMethods((innerStore) => ({
+      submitDietDraft: (draft: DietDraft) => {
+        const command = buildDietSubmitCommand(draft);
 
-        if (typeof supercenterOrId === 'string') {
-          supercenter = settingsStore.supercenters
-            .value()
-            .find((item: WithId<SupercenterDoc>) => item.id === supercenterOrId);
-        } else {
-          supercenter = supercenterOrId;
-        }
-
-        if (!supercenter) {
+        if (command.kind === 'save') {
+          innerStore.saveDiet(command.payload);
           return;
         }
 
-        const ref = dialog.open(component, {
-          data: { supercenter },
-          modal: true,
-          dismissableMask: true,
-          closeOnEscape: true,
-          showHeader: false,
-          closable: true,
-          width: '50rem',
-          height: 'content-fit',
-          styleClass: 'add-edit-dialog',
-          breakpoints: { '960px': '95vw' },
-        });
-
-        patchState(settingsStore, { _supercenterDeleteDialogRef: ref });
+        innerStore.createDiet(command.payload);
       },
-    }))
+      openDialogToDeleteEditableDiet: (
+        component: Type<unknown>,
+        diet: EditableDiet | null | undefined,
+      ) => {
+        if (!diet?.id) {
+          return;
+        }
+
+        innerStore.openDialogToDeleteDiet(component, {
+          ...diet,
+        } as WithDietId<DietDoc>);
+      },
+    })),
   );
 }

@@ -217,7 +217,7 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
               <button
                 type="button"
                 class="timeline-marker timeline-marker-button"
-                (click)="openSupercenterDialog(supercenter)"
+                (click)="openDietDialog(supercenter)"
                 [attr.aria-label]="'Abrir supercenter ' + supercenter.name"
               >
                 <i [class]="supercenter.imgPrimeng"></i>
@@ -228,7 +228,7 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
               <button
                 type="button"
                 class="route-supercenter-card"
-                (click)="openSupercenterDialog(supercenter)"
+                (click)="openDietDialog(supercenter)"
                 [attr.aria-label]="'Editar supercenter ' + supercenter.name"
               >
                 <div class="supercenter-row">

@@ -1,65 +1,183 @@
 <div class="food-dialog-container">
-  <h2 class="food-dialog-title">{{ foodName() }}</h2>
-  
-  <div *ngIf="foodData$ | async as food; else loading" class="food-info">
+  <h2 class="food-dialog-title">{{ vm().foodName }}</h2>
+  <div class="food-dialog-meta">
+    <p-tag
+      [value]="vm().isDetailed ? 'Analisis completo' : 'Vista rapida'"
+      [severity]="vm().isDetailed ? 'success' : 'contrast'"
+    />
+    <p-tag
+      [value]="vm().isLoading ? 'Consultando' : vm().hasFoodData ? 'Listo' : 'Sin datos'"
+      [severity]="vm().isLoading ? 'warn' : vm().hasFoodData ? 'info' : 'danger'"
+    />
+  </div>
+
+  @if (vm().hasFoodData && vm().foodData; as food) {
+  <div class="food-info">
+    <div class="food-hero">
+      <div class="food-hero__headline">
+        <span class="food-hero__eyebrow">Resumen nutricional</span>
+        <p class="food-hero__description">
+          Valores estimados para una porcion de referencia de {{ vm().foodName }}.
+        </p>
+      </div>
+
+      <div class="food-hero__stats">
+        <div class="food-stat-card">
+          <span class="food-stat-card__label">Calorias</span>
+          <strong class="food-stat-card__value">
+            {{ food.calories?.amount ?? '--' }}
+          </strong>
+          <span class="food-stat-card__unit">{{ food.calories?.unit || 'kcal' }}</span>
+        </div>
+
+        <div class="food-stat-card">
+          <span class="food-stat-card__label">Proteina</span>
+          <strong class="food-stat-card__value">
+            {{ food.protein?.amount ?? '--' }}
+          </strong>
+          <span class="food-stat-card__unit">{{ food.protein?.unit || 'g' }}</span>
+        </div>
+
+        <div class="food-stat-card">
+          <span class="food-stat-card__label">Carbohidratos</span>
+          <strong class="food-stat-card__value">
+            {{ food.carbs?.amount ?? '--' }}
+          </strong>
+          <span class="food-stat-card__unit">{{ food.carbs?.unit || 'g' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <p-divider />
 
     <div class="nutrition-grid">
-
-      <!-- 🟢 MODO SIMPLE -->
-      <ng-container *ngIf="!isDetailed(); else detailed">
-
+      @if (!vm().isDetailed) {
         <div class="nutrition-section">
           <h3 class="section-title">Macronutrientes</h3>
 
-          <p>🔥 Calorías: <strong>{{ food.calories?.value }} kcal</strong></p>
-          <p>🍗 Proteína: <strong>{{ food.protein?.value }} g</strong></p>
-          <p>🥑 Grasas: <strong>{{ food.fat?.value }} g</strong></p>
-          <p>🍞 Carbohidratos: <strong>{{ food.carbs?.value }} g</strong></p>
+          <div class="nutrition-list">
+            <div class="nutrition-item">
+              <span>🔥 Calorias</span>
+              <strong>{{ food.calories?.amount }} {{ food.calories?.unit || 'kcal' }}</strong>
+            </div>
+            <div class="nutrition-item">
+              <span>🍗 Proteina</span>
+              <strong>{{ food.protein?.amount }} {{ food.protein?.unit || 'g' }}</strong>
+            </div>
+            <div class="nutrition-item">
+              <span>🥑 Grasas</span>
+              <strong>{{ food.fat?.amount }} {{ food.fat?.unit || 'g' }}</strong>
+            </div>
+            <div class="nutrition-item">
+              <span>🍞 Carbohidratos</span>
+              <strong>{{ food.carbs?.amount }} {{ food.carbs?.unit || 'g' }}</strong>
+            </div>
+          </div>
         </div>
 
-        <button (click)="loadFullData()">
-          🔍 Ver detalles completos
-        </button>
-
-      </ng-container>
-
-      <!-- 🔵 MODO DETALLADO -->
-      <ng-template #detailed>
-
+        <div class="food-actions">
+          <p-button
+            label="Ver detalles completos"
+            icon="pi pi-search"
+            [outlined]="true"
+            [disabled]="!vm().canLoadDetails"
+            [loading]="vm().isLoading"
+            (onClick)="settingsStore.loadFullFoodDescription()"
+          />
+        </div>
+      } @else {
         <div class="nutrition-section">
           <h3>Macronutrientes</h3>
-          <p>🔥 {{ food.calories?.amount }} kcal</p>
-          <p>🍗 {{ food.protein?.amount }} g</p>
-          <p>🥑 {{ food.fat?.amount }} g</p>
-          <p>🍞 {{ food.carbs?.amount }} g</p>
+          <div class="nutrition-list">
+            <div class="nutrition-item">
+              <span>🔥 Calorias</span>
+              <strong>{{ food.calories?.amount }} {{ food.calories?.unit || 'kcal' }}</strong>
+            </div>
+            <div class="nutrition-item">
+              <span>🍗 Proteina</span>
+              <strong>{{ food.protein?.amount }} {{ food.protein?.unit || 'g' }}</strong>
+            </div>
+            <div class="nutrition-item">
+              <span>🥑 Grasas</span>
+              <strong>{{ food.fat?.amount }} {{ food.fat?.unit || 'g' }}</strong>
+            </div>
+            <div class="nutrition-item">
+              <span>🍞 Carbohidratos</span>
+              <strong>{{ food.carbs?.amount }} {{ food.carbs?.unit || 'g' }}</strong>
+            </div>
+          </div>
         </div>
 
         <div class="nutrition-section">
           <h3>Otros</h3>
-          <p>🌾 Fibra: {{ food.fiber?.amount }} g</p>
-          <p>🍬 Azúcar: {{ food.sugar?.amount }} g</p>
+          <div class="nutrition-list">
+            <div class="nutrition-item">
+              <span>🌾 Fibra</span>
+              <strong>{{ food.fiber?.amount }} {{ food.fiber?.unit || 'g' }}</strong>
+            </div>
+            <div class="nutrition-item">
+              <span>🍬 Azucar</span>
+              <strong>{{ food.sugar?.amount }} {{ food.sugar?.unit || 'g' }}</strong>
+            </div>
+          </div>
         </div>
 
         <div class="nutrition-section">
           <h3>Minerales</h3>
-          <p>🩸 Hierro: {{ food.iron?.amount }} mg</p>
-          <p>🦴 Calcio: {{ food.calcium?.amount }} mg</p>
-          <p>⚡ Potasio: {{ food.potassium?.amount }} mg</p>
+          <div class="nutrition-list">
+            <div class="nutrition-item">
+              <span>🩸 Hierro</span>
+              <strong>{{ food.iron?.amount }} {{ food.iron?.unit || 'mg' }}</strong>
+            </div>
+            <div class="nutrition-item">
+              <span>🦴 Calcio</span>
+              <strong>{{ food.calcium?.amount }} {{ food.calcium?.unit || 'mg' }}</strong>
+            </div>
+            <div class="nutrition-item">
+              <span>⚡ Potasio</span>
+              <strong>{{ food.potassium?.amount }} {{ food.potassium?.unit || 'mg' }}</strong>
+            </div>
+          </div>
         </div>
 
         <div class="nutrition-section">
           <h3>Vitaminas</h3>
-          <p>🍊 Vitamina C: {{ food.vitaminC?.amount }}</p>
-          <p>👁️ Vitamina A: {{ food.vitaminA?.amount }}</p>
-          <p>☀️ Vitamina D: {{ food.vitaminD?.amount }}</p>
+          <div class="nutrition-list">
+            <div class="nutrition-item">
+              <span>🍊 Vitamina C</span>
+              <strong>{{ food.vitaminC?.amount }} {{ food.vitaminC?.unit || 'mg' }}</strong>
+            </div>
+            <div class="nutrition-item">
+              <span>👁️ Vitamina A</span>
+              <strong>{{ food.vitaminA?.amount }} {{ food.vitaminA?.unit || 'IU' }}</strong>
+            </div>
+            <div class="nutrition-item">
+              <span>☀️ Vitamina D</span>
+              <strong>{{ food.vitaminD?.amount }} {{ food.vitaminD?.unit || 'IU' }}</strong>
+            </div>
+          </div>
         </div>
-
-      </ng-template>
-
+      }
     </div>
   </div>
-
-  <ng-template #loading>
-    <p>Cargando...</p>
-  </ng-template>
+  } @else {
+    @if (vm().isLoading) {
+    <div class="food-loading-state">
+      <p-skeleton width="9rem" height="1rem" borderRadius="999px" />
+      <div class="food-loading-state__stats">
+        <p-skeleton width="100%" height="6rem" borderRadius="1rem" />
+        <p-skeleton width="100%" height="6rem" borderRadius="1rem" />
+      </div>
+      <p-skeleton width="100%" height="10rem" borderRadius="1.25rem" />
+    </div>
+    } @else if (vm().hasError) {
+    <div class="food-empty-state">
+      <span class="food-empty-state__icon">!</span>
+      <div>
+        <h3>No se pudo obtener informacion nutricional</h3>
+        <p>Intenta nuevamente mas tarde o consulta otra comida del timeline.</p>
+      </div>
+    </div>
+    }
+  }
 </div>

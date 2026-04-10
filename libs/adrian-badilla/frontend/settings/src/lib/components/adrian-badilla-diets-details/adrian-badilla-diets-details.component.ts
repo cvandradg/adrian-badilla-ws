@@ -6,12 +6,7 @@ import {
   output,
 } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-
-export type RouteNavItem = {
-  id: string;
-  name?: string;
-  description?: string;
-};
+import type { RouteNavItem } from '../../types/diets.types';
 
 @Component({
   selector: 'lib-adrian-badilla-diets-details',

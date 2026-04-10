@@ -15,37 +15,16 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AdrianBadillaDietsDetailsComponent } from '../adrian-badilla-diets-details/adrian-badilla-diets-details.component';
 import { settingsStoreDev } from '../../store/settings.store';
 import { FoodDescriptionDialogComponent } from '../../dialog/food-description-dialog/food-description-dialog.component';
-
-export type WithId<T> = T & { id: string };
-export type SupercenterDoc = {
-  name: string;
-  route: string;
-  province: string;
-  estimateLocation: string;
-  exactLocation: string;
-  createdDate: unknown;
-  lastModifiedDate: unknown;
-  imgPrimeng: string;
-};
-
-export type RouteNavItem = {
-  id: string;
-  name?: string;
-  description?: string;
-};
-
-export type RouteSupercenterItem = Pick<
-  WithId<SupercenterDoc>,
-  | 'id'
-  | 'name'
-  | 'route'
-  | 'province'
-  | 'estimateLocation'
-  | 'exactLocation'
-  | 'imgPrimeng'
-> & {
-  lastModifiedLabel: string | null;
-};
+import {
+  getMockRouteSupercenters,
+  MOCK_ROUTES,
+} from '../../mocks/adrian-badilla-diets.mock';
+import type {
+  RouteNavItem,
+  RouteSupercenterItem,
+  SupercenterDoc,
+  WithId,
+} from '../../types/diets.types';
 
 @Component({
   selector: 'lib-adrian-badilla-diets',
@@ -74,87 +53,13 @@ export class AdrianBadillaDietsComponent {
     routeSearchQuery: signal(''),
 
   
-    routes: signal([
-      { id: '1', name: 'Lunes', description: '6 de Abril 2026' },
-      { id: '2', name: 'Martes', description: '7 de Abril 2026' },
-      { id: '3', name: 'Miercoles', description: '8 de Abril 2026' },
-      { id: '4', name: 'Jueves', description: '9 de Abril 2026' },
-      { id: '5', name: 'Viernes', description: '10 de Abril 2026' },
-      { id: '6', name: 'Sabado', description: '11 de Abril 2026' },
-      { id: '7', name: 'Domingo', description: '12 de Abril 2026' },
-    ]),
+    routes: signal<RouteNavItem[]>(MOCK_ROUTES),
 
-    selectedRoute: signal<any>({
-      id: '1',
-      name: 'Ruta 2',
-      description: 'Ruta 2',
-    }),
+    selectedRoute: signal<RouteNavItem | null>(MOCK_ROUTES[0] ?? null),
 
-    selectedRouteSupercenters: signal<RouteSupercenterItem[]>([
-      {
-        id: '1',
-        name: 'DESAYUNO',
-        route: '1',
-        province: 'Alajuela',
-        estimateLocation: 'Avena con Leche o bebida Vegetal',
-        exactLocation: 'Oat',
-        lastModifiedLabel: '6/4/26, 7:00 a. m.',
-        imgPrimeng: 'pi pi-sun',
-      },
-      {
-        id: '2',
-        name: 'Snack de la mañana',
-        route: '1',
-        province: 'Heredia',
-        estimateLocation: 'Yogurt narutal o griego, nueces o almendras',
-        exactLocation: 'Natural Yogurt',
-        lastModifiedLabel: '6/4/26, 10:00 a. m.',
-        imgPrimeng: 'pi pi-heart',
-      },
-      {
-        id: '3',
-        name: 'ALMUERZO',
-        route: '1',
-        province: 'Heredia',
-        estimateLocation:
-          'Pollo, pescado o carne magra con arroz integral y aguacate',
-        exactLocation: 'Chicken Breast',
-        lastModifiedLabel: '6/4/26, 1:00 p. m.',
-        imgPrimeng: 'pi pi-briefcase',
-      },
-      {
-        id: '4',
-        name: 'Snack Tarde',
-        route: '1',
-        province: 'Snack Tarde',
-        estimateLocation: '1 Fruta, tostada integral con mantequilla de maní',
-        exactLocation: 'whole wheat toast with peanut butter',
-        lastModifiedLabel: '6/4/26, 4:00 p. m.',
-        imgPrimeng: 'pi pi-sparkles',
-      },
-      {
-        id: '5',
-        name: 'CENA',
-        route: '1',
-        province: 'Heredia',
-        estimateLocation:
-          'Proteina ligera: pollo, atun o huevo, Vegetales cocidos',
-        exactLocation: 'Tuna',
-        lastModifiedLabel: '6/4/26, 7:00 p. m.',
-        imgPrimeng: 'pi pi-moon',
-      },
-      {
-        id: '6',
-        name: 'Snack Opcional(si tienes hambre)',
-        route: '1',
-        province: 'Heredia',
-        estimateLocation:
-          'Yogurt o vaso de leche o un puñado de pequeño de frutos secos',
-        exactLocation: 'Dried Fruits',
-        lastModifiedLabel: '6/4/26, 9:00 p. m.',
-        imgPrimeng: 'pi pi-clock',
-      },
-    ]),
+    selectedRouteSupercenters: signal<RouteSupercenterItem[]>(
+      getMockRouteSupercenters(MOCK_ROUTES[0]?.id ?? ''),
+    ),
 
     sortedRoutes: computed(() => this.settingsStore.routes()),
 
@@ -181,74 +86,7 @@ export class AdrianBadillaDietsComponent {
       this.settingsStore.selectedRoute.set(route);
 
       this.settingsStore.selectedRouteSupercenters.set(
-        routeId === '1'
-          ? [
-              {
-                id: '1',
-                name: 'DESAYUNO',
-                route: '1',
-                province: 'Alajuela',
-                estimateLocation: 'Avena con Leche o bebida Vegetal',
-                exactLocation: 'Oat',
-                lastModifiedLabel: '6/4/26, 7:00 a. m.',
-                imgPrimeng: 'pi pi-sun',
-              },
-              {
-                id: '2',
-                name: 'Snack de la mañana',
-                route: '1',
-                province: 'Heredia',
-                estimateLocation: 'Yogurt narutal o griego, nueces o almendras',
-                exactLocation: 'Natural Yogurt',
-                lastModifiedLabel: '6/4/26, 10:00 a. m.',
-                imgPrimeng: 'pi pi-heart',
-              },
-              {
-                id: '3',
-                name: 'ALMUERZO',
-                route: '1',
-                province: 'Heredia',
-                estimateLocation:
-                  'Pollo, pescado o carne magra con arroz integral y aguacate',
-                exactLocation: 'Chicken Breast',
-                lastModifiedLabel: '6/4/26, 1:00 p. m.',
-                imgPrimeng: 'pi pi-briefcase',
-              },
-              {
-                id: '4',
-                name: 'Snack Tarde',
-                route: '1',
-                province: 'Snack Tarde',
-                estimateLocation:
-                  '1 Fruta, tostada integral con mantequilla de maní',
-                exactLocation: 'whole wheat toast with peanut butter',
-                lastModifiedLabel: '6/4/26, 4:00 p. m.',
-                imgPrimeng: 'pi pi-sparkles',
-              },
-              {
-                id: '5',
-                name: 'CENA',
-                route: '1',
-                province: 'Heredia',
-                estimateLocation:
-                  'Proteina ligera: pollo, atun o huevo, Vegetales cocidos',
-                exactLocation: 'Tuna',
-                lastModifiedLabel: '6/4/26, 7:00 p. m.',
-                imgPrimeng: 'pi pi-moon',
-              },
-              {
-                id: '6',
-                name: 'Snack Opcional(si tienes hambre)',
-                route: '1',
-                province: 'Heredia',
-                estimateLocation:
-                  'Yogurt o vaso de leche o un puñado de pequeño de frutos secos',
-                exactLocation: 'dried fruits',
-                lastModifiedLabel: '6/4/26, 9:00 p. m.',
-                imgPrimeng: 'pi pi-clock',
-              },
-            ]
-          : []
+        getMockRouteSupercenters(routeId),
       );
     },
 
@@ -259,8 +97,8 @@ export class AdrianBadillaDietsComponent {
     openDialogToAddRoute: () => console.log('open add route'),
     openDialogToAddSupercenter: () => console.log('open add supercenter'),
 
-    openDialogToEditRouteSupercenter: (_: any, id: string) =>
-      console.log('edit supercenter', id),
+    openDialogToEditRouteDiet: (_: any, id: string) =>
+      console.log('edit diet', id),
     openDialogToDeleteRoute: (_: any, route: any) =>
       console.log('delete route', route),
   };
@@ -346,13 +184,16 @@ export class AdrianBadillaDietsComponent {
     this.settingsStore.openDialogToAddSupercenter();
   }
 
-  openSupercenterDialog(supercenter: RouteSupercenterItem): void {
-    const fullSupercenter = {
-      ...supercenter,
+  openDietDialog(diet: RouteSupercenterItem): void {
+    const fullDiet = {
+      ...diet,
       createdDate: new Date(),
       lastModifiedDate: new Date(),
     } as WithId<SupercenterDoc>;
-    this.settingsStoreDev.openDialogToEditRouteSupercenter(FoodDescriptionDialogComponent, fullSupercenter)
+    this.settingsStoreDev.openDialogToEditDiet(
+      FoodDescriptionDialogComponent,
+      fullDiet,
+    );
   }
 
   openDeleteRouteDialog(route: RouteNavItem): void {
