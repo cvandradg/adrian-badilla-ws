@@ -41,6 +41,9 @@
       ],
       "adrian-badilla/products": [
         "./libs/adrian-badilla/frontend/products/src/index.ts"
+      ],
+      "adrian-badilla/routines": [
+        "./libs/adrian-badilla/frontend/routines/src/index.ts"
       ]
     }
   },

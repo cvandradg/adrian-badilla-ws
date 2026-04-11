@@ -1,0 +1,165 @@
+@use 'settings/tokens' as tokens;
+@use 'mixins/surfaces' as surfaces;
+@use 'mixins/text' as text;
+@use 'mixins/typography' as typography;
+
+:host {
+	display: block;
+	min-block-size: 100%;
+}
+
+.routines-page {
+	display: grid;
+	gap: 1rem;
+	min-block-size: 100%;
+	padding: clamp(1rem, 2vw, 1.5rem);
+	background:
+		radial-gradient(circle at top right, rgba(88, 210, 166, 0.14), transparent 30%),
+		linear-gradient(180deg, rgba(4, 12, 17, 0.22), rgba(4, 12, 17, 0.08));
+}
+
+.routines-hero,
+.routines-card,
+.routines-plan {
+	@include surfaces.glass-panel-shell(tokens.$dashboard-panel-radius);
+
+	background: rgba(0, 5, 8, 0.28);
+}
+
+.routines-hero {
+	display: grid;
+	gap: 1rem;
+	padding: clamp(1.25rem, 2.5vw, 1.75rem);
+}
+
+.routines-hero__eyebrow,
+.routines-plan__eyebrow,
+.routines-card__label,
+.routines-plan__cadence {
+	@include text.caps-label($font-size: 0.72rem, $font-weight: 600);
+
+	color: tokens.$dashboard-text-muted;
+	margin: 0;
+}
+
+.routines-hero__content {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.routines-hero__title,
+.routines-plan__title,
+.routines-plan__block-title {
+	@include typography.font-sans;
+
+	color: tokens.$dashboard-text-primary;
+	margin: 0;
+}
+
+.routines-hero__title {
+	font-size: clamp(1.8rem, 4vw, 2.6rem);
+	font-weight: 600;
+	line-height: 1.05;
+}
+
+.routines-hero__description,
+.routines-plan__description,
+.routines-card__detail,
+.routines-plan__block-focus {
+	@include typography.font-sans;
+
+	color: tokens.$dashboard-text-secondary;
+	line-height: 1.6;
+	margin: 0;
+}
+
+.routines-hero__description {
+	max-inline-size: 42rem;
+	margin-top: 0.75rem;
+}
+
+.routines-hero__pill {
+	border: 1px solid rgba(125, 224, 151, 0.2);
+	border-radius: 999px;
+	color: rgba(208, 248, 219, 0.96);
+	font-size: 0.8rem;
+	font-weight: 600;
+	padding: 0.65rem 0.95rem;
+	white-space: nowrap;
+}
+
+.routines-metrics {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.routines-card {
+	display: grid;
+	gap: 0.6rem;
+	padding: 1.25rem;
+}
+
+.routines-card__value {
+	color: tokens.$dashboard-text-primary;
+	font-size: clamp(1.7rem, 3vw, 2.2rem);
+	font-weight: 700;
+	line-height: 1;
+	margin: 0;
+}
+
+.routines-plan {
+	display: grid;
+	gap: 1.25rem;
+	padding: clamp(1.25rem, 2.5vw, 1.75rem);
+}
+
+.routines-plan__intro {
+	display: grid;
+	gap: 0.6rem;
+}
+
+.routines-plan__title {
+	font-size: clamp(1.3rem, 2.5vw, 1.85rem);
+	font-weight: 600;
+}
+
+.routines-plan__grid {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.routines-plan__block {
+	border: 1px solid rgba(255, 255, 255, 0.05);
+	border-radius: 1rem;
+	padding: 1rem;
+	background: rgba(255, 255, 255, 0.02);
+}
+
+.routines-plan__block-title {
+	font-size: 1.05rem;
+	font-weight: 600;
+	margin-top: 0.5rem;
+}
+
+.routines-plan__block-focus {
+	margin-top: 0.65rem;
+}
+
+@media (max-width: 959px) {
+	.routines-hero__content {
+		flex-direction: column;
+	}
+
+	.routines-hero__pill {
+		white-space: normal;
+	}
+
+	.routines-metrics,
+	.routines-plan__grid {
+		grid-template-columns: 1fr;
+	}
+}

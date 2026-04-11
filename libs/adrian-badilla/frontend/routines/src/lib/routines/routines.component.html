@@ -1,0 +1,48 @@
+<section class="routines-page">
+	<header class="routines-hero">
+		<p class="routines-hero__eyebrow">Dashboard</p>
+
+		<div class="routines-hero__content">
+			<div>
+				<h2 class="routines-hero__title">Rutinas</h2>
+				<p class="routines-hero__description">
+					Organiza bloques de entrenamiento, sesiones semanales y seguimiento
+					del progreso desde un solo lugar.
+				</p>
+			</div>
+
+			<div class="routines-hero__pill">Plan semanal sincronizado</div>
+		</div>
+	</header>
+
+	<section class="routines-metrics" aria-label="Resumen de rutinas">
+		@for (metric of metrics; track metric.label) {
+		<article class="routines-card">
+			<p class="routines-card__label">{{ metric.label }}</p>
+			<p class="routines-card__value">{{ metric.value }}</p>
+			<p class="routines-card__detail">{{ metric.detail }}</p>
+		</article>
+		}
+	</section>
+
+	<section class="routines-plan">
+		<div class="routines-plan__intro">
+			<p class="routines-plan__eyebrow">Bloques destacados</p>
+			<h3 class="routines-plan__title">Estructura sugerida de la semana</h3>
+			<p class="routines-plan__description">
+				La nueva librería ya está conectada al dashboard y lista para crecer con
+				planes, progresiones y seguimiento por atleta.
+			</p>
+		</div>
+
+		<div class="routines-plan__grid">
+			@for (block of blocks; track block.title) {
+			<article class="routines-plan__block">
+				<p class="routines-plan__cadence">{{ block.cadence }}</p>
+				<h4 class="routines-plan__block-title">{{ block.title }}</h4>
+				<p class="routines-plan__block-focus">{{ block.focus }}</p>
+			</article>
+			}
+		</div>
+	</section>
+</section>

@@ -29,12 +29,10 @@ export const adrianBadillaDashboardRoutes: Route[] = [
       {
         path: 'rutinas',
         title: 'Rutinas',
-        component: DashboardSectionPlaceholderComponent,
-        data: {
-          title: 'Rutinas',
-          description:
-            'Espacio reservado para programas de entrenamiento, bloques semanales y seguimiento de rutinas.',
-        },
+        loadChildren: () =>
+          import('adrian-badilla/routines').then(
+            (module) => module.routinesRoutes
+          ),
       },
     ],
   },
