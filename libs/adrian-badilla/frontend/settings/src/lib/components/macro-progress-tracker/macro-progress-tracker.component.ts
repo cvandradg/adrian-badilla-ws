@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { settingsStoreDev } from '../../store/settings.store';
-import { calculateConsumedMacros, calculateAllMacroPercentages, generateMacroMessages } from '../../store/with-macro-tracker.feature';
+import { calculateConsumedMacros, calculateAllMacroPercentages, generateMacroMessages, calculateMealRecommendation, generateRecommendationFeedback } from '../../store/with-macro-tracker.feature';
 
 /**
  * Componente para mostrar el progreso de macronutrientes
@@ -87,6 +87,21 @@ export class MacroProgressTrackerComponent {
   });
 
   /**
+   * Detecta si hay algún macro consumido (para mostrar/ocultar recomendaciones)
+   */
+  hasStartedDiet = computed<boolean>(() => {
+    const consumed = this.macroSnapshot().consumed;
+    return consumed.protein > 0 || consumed.carbs > 0 || consumed.fats > 0;
+  });
+
+  /**
+   * Detecta si ha completado todos los 3 macros al 100%
+   */
+  hasCompletedAllMacros = computed<boolean>(() => {
+    return this.macroSnapshot().isAllComplete;
+  });
+
+  /**
    * Obtiene el color dynamic para una barra de progreso según el porcentaje
    */
   getMacroColor(macro: 'protein' | 'fats' | 'carbs'): string {
@@ -122,6 +137,52 @@ export class MacroProgressTrackerComponent {
       (msg: any) => msg.macro === 'overall'
     );
   }
+
+  /**
+   * 🧠 Recomendación inteligente de tipo de comida (calculada localmente)
+   */
+  mealRecommendation = computed(() => {
+    const consumed = calculateConsumedMacros(this.meals());
+    const dailyGoal = this.store.dailyGoals();
+    const percentages = calculateAllMacroPercentages(consumed, dailyGoal);
+    
+    const remaining = {
+      protein: Math.max(dailyGoal.protein - consumed.protein, 0),
+      carbs: Math.max(dailyGoal.carbs - consumed.carbs, 0),
+      fats: Math.max(dailyGoal.fats - consumed.fats, 0),
+    };
+    
+    const totalCals = this.meals().reduce((total: number, meal: any) => {
+      if (meal.status === 'completed') {
+        return (
+          total +
+          meal.macros.protein * 4 +
+          meal.macros.carbs * 4 +
+          meal.macros.fats * 9
+        );
+      }
+      return total;
+    }, 0);
+
+    return calculateMealRecommendation(
+      percentages,
+      remaining,
+      totalCals,
+      dailyGoal
+    );
+  });
+
+  /**
+   * 💬 Feedback amigable sobre la recomendación
+   */
+  recommendationFeedback = computed(() => {
+    const consumed = calculateConsumedMacros(this.meals());
+    const dailyGoal = this.store.dailyGoals();
+    const percentages = calculateAllMacroPercentages(consumed, dailyGoal);
+    const recommended = this.mealRecommendation();
+    
+    return generateRecommendationFeedback(recommended, percentages);
+  });
 
   /**
    * Formatea un número con un máximo de decimales

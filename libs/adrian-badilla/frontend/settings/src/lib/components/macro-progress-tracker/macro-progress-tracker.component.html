@@ -14,6 +14,107 @@
     }
   </div>
 
+  <!-- 🧠 Panel de Recomendación Inteligente O Panel de Bienvenida O Panel de Celebración -->
+  @if (hasCompletedAllMacros()) {
+    <div class="celebration-panel">
+      <div class="celebration-content">
+        <div class="celebration-icon">🎉</div>
+        <h3 class="celebration-title">¡Lo Lograste! 🏆</h3>
+        <p class="celebration-message">
+          ¡Excelente trabajo! Has alcanzado todos tus objetivos de macronutrientes del día. Estás en el camino correcto hacia tus metas de salud y fitness.
+        </p>
+        <div class="celebration-stats">
+          <div class="stat-item">
+            <span class="stat-icon">💪</span>
+            <span class="stat-text">Proteína: 100%</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">⚡</span>
+            <span class="stat-text">Grasas: 100%</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">🔥</span>
+            <span class="stat-text">Carbs: 100%</span>
+          </div>
+        </div>
+        <p class="celebration-footer">
+          ✨ Mantén la consistencia y verás resultados increíbles
+        </p>
+      </div>
+    </div>
+  } @else if (hasStartedDiet()) {
+    <!-- Panel cuando ya ha comenzado la dieta -->
+    <div class="recommendation-panel">
+      <div class="recommendation-content">
+        <div class="recommendation-type" [class]="'type--' + mealRecommendation().type">
+          <span class="type-icon">
+            @switch(mealRecommendation().type) {
+              @case('light') {
+                🍜
+              }
+              @case('balanced') {
+                🥗
+              }
+              @case('high-protein') {
+                🥩
+              }
+            }
+          </span>
+          <span class="type-name">
+            @switch(mealRecommendation().type) {
+              @case('light') {
+                Ligero
+              }
+              @case('balanced') {
+                Balanceado
+              }
+              @case('high-protein') {
+                Proteico
+              }
+            }
+          </span>
+        </div>
+
+        <div class="recommendation-info">
+          <p class="recommendation-reason">{{ mealRecommendation().reason }}</p>
+          <span class="confidence-badge">
+            {{ mealRecommendation().confidence }}% confianza
+          </span>
+        </div>
+      </div>
+
+      <!-- Feedback Message -->
+      <div class="feedback-message" [class]="'alert--' + recommendationFeedback().type">
+        {{ recommendationFeedback().message }}
+      </div>
+    </div>
+  } @else {
+    <!-- Panel de bienvenida cuando no ha comenzado -->
+    <div class="welcome-panel">
+      <div class="welcome-content">
+        <div class="welcome-icon">🚀</div>
+        <h3 class="welcome-title">¡Comienza tu día hoy!</h3>
+        <p class="welcome-message">
+          Selecciona tu primera comida para comenzar a rastrear tus macronutrientes y recibir recomendaciones personalizadas.
+        </p>
+        <ul class="welcome-tips">
+          <li>
+            <span class="tip-icon">🎯</span>
+            <span class="tip-text">Selecciona comidas balanceadas para alcanzar tus metas</span>
+          </li>
+          <li>
+            <span class="tip-icon">📈</span>
+            <span class="tip-text">Recibe recomendaciones en tiempo real basadas en lo que hayas comido</span>
+          </li>
+          <li>
+            <span class="tip-icon">✨</span>
+            <span class="tip-text">¡Cuanto más preciso seas, mejores serán mis sugerencias!</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  }
+
   <!-- Barra de progreso general (promedio) -->
   <div class="macro-card macro-card--general">
     <div class="macro-card__header">
@@ -145,7 +246,7 @@
       <div class="macro-card__header">
         <div class="macro-icon">🍞</div>
         <div class="macro-info">
-          <h4>Carbohidratos</h4>
+          <h4>Carbs</h4>
           <span class="macro-goal">{{ macroSnapshot().goals.carbs }}g</span>
         </div>
         <span class="percentage-badge">
@@ -188,8 +289,7 @@
     </div>
   </div>
 
-  <!-- Mensajes generales -->
-  @if (showMessages() && getGeneralMessages().length > 0) {
+  @if (!hasCompletedAllMacros() && showMessages() && getGeneralMessages().length > 0) {
     <div class="general-messages">
       @for (msg of getGeneralMessages(); track msg.text) {
         <div class="message-alert" [class]="'alert--' + msg.type">

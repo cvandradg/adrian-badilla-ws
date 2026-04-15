@@ -27,7 +27,7 @@ const ROUTE_1_SUPERCENTERS: RouteSupercenterItem[] = [
   },
   {
     id: '2',
-    name: 'Snack de la manana',
+    name: 'Snack de la mañana',
     route: '1',
     province: 'Heredia',
     estimateLocation: 'Yogurt narutal o griego, nueces o almendras',

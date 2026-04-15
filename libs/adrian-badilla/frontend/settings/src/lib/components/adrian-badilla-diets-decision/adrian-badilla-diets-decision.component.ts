@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { Tag } from 'primeng/tag';
 import {
@@ -7,6 +7,7 @@ import {
   MealOption,
 } from '../../types/diet-decision.types';
 import { MealTranslationService } from '../../services/meal-translation.service';
+import { settingsStoreDev } from '../../store/settings.store';
 
 @Component({
   selector: 'lib-adrian-badilla-diets-decision',
@@ -18,6 +19,7 @@ import { MealTranslationService } from '../../services/meal-translation.service'
 export class AdrianBadillaDietsDecisionComponent {
 
   meal = input.required<DietMeal>();
+  private readonly store = inject(settingsStoreDev);
 
   decisionChange = output<{
     id: string;
@@ -32,15 +34,23 @@ export class AdrianBadillaDietsDecisionComponent {
 
   constructor(private readonly mealTranslationService: MealTranslationService) {}
 
-  // ⭐ recomendación inteligente
+  // ⭐ recomendación inteligente - Conectada al progreso global de macros
   recommended = computed(() => {
-    const currentMeal = this.meal();
-    if (!currentMeal?.macros) return 'balanced';
+    const recommendation = this.store.recommendedMealType();
+    
+    if (recommendation?.type) {
+      // Mapear de "high-protein" a "proteico"
+      if (recommendation.type === 'high-protein') {
+        return 'Proteico';
+      } else if (recommendation.type === 'light') {
+        return 'Ligero';
+      } else {
+        return 'Balanceado';
+      }
+    }
 
-    if (currentMeal.macros.protein < 20) return 'high-protein';
-    if (currentMeal.macros.carbs > 40) return 'light';
-
-    return 'balanced';
+    // Fallback por si el store no está disponible
+    return 'Balanceado';
   });
 
   selectDecision(decision: MealDecision) {

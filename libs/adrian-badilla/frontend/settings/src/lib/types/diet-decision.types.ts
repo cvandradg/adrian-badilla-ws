@@ -70,3 +70,22 @@ export interface MacroSnapshot {
   isAllComplete: boolean;
   completedCount: number;
 }
+
+// 🧠 RECOMMENDATION ENGINE TYPES
+/**
+ * MealRecommendation interface
+ * Meal types:
+ * 'light' = ligero
+ * 'balanced' = balanceado
+ * 'high-protein' = proteico
+ */
+export interface MealRecommendation {
+  type: MealDecision;
+  reason: string;
+  confidence: number; // 0-100, higher = more confident
+}
+
+export interface RecommendationFeedback {
+  message: string;
+  type: 'success' | 'info' | 'warning';
+}

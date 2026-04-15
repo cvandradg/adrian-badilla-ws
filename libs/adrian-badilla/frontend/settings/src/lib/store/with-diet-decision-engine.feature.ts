@@ -225,11 +225,21 @@ export function withDietDecisionEngine() {
       // convierte un objeto supercenter (del servidor) a un objeto DietMeal con toda la informacion necesaria, inclyyendo opciones de decision y macronutrientes
       mapToMeal(supercenter: any): DietMeal {
         const baseName = supercenter.baseName ?? supercenter.name;
+        
+        // 🕐 Obtener el tiempo del meal correspondiente en el store
+        let mealTime = '08:00';
+        const mealFromStore = store.meals?.()?.find(m => m.id === supercenter.id);
+        if (mealFromStore?.time) {
+          mealTime = mealFromStore.time;
+        } else if (supercenter.time) {
+          mealTime = supercenter.time;
+        }
+
         return {
           id: supercenter.id,
           baseName,
           name: supercenter.name,
-          time: '08:00',
+          time: mealTime,
           status: supercenter.status ?? 'pending',
           decision: supercenter.decision ?? null,
           selectedFoodName: supercenter.selectedFoodName ?? null,
