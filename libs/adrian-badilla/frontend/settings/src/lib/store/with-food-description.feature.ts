@@ -1,4 +1,4 @@
-import { computed, inject } from '@angular/core';
+import { computed, inject, Type } from '@angular/core';
 import {
   patchState,
   signalStoreFeature,
@@ -17,6 +17,8 @@ import type {
   IngredientInfoResponse,
   IngredientSearchResponse,
 } from '../types/food-description.types';
+import type { RouteSupercenterItem, SupercenterDoc, WithId } from '../types/diets.types';
+import { MealTranslationService } from '../services/meal-translation.service';
 
 const DETAILED_NUTRIENT_KEYS: Record<keyof FoodNutritionData, string> = {
   calories: 'Calories',
@@ -203,6 +205,42 @@ export function withFoodDescription() {
           patchState(store, { isLoading: false });
         }
       },
-    })),
+
+      openDietDialog(
+        diet: RouteSupercenterItem,
+        mealTranslationService: MealTranslationService,
+        openDialogFn: (component: Type<unknown>, data: WithId<SupercenterDoc>) => void,
+        FoodDescriptionDialogComponent: Type<unknown>,
+      ) {
+        const foodNameForApi = diet.selectedFoodNameInEnglish || 
+                              mealTranslationService.translateMealToEnglish(diet.name) ||
+                              diet.name;
+        
+        const foodDisplayName = diet.selectedFoodDisplayName || diet.selectedFoodName || diet.name;
+        
+        const fullDiet = {
+          ...diet,
+          name: foodNameForApi,
+          displayName: foodDisplayName,
+          createdDate: new Date(),
+          lastModifiedDate: new Date(),
+        } as WithId<SupercenterDoc>;
+        
+        openDialogFn(FoodDescriptionDialogComponent, fullDiet);
+      },
+
+      openDietDialogFromChild(
+        mealId: string,
+        selectedRouteSupercenters: () => RouteSupercenterItem[],
+        mealTranslationService: MealTranslationService,
+        openDialogFn: (component: Type<unknown>, data: WithId<SupercenterDoc>) => void,
+        FoodDescriptionDialogComponent: Type<unknown>,
+      ) {
+        const meal = selectedRouteSupercenters().find((item) => item.id === mealId);
+        if (meal) {
+          this.openDietDialog(meal, mealTranslationService, openDialogFn, FoodDescriptionDialogComponent);
+        }
+      },
+    }))
   );
 }

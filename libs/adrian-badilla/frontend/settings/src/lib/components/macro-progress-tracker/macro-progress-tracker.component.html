@@ -1,0 +1,201 @@
+<div class="macro-tracker">
+  <!-- Header con mensaje general -->
+  <div class="tracker-header">
+    <div class="header-content">
+      <h3 class="tracker-title">📊 Progreso de Macros</h3>
+      <p class="progress-message">{{ progressMessage() }}</p>
+    </div>
+    
+    @if (showCalories()) {
+      <div class="calories-badge">
+        <span class="calories-label">calorías</span>
+        <span class="calories-value">{{ formatNumber(totalCalories()) }}</span>
+      </div>
+    }
+  </div>
+
+  <!-- Barra de progreso general (promedio) -->
+  <div class="macro-card macro-card--general">
+    <div class="macro-card__header">
+      <h4>Progreso General</h4>
+      <span class="percentage-badge">
+        {{ formatNumber(macroSnapshot().percentages.average.percentage, 1) }}%
+      </span>
+    </div>
+    <div class="progress-bar-container">
+      <div
+        class="progress-bar"
+        [style.width.%]="
+          Math.min(macroSnapshot().percentages.average.percentage, 100)
+        "
+        [style.backgroundColor]="
+          macroSnapshot().percentages.average.percentage >= 100
+            ? '#f97316'
+            : '#6366f1'
+        "
+      ></div>
+    </div>
+    <div class="macro-card__footer">
+      <span class="consumed">
+        {{ formatNumber(macroSnapshot().completedCount) }}/3 macros completados
+      </span>
+    </div>
+  </div>
+
+  <!-- Tarjetas individuales de cada macro -->
+  <div class="macros-grid">
+    <!-- PROTEÍNA -->
+    <div class="macro-card">
+      <div class="macro-card__header">
+        <div class="macro-icon">🥩</div>
+        <div class="macro-info">
+          <h4>Proteína</h4>
+          <span class="macro-goal">{{ macroSnapshot().goals.protein }}g</span>
+        </div>
+        <span class="percentage-badge">
+          {{ formatNumber(macroSnapshot().percentages.protein.percentage, 1) }}%
+        </span>
+      </div>
+
+      <div class="progress-bar-container">
+        <div
+          class="progress-bar"
+          [style.width.%]="
+            Math.min(macroSnapshot().percentages.protein.percentage, 100)
+          "
+          [style.backgroundColor]="getMacroColor('protein')"
+        ></div>
+      </div>
+
+      <div class="macro-card__stats">
+        <div class="stat">
+          <span class="stat-label">Consumido</span>
+          <span class="stat-value">{{ formatNumber(macroSnapshot().consumed.protein) }}g</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Restante</span>
+          <span class="stat-value" [class.exceeded]="macroSnapshot().percentages.protein.exceeded > 0">
+            @if (macroSnapshot().percentages.protein.exceeded > 0) {
+              +{{ formatNumber(macroSnapshot().percentages.protein.exceeded) }}g
+            } @else {
+              {{ formatNumber(macroSnapshot().percentages.protein.remaining) }}g
+            }
+          </span>
+        </div>
+      </div>
+
+      @if (showMessages() && getMessagesForMacro('protein').length > 0) {
+        <div class="macro-messages">
+          @for (msg of getMessagesForMacro('protein'); track msg.text) {
+            <p class="message" [class]="'message--' + msg.type">{{ msg.text }}</p>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- GRASAS -->
+    <div class="macro-card">
+      <div class="macro-card__header">
+        <div class="macro-icon">🥑</div>
+        <div class="macro-info">
+          <h4>Grasas</h4>
+          <span class="macro-goal">{{ macroSnapshot().goals.fats }}g</span>
+        </div>
+        <span class="percentage-badge">
+          {{ formatNumber(macroSnapshot().percentages.fats.percentage, 1) }}%
+        </span>
+      </div>
+
+      <div class="progress-bar-container">
+        <div
+          class="progress-bar"
+          [style.width.%]="Math.min(macroSnapshot().percentages.fats.percentage, 100)"
+          [style.backgroundColor]="getMacroColor('fats')"
+        ></div>
+      </div>
+
+      <div class="macro-card__stats">
+        <div class="stat">
+          <span class="stat-label">Consumido</span>
+          <span class="stat-value">{{ formatNumber(macroSnapshot().consumed.fats) }}g</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Restante</span>
+          <span class="stat-value" [class.exceeded]="macroSnapshot().percentages.fats.exceeded > 0">
+            @if (macroSnapshot().percentages.fats.exceeded > 0) {
+              +{{ formatNumber(macroSnapshot().percentages.fats.exceeded) }}g
+            } @else {
+              {{ formatNumber(macroSnapshot().percentages.fats.remaining) }}g
+            }
+          </span>
+        </div>
+      </div>
+
+      @if (showMessages() && getMessagesForMacro('fats').length > 0) {
+        <div class="macro-messages">
+          @for (msg of getMessagesForMacro('fats'); track msg.text) {
+            <p class="message" [class]="'message--' + msg.type">{{ msg.text }}</p>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- CARBOHIDRATOS -->
+    <div class="macro-card">
+      <div class="macro-card__header">
+        <div class="macro-icon">🍞</div>
+        <div class="macro-info">
+          <h4>Carbohidratos</h4>
+          <span class="macro-goal">{{ macroSnapshot().goals.carbs }}g</span>
+        </div>
+        <span class="percentage-badge">
+          {{ formatNumber(macroSnapshot().percentages.carbs.percentage, 1) }}%
+        </span>
+      </div>
+
+      <div class="progress-bar-container">
+        <div
+          class="progress-bar"
+          [style.width.%]="Math.min(macroSnapshot().percentages.carbs.percentage, 100)"
+          [style.backgroundColor]="getMacroColor('carbs')"
+        ></div>
+      </div>
+
+      <div class="macro-card__stats">
+        <div class="stat">
+          <span class="stat-label">Consumido</span>
+          <span class="stat-value">{{ formatNumber(macroSnapshot().consumed.carbs) }}g</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Restante</span>
+          <span class="stat-value" [class.exceeded]="macroSnapshot().percentages.carbs.exceeded > 0">
+            @if (macroSnapshot().percentages.carbs.exceeded > 0) {
+              +{{ formatNumber(macroSnapshot().percentages.carbs.exceeded) }}g
+            } @else {
+              {{ formatNumber(macroSnapshot().percentages.carbs.remaining) }}g
+            }
+          </span>
+        </div>
+      </div>
+
+      @if (showMessages() && getMessagesForMacro('carbs').length > 0) {
+        <div class="macro-messages">
+          @for (msg of getMessagesForMacro('carbs'); track msg.text) {
+            <p class="message" [class]="'message--' + msg.type">{{ msg.text }}</p>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Mensajes generales -->
+  @if (showMessages() && getGeneralMessages().length > 0) {
+    <div class="general-messages">
+      @for (msg of getGeneralMessages(); track msg.text) {
+        <div class="message-alert" [class]="'alert--' + msg.type">
+          {{ msg.text }}
+        </div>
+      }
+    </div>
+  }
+</div>

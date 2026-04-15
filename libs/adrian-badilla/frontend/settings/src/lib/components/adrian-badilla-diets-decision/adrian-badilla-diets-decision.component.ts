@@ -1,44 +1,44 @@
-import { ChangeDetectionStrategy, Component, computed, EventEmitter, Input, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { NgClass } from '@angular/common';
+import { Tag } from 'primeng/tag';
 import {
   DietMeal,
   MealDecision,
   MealOption,
-  MealStatus,
 } from '../../types/diet-decision.types';
 import { MealTranslationService } from '../../services/meal-translation.service';
 
 @Component({
   selector: 'lib-adrian-badilla-diets-decision',
-  imports: [NgClass],
+  imports: [NgClass, Tag],
   templateUrl: './adrian-badilla-diets-decision.component.html',
   styleUrl: './adrian-badilla-diets-decision.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdrianBadillaDietsDecisionComponent {
 
-  @Input() meal!: DietMeal;
+  meal = input.required<DietMeal>();
 
-  @Output() statusChange = new EventEmitter<{ id: string; status: MealStatus }>();
-  @Output() decisionChange = new EventEmitter<{
+  decisionChange = output<{
     id: string;
     decision: MealDecision;
     option: MealOption;
     optionNameInSpanish: string;
     optionNameInEnglish: string;
   }>();
-  @Output() mealDialogRequested = new EventEmitter<string>();
+  mealDialogRequested = output<string>();
 
   openedDecision = signal<MealDecision | null>(null);
 
-  constructor(private mealTranslationService: MealTranslationService) {}
+  constructor(private readonly mealTranslationService: MealTranslationService) {}
 
   // ⭐ recomendación inteligente
   recommended = computed(() => {
-    if (!this.meal?.macros) return 'balanced';
+    const currentMeal = this.meal();
+    if (!currentMeal?.macros) return 'balanced';
 
-    if (this.meal.macros.protein < 20) return 'high-protein';
-    if (this.meal.macros.carbs > 40) return 'light';
+    if (currentMeal.macros.protein < 20) return 'high-protein';
+    if (currentMeal.macros.carbs > 40) return 'light';
 
     return 'balanced';
   });
@@ -50,7 +50,7 @@ export class AdrianBadillaDietsDecisionComponent {
   }
 
   getOptionsForDecision(decision: MealDecision): MealOption[] {
-    return this.meal.decisionOptions?.[decision] ?? [];
+    return this.meal().decisionOptions?.[decision] ?? [];
   }
 
   selectMealOption(option: MealOption) {
@@ -60,8 +60,10 @@ export class AdrianBadillaDietsDecisionComponent {
       return;
     }
 
+    // ✅ Emitir cambio de decisión 
+    // (applyMealDecision en store AUTO-marca como 'completed')
     this.decisionChange.emit({
-      id: this.meal.id,
+      id: this.meal().id,
       decision,
       option,
       optionNameInSpanish: option.name,
@@ -76,25 +78,20 @@ export class AdrianBadillaDietsDecisionComponent {
   }
 
   openMealDialog() {
-    this.mealDialogRequested.emit(this.meal.id);
+    this.mealDialogRequested.emit(this.meal().id);
   }
 
-  completeMeal() {
-    this.statusChange.emit({
-      id: this.meal.id,
-      status: 'completed'
-    });
+  getStatusLabel(): string {
+    const status = this.meal().status;
+    if (status === 'completed') return 'Completado';
+    if (status === 'skipped') return 'Incompleto';
+    return 'Pendiente';
   }
 
-  skipMeal() {
-    this.statusChange.emit({
-      id: this.meal.id,
-      status: 'skipped'
-    });
+  getStatusSeverity(): 'success' | 'danger' | 'info' {
+    const status = this.meal().status;
+    if (status === 'completed') return 'success';
+    if (status === 'skipped') return 'danger';
+    return 'info';
   }
-
-  //emitir eventos
-
-
-
 }

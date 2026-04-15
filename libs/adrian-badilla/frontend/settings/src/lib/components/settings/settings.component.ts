@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angu
 import { AdditionalInfoColumnComponent } from '../additional-info-column/additional-info-column.component';
 import { TabsModule } from 'primeng/tabs';
 import { AdrianBadillaDietsComponent } from '../adrian-badilla-diets/adrian-badilla-diets.component';
+import { MacroProgressTrackerComponent } from '../macro-progress-tracker/macro-progress-tracker.component';
 import { DialogService } from 'primeng/dynamicdialog';
 
 @Component({
@@ -12,6 +13,7 @@ import { DialogService } from 'primeng/dynamicdialog';
     TabsModule,
     FontAwesomeModule,
     AdrianBadillaDietsComponent,
+    MacroProgressTrackerComponent,
   ],
   providers:[DialogService],
   templateUrl: './settings.component.html',
@@ -27,7 +29,7 @@ export class SettingsComponent {
     },
     {
       route: 'productos',
-      label: 'Productos',
+      label: 'Progreso',
       icon: ['fas', 'bars'],
     },
     {

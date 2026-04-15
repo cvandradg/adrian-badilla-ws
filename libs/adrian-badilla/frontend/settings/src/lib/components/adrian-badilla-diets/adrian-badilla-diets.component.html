@@ -137,6 +137,8 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
                 pInputText
                 class="route-editor-input"
                 id="route_number"
+                [value]="routeForm.routeName()"
+                (change)="onRouteNameChange($event.target.value)"
                 autocomplete="off"
               />
             </p-iconfield>
@@ -150,30 +152,16 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
                 pInputText
                 class="route-editor-input"
                 id="route_name"
+                [value]="routeForm.routeDescription()"
+                (change)="onRouteDescriptionChange($event.target.value)"
                 autocomplete="off"
               />
             </p-iconfield>
             <label for="route_name">Descripción</label>
           </p-floatlabel>
-
-          @if ( isEditing() && routeForm.routeName().dirty() &&
-          routeForm.routeName().invalid() ) {
-          <ul class="p-error p-1 m-0">
-            @for (error of routeForm.routeName().errors(); track error.kind) {
-            <li>{{ error.message }}</li>
-            }
-          </ul>
-          } @if ( isEditing() && routeForm.routeDescription().dirty() &&
-          routeForm.routeDescription().invalid() ) {
-          <ul class="p-error p-1 m-0">
-            @for (error of routeForm.routeDescription().errors(); track
-            error.kind) {
-            <li>{{ error.message }}</li>
-            }
-          </ul>
-          }
         </div>
 
+        <lib-macro-progress-tracker [meals]="routeSupercenters"/>
         @if (!routeSupercenters.length) {
         <div class="editor-layout__bottom">
           <div class="card">
@@ -225,26 +213,6 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
     >
       <i [class]="supercenter.imgPrimeng"></i>
     </button>
-    <div class="marker-actions">
-      <button 
-        type="button" 
-        class="action-btn action-btn--complete" 
-        (click)="updateStatus(supercenter, 'completed')"
-        pRipple
-        title="Completado"
-      >
-        <i class="pi pi-check"></i>
-      </button>
-      <button 
-        type="button" 
-        class="action-btn action-btn--skip" 
-        (click)="updateStatus(supercenter, 'skipped')"
-        pRipple
-        title="Saltado"
-      >
-        <i class="pi pi-times"></i>
-      </button>
-    </div>
   </div>
 </ng-template>
 
@@ -253,7 +221,6 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
   <!-- 🔥 TU PANEL NUEVO -->
   <lib-adrian-badilla-diets-decision
     [meal]="mapToMeal(supercenter)"
-    (statusChange)="updateStatusFromChild($event)"
     (decisionChange)="applyDecisionFromChild($event)"
     (mealDialogRequested)="openDietDialogFromChild($event)"
   />
