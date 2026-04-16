@@ -185,9 +185,12 @@ export class MacroProgressTrackerComponent {
   });
 
   /**
-   * Formatea un número con un máximo de decimales
+   * Formatea un número redondeando hacia arriba (sin decimales)
    */
   formatNumber(value: number, decimals: number = 0): string {
-    return value.toFixed(decimals);
+    // Redondear hacia arriba
+    const multiplier = Math.pow(10, decimals);
+    const rounded = Math.ceil(value * multiplier) / multiplier;
+    return rounded.toFixed(decimals);
   }
 }

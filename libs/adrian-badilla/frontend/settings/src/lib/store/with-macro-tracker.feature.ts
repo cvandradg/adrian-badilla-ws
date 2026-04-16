@@ -18,6 +18,7 @@ import type {
   RecommendationFeedback,
   MealDecision,
 } from '../types/diet-decision.types';
+import { generateSuggestedMeal, generateSuggestedMealForCategory } from '../utils/meal-suggestion.utils';
 
 /**
  * 📊 TIPOS Y INTERFACES PARA MACRO TRACKING
@@ -533,10 +534,44 @@ export function withMacroTracker() {
         // Generar feedback
         return generateRecommendationFeedback(recommended, percentages);
       }),
+
+      // 🍽️ SUGERENCIAS DE COMIDAS - Generadas automáticamente basadas en macros restantes
+      suggestedMeal: computed(() => {
+        const meals = store.meals() ?? [];
+        const consumed = calculateConsumedMacros(meals);
+        const dailyGoal = store.dailyGoals();
+        
+        const remaining = {
+          protein: Math.max(dailyGoal.protein - consumed.protein, 0),
+          carbs: Math.max(dailyGoal.carbs - consumed.carbs, 0),
+          fats: Math.max(dailyGoal.fats - consumed.fats, 0),
+        };
+        
+        return generateSuggestedMeal(remaining);
+      }),
     })),
 
     // 🛠️ METHODS
     withMethods((store) => ({
+      /**
+       * 🍽️ Obtiene sugerencia de comida por categoría
+       */
+      getSuggestedMealByCategory(
+        category: 'breakfast' | 'morning-snack' | 'lunch' | 'afternoon-snack' | 'dinner' | 'night-snack'
+      ) {
+        const meals = store.meals() ?? [];
+        const consumed = calculateConsumedMacros(meals);
+        const dailyGoal = store.dailyGoals();
+        
+        const remaining = {
+          protein: Math.max(dailyGoal.protein - consumed.protein, 0),
+          carbs: Math.max(dailyGoal.carbs - consumed.carbs, 0),
+          fats: Math.max(dailyGoal.fats - consumed.fats, 0),
+        };
+        
+        return generateSuggestedMealForCategory(remaining, category);
+      },
+
       /**
        * Actualiza los objetivos diarios de macros
        */
@@ -562,21 +597,21 @@ export function withMacroTracker() {
        * Obtiene el resumen en porcentaje de un macro específico
        */
       getMacroPercentage(macro: keyof MacroGoals): MacroPercentage {
-        return store.macroPercentages()[macro];
+        return (store as any)['macroPercentages']()[macro];
       },
 
       /**
        * Verifica si un macro está completado
        */
       isMacroCompleted(macro: keyof MacroGoals): boolean {
-        return store.macroPercentages()[macro].isCompleted;
+        return (store as any)['macroPercentages']()[macro].isCompleted;
       },
 
       /**
        * Verifica si TODOS los macros están completados
        */
       areAllMacrosCompleted(): boolean {
-        const percentages = store.macroPercentages();
+        const percentages = (store as any)['macroPercentages']();
         return (
           percentages.protein.isCompleted &&
           percentages.fats.isCompleted &&
@@ -588,7 +623,7 @@ export function withMacroTracker() {
        * Obtiene el color de progreso basado en el porcentaje (para UI)
        */
       getMacroColor(macro: keyof MacroGoals): string {
-        const percentage = store.macroPercentages()[macro];
+        const percentage = (store as any)['macroPercentages']()[macro];
 
         if (percentage.percentage < 50) {
           return '#ef4444'; // Rojo
@@ -605,7 +640,7 @@ export function withMacroTracker() {
        * Obtiene un mensaje amigable sobre el progreso general
        */
       getProgressMessage(): string {
-        const snapshot = store.macroSnapshot();
+        const snapshot = (store as any)['macroSnapshot']();
 
         if (snapshot.isAllComplete) {
           return '🎉 ¡Perfecto! Has completado todos tus macros';
@@ -652,7 +687,7 @@ export function withMacroTracker() {
         }
 
         // Usar la recomendación global (que ya es reactiva)
-        return store.recommendedMealType();
+        return (store as any)['recommendedMealType']() as MealRecommendation;
       },
     }))
   );

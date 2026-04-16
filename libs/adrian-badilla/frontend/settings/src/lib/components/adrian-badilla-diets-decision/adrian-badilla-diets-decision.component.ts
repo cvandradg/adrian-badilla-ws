@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { DecimalPipe, NgClass } from '@angular/common';
 import { Tag } from 'primeng/tag';
 import {
   DietMeal,
@@ -11,7 +11,7 @@ import { settingsStoreDev } from '../../store/settings.store';
 
 @Component({
   selector: 'lib-adrian-badilla-diets-decision',
-  imports: [NgClass, Tag],
+  imports: [NgClass, Tag, DecimalPipe],
   templateUrl: './adrian-badilla-diets-decision.component.html',
   styleUrl: './adrian-badilla-diets-decision.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,23 +34,31 @@ export class AdrianBadillaDietsDecisionComponent {
 
   constructor(private readonly mealTranslationService: MealTranslationService) {}
 
-  // ⭐ recomendación inteligente - Conectada al progreso global de macros
-  recommended = computed(() => {
-    const recommendation = this.store.recommendedMealType();
+  // 🍽️ SUGERENCIA DE COMIDA - Generada automáticamente basada en macros restantes Y tipo de decisión
+  suggestedMeal = computed(() => {
+    const baseName = this.meal().baseName.toLowerCase();
+    const decision = this.openedDecision(); // 🎯 Considerar qué decisión está abierta
     
-    if (recommendation?.type) {
-      // Mapear de "high-protein" a "proteico"
-      if (recommendation.type === 'high-protein') {
-        return 'Proteico';
-      } else if (recommendation.type === 'light') {
-        return 'Ligero';
-      } else {
-        return 'Balanceado';
-      }
+    // Mapear nombre de comida a categoría
+    let category: 'breakfast' | 'morning-snack' | 'lunch' | 'afternoon-snack' | 'dinner' | 'night-snack' = 'lunch';
+    
+    if (baseName.includes('desayuno')) {
+      category = 'breakfast';
+    } else if (baseName.includes('mañana')) {
+      category = 'morning-snack';
+    } else if (baseName.includes('almuerzo') || baseName.includes('comida')) {
+      category = 'lunch';
+    } else if (baseName.includes('tarde')) {
+      category = 'afternoon-snack';
+    } else if (baseName.includes('cena')) {
+      category = 'dinner';
+    } else if (baseName.includes('noche')) {
+      category = 'night-snack';
     }
-
-    // Fallback por si el store no está disponible
-    return 'Balanceado';
+    
+    // 🎯 NUEVO: Pasar el tipo de decisión a la función de sugerencia
+    // Esto genera recomendaciones diferentes para light/balanced/protein
+    return (this.store as any).getSuggestedMealByCategory(category, decision);
   });
 
   selectDecision(decision: MealDecision) {
@@ -83,6 +91,33 @@ export class AdrianBadillaDietsDecisionComponent {
     this.openedDecision.set(null);
   }
 
+  // 🍽️ Seleccionar la comida sugerida automáticamente
+  selectSuggestedMeal() {
+    const suggestion = this.suggestedMeal();
+    const decision = this.openedDecision(); // ✅ Respetar la decisión actualmente abierta
+    
+    if (!suggestion?.items || suggestion.items.length === 0 || !decision) {
+      return;
+    }
+
+    // Crear una opción virtual combinando todos los items de la sugerencia
+    const suggestedOption: MealOption = {
+      name: suggestion.items.map((item: MealOption) => item.name).join(' + '),
+      macros: suggestion.totals,
+    };
+
+    // ✅ IMPORTANTE: Emitir con la decisión abierta, NO siempre 'balanced'
+    this.decisionChange.emit({
+      id: this.meal().id,
+      decision, // ← Usar la decisión actual (light/balanced/protein)
+      option: suggestedOption,
+      optionNameInSpanish: suggestedOption.name,
+      optionNameInEnglish: suggestedOption.name,
+    });
+
+    this.openedDecision.set(null);
+  }
+
   isDecisionOpen(decision: MealDecision): boolean {
     return this.openedDecision() === decision;
   }
@@ -103,5 +138,10 @@ export class AdrianBadillaDietsDecisionComponent {
     if (status === 'completed') return 'success';
     if (status === 'skipped') return 'danger';
     return 'info';
+  }
+
+  // 🔢 Redondear hacia arriba
+  roundUp(value: number): number {
+    return Math.ceil(value);
   }
 }

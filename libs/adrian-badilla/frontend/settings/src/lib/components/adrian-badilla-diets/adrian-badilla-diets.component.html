@@ -126,144 +126,68 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
 
     @if (selectedRouteItem; as activeRoute) {
     <section class="routes-content">
-      <div class="edit-title mb-3">Dieta: Maria Castrillo</div>
-
-      <div class="editor-layout">
-        <div class="editor-layout__top">
-          <p-floatlabel variant="in" class="date-picker-container">
-            <p-iconfield>
-              <p-inputicon class="pi pi-map" />
-              <input
-                pInputText
-                class="route-editor-input"
-                id="route_number"
-                [value]="routeForm.routeName()"
-                (change)="onRouteNameChange($event.target.value)"
-                autocomplete="off"
-              />
-            </p-iconfield>
-            <label for="route_number">Nombre de ruta</label>
-          </p-floatlabel>
-
-          <p-floatlabel variant="in" class="date-picker-container">
-            <p-iconfield>
-              <p-inputicon class="pi pi-file-edit" />
-              <input
-                pInputText
-                class="route-editor-input"
-                id="route_name"
-                [value]="routeForm.routeDescription()"
-                (change)="onRouteDescriptionChange($event.target.value)"
-                autocomplete="off"
-              />
-            </p-iconfield>
-            <label for="route_name">Descripción</label>
-          </p-floatlabel>
-        </div>
-
-        <lib-macro-progress-tracker [meals]="routeSupercenters"/>
-        @if (!routeSupercenters.length) {
-        <div class="editor-layout__bottom">
-          <div class="card">
-            <div class="editor-bottom-form">
-              <div class="editor-empty-state">
-                <div class="editor-empty-state__content">
-                  <i class="pi pi-map editor-empty-state__icon"></i>
-                  <div class="editor-empty-state__title">
-                    Esta ruta aún no tiene supercenters asignados
-                  </div>
-                  <div class="editor-empty-state__text">
-                    Cuando agregues supercenters a esta ruta, se reflejarán
-                    aquí.
-                  </div>
-
-                  <p-button
-                    label="Agregar supercenters"
-                    icon="pi pi-plus"
-                    type="button"
-                    variant="text"
-                    [raised]="true"
-                    (onClick)="openAddSupercenterDialog()"
-                    size="large"
-                    styleClass="add-route-btn"
-                  />
-                </div>
+      <lib-macro-progress-tracker [meals]="routeSupercenters"/>
+      
+      @if (!routeSupercenters.length) {
+      <div class="card mt-3">
+        <div class="editor-bottom-form">
+          <div class="editor-empty-state">
+            <div class="editor-empty-state__content">
+              <i class="pi pi-map editor-empty-state__icon"></i>
+              <div class="editor-empty-state__title">
+                Esta ruta aún no tiene supercenters asignados
               </div>
+              <div class="editor-empty-state__text">
+                Cuando agregues supercenters a esta ruta, se reflejarán
+                aquí.
+              </div>
+              <p-button
+                label="Agregar supercenters"
+                icon="pi pi-plus"
+                type="button"
+                variant="text"
+                [raised]="true"
+                (onClick)="openAddSupercenterDialog()"
+                size="large"
+                styleClass="add-route-btn"
+              />
             </div>
           </div>
         </div>
-        }
       </div>
+      }
 
-      <div>
-        @if (routeSupercenters.length) {
-        <div class="card mt-4">
+      @if (routeSupercenters.length) {
+      <div class="card mt-4">
+        <p-timeline
+          [value]="routeSupercenters"
+          class="align-items-start route-timeline"
+        >
+          <ng-template #marker let-supercenter let-i="index">
+            <div class="marker-with-actions">
+              <button
+                type="button"
+                class="timeline-marker timeline-marker-button"
+                [ngClass]="getMarkerClasses(supercenter, i)"
+                (click)="openDietDialog(supercenter)"
+              >
+                <i [class]="supercenter.imgPrimeng"></i>
+              </button>
+            </div>
+          </ng-template>
 
-<p-timeline
-  [value]="routeSupercenters"
-  class="align-items-start route-timeline"
-  >
-<ng-template #marker let-supercenter let-i="index">
-  <div class="marker-with-actions">
-    <button
-      type="button"
-      class="timeline-marker timeline-marker-button"
-      [ngClass]="getMarkerClasses(supercenter, i)"
-      (click)="openDietDialog(supercenter)"
-    >
-      <i [class]="supercenter.imgPrimeng"></i>
-    </button>
-  </div>
-</ng-template>
-
-<ng-template #content let-supercenter>
-
-  <!-- 🔥 TU PANEL NUEVO -->
-  <lib-adrian-badilla-diets-decision
-    [meal]="mapToMeal(supercenter)"
-    (decisionChange)="applyDecisionFromChild($event)"
-    (mealDialogRequested)="openDietDialogFromChild($event)"
-  />
-
-</ng-template>
-          </p-timeline>
-        </div>
-        }
+          <ng-template #content let-supercenter>
+            <lib-adrian-badilla-diets-decision
+              [meal]="mapToMeal(supercenter)"
+              (decisionChange)="applyDecisionFromChild($event)"
+              (mealDialogRequested)="openDietDialogFromChild($event)"
+            />
+          </ng-template>
+        </p-timeline>
       </div>
+      }
     </section>
     }
   </div>
 </form>
-} @else if (sortedRoutes().length) {
-<div class="routes-empty">
-  <div class="routes-empty__content">
-    <i class="pi pi-search routes-empty__icon"></i>
-    <div class="routes-empty__title">No encontramos rutas con esa búsqueda</div>
-    <div class="routes-empty__text">
-      Prueba con el nombre o descripción de la ruta, o con datos del supercenter
-      como provincia, ubicación estimada o ubicación exacta.
-    </div>
-  </div>
-</div>
-} @else {
-<div class="routes-empty">
-  <div class="routes-empty__content">
-    <i class="pi pi-map routes-empty__icon"></i>
-    <div class="routes-empty__title">Aún no tienes rutas creadas</div>
-    <div class="routes-empty__text">
-      Cuando agregues una ruta, aparecerá aquí para que puedas editarla y
-      administrarla.
-    </div>
-
-    <p-button
-      label="Crear ruta"
-      icon="pi pi-plus"
-      variant="text"
-      [raised]="true"
-      (onClick)="openAddRouteDialog()"
-      size="large"
-      styleClass="add-route-btn"
-    />
-  </div>
-</div>
 }

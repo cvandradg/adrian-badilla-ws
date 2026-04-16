@@ -1,0 +1,121 @@
+<!-- 🍽️ MEAL DROPDOWN WITH SUGGESTIONS TEMPLATE EXAMPLE -->
+
+<div class="meal-dropdown-container">
+
+  <!-- ⭐ SUGGESTED MEAL SECTION -->
+  <!-- This will show a smart suggestion based on remaining macros -->
+  @if (suggestedMeal(); as suggested) {
+    @if (suggested.items.length > 0) {
+      <div class="suggested-section">
+        <div class="suggested-header">
+          <h3>⭐ Sugerencia para ti</h3>
+          <span class="quality-badge" [ngClass]="'quality-' + getMatchQualityColor(suggested.nearestMatch)">
+            {{ suggested.nearestMatch }}
+          </span>
+        </div>
+
+        <button 
+          type="button"
+          class="suggested-button"
+          (click)="selectSuggestedMeal(suggested)"
+          [attr.aria-label]="'Seleccionar: ' + suggested.items.map(i => i.name).join(' + ')"
+        >
+          <!-- Food items list -->
+          <div class="suggested-foods">
+            @for (food of suggested.items; track food.name; let isLast = $last) {
+              <span class="food-name">{{ food.name }}</span>
+              @if (!isLast) {
+                <span class="separator">+</span>
+              }
+            }
+          </div>
+
+          <!-- Macro totals -->
+          <div class="suggested-macros">
+            <span class="macro-item protein">
+              🥩 {{ roundUp(suggested.totals.protein) }}g
+            </span>
+            <span class="macro-item carbs">
+              🍞 {{ roundUp(suggested.totals.carbs) }}g
+            </span>
+            <span class="macro-item fats">
+              🥑 {{ roundUp(suggested.totals.fats) }}g
+            </span>
+          </div>
+        </button>
+
+        <hr class="divider" />
+      </div>
+    }
+  }
+
+  <!-- 🎯 PREDEFINED OPTIONS SECTION -->
+  <!-- Show regular meal options grouped by decision type -->
+  <div class="options-section">
+    <h4 class="options-title">Opciones disponibles</h4>
+
+    <!-- Light options -->
+    @if (predefinedOptions['light'] && predefinedOptions['light'].length > 0) {
+      <div class="option-group light">
+        <h5>🥗 Ligero</h5>
+        @for (option of predefinedOptions['light']; track option.name) {
+          <button 
+            type="button" 
+            class="option-button light"
+            (click)="selectOption(option)"
+          >
+            <span class="option-name">{{ option.name }}</span>
+            <span class="option-macros">
+              {{ roundUp(option.macros.protein) }}g | 
+              {{ roundUp(option.macros.carbs) }}g | 
+              {{ roundUp(option.macros.fats) }}g
+            </span>
+          </button>
+        }
+      </div>
+    }
+
+    <!-- Balanced options -->
+    @if (predefinedOptions['balanced'] && predefinedOptions['balanced'].length > 0) {
+      <div class="option-group balanced">
+        <h5>⚖️ Balanceado</h5>
+        @for (option of predefinedOptions['balanced']; track option.name) {
+          <button 
+            type="button" 
+            class="option-button balanced"
+            (click)="selectOption(option)"
+          >
+            <span class="option-name">{{ option.name }}</span>
+            <span class="option-macros">
+              {{ roundUp(option.macros.protein) }}g | 
+              {{ roundUp(option.macros.carbs) }}g | 
+              {{ roundUp(option.macros.fats) }}g
+            </span>
+          </button>
+        }
+      </div>
+    }
+
+    <!-- High-protein options -->
+    @if (predefinedOptions['high-protein'] && predefinedOptions['high-protein'].length > 0) {
+      <div class="option-group protein">
+        <h5>🥩 Proteico</h5>
+        @for (option of predefinedOptions['high-protein']; track option.name) {
+          <button 
+            type="button" 
+            class="option-button protein"
+            (click)="selectOption(option)"
+          >
+            <span class="option-name">{{ option.name }}</span>
+            <span class="option-macros">
+              {{ roundUp(option.macros.protein) }}g | 
+              {{ roundUp(option.macros.carbs) }}g | 
+              {{ roundUp(option.macros.fats) }}g
+            </span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+</div>

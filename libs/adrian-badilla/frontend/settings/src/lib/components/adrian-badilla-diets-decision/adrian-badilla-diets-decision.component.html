@@ -21,15 +21,10 @@
     </div>
 
     <div class="meal-macros">
-      <span>🥩 {{ meal().macros.protein }}g</span>
-      <span>🍞 {{ meal().macros.carbs }}g</span>
-      <span>🥑 {{ meal().macros.fats }}g</span>
+      <span>🥩 {{ roundUp(meal().macros.protein) }}g</span>
+      <span>🍞 {{ roundUp(meal().macros.carbs) }}g</span>
+      <span>🥑 {{ roundUp(meal().macros.fats) }}g</span>
     </div>
-  </div>
-
-  <!-- RECOMENDACIÓN -->
-  <div class="meal-recommendation">
-    ⭐ Recomendado: {{ recommended() }}
   </div>
 
   <!-- DECISIONES -->
@@ -85,6 +80,40 @@
   >
     <div class="meal-options-title">Selecciona una comida</div>
 
+    <!-- 🍽️ SUGERENCIA AUTOMÁTICA -->
+    @if (suggestedMeal(); as suggested) {
+      @if (suggested.items && suggested.items.length > 0) {
+        <div class="suggested-meal-section">
+          <div class="suggested-meal-header">
+            <span class="suggested-label">⭐ Sugerencia para ti</span>
+            <span class="suggested-quality">{{ suggested.nearestMatch }}</span>
+          </div>
+          
+          <button
+            type="button"
+            class="suggested-meal-btn"
+            (click)="selectSuggestedMeal()"
+          >
+            <div class="suggested-foods">
+              @for (food of suggested.items; track food.name; let last = $last) {
+                <span class="food-name">{{ food.name }}</span>
+                @if (!last) { <span class="separator">+</span> }
+              }
+            </div>
+            
+            <div class="suggested-macros">
+              <span class="macro protein">🥩 {{ suggested.totals.protein | number: '1.0-0' }}g</span>
+              <span class="macro carbs">🍞 {{ suggested.totals.carbs | number: '1.0-0' }}g</span>
+              <span class="macro fats">🥑 {{ suggested.totals.fats | number: '1.0-0' }}g</span>
+            </div>
+          </button>
+
+          <hr class="divider" />
+        </div>
+
+      }
+    }
+
     <div class="meal-options-list">
       @for (option of getOptionsForDecision(currentDecision); track option.name) {
       <button
@@ -94,7 +123,7 @@
       >
         <span class="meal-option-name">{{ option.name }}</span>
         <span class="meal-option-macros">
-          🥩 {{ option.macros.protein }}g · 🍞 {{ option.macros.carbs }}g · 🥑 {{ option.macros.fats }}g
+          🥩 {{ roundUp(option.macros.protein) }}g · 🍞 {{ roundUp(option.macros.carbs) }}g · 🥑 {{ roundUp(option.macros.fats) }}g
         </span>
       </button>
       }

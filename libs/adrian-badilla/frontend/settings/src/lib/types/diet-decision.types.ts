@@ -89,3 +89,15 @@ export interface RecommendationFeedback {
   message: string;
   type: 'success' | 'info' | 'warning';
 }
+
+// 🍽️ MEAL SUGGESTION TYPES
+export interface FoodBlock extends MealOption {
+  category?: 'protein' | 'carbs' | 'fats' | 'mixed';
+  servingSize?: string; // e.g., "100g", "1 egg", "1 tbsp"
+}
+
+export interface SuggestedMeal {
+  items: FoodBlock[];
+  totals: MealMacro;
+  nearestMatch: string; // descriptor de qué tan cerca estuvo
+}
