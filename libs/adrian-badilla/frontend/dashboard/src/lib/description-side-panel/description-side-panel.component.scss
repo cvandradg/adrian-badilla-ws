@@ -1,0 +1,33 @@
+@use 'settings/tokens' as tokens;
+@use 'mixins/surfaces' as surfaces;
+@use 'mixins/text' as text;
+@use 'mixins/typography' as typography;
+
+.description-panel {
+  min-block-size: tokens.$dashboard-panel-min-block-size;
+}
+
+.sidenav-header {
+  @include surfaces.panel-header(
+    $padding: 1rem,
+    $radius: tokens.$dashboard-panel-radius,
+    $text-align: left
+  );
+}
+
+.description-subtitle {
+  @include text.caps-label($font-size: 0.75rem, $font-weight: 600);
+
+  color: tokens.$dashboard-text-primary;
+  letter-spacing: 0.1em;
+  filter: tokens.$dashboard-subtitle-shadow;
+}
+
+.description-content {
+  @include typography.font-sans;
+
+  padding: 1rem 1.2rem;
+  color: tokens.$dashboard-text-secondary;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}

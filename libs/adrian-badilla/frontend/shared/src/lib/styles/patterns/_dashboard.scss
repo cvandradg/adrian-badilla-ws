@@ -1,0 +1,83 @@
+@use '../mixins/primitives' as primitives;
+@use '../mixins/typography' as typography;
+@use '../settings/tokens' as tokens;
+
+// Dashboard-specific patterns.
+// These mixins keep the shell, navigation, and contextual panels visually aligned.
+
+@mixin dashboard-panel-header(
+  $padding: 1rem,
+  $radius: null,
+  $text-align: null
+) {
+  @include primitives.flex-space-between;
+
+  padding: $padding;
+  background: tokens.$dashboard-header-surface;
+  border: 1px solid tokens.$dashboard-border-subtle;
+  box-shadow: inset 0 1px 0 tokens.$dashboard-glow-inner;
+  line-height: 1.5;
+
+  @if $text-align != null {
+    text-align: $text-align;
+  }
+
+  @if $radius != null {
+    border-radius: $radius;
+  }
+}
+
+@mixin dashboard-glass-shell($radius: tokens.$dashboard-panel-radius) {
+  border: 1px solid tokens.$dashboard-border-subtle;
+  border-radius: $radius;
+  background: linear-gradient(180deg, hsl(0 0% 100% / 0.03), transparent 22%),
+    tokens.$dashboard-panel-surface;
+  box-shadow: inset 0 1px 0 tokens.$dashboard-glow-inner,
+    0 18px 40px hsl(0 0% 0% / 0.25), 0 0 0 1px tokens.$dashboard-border-strong,
+    0 0 24px tokens.$dashboard-glow-outer;
+}
+
+@mixin dashboard-corner-notch(
+  $size: 12px,
+  $background: tokens.$dashboard-divider-subtle
+) {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: $size;
+  height: $size;
+  background: $background;
+  clip-path: polygon(100% 0, 0 100%, 100% 100%);
+  pointer-events: none;
+}
+
+@mixin dashboard-kicker($font-size: 0.75rem, $spacing: 0.14em) {
+  @include typography.text-style(
+    $size: $font-size,
+    $weight: tokens.$font-weight-medium,
+    $family: tokens.$font-secondary,
+    $color: tokens.$dashboard-text-muted
+  );
+
+  text-transform: uppercase;
+  letter-spacing: $spacing;
+}
+
+@mixin dashboard-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.25rem;
+  padding-inline: 0.9rem;
+  border-radius: 999px;
+  border: 1px solid tokens.$dashboard-border-subtle;
+  background: tokens.$dashboard-header-surface;
+  color: tokens.$color-accent-400;
+  font-family: tokens.$font-secondary;
+  font-size: 0.8rem;
+  font-weight: tokens.$font-weight-medium;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

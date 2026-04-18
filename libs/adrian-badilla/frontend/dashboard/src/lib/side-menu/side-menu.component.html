@@ -1,0 +1,22 @@
+<div class="sidenav-header">
+  <div>Your channel</div>
+</div>
+<mat-nav-list>
+  @for (item of menuItems(); track item.route) {
+  <a
+    mat-list-item
+    [routerLink]="item.route"
+    routerLinkActive="menu-item--active"
+    [routerLinkActiveOptions]="{ exact: item.exact }"
+    #rla="routerLinkActive"
+    [activated]="rla.isActive"
+    class="menu-item"
+  >
+    <fa-icon matListItemIcon [icon]="item.icon"></fa-icon>
+
+    @if (!sideNavCollapsed()) {
+    <span matListItemTitle>{{ item.label }}</span>
+    }
+  </a>
+  }
+</mat-nav-list>

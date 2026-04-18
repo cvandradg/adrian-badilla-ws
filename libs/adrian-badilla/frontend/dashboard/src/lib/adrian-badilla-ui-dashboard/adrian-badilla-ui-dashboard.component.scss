@@ -1,0 +1,182 @@
+@use 'settings/tokens' as tokens;
+@use 'mixins/surfaces' as surfaces;
+
+:host {
+  color: tokens.$dashboard-text-primary;
+  display: block;
+  box-sizing: border-box;
+  padding-inline: tokens.$dashboard-shell-spacing;
+  height: 100svh;
+  margin-inline: auto;
+  --mat-sidenav-container-shape: none;
+  --dashboard-text-soft: #{tokens.$dashboard-text-soft};
+  --dashboard-panel-radius: #{tokens.$dashboard-panel-radius};
+  --dashboard-shell-max-inline-size: #{tokens.$dashboard-shell-max-inline-size};
+  --dashboard-shell-spacing: #{tokens.$dashboard-shell-spacing};
+  --dashboard-panel-mobile-inline-size: #{tokens.$dashboard-panel-mobile-inline-size};
+  --dashboard-panel-inline-size: #{tokens.$dashboard-panel-inline-size};
+  --dashboard-panel-collapsed-inline-size: #{tokens.$dashboard-panel-collapsed-inline-size};
+  --dashboard-panel-gap: #{tokens.$dashboard-panel-gap};
+  --dashboard-panel-min-block-size: #{tokens.$dashboard-panel-min-block-size};
+  --dashboard-content-blur: #{tokens.$dashboard-content-blur};
+}
+
+mat-sidenav-container.dashboard-shell {
+  inline-size: 100%;
+  max-inline-size: var(--dashboard-shell-max-inline-size);
+  margin-inline: auto;
+  block-size: 100%;
+}
+
+.dashboard-content {
+  block-size: 100%;
+  overflow-x: hidden;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.dashboard-content::-webkit-scrollbar {
+  inline-size: 0;
+  block-size: 0;
+}
+
+.inline-flex {
+  display: flex;
+  align-items: center;
+}
+
+.gap-3 {
+  gap: 1rem;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
+.container-header {
+  flex: 0 0 auto;
+  @include surfaces.panel-header(0.7rem 1rem);
+}
+
+.menu-toggle {
+  cursor: pointer;
+}
+
+.title {
+  font-family: tokens.$dashboard-font-family;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.login-button {
+  font-weight: 500;
+  font-size: 0.875rem;
+  letter-spacing: 0.0892857143em;
+  text-indent: 0.0892857143em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.header-login-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-run-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgba(125, 224, 151, 0.92);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.header-run-indicator__icon {
+  font-size: 0.8rem;
+}
+
+.content {
+  padding: 24px;
+}
+
+.dashboard-container {
+  @include surfaces.glass-panel-shell();
+
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  background: tokens.$dashboard-content-surface;
+  backdrop-filter: blur(var(--dashboard-content-blur));
+  -webkit-backdrop-filter: blur(var(--dashboard-content-blur));
+}
+
+.router-slot {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dashboard-spacer {
+  flex: 0 0 var(--dashboard-shell-spacing);
+  block-size: var(--dashboard-shell-spacing);
+}
+
+:host ::ng-deep .dashboard-shell > .mat-drawer-content,
+:host ::ng-deep .dashboard-shell > .mat-drawer {
+  transition: width 500ms ease-in-out, margin-left 500ms ease-in-out,
+    margin-right 500ms ease-in-out, transform 500ms ease-in-out;
+}
+
+:host ::ng-deep .dashboard-shell .left-sidenav.mat-drawer,
+:host ::ng-deep .dashboard-shell .right-sidenav.mat-drawer {
+  @include surfaces.glass-panel-shell(var(--dashboard-panel-radius));
+
+  min-block-size: var(--dashboard-panel-min-block-size);
+}
+
+:host ::ng-deep .mat-drawer-backdrop.mat-drawer-shown {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  background: tokens.$dashboard-backdrop;
+}
+
+.right-sidenav {
+  padding: 0;
+  border-inline-start: 0.05em solid tokens.$dashboard-divider-subtle;
+}
+
+.left-sidenav,
+.right-sidenav {
+  min-block-size: var(--dashboard-panel-min-block-size);
+}
+
+.dashboard-spacer {
+  flex: 0 0 var(--dashboard-shell-spacing);
+  block-size: var(--dashboard-shell-spacing);
+}
+
+@media (min-width: 960px) {
+  :host ::ng-deep .left-sidenav.mat-drawer,
+  :host ::ng-deep .right-sidenav.mat-drawer {
+    margin-block: var(--dashboard-shell-spacing);
+  }
+}
+
+:host ::ng-deep .left-sidenav.is-collapsed .mdc-list-item {
+  padding-inline: 0;
+}

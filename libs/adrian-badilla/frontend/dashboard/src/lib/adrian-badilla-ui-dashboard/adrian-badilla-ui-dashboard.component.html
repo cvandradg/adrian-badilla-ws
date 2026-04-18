@@ -1,1 +1,84 @@
-<p>AdrianBadillaUiDashboard works!</p>
+<mat-sidenav-container class="dashboard-shell" [autosize]="true">
+  <mat-sidenav
+    #left
+    class="left-sidenav"
+    [mode]="isNarrow() ? 'over' : 'side'"
+    [opened]="!isNarrow()"
+    [style.width]="leftWidth()"
+    [style.height]="'fit-content'"
+    [class.is-collapsed]="collapsed()"
+  >
+    <adrian-badilla-side-menu [collapsed]="collapsed()" />
+  </mat-sidenav>
+
+  <mat-sidenav
+    #right
+    class="right-sidenav"
+    position="end"
+    [mode]="isNarrow() ? 'over' : 'side'"
+    [opened]="!isNarrow() && rightPinnedOpen()"
+    [style.width]="rightWidth()"
+    [style.height]="'fit-content'"
+  >
+    <adrian-badilla-description-side-panel />
+  </mat-sidenav>
+
+  <mat-sidenav-content
+    class="dashboard-content"
+    [style.margin-left]="marginLeft()"
+    [style.margin-right]="marginRight()"
+  >
+    <div class="dashboard-spacer"></div>
+
+    <div class="dashboard-container">
+      <div class="container-header">
+        <div class="inline-flex gap-3">
+          <fa-icon
+            [icon]="['fas', 'bars']"
+            class="fa-lg menu-toggle"
+            (click)="onMenuClick(left)"
+            (keydown.enter)="onMenuClick(left)"
+            tabindex="0"
+          />
+          <div class="title">{{ headerTitle() }}</div>
+        </div>
+
+        <div class="header-actions">
+          <div class="header-login-group">
+            @if (isScraperRunning()) {
+            <div class="header-run-indicator" aria-live="polite">
+              <i
+                class="pi pi-spinner pi-spin header-run-indicator__icon"
+                aria-hidden="true"
+              ></i>
+              <span>Actualizando Órdenes</span>
+            </div>
+            }
+
+            <div class="login-button">Ingresar</div>
+          </div>
+
+          <fa-icon [icon]="['fas', 'user']"></fa-icon>
+
+          <fa-icon
+            [icon]="['fass', 'toggle-on']"
+            class="fa-lg ml-2"
+            [class.fa-rotate-180]="!isNarrow() && !rightPinnedOpen()"
+            [style.color]="
+              !isNarrow() && rightPinnedOpen()
+                ? '#6b7280'
+                : 'var(--dashboard-text-soft)'
+            "
+            (click)="onRightToggle(right)"
+          ></fa-icon>
+        </div>
+      </div>
+
+      <div class="router-slot">
+        <router-outlet />
+      </div>
+    </div>
+
+    <div class="dashboard-spacer"></div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
