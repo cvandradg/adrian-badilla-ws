@@ -1,0 +1,137 @@
+@use 'settings/tokens' as tokens;
+@use 'mixins' as mixins;
+@use 'mixins/typography' as typography;
+
+:host {
+  display: block;
+  inline-size: 20%;
+  max-inline-size: 20rem;
+  min-inline-size: 16rem;
+}
+
+.routines-side-column {
+  block-size: 50rem;
+}
+
+.current-route-container {
+  border-block-end: 1px solid rgba(255, 255, 255, 0.6);
+  max-block-size: 3.5rem;
+  block-size: 3.5rem;
+  gap: 1rem;
+  padding-inline: 1rem;
+
+  @include mixins.flex-center(row, center, flex-start);
+
+  .current-route {
+    color: tokens.$dashboard-text-primary;
+    min-inline-size: 0;
+    inline-size: 100%;
+    padding-block: 8px;
+  }
+
+  fa-icon {
+    cursor: pointer;
+    color: tokens.$dashboard-text-primary;
+  }
+}
+
+.additional-info-column {
+  padding-block: 2.2rem;
+  padding-inline: 1rem;
+  gap: 1rem;
+
+  @include mixins.flex-center(column, flex-start, center);
+  @include typography.font-sans;
+
+  color: tokens.$dashboard-text-primary;
+
+  .title {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1rem;
+  }
+
+  .title-description {
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.3rem;
+    letter-spacing: 0.0333rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .description {
+    margin-block-start: 1rem;
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: 0.033em;
+    color: tokens.$dashboard-text-secondary;
+  }
+
+  .important-stats {
+    margin-block-start: 1rem;
+    gap: 0.5rem;
+    inline-size: 100%;
+
+    @include mixins.flex-center(row, stretch, space-between);
+  }
+
+  .important-stat {
+    @include mixins.flex-center(column);
+
+    margin-block-start: 1rem;
+    gap: 0.5rem;
+    min-inline-size: 2rem;
+    text-align: center;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .stat-label {
+    font-size: 0.625rem;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: 0.0892857143em;
+    opacity: 0.6;
+    white-space: nowrap;
+  }
+
+  .stat-value strong {
+    color: rgba(255, 255, 255, 0.86);
+  }
+
+  .other-stats {
+    margin-block-start: 2rem;
+    gap: 1.7rem;
+
+    @include mixins.flex-center(column, stretch, flex-start);
+  }
+
+  .other-stat-label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1rem;
+    color: tokens.$dashboard-text-primary;
+  }
+
+  .other-stat-value {
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1rem;
+    letter-spacing: 0.0333333333em;
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+@media (max-width: 1199px) {
+  :host {
+    inline-size: 100%;
+    max-inline-size: none;
+    min-inline-size: 0;
+  }
+
+  .routines-side-column {
+    block-size: auto;
+  }
+}

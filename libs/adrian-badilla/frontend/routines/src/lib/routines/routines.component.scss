@@ -1,165 +1,115 @@
 @use 'settings/tokens' as tokens;
-@use 'mixins/surfaces' as surfaces;
-@use 'mixins/text' as text;
-@use 'mixins/typography' as typography;
+@use 'mixins' as mixins;
 
 :host {
-	display: block;
-	min-block-size: 100%;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  min-block-size: 100%;
+  width: 100%;
+
+  --routines-accent: #37aadf;
+  --routines-accent-hover: rgba(55, 170, 223, 0.22);
+  --routines-glass-surface: rgba(0, 5, 8, 0.33);
+  --routines-panel-soft: rgba(220, 240, 255, 0.05);
+  --routines-panel-tint: rgba(200, 220, 255, 0.08);
+  --routines-panel-strong: rgba(220, 240, 255, 0.15);
+  --routines-glass-border: rgba(255, 255, 255, 0.12);
+  --route-search-control-height: 3rem;
+  --master-detail-nav-row-height: 4.5rem;
+  --master-detail-nav-sidebar-width: 200px;
+  --master-detail-nav-min-height: 22rem;
+  --master-detail-nav-max-height: min(68vh, calc(100dvh - 15rem));
+
+  --p-inputtext-padding-y: 1rem;
+  --p-inputtext-background: transparent;
+  --p-floatlabel-focus-color: rgba(255, 255, 255, 0.72);
+  --p-inputtext-focus-border-color: rgba(255, 255, 255, 0.22);
+  --p-button-text-primary-color: #{tokens.$dashboard-text-primary};
+
+  --p-tabs-tablist-background: transparent;
+  --p-tabs-tabpanel-background: transparent;
+  --p-tabs-tab-border-width: 0 0 1px 0;
+  --p-tabs-tab-active-color: var(--routines-accent);
+  --p-tabs-active-bar-background: var(--routines-accent);
+  --p-tabs-tab-active-border-color: var(--routines-accent);
+  --p-tabs-tab-color: rgba(255, 255, 255, 0.6);
+  --p-tabs-tab-hover-color: rgba(255, 255, 255, 0.72);
+  --p-tabs-tab-border-color: rgba(255, 255, 255, 0.6);
+  --p-tabs-tab-hover-background: rgba(255, 255, 255, 0.08);
+  --p-tabs-tab-hover-border-color: rgba(255, 255, 255, 0.6);
 }
 
-.routines-page {
-	display: grid;
-	gap: 1rem;
-	min-block-size: 100%;
-	padding: clamp(1rem, 2vw, 1.5rem);
-	background:
-		radial-gradient(circle at top right, rgba(88, 210, 166, 0.14), transparent 30%),
-		linear-gradient(180deg, rgba(4, 12, 17, 0.22), rgba(4, 12, 17, 0.08));
+.routines-tabs {
+  display: flex;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  min-block-size: 0;
+  box-shadow: inset 0.05rem 0 0 0 rgba(220, 240, 255, 0.12);
 }
 
-.routines-hero,
-.routines-card,
-.routines-plan {
-	@include surfaces.glass-panel-shell(tokens.$dashboard-panel-radius);
-
-	background: rgba(0, 5, 8, 0.28);
+.routines-tabs > .card {
+  display: flex;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  min-block-size: 0;
 }
 
-.routines-hero {
-	display: grid;
-	gap: 1rem;
-	padding: clamp(1.25rem, 2.5vw, 1.75rem);
+:host ::ng-deep .routines-tabs-root {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-inline-size: 0;
+  min-block-size: 0;
 }
 
-.routines-hero__eyebrow,
-.routines-plan__eyebrow,
-.routines-card__label,
-.routines-plan__cadence {
-	@include text.caps-label($font-size: 0.72rem, $font-weight: 600);
-
-	color: tokens.$dashboard-text-muted;
-	margin: 0;
+:host ::ng-deep .routines-tablist {
+  display: flex;
+  width: 100%;
 }
 
-.routines-hero__content {
-	display: flex;
-	align-items: flex-start;
-	justify-content: space-between;
-	gap: 1rem;
+:host ::ng-deep .routines-tabs-root > .p-tabpanels {
+  flex: 1 1 auto;
+  min-block-size: 0;
 }
 
-.routines-hero__title,
-.routines-plan__title,
-.routines-plan__block-title {
-	@include typography.font-sans;
-
-	color: tokens.$dashboard-text-primary;
-	margin: 0;
+:host ::ng-deep .routines-tabs-root > .p-tabpanels > .p-tabpanel {
+  min-block-size: 0;
 }
 
-.routines-hero__title {
-	font-size: clamp(1.8rem, 4vw, 2.6rem);
-	font-weight: 600;
-	line-height: 1.05;
+:host ::ng-deep .routines-tablist .p-tab {
+  flex: 1 1 0;
+  height: 3.5rem;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+
+  @include mixins.flex-center();
 }
 
-.routines-hero__description,
-.routines-plan__description,
-.routines-card__detail,
-.routines-plan__block-focus {
-	@include typography.font-sans;
-
-	color: tokens.$dashboard-text-secondary;
-	line-height: 1.6;
-	margin: 0;
+:host ::ng-deep .routines-tablist .p-tab .tab-icon {
+  color: inherit;
 }
 
-.routines-hero__description {
-	max-inline-size: 42rem;
-	margin-top: 0.75rem;
+:host ::ng-deep .routines-tablist .p-tab[aria-selected='true'] .tab-icon {
+  color: tokens.$dashboard-text-primary;
 }
 
-.routines-hero__pill {
-	border: 1px solid rgba(125, 224, 151, 0.2);
-	border-radius: 999px;
-	color: rgba(208, 248, 219, 0.96);
-	font-size: 0.8rem;
-	font-weight: 600;
-	padding: 0.65rem 0.95rem;
-	white-space: nowrap;
+:host ::ng-deep .routines-tablist .p-tab[aria-selected='true']:hover {
+  background-color: var(--routines-accent-hover);
 }
 
-.routines-metrics {
-	display: grid;
-	gap: 1rem;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
+:host ::ng-deep .routines-tabs-root > .p-tabs-nav .p-tablist-active-bar {
+  background: var(--routines-accent);
+  height: 2px;
 }
 
-.routines-card {
-	display: grid;
-	gap: 0.6rem;
-	padding: 1.25rem;
+.routines-placeholder--empty {
+  min-block-size: 100%;
 }
 
-.routines-card__value {
-	color: tokens.$dashboard-text-primary;
-	font-size: clamp(1.7rem, 3vw, 2.2rem);
-	font-weight: 700;
-	line-height: 1;
-	margin: 0;
-}
-
-.routines-plan {
-	display: grid;
-	gap: 1.25rem;
-	padding: clamp(1.25rem, 2.5vw, 1.75rem);
-}
-
-.routines-plan__intro {
-	display: grid;
-	gap: 0.6rem;
-}
-
-.routines-plan__title {
-	font-size: clamp(1.3rem, 2.5vw, 1.85rem);
-	font-weight: 600;
-}
-
-.routines-plan__grid {
-	display: grid;
-	gap: 1rem;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.routines-plan__block {
-	border: 1px solid rgba(255, 255, 255, 0.05);
-	border-radius: 1rem;
-	padding: 1rem;
-	background: rgba(255, 255, 255, 0.02);
-}
-
-.routines-plan__block-title {
-	font-size: 1.05rem;
-	font-weight: 600;
-	margin-top: 0.5rem;
-}
-
-.routines-plan__block-focus {
-	margin-top: 0.65rem;
-}
-
-@media (max-width: 959px) {
-	.routines-hero__content {
-		flex-direction: column;
-	}
-
-	.routines-hero__pill {
-		white-space: normal;
-	}
-
-	.routines-metrics,
-	.routines-plan__grid {
-		grid-template-columns: 1fr;
-	}
+@media (max-width: 1199px) {
+  :host {
+    flex-direction: column;
+  }
 }

@@ -1,58 +1,136 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { TabsModule } from 'primeng/tabs';
+import { buildRoutineDays } from './data/routine-days.mock';
+import { RoutinesBreakdownComponent } from './components/routines-breakdown/routines-breakdown.component';
+import { RoutinesInfoColumnComponent } from './components/routines-info-column/routines-info-column.component';
+import type { RoutineSummary } from './types/routine.types';
+import {
+  endOfDay,
+  endOfWeek,
+  normalizeSearchValue,
+  startOfDay,
+  startOfWeek,
+} from './utils/routine.utils';
 
-type RoutineMetric = {
-  label: string;
+type TopTab = {
   value: string;
-  detail: string;
-};
-
-type RoutineBlock = {
-  title: string;
-  focus: string;
-  cadence: string;
+  label: string;
+  icon: [string, string];
 };
 
 @Component({
   selector: 'lib-routines',
-  imports: [],
+  imports: [
+    TabsModule,
+    FontAwesomeModule,
+    RoutinesInfoColumnComponent,
+    RoutinesBreakdownComponent,
+  ],
   templateUrl: './routines.component.html',
   styleUrl: './routines.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoutinesComponent {
-  readonly metrics: RoutineMetric[] = [
+  readonly topTabs: TopTab[] = [
     {
-      label: 'Sesiones activas',
-      value: '12',
-      detail: 'Rutinas listas para esta semana.',
+      value: 'rutinas',
+      label: 'Rutinas',
+      icon: ['fas', 'arrow-rotate-right'],
     },
     {
-      label: 'Bloques en progreso',
-      value: '03',
-      detail: 'Ciclos con seguimiento de carga.',
-    },
-    {
-      label: 'Cumplimiento',
-      value: '87%',
-      detail: 'Promedio de sesiones completadas.',
+      value: 'modificaciones-de-rutinas',
+      label: 'Modificaciones de Rutinas',
+      icon: ['fas', 'list-check'],
     },
   ];
 
-  readonly blocks: RoutineBlock[] = [
-    {
-      title: 'Fuerza superior',
-      focus: 'Empuje, tiron y trabajo de estabilidad escapular.',
-      cadence: 'Lunes y jueves',
-    },
-    {
-      title: 'Pierna y potencia',
-      focus: 'Sentadilla, bisagra y aceleraciones cortas.',
-      cadence: 'Martes',
-    },
-    {
-      title: 'Core + movilidad',
-      focus: 'Control lumbo-pelvico y amplitud articular.',
-      cadence: 'Viernes',
-    },
-  ];
+  readonly routineDays = buildRoutineDays(new Date());
+  readonly currentWeekTitle = `Semana del ${this.routineDays[0]?.dateLabel ?? ''}`;
+  readonly maxRoutineDate = endOfWeek(new Date());
+  readonly routineStartDate = signal(startOfWeek(new Date()));
+  readonly routineEndDate = signal(endOfWeek(new Date()));
+  readonly searchQuery = signal('');
+
+  readonly filteredRoutineDays = computed(() => {
+    const query = normalizeSearchValue(this.searchQuery());
+    const startDate = startOfDay(this.routineStartDate());
+    const endDate = endOfDay(this.routineEndDate());
+
+    return this.routineDays.filter((routineDay) => {
+      const withinDateRange =
+        routineDay.date.getTime() >= startDate.getTime() &&
+        routineDay.date.getTime() <= endDate.getTime();
+
+      if (!withinDateRange) return false;
+      if (!query) return true;
+
+      const searchSource = normalizeSearchValue(
+        [
+          routineDay.name,
+          routineDay.description,
+          routineDay.summary,
+          routineDay.goal,
+          ...routineDay.blocks.flatMap((block) => [
+            block.title,
+            block.subtitle,
+            ...block.metaChips,
+          ]),
+        ].join(' '),
+      );
+
+      return searchSource.includes(query);
+    });
+  });
+
+  readonly weeklySummary = computed<RoutineSummary>(() => {
+    const filteredRoutineDays = this.filteredRoutineDays();
+
+    return filteredRoutineDays.reduce<RoutineSummary>(
+      (summary, routineDay) => ({
+        dayCount: summary.dayCount + 1,
+        totalBlocks: summary.totalBlocks + routineDay.sessionCount,
+        totalExercises: summary.totalExercises + routineDay.exerciseCount,
+        totalMinutes: summary.totalMinutes + routineDay.totalMinutes,
+        modifiedDays: summary.modifiedDays + (routineDay.isModified ? 1 : 0),
+      }),
+      {
+        dayCount: 0,
+        totalBlocks: 0,
+        totalExercises: 0,
+        totalMinutes: 0,
+        modifiedDays: 0,
+      },
+    );
+  });
+
+  updateSearchQuery(value: string): void {
+    this.searchQuery.set(value);
+  }
+
+  onStartDateSelect(date: Date): void {
+    const nextStartDate = startOfDay(date);
+    const currentEndDate = this.routineEndDate();
+
+    this.routineStartDate.set(nextStartDate);
+
+    if (nextStartDate.getTime() > currentEndDate.getTime()) {
+      this.routineEndDate.set(endOfDay(nextStartDate));
+    }
+  }
+
+  onEndDateSelect(date: Date): void {
+    const nextEndDate = endOfDay(date);
+    const currentStartDate = this.routineStartDate();
+
+    this.routineEndDate.set(nextEndDate);
+
+    if (nextEndDate.getTime() < currentStartDate.getTime()) {
+      this.routineStartDate.set(startOfDay(nextEndDate));
+    }
+  }
+
+  onPrintRoutines(): void {
+    globalThis.print?.();
+  }
 }

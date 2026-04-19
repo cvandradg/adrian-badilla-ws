@@ -1,0 +1,61 @@
+@let currentSummary = summary();
+
+<section class="routines-side-column">
+  <div class="current-route-container">
+    <fa-icon [icon]="['fas', 'arrow-left']"></fa-icon>
+    <div class="current-route">Rutinas Semanales</div>
+  </div>
+
+  <div class="additional-info-column">
+    <div class="title-section">
+      <div class="title">Plan de Rutinas</div>
+      <div class="title-description">{{ currentWeekTitle() }}</div>
+    </div>
+
+    <div class="description">
+      Estructura semanal basada en la misma pantalla de desglose de ordenes,
+      ahora adaptada para lunes a domingo con bloques, tiempos y enfoque por
+      rutina.
+    </div>
+
+    <div class="important-stats">
+      <div class="important-stat">
+        <div class="stat-value"><strong>{{ currentSummary.dayCount }}</strong> / 7</div>
+        <div class="stat-label">Dias</div>
+      </div>
+      <div class="important-stat">
+        <div class="stat-value"><strong>{{ currentSummary.totalBlocks }}</strong></div>
+        <div class="stat-label">Bloques</div>
+      </div>
+      <div class="important-stat">
+        <div class="stat-value"><strong>{{ currentSummary.totalExercises }}</strong></div>
+        <div class="stat-label">Ejercicios</div>
+      </div>
+    </div>
+
+    <div class="other-stats">
+      <div class="other-stat">
+        <div class="other-stat-label">Duracion total</div>
+        <div class="other-stat-value">{{ currentSummary.totalMinutes }} minutos</div>
+      </div>
+      <div class="other-stat">
+        <div class="other-stat-label">Dias ajustados</div>
+        <div class="other-stat-value">{{ currentSummary.modifiedDays }} dentro de la semana</div>
+      </div>
+      <div class="other-stat">
+        <div class="other-stat-label">Objetivo</div>
+        <div class="other-stat-value">Fuerza, volumen y recuperacion</div>
+      </div>
+      <div class="other-stat">
+        <div class="other-stat-label">Sesion promedio</div>
+        <div class="other-stat-value">
+          {{ currentSummary.dayCount ? (currentSummary.totalMinutes / currentSummary.dayCount).toFixed(0) : 0 }} min
+        </div>
+      </div>
+      <div class="other-stat">
+        <div class="other-stat-label">Frecuencia</div>
+        <div class="other-stat-value">Lunes a domingo</div>
+      </div>
+    </div>
+  </div>
+</section>

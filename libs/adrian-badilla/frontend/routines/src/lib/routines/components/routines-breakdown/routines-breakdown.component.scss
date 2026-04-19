@@ -1,0 +1,247 @@
+@use 'settings/tokens' as tokens;
+@use 'mixins' as mixins;
+@use 'mixins/surfaces' as surfaces;
+@use 'mixins/text' as text;
+@use 'mixins/typography' as typography;
+
+:host {
+  display: block;
+}
+
+.sub-title {
+  @include text.caps-label($font-size: 0.72rem, $font-weight: 600);
+
+  color: tokens.$dashboard-text-muted;
+  margin: 0;
+}
+
+.routines-placeholder__title {
+  @include typography.font-sans;
+
+  color: tokens.$dashboard-text-primary;
+  margin: 0;
+}
+
+.routines-placeholder__text {
+  @include typography.font-sans;
+
+  color: tokens.$dashboard-text-secondary;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.routes-breakdown-filters,
+.routes-breakdown-tabs {
+  padding-inline: 1rem;
+}
+
+.routes-breakdown-filters {
+  margin-top: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+label {
+  color: tokens.$dashboard-text-primary;
+}
+
+.date-range-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 1rem;
+  align-items: stretch;
+  inline-size: 100%;
+  margin-top: 0.75rem;
+}
+
+.date-picker-container {
+  inline-size: 100%;
+  block-size: 3.5rem;
+}
+
+:host ::ng-deep .date-picker-container .p-inputwrapper,
+:host ::ng-deep .date-picker-container .p-inputtext {
+  inline-size: 100%;
+  block-size: 100%;
+  box-sizing: border-box;
+}
+
+::ng-deep .routes-breakdown-datepicker-panel .date-picker-template-header,
+::ng-deep .routes-breakdown-datepicker-panel .date-picker-template-footer {
+  display: flex;
+  align-items: center;
+  inline-size: 100%;
+  padding: 0.5rem;
+}
+
+::ng-deep .routes-breakdown-datepicker-panel .date-picker-template-header--spaced {
+  margin-bottom: 2rem;
+}
+
+::ng-deep .routes-breakdown-datepicker-panel .date-picker-template-action {
+  margin-inline-start: auto;
+}
+
+:host ::ng-deep .routes-breakdown-filters .p-button {
+  block-size: 3.5rem;
+  color: tokens.$dashboard-text-primary;
+  cursor: pointer;
+  border: 0.01em solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  transition: background-color 150ms ease-out, box-shadow 150ms ease-out;
+
+  @include mixins.flex-center();
+}
+
+:host ::ng-deep .routes-breakdown-filters .p-button::after {
+  @include surfaces.corner-notch($size: 13px, $bg: transparent);
+}
+
+.print-button {
+  inline-size: 100%;
+}
+
+:host ::ng-deep .date-range-row > .print-button,
+:host ::ng-deep .date-range-row > .print-button .p-button {
+  width: 100%;
+}
+
+:host ::ng-deep .print-button .p-badge {
+  min-width: auto;
+  min-height: auto;
+  height: auto;
+  padding: 0;
+  font-size: inherit;
+  line-height: 1;
+}
+
+.print-orders-warning {
+  margin-top: 0.75rem;
+  color: rgba(225, 238, 255, 0.88);
+  font-size: 0.875rem;
+}
+
+:host ::ng-deep .routes-breakdown-filters .p-button-text:not(:disabled):hover {
+  background-color: rgba(200, 220, 255, 0.2);
+  box-shadow: inset 0 0 30px rgba(200, 220, 255, 0.45), 0 0 3px rgba(200, 220, 255, 0.6);
+  border-radius: 3px;
+  white-space: normal;
+}
+
+.routes-breakdown-tabs {
+  margin-top: 1.5rem;
+}
+
+.breakdown-routes-options {
+  inline-size: 100%;
+  margin-top: 0.75rem;
+}
+
+:host ::ng-deep .routes-breakdown-tabs .p-tabs-nav,
+:host ::ng-deep .routes-breakdown-tabs .p-tablist {
+  display: flex;
+  inline-size: 100%;
+}
+
+:host ::ng-deep .routes-breakdown-tabs .p-tablist-tab-list {
+  display: flex;
+  gap: 1rem;
+  border: none;
+}
+
+:host ::ng-deep .routes-breakdown-tabs .p-tablist .p-tab {
+  flex: 1 1 0;
+  margin: 0;
+  block-size: 5.625rem;
+
+  @include mixins.flex-center(column, center, center);
+}
+
+.breakdown-tab {
+  gap: 0.35rem;
+  text-align: center;
+}
+
+.glow-border {
+  position: relative;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  border: 0.01em solid rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 30px rgba(200, 220, 255, 0.17), 0 0 1px rgba(200, 220, 255, 0.6);
+  background-repeat: repeat;
+  background-size: 50px 50px;
+  transition: background-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+.glow-border::after {
+  @include surfaces.corner-notch($size: 13px, $bg: rgba(255, 255, 255, 0.144));
+}
+
+:host ::ng-deep .routes-breakdown-tabs .p-tab.glow-border[aria-selected='true'] {
+  background: rgba(220, 240, 255, 0.15);
+  box-shadow: inset 0 0 30px rgba(200, 220, 255, 0.7), 0 0 3px rgba(200, 220, 255, 0.6);
+  border: 0.05em solid rgba(220, 240, 255, 0.9);
+  border-radius: 3px;
+}
+
+:host ::ng-deep .routes-breakdown-tabs .p-tab.glow-border[aria-selected='true']::after {
+  background: rgba(255, 255, 255, 0.466);
+}
+
+:host ::ng-deep .routes-breakdown-tabs .p-tab.glow-border[aria-selected='true']:hover {
+  background-color: rgba(200, 220, 255, 0.3);
+}
+
+.glow-border:hover {
+  background-color: rgba(200, 220, 255, 0.2);
+  box-shadow: inset 0 0 30px rgba(200, 220, 255, 0.45), 0 0 3px rgba(200, 220, 255, 0.6);
+  border-radius: tokens.$dashboard-panel-radius;
+}
+
+.tab-description {
+  max-inline-size: 14.5rem;
+  text-align: center;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: none;
+  white-space: normal;
+  word-break: break-word;
+  letter-spacing: 0.0992857143em;
+  line-height: normal;
+}
+
+:host ::ng-deep .breakdown-routes-options .p-tabpanels,
+:host ::ng-deep .breakdown-routes-options .p-tabpanel {
+  padding: 0 !important;
+}
+
+.routines-placeholder {
+  height: 100%;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.6rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.routines-placeholder__icon {
+  font-size: 1.6rem;
+  color: rgba(255, 255, 255, 0.54);
+}
+
+.routines-placeholder__title {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.routines-placeholder__text {
+  max-inline-size: 28rem;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+@media (max-width: 959px) {
+  .date-range-row {
+    grid-template-columns: 1fr;
+  }
+}

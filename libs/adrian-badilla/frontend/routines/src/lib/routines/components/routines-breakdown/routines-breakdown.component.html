@@ -1,0 +1,150 @@
+@let currentSummary = summary();
+
+<div class="routes-breakdown-filters">
+  <div class="sub-title">Rango de fechas</div>
+
+  <div class="date-range-row">
+    <p-floatlabel variant="in" class="date-picker-container">
+      <p-datepicker
+        #startDatePicker
+        inputId="routineStartDate"
+        [showTime]="true"
+        [hideOnDateTimeSelect]="false"
+        [touchUI]="true"
+        [ngModel]="routineStartDate()"
+        [maxDate]="routineEndDate()"
+        (onSelect)="onStartDateSelect($event)"
+        [appendTo]="'body'"
+        panelStyleClass="routes-breakdown-datepicker-panel"
+        dateFormat="DD, d MM yy"
+        [hourFormat]="'24'"
+        showIcon
+      >
+        <ng-template pTemplate="header">
+          <div class="date-picker-template-header date-picker-template-header--spaced">
+            Fecha de inicio
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+          <div class="date-picker-template-footer">
+            <button
+              pButton
+              type="button"
+              class="date-picker-template-action"
+              (click)="startDatePicker.hideOverlay()"
+            >
+              Ok
+            </button>
+          </div>
+        </ng-template>
+      </p-datepicker>
+      <label for="routineStartDate">Fecha de inicio</label>
+    </p-floatlabel>
+
+    <p-floatlabel variant="in" class="date-picker-container">
+      <p-datepicker
+        #endDatePicker
+        inputId="routineEndDate"
+        [showTime]="true"
+        [minDate]="routineStartDate()"
+        [maxDate]="maxRoutineDate()"
+        [hideOnDateTimeSelect]="false"
+        [touchUI]="true"
+        [ngModel]="routineEndDate()"
+        (onSelect)="onEndDateSelect($event)"
+        [appendTo]="'body'"
+        panelStyleClass="routes-breakdown-datepicker-panel"
+        dateFormat="DD, d MM yy"
+        [hourFormat]="'24'"
+        showIcon
+      >
+        <ng-template pTemplate="header">
+          <div class="date-picker-template-header date-picker-template-header--spaced">
+            Escoge el final de la fecha para analizar
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+          <div class="date-picker-template-footer">
+            <button
+              pButton
+              type="button"
+              class="date-picker-template-action"
+              (click)="endDatePicker.hideOverlay()"
+            >
+              Ok
+            </button>
+          </div>
+        </ng-template>
+      </p-datepicker>
+      <label for="routineEndDate">Fecha final</label>
+    </p-floatlabel>
+
+    <p-button
+      label="Imprimir Rutinas"
+      icon="pi pi-print"
+      variant="text"
+      [raised]="true"
+      [badge]="currentSummary.dayCount.toString()"
+      (onClick)="onPrintRoutines()"
+      class="print-button"
+      size="large"
+    />
+  </div>
+
+  @if (currentSummary.modifiedDays) {
+  <div class="print-orders-warning">
+    Se incluiran {{ currentSummary.modifiedDays }} rutinas ajustadas dentro del plan semanal.
+  </div>
+  }
+</div>
+
+<div class="routes-breakdown-tabs">
+  <div class="sub-title">Tipos de desglose de rutinas</div>
+
+  <div class="breakdown-routes-options">
+    <div class="card">
+      <p-tabs value="rutinas">
+        <p-tablist>
+          @for (tab of breakdownTabs; track tab.value) {
+          <p-tab [value]="tab.value" class="glow-border breakdown-tab">
+            <div>{{ tab.title }}</div>
+            <div class="tab-description">{{ tab.description }}</div>
+          </p-tab>
+          }
+        </p-tablist>
+
+        <p-tabpanels>
+          <p-tabpanel value="rutinas">
+            <lib-routine-master-detail
+              [routineDays]="filteredRoutineDays()"
+              [searchQuery]="searchQuery()"
+              (searchQueryChange)="searchQueryChange.emit($event)"
+            />
+          </p-tabpanel>
+
+          <p-tabpanel value="detalle-de-rutinas">
+            <div class="routines-placeholder">
+              <i class="pi pi-image routines-placeholder__icon"></i>
+              <div class="routines-placeholder__title">Imagenes</div>
+              <div class="routines-placeholder__text">
+                Panel reservado para una guia visual de rutinas con imagenes de apoyo.
+              </div>
+            </div>
+          </p-tabpanel>
+
+          <p-tabpanel value="rutinas-modificadas">
+            <div class="routines-placeholder">
+              <i class="pi pi-video routines-placeholder__icon"></i>
+              <div class="routines-placeholder__title">Guia de videos</div>
+              <div class="routines-placeholder__text">
+                Panel reservado para videos de rutinas y seguimiento visual de ejercicios.
+              </div>
+            </div>
+          </p-tabpanel>
+        </p-tabpanels>
+      </p-tabs>
+    </div>
+  </div>
+</div>

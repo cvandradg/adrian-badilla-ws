@@ -1,0 +1,182 @@
+@let activeRoutine = activeRoutineDay();
+
+<div class="routes-header">
+  <div class="sub-title routes-header__title">Rutinas disponibles</div>
+
+  <p-floatlabel
+    variant="in"
+    class="route-search-field"
+    [class.route-search-field--filled]="hasSearchQuery()"
+  >
+    <p-iconfield>
+      <p-inputicon class="pi pi-search" />
+      <input
+        #searchInput
+        pInputText
+        class="route-search-input"
+        id="routine_search"
+        autocomplete="off"
+        aria-label="Buscar rutinas y dias"
+        [value]="searchQuery()"
+        (input)="updateSearchQuery(searchInput.value)"
+      />
+
+      @if (hasSearchQuery()) {
+      <button
+        type="button"
+        class="route-search-clear"
+        (click)="clearSearchQuery(); searchInput.focus()"
+        aria-label="Limpiar busqueda"
+      >
+        <i class="pi pi-times"></i>
+      </button>
+      }
+    </p-iconfield>
+
+    @if (!hasSearchQuery()) {
+    <label for="routine_search">Buscar rutinas y dias</label>
+    }
+  </p-floatlabel>
+</div>
+
+<div class="master-detail-nav">
+  <nav class="master-detail-nav__sidebar">
+    <div
+      #routineListScroll
+      class="master-detail-nav__scroll"
+      (scroll)="syncScrollMetrics()"
+    >
+      <ul
+        class="master-detail-nav__list"
+        [class.master-detail-nav__list--has-active]="activeItemIndex() >= 0"
+        [style.--active-index]="activeItemIndex() >= 0 ? activeItemIndex() : null"
+      >
+        @for (routineDay of routineDays(); track routineDay.id) {
+        <li class="master-detail-nav__item-wrapper">
+          <button
+            pRipple
+            type="button"
+            class="master-detail-nav__item"
+            [class.master-detail-nav__item--active]="activeRoutineId() === routineDay.id"
+            (click)="selectRoutine(routineDay.id)"
+          >
+            <div class="master-detail-nav__item-content">
+              <div class="master-detail-nav__item-leading">
+                <fa-icon [icon]="['fas', 'route']" [style.font-size]="'1rem'"></fa-icon>
+              </div>
+
+              <div class="master-detail-nav__item-copy">
+                <div>{{ routineDay.name }}</div>
+                <div class="master-detail-nav__item-description">
+                  {{ routineDay.description }}
+                </div>
+              </div>
+            </div>
+          </button>
+        </li>
+        }
+      </ul>
+    </div>
+
+    <button
+      type="button"
+      class="master-detail-nav__arrow master-detail-nav__arrow--up"
+      [class.master-detail-nav__arrow--disabled]="!canScrollUp()"
+      (click)="scrollUp()"
+      [attr.aria-disabled]="canScrollUp() ? 'false' : 'true'"
+      aria-label="Ver rutinas anteriores"
+    >
+      <i class="pi pi-chevron-up master-detail-nav__arrow-icon"></i>
+    </button>
+
+    <button
+      type="button"
+      class="master-detail-nav__arrow master-detail-nav__arrow--down"
+      [class.master-detail-nav__arrow--disabled]="!canScrollDown()"
+      (click)="scrollDown()"
+      [attr.aria-disabled]="canScrollDown() ? 'false' : 'true'"
+      aria-label="Ver rutinas siguientes"
+    >
+      <i class="pi pi-chevron-down master-detail-nav__arrow-icon"></i>
+    </button>
+  </nav>
+
+  <section class="master-detail-nav__content">
+    @if (!routineDays().length) {
+    <div class="routes-empty-state">
+      <i class="pi pi-inbox routes-empty-state__icon"></i>
+      <div class="routes-empty-state__title">
+        {{ hasSearchQuery() ? 'No hay coincidencias' : 'No hay rutinas disponibles' }}
+      </div>
+      <div class="routes-empty-state__text">
+        {{ hasSearchQuery() ? 'Prueba con otro criterio de busqueda.' : 'Cuando existan rutinas configuradas en el rango seleccionado, apareceran aqui.' }}
+      </div>
+    </div>
+    } @else if (activeRoutine) {
+    <div class="route-summary">
+      <div class="route-summary__title">{{ activeRoutine.name }}</div>
+      <div class="route-summary__description">
+        {{ activeRoutine.summary }}
+      </div>
+
+      <div class="route-summary__chips">
+        <span class="route-summary__chip">{{ activeRoutine.sessionCount }} bloques</span>
+        @if (activeRoutine.isModified) {
+        <span class="route-summary__chip route-summary__chip--modified">ajustada</span>
+        }
+        <span class="route-summary__chip">{{ activeRoutine.exerciseCount }} ejercicios</span>
+        <span class="route-summary__chip route-summary__chip--units">{{ activeRoutine.totalMinutes }} minutos</span>
+        <span class="route-summary__chip route-summary__chip--amount">{{ activeRoutine.goal }}</span>
+      </div>
+    </div>
+
+    <p-timeline [value]="activeRoutine.blocks.slice()" class="align-items-start product-timeline">
+      <ng-template pTemplate="content" let-block>
+        <article class="routine-card">
+          <div class="routine-card__header">
+            <div
+              class="routine-card__units"
+              [class.routine-card__units--modified]="block.isModified"
+            >
+              <div class="routine-card__units-value">
+                {{ block.totalMinutes }}
+              </div>
+              <div class="routine-card__units-label">minutos</div>
+            </div>
+
+            <div class="routine-card__summary">
+              <div class="routine-card__title">{{ block.title }}</div>
+              <div class="routine-card__subtitle">
+                {{ block.subtitle }}
+              </div>
+
+              <div class="routine-card__meta">
+                @for (chip of block.metaChips; track chip) {
+                <span class="routine-meta-chip">{{ chip }}</span>
+                }
+              </div>
+
+              <div class="routine-card__totals">
+                <span class="routine-total-badge">{{ block.exerciseCount }} ejercicios</span>
+                @if (block.isModified) {
+                <span class="routine-total-badge routine-total-badge--modified">ajustada</span>
+                }
+                <span class="routine-total-badge">{{ block.setCount }} series</span>
+                <span class="routine-total-badge routine-total-badge--amount">{{ block.totalMinutes }} min</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </ng-template>
+    </p-timeline>
+    } @else {
+    <div class="routes-empty-state">
+      <i class="pi pi-map-marker routes-empty-state__icon"></i>
+      <div class="routes-empty-state__title">Selecciona una rutina</div>
+      <div class="routes-empty-state__text">
+        Elige una rutina de la lista para ver sus bloques y tiempos.
+      </div>
+    </div>
+    }
+  </section>
+</div>

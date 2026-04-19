@@ -1,48 +1,42 @@
-<section class="routines-page">
-	<header class="routines-hero">
-		<p class="routines-hero__eyebrow">Dashboard</p>
+@let summary = weeklySummary();
 
-		<div class="routines-hero__content">
-			<div>
-				<h2 class="routines-hero__title">Rutinas</h2>
-				<p class="routines-hero__description">
-					Organiza bloques de entrenamiento, sesiones semanales y seguimiento
-					del progreso desde un solo lugar.
-				</p>
-			</div>
+<lib-routines-info-column
+  [summary]="summary"
+  [currentWeekTitle]="currentWeekTitle"
+/>
 
-			<div class="routines-hero__pill">Plan semanal sincronizado</div>
-		</div>
-	</header>
+<div class="routines-tabs">
+  <div class="card">
+    <p-tabs value="rutinas" class="routines-tabs-root">
+      <p-tablist class="routines-tablist">
+        @for (tab of topTabs; track tab.value) {
+        <p-tab [value]="tab.value" class="routines-tab">
+          <fa-icon [icon]="tab.icon" class="tab-icon fa-xl" />
+          <span>{{ tab.label }}</span>
+        </p-tab>
+        }
+      </p-tablist>
 
-	<section class="routines-metrics" aria-label="Resumen de rutinas">
-		@for (metric of metrics; track metric.label) {
-		<article class="routines-card">
-			<p class="routines-card__label">{{ metric.label }}</p>
-			<p class="routines-card__value">{{ metric.value }}</p>
-			<p class="routines-card__detail">{{ metric.detail }}</p>
-		</article>
-		}
-	</section>
+      <p-tabpanels>
+        <p-tabpanel value="modificaciones-de-rutinas">
+          <div class="routines-placeholder routines-placeholder--empty" aria-label="Modificaciones de rutinas"></div>
+        </p-tabpanel>
 
-	<section class="routines-plan">
-		<div class="routines-plan__intro">
-			<p class="routines-plan__eyebrow">Bloques destacados</p>
-			<h3 class="routines-plan__title">Estructura sugerida de la semana</h3>
-			<p class="routines-plan__description">
-				La nueva librería ya está conectada al dashboard y lista para crecer con
-				planes, progresiones y seguimiento por atleta.
-			</p>
-		</div>
-
-		<div class="routines-plan__grid">
-			@for (block of blocks; track block.title) {
-			<article class="routines-plan__block">
-				<p class="routines-plan__cadence">{{ block.cadence }}</p>
-				<h4 class="routines-plan__block-title">{{ block.title }}</h4>
-				<p class="routines-plan__block-focus">{{ block.focus }}</p>
-			</article>
-			}
-		</div>
-	</section>
-</section>
+        <p-tabpanel value="rutinas">
+          <lib-routines-breakdown
+            [summary]="summary"
+            [routineStartDate]="routineStartDate()"
+            [routineEndDate]="routineEndDate()"
+            [maxRoutineDate]="maxRoutineDate"
+            [filteredRoutineDays]="filteredRoutineDays()"
+            [searchQuery]="searchQuery()"
+            (startDateSelect)="onStartDateSelect($event)"
+            (endDateSelect)="onEndDateSelect($event)"
+            (printRoutines)="onPrintRoutines()"
+            (searchQueryChange)="updateSearchQuery($event)"
+          />
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  </div>
+</div>
