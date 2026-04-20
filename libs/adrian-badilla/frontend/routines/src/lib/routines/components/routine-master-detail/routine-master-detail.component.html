@@ -120,12 +120,12 @@
       </div>
 
       <div class="route-summary__chips">
-        <span class="route-summary__chip">{{ activeRoutine.sessionCount }} bloques</span>
+        @for (highlight of activeRoutine.highlights; track highlight) {
+        <span class="route-summary__chip">{{ highlight }}</span>
+        }
         @if (activeRoutine.isModified) {
         <span class="route-summary__chip route-summary__chip--modified">ajustada</span>
         }
-        <span class="route-summary__chip">{{ activeRoutine.exerciseCount }} ejercicios</span>
-        <span class="route-summary__chip route-summary__chip--units">{{ activeRoutine.totalMinutes }} minutos</span>
         <span class="route-summary__chip route-summary__chip--amount">{{ activeRoutine.goal }}</span>
       </div>
     </div>
@@ -139,9 +139,9 @@
               [class.routine-card__units--modified]="block.isModified"
             >
               <div class="routine-card__units-value">
-                {{ block.totalMinutes }}
+                {{ block.displayValue }}
               </div>
-              <div class="routine-card__units-label">minutos</div>
+              <div class="routine-card__units-label">{{ block.displayLabel }}</div>
             </div>
 
             <div class="routine-card__summary">
@@ -157,12 +157,12 @@
               </div>
 
               <div class="routine-card__totals">
-                <span class="routine-total-badge">{{ block.exerciseCount }} ejercicios</span>
+                @for (stat of block.stats; track stat) {
+                <span class="routine-total-badge">{{ stat }}</span>
+                }
                 @if (block.isModified) {
                 <span class="routine-total-badge routine-total-badge--modified">ajustada</span>
                 }
-                <span class="routine-total-badge">{{ block.setCount }} series</span>
-                <span class="routine-total-badge routine-total-badge--amount">{{ block.totalMinutes }} min</span>
               </div>
             </div>
           </div>

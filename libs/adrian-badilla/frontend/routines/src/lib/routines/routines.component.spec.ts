@@ -62,5 +62,7 @@ describe('RoutinesComponent', () => {
     expect(content).toContain('Rutinas');
     expect(content).toContain('Modificaciones de Rutinas');
     expect(content).toContain('Rutinas disponibles');
+    expect(content).toContain('Sentadilla Smith');
+    expect(content).toContain('Espalda, brazos y hombros');
   });
 });

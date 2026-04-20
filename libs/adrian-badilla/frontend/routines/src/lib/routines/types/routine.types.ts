@@ -2,6 +2,9 @@ export type RoutineCard = {
   readonly id: string;
   readonly title: string;
   readonly subtitle: string;
+  readonly displayValue: string;
+  readonly displayLabel: string;
+  readonly stats: readonly string[];
   readonly totalMinutes: number;
   readonly exerciseCount: number;
   readonly setCount: number;
@@ -20,6 +23,7 @@ export type RoutineDay = {
   readonly sessionCount: number;
   readonly exerciseCount: number;
   readonly totalMinutes: number;
+  readonly highlights: readonly string[];
   readonly isModified: boolean;
   readonly blocks: readonly RoutineCard[];
 };

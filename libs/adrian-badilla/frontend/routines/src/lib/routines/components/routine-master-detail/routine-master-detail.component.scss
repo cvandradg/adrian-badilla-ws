@@ -54,16 +54,11 @@
 
 :host ::ng-deep .route-search-field label {
   color: rgba(255, 255, 255, 0.5);
-  transition: color 150ms ease-out, opacity 150ms ease-out;
 }
 
 :host ::ng-deep .route-search-field.route-search-field--filled label,
 :host ::ng-deep .route-search-field:focus-within label {
   color: rgba(255, 255, 255, 0.72);
-}
-
-:host ::ng-deep .route-search-field:not(.route-search-field--filled):focus-within label {
-  padding-left: 0.5rem;
 }
 
 :host ::ng-deep .route-search-field .p-inputwrapper,
@@ -103,12 +98,10 @@
   color: rgba(255, 255, 255, 0.72);
   cursor: pointer;
   transform: translateY(-50%);
-  transition: color 120ms ease-out, background-color 120ms ease-out;
 }
 
 .route-search-clear:hover,
 .route-search-clear:focus-visible {
-  background: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.92);
   outline: none;
 }
@@ -148,9 +141,7 @@
   z-index: 1;
   height: 100%;
   overflow-y: auto;
-  overscroll-behavior: contain;
   scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
 .master-detail-nav__scroll::-webkit-scrollbar {
@@ -159,30 +150,17 @@
 }
 
 .master-detail-nav__arrow {
-  --arrow-size: 1.5rem;
-  --arrow-icon-size: 0.7rem;
-
   position: absolute;
   right: 0.4rem;
-  width: var(--arrow-size);
-  height: var(--arrow-size);
+  width: 2rem;
+  height: 2rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   padding: 0;
   background: rgba(6, 16, 23, 0.88);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.32);
   color: #fff;
   cursor: pointer;
   z-index: 5;
-  transition:
-    background 150ms ease,
-    border-color 150ms ease,
-    color 150ms ease,
-    box-shadow 150ms ease,
-    opacity 150ms ease,
-    transform 150ms ease,
-    width 150ms ease,
-    height 150ms ease;
 
   @include mixins.flex-center();
 }
@@ -196,23 +174,12 @@
 }
 
 .master-detail-nav__arrow-icon {
-  font-size: var(--arrow-icon-size);
-}
-
-.master-detail-nav__arrow:not(.master-detail-nav__arrow--disabled) {
-  --arrow-size: 2rem;
-  --arrow-icon-size: 1rem;
+  font-size: 1rem;
 }
 
 .master-detail-nav__arrow:not(.master-detail-nav__arrow--disabled):hover {
   background: rgba(13, 28, 39, 0.96);
   border-color: rgba(96, 195, 255, 0.52);
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.42);
-  transform: translateY(-1px);
-}
-
-.master-detail-nav__arrow--down:not(.master-detail-nav__arrow--disabled):hover {
-  transform: translateY(1px);
 }
 
 .master-detail-nav__arrow:focus-visible {
@@ -269,10 +236,6 @@
   @include mixins.flex-center(row, center, flex-start);
 }
 
-.master-detail-nav__item-wrapper:last-child .master-detail-nav__item {
-  border-bottom: none;
-}
-
 .master-detail-nav__item--active {
   font-weight: 500;
   background: var(--routines-panel-soft);
@@ -318,19 +281,7 @@
   overflow-y: auto;
   padding: 1.5rem 2rem;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.212) transparent;
   isolation: isolate;
-}
-
-.master-detail-nav__content::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.master-detail-nav__content::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.25);
-  border-radius: 999px;
-  border: 3px solid transparent;
-  background-clip: padding-box;
 }
 
 .route-summary {
@@ -343,10 +294,6 @@
   font-size: 1.1rem;
   font-weight: 600;
   letter-spacing: 0.01em;
-}
-
-.route-summary__description {
-  font-size: 0.9rem;
 }
 
 .route-summary__chips,

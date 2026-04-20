@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "css-flexbox-grid": {
+      "source": "pluginagentmarketplace/custom-plugin-css",
+      "sourceType": "github",
+      "computedHash": "9191777da4ec2f20faa3da14693f54eb6602afdfc7673aecc46f99fcb3c6a813"
+    },
+    "sass-best-practices": {
+      "source": "mindrally/skills",
+      "sourceType": "github",
+      "computedHash": "8127aa762d5c644a7e7b916b94f58e03471741bc313d92d76d78409758f5c7b6"
+    },
+    "scss-best-practices": {
+      "source": "mindrally/skills",
+      "sourceType": "github",
+      "computedHash": "699729dff09e50495891b6956cffdbd148724f8f4cd4668e91c0e3d5b37084ce"
+    }
+  }
+}
