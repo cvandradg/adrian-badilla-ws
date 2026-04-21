@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal, untracked } from '@angular/core';
 import { DecimalPipe, NgClass } from '@angular/common';
 import { Tag } from 'primeng/tag';
+import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
 import {
   DietMeal,
   MealDecision,
@@ -11,7 +13,7 @@ import { settingsStoreDev } from '../../store/settings.store';
 
 @Component({
   selector: 'lib-adrian-badilla-diets-decision',
-  imports: [NgClass, Tag, DecimalPipe],
+  imports: [NgClass, Tag, DecimalPipe, ButtonModule, RippleModule],
   templateUrl: './adrian-badilla-diets-decision.component.html',
   styleUrl: './adrian-badilla-diets-decision.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,40 +33,40 @@ export class AdrianBadillaDietsDecisionComponent {
   mealDialogRequested = output<string>();
 
   openedDecision = signal<MealDecision | null>(null);
+  // 🔥 SIGNAL (no computed) - solo se actualiza cuando usuario hace click en Ligero/Balanceado/Proteico
+  suggestedMeal = signal<any>(null);
 
   constructor(private readonly mealTranslationService: MealTranslationService) {}
 
-  // 🍽️ SUGERENCIA DE COMIDA - Generada automáticamente basada en macros restantes Y tipo de decisión
-  suggestedMeal = computed(() => {
-    const baseName = this.meal().baseName.toLowerCase();
-    const decision = this.openedDecision(); // 🎯 Considerar qué decisión está abierta
-    
-    // Mapear nombre de comida a categoría
-    let category: 'breakfast' | 'morning-snack' | 'lunch' | 'afternoon-snack' | 'dinner' | 'night-snack' = 'lunch';
-    
-    if (baseName.includes('desayuno')) {
-      category = 'breakfast';
-    } else if (baseName.includes('mañana')) {
-      category = 'morning-snack';
-    } else if (baseName.includes('almuerzo') || baseName.includes('comida')) {
-      category = 'lunch';
-    } else if (baseName.includes('tarde')) {
-      category = 'afternoon-snack';
-    } else if (baseName.includes('cena')) {
-      category = 'dinner';
-    } else if (baseName.includes('noche')) {
-      category = 'night-snack';
-    }
-    
-    // 🎯 NUEVO: Pasar el tipo de decisión a la función de sugerencia
-    // Esto genera recomendaciones diferentes para light/balanced/protein
-    return (this.store as any).getSuggestedMealByCategory(category, decision);
-  });
-
   selectDecision(decision: MealDecision) {
-    this.openedDecision.update((current) =>
-      current === decision ? null : decision,
-    );
+    const current = this.openedDecision();
+
+    if (current === decision) {
+      // Toggle off
+      this.openedDecision.set(null);
+      this.suggestedMeal.set(null); // 🔥 Limpiar sugerencia
+      return;
+    }
+
+    // Toggle on - AHORA calcular la sugerencia CON untracked completo
+    this.openedDecision.set(decision);
+    
+    // 🔥 CLAVE: untracked() evita que esto dependa de store.meals() o cualquier signal
+    const suggestion = untracked(() => {
+      const baseName = this.meal().baseName.toLowerCase();
+      
+      // Mapear nombre de comida a categoría
+      let category: 'breakfast' | 'morning-snack' | 'lunch' | 'afternoon-snack' | 'dinner' | 'night-snack' = 'lunch';
+      if (baseName.includes('desayuno')) category = 'breakfast';
+      else if (baseName.includes('mañana')) category = 'morning-snack';
+      else if (baseName.includes('tarde')) category = 'afternoon-snack';
+      else if (baseName.includes('cena')) category = 'dinner';
+      else if (baseName.includes('noche')) category = 'night-snack';
+      
+      return (this.store as any).getSuggestedMealByCategory(category, decision);
+    });
+    
+    this.suggestedMeal.set(suggestion); // 🔥 Actualizar signal UNA SOLA VEZ
   }
 
   getOptionsForDecision(decision: MealDecision): MealOption[] {
@@ -79,7 +81,6 @@ export class AdrianBadillaDietsDecisionComponent {
     }
 
     // ✅ Emitir cambio de decisión 
-    // (applyMealDecision en store AUTO-marca como 'completed')
     this.decisionChange.emit({
       id: this.meal().id,
       decision,
@@ -89,33 +90,37 @@ export class AdrianBadillaDietsDecisionComponent {
     });
 
     this.openedDecision.set(null);
+    this.suggestedMeal.set(null); // 🔥 Limpiar
   }
 
   // 🍽️ Seleccionar la comida sugerida automáticamente
   selectSuggestedMeal() {
     const suggestion = this.suggestedMeal();
-    const decision = this.openedDecision(); // ✅ Respetar la decisión actualmente abierta
+    const decision = this.openedDecision();
     
     if (!suggestion?.items || suggestion.items.length === 0 || !decision) {
       return;
     }
 
-    // Crear una opción virtual combinando todos los items de la sugerencia
+    if (this.meal().selectedFoodName) {
+      return;
+    }
+
     const suggestedOption: MealOption = {
       name: suggestion.items.map((item: MealOption) => item.name).join(' + '),
       macros: suggestion.totals,
     };
 
-    // ✅ IMPORTANTE: Emitir con la decisión abierta, NO siempre 'balanced'
     this.decisionChange.emit({
       id: this.meal().id,
-      decision, // ← Usar la decisión actual (light/balanced/protein)
+      decision,
       option: suggestedOption,
       optionNameInSpanish: suggestedOption.name,
       optionNameInEnglish: suggestedOption.name,
     });
 
     this.openedDecision.set(null);
+    this.suggestedMeal.set(null); // 🔥 Limpiar
   }
 
   isDecisionOpen(decision: MealDecision): boolean {
@@ -143,5 +148,10 @@ export class AdrianBadillaDietsDecisionComponent {
   // 🔢 Redondear hacia arriba
   roundUp(value: number): number {
     return Math.ceil(value);
+  }
+
+  // 🤖 Abrir chat para una comida específica
+  openChatForMeal(mealId: string) {
+    this.store.openChatForMeal(mealId);
   }
 }

@@ -67,6 +67,16 @@
       <i class="pi pi-search"></i>
     </button>
 
+    <button
+      type="button"
+      (click)="openChatForMeal(meal().id)"
+      class="neon-btn ai-btn"
+      aria-label="Pregunta a la IA"
+      title="Pregunta a la IA"
+    >
+      <i class="pi pi-comments"></i>
+    </button>
+
   </div>
 
   @if (openedDecision(); as currentDecision) {
@@ -80,8 +90,8 @@
   >
     <div class="meal-options-title">Selecciona una comida</div>
 
-    <!-- 🍽️ SUGERENCIA AUTOMÁTICA -->
-    @if (suggestedMeal(); as suggested) {
+    <!-- 🍽️ SUGERENCIA AUTOMÁTICA - Only show if meal not yet selected -->
+    @if (!meal().selectedFoodName && suggestedMeal(); as suggested) {
       @if (suggested.items && suggested.items.length > 0) {
         <div class="suggested-meal-section">
           <div class="suggested-meal-header">

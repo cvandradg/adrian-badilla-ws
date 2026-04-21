@@ -5,6 +5,7 @@ import { withFoodDescription } from './with-food-description.feature';
 import { withDietDecisionEngine } from './with-diet-decision-engine.feature';
 import { withRoutes } from './with-routes.feature';
 import { withMacroTracker } from './with-macro-tracker.feature';
+import { withNutritionChat } from './with-nutrition-chat.feature';
 
 export const settingsStoreDev = signalStore(
   {providedIn: 'root'},
@@ -14,6 +15,7 @@ export const settingsStoreDev = signalStore(
     withFeature(() => withDietDecisionEngine()),
     withFeature(() => withRoutes()),
     withFeature(() => withMacroTracker()),
+    withFeature(() => withNutritionChat()),
     withFeature((store) => withDiets(store)),
   // withFeature((store) => withProducts(store)),
 );

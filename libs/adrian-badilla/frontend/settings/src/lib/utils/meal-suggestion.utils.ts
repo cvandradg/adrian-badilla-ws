@@ -169,7 +169,7 @@ const PREFERRED_FOODS_BY_CATEGORY = {
  * 🧮 FUNCIONES PARA GENERAR SUGERENCIAS
  */
 
-interface SuggestedMeal {
+export interface SuggestedMeal {
   items: FoodBlock[];
   totals: MealMacro;
   nearestMatch: string; // descriptor de qué tan cerca estuvo

@@ -21,6 +21,7 @@ import { FoodDescriptionDialogComponent } from '../../dialog/food-description-di
 import { MealTranslationService } from '../../services/meal-translation.service';
 import { NgClass, CommonModule } from '@angular/common';
 import { AdrianBadillaDietsDecisionComponent } from '../adrian-badilla-diets-decision/adrian-badilla-diets-decision.component';
+import { NutritionChatComponent } from '../nutrition-chat/nutrition-chat.component';
 import type { RouteNavItem } from '../../types/diets.types';
 import { MacroProgressTrackerComponent } from '../macro-progress-tracker/macro-progress-tracker.component';
 
@@ -42,9 +43,9 @@ import { MacroProgressTrackerComponent } from '../macro-progress-tracker/macro-p
     NgClass,
     CommonModule,
     RippleModule,
-    MacroProgressTrackerComponent
-    
-],
+    MacroProgressTrackerComponent,
+    NutritionChatComponent,
+  ],
 })
 export class AdrianBadillaDietsComponent {
   private readonly cdr = inject(ChangeDetectorRef);
