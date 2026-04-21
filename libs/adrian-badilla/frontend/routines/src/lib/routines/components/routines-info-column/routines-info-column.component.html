@@ -7,54 +7,36 @@
   </div>
 
   <div class="additional-info-column">
-    <div class="title-section">
-      <div class="title">Plan de Rutinas</div>
-      <div class="title-description">{{ currentWeekTitle() }}</div>
-    </div>
-
-    <div class="description">
-      Estructura semanal basada en la misma pantalla de desglose de ordenes,
-      ahora adaptada para lunes a domingo con bloques, tiempos y enfoque por
-      rutina.
-    </div>
-
-    <div class="important-stats">
-      <div class="important-stat">
-        <div class="stat-value"><strong>{{ currentSummary.dayCount }}</strong> / 7</div>
-        <div class="stat-label">Dias</div>
+    <div class="content-section">
+      <div class="title-section">
+        <div class="title">Para que sirve esta rutina</div>
+        <div class="title-description">{{ currentWeekTitle() }}</div>
       </div>
-      <div class="important-stat">
-        <div class="stat-value"><strong>{{ currentSummary.totalBlocks }}</strong></div>
-        <div class="stat-label">Bloques</div>
-      </div>
-      <div class="important-stat">
-        <div class="stat-value"><strong>{{ currentSummary.totalExercises }}</strong></div>
-        <div class="stat-label">Ejercicios</div>
+
+      <div class="purpose-list">
+        @for (item of routinePurposeItems; track item.title) {
+        <article class="info-card">
+          <div class="info-card__title">{{ item.title }}</div>
+          <div class="info-card__description">{{ item.description }}</div>
+        </article>
+        }
       </div>
     </div>
 
-    <div class="other-stats">
-      <div class="other-stat">
-        <div class="other-stat-label">Cardio sugerido</div>
-        <div class="other-stat-value">{{ currentSummary.totalMinutes }} minutos</div>
-      </div>
-      <div class="other-stat">
-        <div class="other-stat-label">Dias ajustados</div>
-        <div class="other-stat-value">{{ currentSummary.modifiedDays }} dentro de la semana</div>
-      </div>
-      <div class="other-stat">
-        <div class="other-stat-label">Objetivo</div>
-        <div class="other-stat-value">Rutina semanal del documento cargado</div>
-      </div>
-      <div class="other-stat">
-        <div class="other-stat-label">Cardio promedio</div>
-        <div class="other-stat-value">
-          {{ currentSummary.dayCount ? (currentSummary.totalMinutes / currentSummary.dayCount).toFixed(0) : 0 }} min
+    <div class="content-section content-section--benefits">
+      <div class="section-heading">Beneficios generales de esta rutina</div>
+
+      <div class="benefits-list">
+        @for (benefit of routineBenefits; track benefit) {
+        <div class="benefit-item">
+          <span class="benefit-item__marker"></span>
+          <span class="benefit-item__text">{{ benefit }}</span>
         </div>
+        }
       </div>
-      <div class="other-stat">
-        <div class="other-stat-label">Frecuencia</div>
-        <div class="other-stat-value">Lunes a domingo</div>
+
+      <div class="summary-note">
+        {{ currentSummary.dayCount }} dias organizados con {{ currentSummary.totalExercises }} ejercicios y {{ currentSummary.totalBlocks }} bloques visibles en la semana.
       </div>
     </div>
   </div>
