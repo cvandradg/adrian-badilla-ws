@@ -22,6 +22,8 @@ import type { RoutineDay } from '../../types/routine.types';
 
 const ROUTINE_LIST_SCROLL_STEP = 156;
 
+type RoutineMediaTab = 'detalle-de-rutinas' | 'rutinas-modificadas';
+
 @Component({
   selector: 'lib-routine-master-detail',
   imports: [
@@ -44,6 +46,11 @@ export class RoutineMasterDetailComponent {
   readonly routineDays = input.required<readonly RoutineDay[]>();
   readonly searchQuery = input('');
   readonly searchQueryChange = output<string>();
+  readonly mediaRequest = output<{
+    tab: RoutineMediaTab;
+    routineName: string;
+    blockTitle: string;
+  }>();
 
   readonly selectedRoutineId = signal<string | null>(null);
   readonly routineListScroll = viewChild<ElementRef<HTMLDivElement>>('routineListScroll');
@@ -109,6 +116,17 @@ export class RoutineMasterDetailComponent {
   selectRoutine(routineId: string): void {
     if (this.activeRoutineId() === routineId) return;
     this.selectedRoutineId.set(routineId);
+  }
+
+  openRoutineMedia(tab: RoutineMediaTab, blockTitle: string): void {
+    const activeRoutine = this.activeRoutineDay();
+    if (!activeRoutine) return;
+
+    this.mediaRequest.emit({
+      tab,
+      routineName: activeRoutine.name,
+      blockTitle,
+    });
   }
 
   scrollUp(): void {

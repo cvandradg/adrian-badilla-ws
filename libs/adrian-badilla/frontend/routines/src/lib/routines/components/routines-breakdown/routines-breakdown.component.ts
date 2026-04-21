@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
@@ -11,6 +11,13 @@ type BreakdownTab = {
   value: string;
   title: string;
   description: string;
+};
+
+type BreakdownTabValue = 'rutinas' | 'detalle-de-rutinas' | 'rutinas-modificadas';
+
+type RoutineMediaContext = {
+  routineName: string;
+  blockTitle: string;
 };
 
 @Component({
@@ -39,6 +46,8 @@ export class RoutinesBreakdownComponent {
   readonly endDateSelect = output<Date>();
   readonly printRoutines = output<void>();
   readonly searchQueryChange = output<string>();
+  readonly activeBreakdownTab = signal<BreakdownTabValue>('rutinas');
+  readonly activeMediaContext = signal<RoutineMediaContext | null>(null);
 
   readonly breakdownTabs: BreakdownTab[] = [
     {
@@ -68,5 +77,22 @@ export class RoutinesBreakdownComponent {
 
   onPrintRoutines(): void {
     this.printRoutines.emit();
+  }
+
+  onBreakdownTabChange(value: string | number | undefined): void {
+    if (typeof value !== 'string') return;
+    this.activeBreakdownTab.set(value as BreakdownTabValue);
+  }
+
+  onRoutineMediaRequest(request: {
+    tab: BreakdownTabValue;
+    routineName: string;
+    blockTitle: string;
+  }): void {
+    this.activeMediaContext.set({
+      routineName: request.routineName,
+      blockTitle: request.blockTitle,
+    });
+    this.activeBreakdownTab.set(request.tab);
   }
 }

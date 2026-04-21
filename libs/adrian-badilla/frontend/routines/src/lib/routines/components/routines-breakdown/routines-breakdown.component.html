@@ -1,4 +1,5 @@
 @let currentSummary = summary();
+@let currentMediaContext = activeMediaContext();
 
 <div class="routes-breakdown-filters">
   <div class="sub-title">Rango de fechas</div>
@@ -105,7 +106,7 @@
 
   <div class="breakdown-routes-options">
     <div class="card">
-      <p-tabs value="rutinas">
+      <p-tabs [value]="activeBreakdownTab()" (valueChange)="onBreakdownTabChange($event)">
         <p-tablist>
           @for (tab of breakdownTabs; track tab.value) {
           <p-tab [value]="tab.value" class="glow-border breakdown-tab">
@@ -120,6 +121,7 @@
             <lib-routine-master-detail
               [routineDays]="filteredRoutineDays()"
               [searchQuery]="searchQuery()"
+              (mediaRequest)="onRoutineMediaRequest($event)"
               (searchQueryChange)="searchQueryChange.emit($event)"
             />
           </p-tabpanel>
@@ -129,7 +131,11 @@
               <i class="pi pi-image routines-placeholder__icon"></i>
               <div class="routines-placeholder__title">Imagenes</div>
               <div class="routines-placeholder__text">
+                @if (currentMediaContext) {
+                Guia visual de {{ currentMediaContext.blockTitle }} dentro de {{ currentMediaContext.routineName }}.
+                } @else {
                 Panel reservado para una guia visual de rutinas con imagenes de apoyo.
+                }
               </div>
             </div>
           </p-tabpanel>
@@ -139,7 +145,11 @@
               <i class="pi pi-video routines-placeholder__icon"></i>
               <div class="routines-placeholder__title">Guia de videos</div>
               <div class="routines-placeholder__text">
+                @if (currentMediaContext) {
+                Guia de videos de {{ currentMediaContext.blockTitle }} dentro de {{ currentMediaContext.routineName }}.
+                } @else {
                 Panel reservado para videos de rutinas y seguimiento visual de ejercicios.
+                }
               </div>
             </div>
           </p-tabpanel>

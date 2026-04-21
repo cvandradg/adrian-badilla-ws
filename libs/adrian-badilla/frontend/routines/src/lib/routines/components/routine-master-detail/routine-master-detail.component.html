@@ -165,6 +165,32 @@
                 }
               </div>
             </div>
+
+            <div class="routine-card__media">
+              <div class="routine-card__media-label">Guia visual</div>
+
+              <div class="routine-card__media-actions">
+                <button
+                  pRipple
+                  type="button"
+                  class="routine-card__media-button"
+                  (click)="openRoutineMedia('detalle-de-rutinas', block.title)"
+                  aria-label="Ver imagenes de {{ block.title }}"
+                >
+                  <i class="pi pi-image"></i>
+                </button>
+
+                <button
+                  pRipple
+                  type="button"
+                  class="routine-card__media-button routine-card__media-button--video"
+                  (click)="openRoutineMedia('rutinas-modificadas', block.title)"
+                  aria-label="Ver videos de {{ block.title }}"
+                >
+                  <i class="pi pi-video"></i>
+                </button>
+              </div>
+            </div>
           </div>
         </article>
       </ng-template>
