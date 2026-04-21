@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, input, output, signal } from '@angu
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
+import { DialogModule } from 'primeng/dialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { TabsModule } from 'primeng/tabs';
 import { RoutineMasterDetailComponent } from '../routine-master-detail/routine-master-detail.component';
@@ -20,6 +21,29 @@ type RoutineMediaContext = {
   blockTitle: string;
 };
 
+type RoutineGuideDialogState = RoutineMediaContext & {
+  imageSrc: string | null;
+};
+
+const EXERCISE_GUIDE_IMAGE_TITLES = new Set([
+  'Abductor en maquina sentada',
+  'Desplante con mancuerna',
+  'Elevacion de pelvis en maquina',
+  'Extension de cadera en polea de pie',
+  'Extension de codo en polea con barra',
+  'Extension de rodilla en maquina',
+  'Flexion de codo con barra',
+  'Flexion de rodilla acostada',
+  'Flexion de rodilla en maquina sentada',
+  'Vuelos laterales con mancuerna',
+  'Sentadilla Smith',
+  'Sentadilla Smith abierta sumo',
+  'Remo en polea sentada cerrado',
+  'Press de pierna abierta',
+  'Prensa profunda',
+  'Jalon en polea abierta',
+]);
+
 @Component({
   selector: 'lib-routines-breakdown',
   imports: [
@@ -27,6 +51,7 @@ type RoutineMediaContext = {
     TabsModule,
     ButtonModule,
     DatePicker,
+    DialogModule,
     FloatLabelModule,
     RoutineMasterDetailComponent,
   ],
@@ -48,6 +73,7 @@ export class RoutinesBreakdownComponent {
   readonly searchQueryChange = output<string>();
   readonly activeBreakdownTab = signal<BreakdownTabValue>('rutinas');
   readonly activeMediaContext = signal<RoutineMediaContext | null>(null);
+  readonly activeGuideDialog = signal<RoutineGuideDialogState | null>(null);
 
   readonly breakdownTabs: BreakdownTab[] = [
     {
@@ -85,7 +111,7 @@ export class RoutinesBreakdownComponent {
   }
 
   onRoutineMediaRequest(request: {
-    tab: BreakdownTabValue;
+    type: 'image' | 'video';
     routineName: string;
     blockTitle: string;
   }): void {
@@ -93,6 +119,26 @@ export class RoutinesBreakdownComponent {
       routineName: request.routineName,
       blockTitle: request.blockTitle,
     });
-    this.activeBreakdownTab.set(request.tab);
+
+    if (request.type === 'image') {
+      this.activeGuideDialog.set({
+        routineName: request.routineName,
+        blockTitle: request.blockTitle,
+        imageSrc: this.resolveGuideImageSrc(request.blockTitle),
+      });
+      return;
+    }
+
+    this.activeBreakdownTab.set('rutinas-modificadas');
+  }
+
+  closeGuideDialog(): void {
+    this.activeGuideDialog.set(null);
+  }
+
+  private resolveGuideImageSrc(blockTitle: string): string | null {
+    if (!EXERCISE_GUIDE_IMAGE_TITLES.has(blockTitle)) return null;
+
+    return `/global/assets/img/guia visual de ejercicios/${encodeURIComponent(blockTitle)}.png`;
   }
 }

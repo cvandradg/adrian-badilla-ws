@@ -361,50 +361,6 @@
   gap: 0.55rem;
 }
 
-.routine-card__media {
-  flex: 0 0 auto;
-  display: grid;
-  justify-items: end;
-  gap: 0.7rem;
-  min-width: 7.25rem;
-}
-
-.routine-card__media-label {
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
-  block-size: 3rem;
-}
-
-.routine-card__media-actions {
-  display: flex;
-  gap: 0.7rem;
-}
-
-.routine-card__media-button {
-  width: 2.7rem;
-  height: 2.7rem;
-  border: 1px solid rgba(88, 214, 255, 0.44);
-  border-radius: 0.95rem;
-  background: rgba(11, 24, 34, 0.92);
-  color: #fff;
-  box-shadow: inset 0 0 16px rgba(88, 214, 255, 0.24), 0 0 8px rgba(88, 214, 255, 0.28);
-  cursor: pointer;
-
-  @include mixins.flex-center();
-}
-
-.routine-card__media-button--video {
-  border-color: rgba(187, 141, 255, 0.45);
-  box-shadow: inset 0 0 16px rgba(187, 141, 255, 0.24), 0 0 8px rgba(187, 141, 255, 0.28);
-}
-
-.routine-card__media-button .pi {
-  font-size: 1rem;
-}
-
 .routine-card__units {
   flex: 0 0 auto;
   min-width: 5.5rem;
@@ -501,10 +457,5 @@
   .routine-card__units {
     justify-items: start;
     min-width: 0;
-  }
-
-  .routine-card__media {
-    width: 100%;
-    justify-items: start;
   }
 }

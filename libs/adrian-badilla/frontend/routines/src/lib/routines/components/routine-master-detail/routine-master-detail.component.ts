@@ -22,7 +22,11 @@ import type { RoutineDay } from '../../types/routine.types';
 
 const ROUTINE_LIST_SCROLL_STEP = 156;
 
-type RoutineMediaTab = 'detalle-de-rutinas' | 'rutinas-modificadas';
+type RoutineMediaRequest = {
+  type: 'image' | 'video';
+  routineName: string;
+  blockTitle: string;
+};
 
 @Component({
   selector: 'lib-routine-master-detail',
@@ -46,11 +50,7 @@ export class RoutineMasterDetailComponent {
   readonly routineDays = input.required<readonly RoutineDay[]>();
   readonly searchQuery = input('');
   readonly searchQueryChange = output<string>();
-  readonly mediaRequest = output<{
-    tab: RoutineMediaTab;
-    routineName: string;
-    blockTitle: string;
-  }>();
+  readonly mediaRequest = output<RoutineMediaRequest>();
 
   readonly selectedRoutineId = signal<string | null>(null);
   readonly routineListScroll = viewChild<ElementRef<HTMLDivElement>>('routineListScroll');
@@ -118,12 +118,23 @@ export class RoutineMasterDetailComponent {
     this.selectedRoutineId.set(routineId);
   }
 
-  openRoutineMedia(tab: RoutineMediaTab, blockTitle: string): void {
+  openRoutineImage(blockTitle: string): void {
     const activeRoutine = this.activeRoutineDay();
     if (!activeRoutine) return;
 
     this.mediaRequest.emit({
-      tab,
+      type: 'image',
+      routineName: activeRoutine.name,
+      blockTitle,
+    });
+  }
+
+  openRoutineVideo(blockTitle: string): void {
+    const activeRoutine = this.activeRoutineDay();
+    if (!activeRoutine) return;
+
+    this.mediaRequest.emit({
+      type: 'video',
       routineName: activeRoutine.name,
       blockTitle,
     });

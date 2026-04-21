@@ -1,5 +1,6 @@
 @let currentSummary = summary();
 @let currentMediaContext = activeMediaContext();
+@let currentGuideDialog = activeGuideDialog();
 
 <div class="routes-breakdown-filters">
   <div class="sub-title">Rango de fechas</div>
@@ -100,6 +101,58 @@
   </div>
   }
 </div>
+
+<p-dialog
+  [visible]="!!currentGuideDialog"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  [closable]="false"
+  [showHeader]="false"
+  styleClass="routine-guide-dialog"
+  maskStyleClass="routine-guide-dialog-mask"
+  [style]="{ width: 'min(42rem, 92vw)' }"
+  (visibleChange)="!$event && closeGuideDialog()"
+>
+  @if (currentGuideDialog) {
+  <section class="dlg guide-dialog">
+    <header class="dlg__header">
+      <div class="dlg__title">GUIA VISUAL DEL EJERCICIO</div>
+      <button
+        type="button"
+        class="guide-dialog__close"
+        (click)="closeGuideDialog()"
+        aria-label="Cerrar guia visual"
+      >
+        <i class="pi pi-times"></i>
+      </button>
+    </header>
+
+    <p class="dlg__hint">
+      {{ currentGuideDialog.blockTitle }} dentro de {{ currentGuideDialog.routineName }}.
+    </p>
+
+    @if (currentGuideDialog.imageSrc; as imageSrc) {
+    <div class="guide-dialog__frame">
+      <img
+        class="guide-dialog__image"
+        [src]="imageSrc"
+        [alt]="currentGuideDialog.blockTitle"
+      />
+    </div>
+    } @else {
+    <div class="guide-dialog__empty">
+      <i class="pi pi-image guide-dialog__empty-icon"></i>
+      <div class="guide-dialog__empty-title">Sin imagen cargada</div>
+      <div class="guide-dialog__empty-text">
+        Aun no existe una guia visual para {{ currentGuideDialog.blockTitle }} en la carpeta configurada.
+      </div>
+    </div>
+    }
+  </section>
+  }
+</p-dialog>
 
 <div class="routes-breakdown-tabs">
   <div class="sub-title">Tipos de desglose de rutinas</div>
