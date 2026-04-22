@@ -90,51 +90,28 @@
   >
     <div class="meal-options-title">Selecciona una comida</div>
 
-    <!-- 🍽️ SUGERENCIA AUTOMÁTICA - Only show if meal not yet selected -->
-    @if (!meal().selectedFoodName && suggestedMeal(); as suggested) {
-      @if (suggested.items && suggested.items.length > 0) {
-        <div class="suggested-meal-section">
-          <div class="suggested-meal-header">
-            <span class="suggested-label">⭐ Sugerencia para ti</span>
-            <span class="suggested-quality">{{ suggested.nearestMatch }}</span>
-          </div>
-          
-          <button
-            type="button"
-            class="suggested-meal-btn"
-            (click)="selectSuggestedMeal()"
-          >
-            <div class="suggested-foods">
-              @for (food of suggested.items; track food.name; let last = $last) {
-                <span class="food-name">{{ food.name }}</span>
-                @if (!last) { <span class="separator">+</span> }
-              }
-            </div>
-            
-            <div class="suggested-macros">
-              <span class="macro protein">🥩 {{ suggested.totals.protein | number: '1.0-0' }}g</span>
-              <span class="macro carbs">🍞 {{ suggested.totals.carbs | number: '1.0-0' }}g</span>
-              <span class="macro fats">🥑 {{ suggested.totals.fats | number: '1.0-0' }}g</span>
-            </div>
-          </button>
-
-          <hr class="divider" />
-        </div>
-
-      }
-    }
-
     <div class="meal-options-list">
       @for (option of getOptionsForDecision(currentDecision); track option.name) {
       <button
         type="button"
         class="meal-option-btn"
+        [class.meal-option-btn--recommended]="option.isRecommended"
         (click)="selectMealOption(option)"
       >
-        <span class="meal-option-name">{{ option.name }}</span>
-        <span class="meal-option-macros">
-          🥩 {{ roundUp(option.macros.protein) }}g · 🍞 {{ roundUp(option.macros.carbs) }}g · 🥑 {{ roundUp(option.macros.fats) }}g
-        </span>
+        <div class="meal-row">
+          <div class="meal-left">
+            <span class="meal-option-name">{{ option.name }}</span>
+            @if (option.isRecommended) {
+              <span class="recommended-badge">⭐ Recomendado</span>
+            }
+          </div>
+
+          <div class="meal-macros-row">
+            <span class="macro protein">🥩 {{ roundUp(option.macros.protein) }}g</span>
+            <span class="macro carbs">🍞 {{ roundUp(option.macros.carbs) }}g</span>
+            <span class="macro fats">🥑 {{ roundUp(option.macros.fats) }}g</span>
+          </div>
+        </div>
       </button>
       }
     </div>

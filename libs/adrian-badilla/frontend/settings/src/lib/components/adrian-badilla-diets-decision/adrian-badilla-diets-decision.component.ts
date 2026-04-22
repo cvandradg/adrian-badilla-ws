@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, signal, untracked } from '@angular/core';
-import { DecimalPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Tag } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
@@ -13,7 +13,7 @@ import { settingsStoreDev } from '../../store/settings.store';
 
 @Component({
   selector: 'lib-adrian-badilla-diets-decision',
-  imports: [NgClass, Tag, DecimalPipe, ButtonModule, RippleModule],
+  imports: [NgClass, Tag, ButtonModule, RippleModule],
   templateUrl: './adrian-badilla-diets-decision.component.html',
   styleUrl: './adrian-badilla-diets-decision.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -70,7 +70,23 @@ export class AdrianBadillaDietsDecisionComponent {
   }
 
   getOptionsForDecision(decision: MealDecision): MealOption[] {
-    return this.meal().decisionOptions?.[decision] ?? [];
+    const options = this.meal().decisionOptions?.[decision] ?? [];
+    const suggestion = this.suggestedMeal();
+    
+    // 🎯 Si no hay sugerencia o ya hay comida seleccionada, retornar opciones normales (máx 4)
+    if (!suggestion?.items || suggestion.items.length === 0 || this.meal().selectedFoodName) {
+      return options.slice(0, 4);
+    }
+
+    // ✨ Convertir sugerencia a MealOption con isRecommended flag
+    const suggestedOption: MealOption = {
+      name: suggestion.items.map((item: any) => item.name).join(' + '),
+      macros: suggestion.totals,
+      isRecommended: true, // 🎯 Marcar como recomendado
+    };
+
+    // 🎯 Colocar sugerencia primero, luego máx 3 opciones normales = 4 total
+    return [suggestedOption, ...options.slice(0, 3)];
   }
 
   selectMealOption(option: MealOption) {
@@ -80,7 +96,7 @@ export class AdrianBadillaDietsDecisionComponent {
       return;
     }
 
-    // ✅ Emitir cambio de decisión 
+    // ✅ Emitir cambio de decisión (funciona para opciones normales Y sugeridas)
     this.decisionChange.emit({
       id: this.meal().id,
       decision,
@@ -90,37 +106,7 @@ export class AdrianBadillaDietsDecisionComponent {
     });
 
     this.openedDecision.set(null);
-    this.suggestedMeal.set(null); // 🔥 Limpiar
-  }
-
-  // 🍽️ Seleccionar la comida sugerida automáticamente
-  selectSuggestedMeal() {
-    const suggestion = this.suggestedMeal();
-    const decision = this.openedDecision();
-    
-    if (!suggestion?.items || suggestion.items.length === 0 || !decision) {
-      return;
-    }
-
-    if (this.meal().selectedFoodName) {
-      return;
-    }
-
-    const suggestedOption: MealOption = {
-      name: suggestion.items.map((item: MealOption) => item.name).join(' + '),
-      macros: suggestion.totals,
-    };
-
-    this.decisionChange.emit({
-      id: this.meal().id,
-      decision,
-      option: suggestedOption,
-      optionNameInSpanish: suggestedOption.name,
-      optionNameInEnglish: suggestedOption.name,
-    });
-
-    this.openedDecision.set(null);
-    this.suggestedMeal.set(null); // 🔥 Limpiar
+    this.suggestedMeal.set(null); // 🔥 Limpiar sugerencia
   }
 
   isDecisionOpen(decision: MealDecision): boolean {

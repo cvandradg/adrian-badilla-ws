@@ -122,119 +122,6 @@
   letter-spacing: 0.02em;
 }
 
-/* 🍽️ SUGERENCIA AUTOMÁTICA */
-.suggested-meal-section {
-  margin-bottom: 1rem;
-  padding: 0.875rem;
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(59, 130, 246, 0.1));
-  border: 2px solid rgba(34, 197, 94, 0.3);
-  border-radius: 10px;
-  animation: slideInDown 0.3s ease-out;
-
-  .suggested-meal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
-    gap: 0.75rem;
-
-    .suggested-label {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #22c55e;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .suggested-quality {
-      font-size: 0.75rem;
-      padding: 0.35rem 0.6rem;
-      background: rgba(34, 197, 94, 0.2);
-      color: #22c55e;
-      border: 1px solid rgba(34, 197, 94, 0.5);
-      border-radius: 12px;
-      white-space: nowrap;
-    }
-  }
-
-  .suggested-meal-btn {
-    width: 100%;
-    padding: 0.75rem;
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(59, 130, 246, 0.15));
-    border: 1px solid rgba(34, 197, 94, 0.4);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    color: white;
-
-    &:hover {
-      background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(59, 130, 246, 0.25));
-      border-color: rgba(34, 197, 94, 0.7);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(34, 197, 94, 0.2);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-
-    .suggested-foods {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-      align-items: center;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #e0f2fe;
-      line-height: 1.4;
-
-      .separator {
-        color: rgba(34, 197, 94, 0.6);
-        margin: 0 0.25rem;
-      }
-    }
-
-    .suggested-macros {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      font-size: 0.8rem;
-      font-weight: 600;
-
-      .macro {
-        padding: 0.35rem 0.6rem;
-        border-radius: 6px;
-        white-space: nowrap;
-
-        &.protein {
-          background: rgba(239, 68, 68, 0.15);
-          color: #fecaca;
-        }
-
-        &.carbs {
-          background: rgba(234, 179, 8, 0.15);
-          color: #fde047;
-        }
-
-        &.fats {
-          background: rgba(34, 197, 94, 0.15);
-          color: #86efac;
-        }
-      }
-    }
-  }
-}
-
-.divider {
-  border: none;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(100, 200, 255, 0.3), transparent);
-  margin: 0.75rem 0;
-}
-
 .meal-options-list {
   display: grid;
   gap: 0.75rem;
@@ -250,14 +137,28 @@
   text-align: left;
   cursor: pointer;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
   transition:
     border-color 0.2s ease,
     transform 0.2s ease,
     box-shadow 0.2s ease,
     background-color 0.2s ease;
+}
+
+.meal-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.meal-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .meal-option-btn:hover {
@@ -267,13 +168,80 @@
   box-shadow: 0 0 16px rgba(56, 189, 248, 0.16);
 }
 
+// ✨ Opción recomendada
+.meal-option-btn--recommended {
+  border: 1.5px solid rgba(34, 197, 94, 0.5);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(59, 130, 246, 0.06));
+  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.2);
+
+  &:hover {
+    border-color: rgba(34, 197, 94, 0.8);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(59, 130, 246, 0.12));
+    box-shadow:
+      inset 0 0 0 1px rgba(34, 197, 94, 0.3),
+      0 0 16px rgba(34, 197, 94, 0.2);
+    transform: translateY(-2px);
+  }
+}
+
+.meal-option-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
 .meal-option-name {
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ⭐ Badge pequeño y discreto
+.recommended-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+  font-weight: 600;
+  white-space: nowrap;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  flex-shrink: 0;
 }
 
 .meal-option-macros {
   color: rgba(255, 255, 255, 0.68);
   font-size: 0.82rem;
+}
+
+.meal-macros-row {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+  opacity: 0.9;
+  flex-shrink: 0;
+  white-space: nowrap;
+
+  .macro {
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+
+    &.protein {
+      color: rgba(254, 202, 202, 0.85);
+    }
+
+    &.carbs {
+      color: rgba(253, 224, 71, 0.85);
+    }
+
+    &.fats {
+      color: rgba(134, 239, 172, 0.85);
+    }
+  }
 }
 
 .neon-btn.meal-dialog-btn {

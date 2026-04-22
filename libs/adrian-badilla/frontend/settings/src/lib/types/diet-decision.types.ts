@@ -14,6 +14,7 @@ export interface MealMacro {
 export interface MealOption {
   name: string;
   macros: MealMacro;
+  isRecommended?: boolean; // ✨ Badge para sugerencias integradas
 }
 
 export interface DietMeal {

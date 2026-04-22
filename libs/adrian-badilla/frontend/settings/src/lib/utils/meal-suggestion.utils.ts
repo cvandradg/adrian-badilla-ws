@@ -4,81 +4,92 @@ import { MealOption, MealMacro } from '../types/diet-decision.types';
  * 🥗 FOOD BLOCKS
  * Bloques de alimentos clasificados por tipo y macronutrientes
  */
+
+/** Meal category or time-of-day slot */
+export type MealCategory =
+  | 'breakfast'
+  | 'morning-snack'
+  | 'lunch'
+  | 'afternoon-snack'
+  | 'dinner'
+  | 'night-snack';
+
 export interface FoodBlock extends MealOption {
   category?: 'protein' | 'carbs' | 'fats' | 'mixed';
   servingSize?: string; // e.g., "100g", "1 egg", "1 tbsp"
+  mealTags: MealCategory[]; // Required: valid meal slots for this food
 }
 
 export const FOOD_BLOCKS: FoodBlock[] = [
   // 🍗 PROTEÍNAS PRINCIPALES
-  { name: 'Pollo (100g)', macros: { protein: 31, carbs: 0, fats: 3.6 }, category: 'protein', servingSize: '100g' },
-  { name: 'Pechuga de pollo (100g)', macros: { protein: 31, carbs: 0, fats: 1.2 }, category: 'protein', servingSize: '100g' },
-  { name: 'Atún en lata (100g)', macros: { protein: 29, carbs: 0, fats: 0.5 }, category: 'protein', servingSize: '100g' },
-  { name: 'Carne magra (100g)', macros: { protein: 26, carbs: 0, fats: 5 }, category: 'protein', servingSize: '100g' },
-  { name: 'Salmón (100g)', macros: { protein: 25, carbs: 0, fats: 11 }, category: 'mixed', servingSize: '100g' },
-  { name: 'Huevo (1 unit)', macros: { protein: 6, carbs: 0.6, fats: 5 }, category: 'protein', servingSize: '1 unit' },
-  { name: 'Claras (3 units)', macros: { protein: 11, carbs: 1.1, fats: 0.2 }, category: 'protein', servingSize: '3 units' },
-  { name: 'Pavo (100g)', macros: { protein: 29, carbs: 0, fats: 1.5 }, category: 'protein', servingSize: '100g' },
-  { name: 'Yogurt griego (100g)', macros: { protein: 10, carbs: 3.3, fats: 0.5 }, category: 'protein', servingSize: '100g' },
-  { name: 'Cottage cheese (100g)', macros: { protein: 11, carbs: 3.4, fats: 4.3 }, category: 'protein', servingSize: '100g' },
-  { name: 'Tofu (100g)', macros: { protein: 17, carbs: 1.9, fats: 8.8 }, category: 'protein', servingSize: '100g' },
-  { name: 'Whey protein (30g)', macros: { protein: 24, carbs: 1, fats: 1 }, category: 'protein', servingSize: '30g' },
+  { name: 'Pollo (100g)', macros: { protein: 31, carbs: 0, fats: 3.6 }, category: 'protein', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Pechuga de pollo (100g)', macros: { protein: 31, carbs: 0, fats: 1.2 }, category: 'protein', servingSize: '100g', mealTags: ['breakfast', 'lunch', 'dinner'] },
+  { name: 'Atún en lata (100g)', macros: { protein: 29, carbs: 0, fats: 0.5 }, category: 'protein', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Carne magra (100g)', macros: { protein: 26, carbs: 0, fats: 5 }, category: 'protein', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Salmón (100g)', macros: { protein: 25, carbs: 0, fats: 11 }, category: 'mixed', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Huevo (1 unit)', macros: { protein: 6, carbs: 0.6, fats: 5 }, category: 'protein', servingSize: '1 unit', mealTags: ['breakfast', 'morning-snack'] },
+  { name: 'Claras (3 units)', macros: { protein: 11, carbs: 1.1, fats: 0.2 }, category: 'protein', servingSize: '3 units', mealTags: ['breakfast', 'morning-snack', 'afternoon-snack'] },
+  { name: 'Pavo (100g)', macros: { protein: 29, carbs: 0, fats: 1.5 }, category: 'protein', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Yogurt griego (100g)', macros: { protein: 10, carbs: 3.3, fats: 0.5 }, category: 'protein', servingSize: '100g', mealTags: ['breakfast', 'morning-snack', 'afternoon-snack', 'night-snack'] },
+  { name: 'Cottage cheese (100g)', macros: { protein: 11, carbs: 3.4, fats: 4.3 }, category: 'protein', servingSize: '100g', mealTags: ['breakfast', 'morning-snack', 'afternoon-snack', 'night-snack'] },
+  { name: 'Tofu (100g)', macros: { protein: 17, carbs: 1.9, fats: 8.8 }, category: 'protein', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Whey protein (30g)', macros: { protein: 24, carbs: 1, fats: 1 }, category: 'protein', servingSize: '30g', mealTags: ['breakfast', 'morning-snack', 'afternoon-snack'] },
 
   // 🍚 CARBOHIDRATOS PRINCIPALES
-  { name: 'Arroz integral (100g cocido)', macros: { protein: 2.6, carbs: 23, fats: 0.9 }, category: 'carbs', servingSize: '100g' },
-  { name: 'Arroz blanco (100g cocido)', macros: { protein: 2.7, carbs: 28, fats: 0.3 }, category: 'carbs', servingSize: '100g' },
-  { name: 'Avena (100g seco)', macros: { protein: 10.7, carbs: 66, fats: 6.9 }, category: 'mixed', servingSize: '100g' },
-  { name: 'Papas dulces (100g cocido)', macros: { protein: 1.5, carbs: 20, fats: 0.1 }, category: 'carbs', servingSize: '100g' },
-  { name: 'Papas blancas (100g cocido)', macros: { protein: 2, carbs: 17, fats: 0.1 }, category: 'carbs', servingSize: '100g' },
-  { name: 'Pan integral (1 rebanada)', macros: { protein: 4, carbs: 12, fats: 1.5 }, category: 'carbs', servingSize: '1 slice' },
-  { name: 'Pan blanco (1 rebanada)', macros: { protein: 3, carbs: 14, fats: 1 }, category: 'carbs', servingSize: '1 slice' },
-  { name: 'Pasta integral (100g cocida)', macros: { protein: 4, carbs: 26, fats: 0.5 }, category: 'carbs', servingSize: '100g' },
-  { name: 'Lentejas (100g cocidas)', macros: { protein: 9, carbs: 20, fats: 0.4 }, category: 'mixed', servingSize: '100g' },
-  { name: 'Avena (50g seco)', macros: { protein: 5.35, carbs: 33, fats: 3.45 }, category: 'carbs', servingSize: '50g' },
-  { name: 'Plátano (1 unit)', macros: { protein: 1.1, carbs: 27, fats: 0.3 }, category: 'carbs', servingSize: '1 unit' },
-  { name: 'Manzana (1 unit)', macros: { protein: 0.3, carbs: 25, fats: 0.2 }, category: 'carbs', servingSize: '1 unit' },
+  { name: 'Arroz integral (100g cocido)', macros: { protein: 2.6, carbs: 23, fats: 0.9 }, category: 'carbs', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Arroz blanco (100g cocido)', macros: { protein: 2.7, carbs: 28, fats: 0.3 }, category: 'carbs', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Avena (100g seco)', macros: { protein: 10.7, carbs: 66, fats: 6.9 }, category: 'mixed', servingSize: '100g', mealTags: ['breakfast', 'morning-snack'] },
+  { name: 'Papas dulces (100g cocido)', macros: { protein: 1.5, carbs: 20, fats: 0.1 }, category: 'carbs', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Papas blancas (100g cocido)', macros: { protein: 2, carbs: 17, fats: 0.1 }, category: 'carbs', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Pan integral (1 rebanada)', macros: { protein: 4, carbs: 12, fats: 1.5 }, category: 'carbs', servingSize: '1 slice', mealTags: ['breakfast', 'morning-snack'] },
+  { name: 'Pan blanco (1 rebanada)', macros: { protein: 3, carbs: 14, fats: 1 }, category: 'carbs', servingSize: '1 slice', mealTags: ['breakfast', 'morning-snack'] },
+  { name: 'Pasta integral (100g cocida)', macros: { protein: 4, carbs: 26, fats: 0.5 }, category: 'carbs', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Lentejas (100g cocidas)', macros: { protein: 9, carbs: 20, fats: 0.4 }, category: 'mixed', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Avena (50g seco)', macros: { protein: 5.35, carbs: 33, fats: 3.45 }, category: 'carbs', servingSize: '50g', mealTags: ['breakfast', 'morning-snack'] },
+  { name: 'Plátano (1 unit)', macros: { protein: 1.1, carbs: 27, fats: 0.3 }, category: 'carbs', servingSize: '1 unit', mealTags: ['breakfast', 'morning-snack', 'afternoon-snack'] },
+  { name: 'Manzana (1 unit)', macros: { protein: 0.3, carbs: 25, fats: 0.2 }, category: 'carbs', servingSize: '1 unit', mealTags: ['breakfast', 'morning-snack', 'afternoon-snack'] },
 
   // 🥑 GRASAS
-  { name: 'Aguacate (100g)', macros: { protein: 2, carbs: 9, fats: 15 }, category: 'fats', servingSize: '100g' },
-  { name: 'Aceite de oliva (1 tbsp)', macros: { protein: 0, carbs: 0, fats: 14 }, category: 'fats', servingSize: '1 tbsp' },
-  { name: 'Almendras (30g)', macros: { protein: 6, carbs: 6, fats: 14 }, category: 'mixed', servingSize: '30g' },
-  { name: 'Mantequilla de maní (2 tbsp)', macros: { protein: 8, carbs: 7, fats: 16 }, category: 'mixed', servingSize: '2 tbsp' },
-  { name: 'Frutos secos mix (30g)', macros: { protein: 5, carbs: 8, fats: 14 }, category: 'mixed', servingSize: '30g' },
-  { name: 'Nueces (30g)', macros: { protein: 4, carbs: 4, fats: 20 }, category: 'fats', servingSize: '30g' },
-  { name: 'Mantequilla (1 tbsp)', macros: { protein: 0.1, carbs: 0, fats: 11 }, category: 'fats', servingSize: '1 tbsp' },
-  { name: 'Coco (30g)', macros: { protein: 3, carbs: 3, fats: 27 }, category: 'fats', servingSize: '30g' },
+  { name: 'Aguacate (100g)', macros: { protein: 2, carbs: 9, fats: 15 }, category: 'fats', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Aceite de oliva (1 tbsp)', macros: { protein: 0, carbs: 0, fats: 14 }, category: 'fats', servingSize: '1 tbsp', mealTags: ['lunch', 'dinner'] },
+  { name: 'Almendras (30g)', macros: { protein: 6, carbs: 6, fats: 14 }, category: 'mixed', servingSize: '30g', mealTags: ['morning-snack', 'afternoon-snack', 'night-snack'] },
+  { name: 'Mantequilla de maní (2 tbsp)', macros: { protein: 8, carbs: 7, fats: 16 }, category: 'mixed', servingSize: '2 tbsp', mealTags: ['breakfast', 'morning-snack', 'afternoon-snack'] },
+  { name: 'Frutos secos mix (30g)', macros: { protein: 5, carbs: 8, fats: 14 }, category: 'mixed', servingSize: '30g', mealTags: ['morning-snack', 'afternoon-snack', 'night-snack'] },
+  { name: 'Nueces (30g)', macros: { protein: 4, carbs: 4, fats: 20 }, category: 'fats', servingSize: '30g', mealTags: ['morning-snack', 'afternoon-snack', 'night-snack'] },
+  { name: 'Mantequilla (1 tbsp)', macros: { protein: 0.1, carbs: 0, fats: 11 }, category: 'fats', servingSize: '1 tbsp', mealTags: ['lunch', 'dinner'] },
+  { name: 'Coco (30g)', macros: { protein: 3, carbs: 3, fats: 27 }, category: 'fats', servingSize: '30g', mealTags: ['afternoon-snack', 'night-snack'] },
 
   // 🥬 VEGETALES (LOW CARB)
-  { name: 'Brócoli (100g cocido)', macros: { protein: 2.8, carbs: 7, fats: 0.4 }, category: 'carbs', servingSize: '100g' },
-  { name: 'Espinaca (100g cocida)', macros: { protein: 2.7, carbs: 3.6, fats: 0.4 }, category: 'carbs', servingSize: '100g' },
-  { name: 'Lechuga (100g)', macros: { protein: 1.2, carbs: 2.9, fats: 0.3 }, category: 'carbs', servingSize: '100g' },
-  { name: 'Tomate (100g)', macros: { protein: 0.9, carbs: 3.9, fats: 0.2 }, category: 'carbs', servingSize: '100g' },
-  { name: 'Zanahoria (100g cocida)', macros: { protein: 0.9, carbs: 10, fats: 0.2 }, category: 'carbs', servingSize: '100g' },
+  { name: 'Brócoli (100g cocido)', macros: { protein: 2.8, carbs: 7, fats: 0.4 }, category: 'carbs', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Espinaca (100g cocida)', macros: { protein: 2.7, carbs: 3.6, fats: 0.4 }, category: 'carbs', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Lechuga (100g)', macros: { protein: 1.2, carbs: 2.9, fats: 0.3 }, category: 'carbs', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Tomate (100g)', macros: { protein: 0.9, carbs: 3.9, fats: 0.2 }, category: 'carbs', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Zanahoria (100g cocida)', macros: { protein: 0.9, carbs: 10, fats: 0.2 }, category: 'carbs', servingSize: '100g', mealTags: ['lunch', 'dinner'] },
 
   // 🍯 CARBOS REFINADOS (Occasional)
-  { name: 'Miel (1 tbsp)', macros: { protein: 0.3, carbs: 17, fats: 0 }, category: 'carbs', servingSize: '1 tbsp' },
-  { name: 'Granola (50g)', macros: { protein: 12, carbs: 45, fats: 15 }, category: 'mixed', servingSize: '50g' },
+  { name: 'Miel (1 tbsp)', macros: { protein: 0.3, carbs: 17, fats: 0 }, category: 'carbs', servingSize: '1 tbsp', mealTags: ['breakfast', 'morning-snack'] },
+  { name: 'Granola (50g)', macros: { protein: 12, carbs: 45, fats: 15 }, category: 'mixed', servingSize: '50g', mealTags: ['breakfast', 'morning-snack'] },
 
   // 🔒 COMIDAS DE SEGURIDAD - Versiones muy pequeñas para últimos macros
-  { name: 'Pollo (50g)', macros: { protein: 15.5, carbs: 0, fats: 1.8 }, category: 'protein', servingSize: '50g' },
-  { name: 'Pechuga de pollo (50g)', macros: { protein: 15.5, carbs: 0, fats: 0.6 }, category: 'protein', servingSize: '50g' },
-  { name: 'Atún en lata (50g)', macros: { protein: 14.5, carbs: 0, fats: 0.25 }, category: 'protein', servingSize: '50g' },
-  { name: 'Claras (1-2 units)', macros: { protein: 4, carbs: 0.4, fats: 0.1 }, category: 'protein', servingSize: '1-2 units' },
-  { name: 'Huevo (1/2 unit)', macros: { protein: 3, carbs: 0.3, fats: 2.5 }, category: 'protein', servingSize: '1/2 unit' },
-  { name: 'Yogurt griego (50g)', macros: { protein: 5, carbs: 1.65, fats: 0.25 }, category: 'protein', servingSize: '50g' },
-  { name: 'Cottage cheese (50g)', macros: { protein: 5.5, carbs: 1.7, fats: 2.15 }, category: 'protein', servingSize: '50g' },
+  { name: 'Pollo (50g)', macros: { protein: 15.5, carbs: 0, fats: 1.8 }, category: 'protein', servingSize: '50g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Pechuga de pollo (50g)', macros: { protein: 15.5, carbs: 0, fats: 0.6 }, category: 'protein', servingSize: '50g', mealTags: ['breakfast', 'lunch', 'dinner'] },
+  { name: 'Atún en lata (50g)', macros: { protein: 14.5, carbs: 0, fats: 0.25 }, category: 'protein', servingSize: '50g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Claras (1-2 units)', macros: { protein: 4, carbs: 0.4, fats: 0.1 }, category: 'protein', servingSize: '1-2 units', mealTags: ['breakfast', 'morning-snack', 'afternoon-snack'] },
+  { name: 'Huevo (1/2 unit)', macros: { protein: 3, carbs: 0.3, fats: 2.5 }, category: 'protein', servingSize: '1/2 unit', mealTags: ['breakfast', 'morning-snack'] },
+  { name: 'Yogurt griego (50g)', macros: { protein: 5, carbs: 1.65, fats: 0.25 }, category: 'protein', servingSize: '50g', mealTags: ['breakfast', 'morning-snack', 'afternoon-snack', 'night-snack'] },
+  { name: 'Cottage cheese (50g)', macros: { protein: 5.5, carbs: 1.7, fats: 2.15 }, category: 'protein', servingSize: '50g', mealTags: ['breakfast', 'morning-snack', 'afternoon-snack', 'night-snack'] },
   
   // Carbos pequeños de seguridad
-  { name: 'Arroz integral (50g cocido)', macros: { protein: 1.3, carbs: 11.5, fats: 0.45 }, category: 'carbs', servingSize: '50g' },
-  { name: 'Papas dulces (50g cocido)', macros: { protein: 0.75, carbs: 10, fats: 0.05 }, category: 'carbs', servingSize: '50g' },
-  { name: 'Papas blancas (50g cocido)', macros: { protein: 1, carbs: 8.5, fats: 0.05 }, category: 'carbs', servingSize: '50g' },
-  { name: 'Pan integral (1/2 rebanada)', macros: { protein: 2, carbs: 6, fats: 0.75 }, category: 'carbs', servingSize: '1/2 slice' },
-  { name: 'Manzana (1/2 unit)', macros: { protein: 0.15, carbs: 12.5, fats: 0.1 }, category: 'carbs', servingSize: '1/2 unit' },
+  { name: 'Arroz integral (50g cocido)', macros: { protein: 1.3, carbs: 11.5, fats: 0.45 }, category: 'carbs', servingSize: '50g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Papas dulces (50g cocido)', macros: { protein: 0.75, carbs: 10, fats: 0.05 }, category: 'carbs', servingSize: '50g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Papas blancas (50g cocido)', macros: { protein: 1, carbs: 8.5, fats: 0.05 }, category: 'carbs', servingSize: '50g', mealTags: ['lunch', 'dinner'] },
+  { name: 'Pan integral (1/2 rebanada)', macros: { protein: 2, carbs: 6, fats: 0.75 }, category: 'carbs', servingSize: '1/2 slice', mealTags: ['breakfast', 'morning-snack'] },
+  { name: 'Manzana (1/2 unit)', macros: { protein: 0.15, carbs: 12.5, fats: 0.1 }, category: 'carbs', servingSize: '1/2 unit', mealTags: ['breakfast', 'morning-snack', 'afternoon-snack'] },
   
   // Grasas de seguridad
-  { name: 'Almendras (15g)', macros: { protein: 3, carbs: 3, fats: 7 }, category: 'mixed', servingSize: '15g' },
-  { name: 'Aceite de oliva (1/2 tbsp)', macros: { protein: 0, carbs: 0, fats: 7 }, category: 'fats', servingSize: '1/2 tbsp' },
-  { name: 'Aguacate (50g)', macros: { protein: 1, carbs: 4.5, fats: 7.5 }, category: 'fats', servingSize: '50g' },
+  { name: 'Almendras (15g)', macros: { protein: 3, carbs: 3, fats: 7 }, category: 'mixed', servingSize: '15g', mealTags: ['morning-snack', 'afternoon-snack', 'night-snack'] },
+  { name: 'Aceite de oliva (1/2 tbsp)', macros: { protein: 0, carbs: 0, fats: 7 }, category: 'fats', servingSize: '1/2 tbsp', mealTags: ['lunch', 'dinner'] },
+  { name: 'Aguacate (50g)', macros: { protein: 1, carbs: 4.5, fats: 7.5 }, category: 'fats', servingSize: '50g', mealTags: ['lunch', 'dinner'] },
 ];
 
 /**
@@ -165,90 +176,294 @@ const PREFERRED_FOODS_BY_CATEGORY = {
   ],
 };
 
-/**
- * 🧮 FUNCIONES PARA GENERAR SUGERENCIAS
- */
+// ─────────────────────────────────────────────────────────────────────────────
+// 🧮 ENGINE DE SUGERENCIAS v2 — Soft-constraint, calorie-aware, signal-ready
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ─── Exported Types ───────────────────────────────────────────────────────────
 
 export interface SuggestedMeal {
   items: FoodBlock[];
   totals: MealMacro;
-  nearestMatch: string; // descriptor de qué tan cerca estuvo
+  nearestMatch: string;
+  /** 0–1 realism score (1 = very realistic meal, 0 = poor combination) */
+  realismScore?: number;
 }
 
 /**
- * 🎯 DECISION-AWARE MACRO WEIGHTS
- * Returns weights for protein, carbs, fats based on decision type
+ * Defines a realistic meal structure by listing the expected macro categories
+ * of each food item in the combination.
  */
-function getMacroWeights(decision?: 'light' | 'balanced' | 'protein'): { protein: number; carbs: number; fats: number } {
+export interface MealTemplate {
+  name: string;
+  structure: ('protein' | 'carbs' | 'fats' | 'mixed')[];
+}
+
+/** Meal decision modes used by the recommendation engine */
+export type DecisionMode = 'light' | 'balanced' | 'protein';
+
+/** Internal scoring context passed through the pipeline */
+interface ScoringContext {
+  remaining: MealMacro;
+  decision?: DecisionMode;
+}
+
+// ─── Meal Templates ───────────────────────────────────────────────────────────
+/**
+ * Realistic meal structures used to guide 3-item combination generation.
+ * Mixed-category foods are treated as wildcards in template matching.
+ */
+const MEAL_TEMPLATES: MealTemplate[] = [
+  { name: 'balanced',           structure: ['protein', 'carbs', 'fats']   },
+  { name: 'protein-carb',       structure: ['protein', 'carbs']           },
+  { name: 'protein-fat',        structure: ['protein', 'fats']            },
+  { name: 'mixed-carb',         structure: ['mixed', 'carbs']             },
+  { name: 'mixed-protein',      structure: ['mixed', 'protein']           },
+  { name: 'protein-carb-mixed', structure: ['protein', 'carbs', 'mixed']  },
+  { name: 'protein-carb-carb',  structure: ['protein', 'carbs', 'carbs']  },
+  { name: 'mixed-carb-protein', structure: ['mixed', 'carbs', 'protein']  },
+];
+
+// ─── Pure Helpers ─────────────────────────────────────────────────────────────
+
+/** Total calories: protein×4 + carbs×4 + fats×9 */
+function calcCalories(macros: MealMacro): number {
+  return macros.protein * 4 + macros.carbs * 4 + macros.fats * 9;
+}
+
+/** "Avena (100g seco)" → "avena" */
+function getBaseFoodName(foodName: string): string {
+  return foodName.split('(')[0].trim().toLowerCase();
+}
+
+/** Prevents combining two servings of the same base food (e.g. Avena 100g + Avena 50g) */
+function hasBaseFoodDuplicate(foods: FoodBlock[], newFood: FoodBlock): boolean {
+  const newBase = getBaseFoodName(newFood.name);
+  return foods.some((f) => getBaseFoodName(f.name) === newBase);
+}
+
+/** Builds a SuggestedMeal by summing macro totals across items */
+function makeMeal(items: FoodBlock[]): SuggestedMeal {
+  return {
+    items,
+    totals: items.reduce(
+      (acc, f) => ({
+        protein: acc.protein + f.macros.protein,
+        carbs:   acc.carbs   + f.macros.carbs,
+        fats:    acc.fats    + f.macros.fats,
+      }),
+      { protein: 0, carbs: 0, fats: 0 },
+    ),
+    nearestMatch: '',
+  };
+}
+
+// ─── Dynamic Macro Weights ────────────────────────────────────────────────────
+
+/**
+ * 🎯 DYNAMIC MACRO WEIGHTS — Post-protein / post-carb / post-fat mode
+ *
+ * When a macro is already fulfilled (remaining ≤ 0) its weight drops to 0.05
+ * so the engine naturally pivots to filling the remaining macros instead of
+ * continuing to optimise for the completed one.
+ *
+ * Decision overrides take precedence over the dynamic mode.
+ */
+function getDynamicMacroWeights(
+  remaining: MealMacro,
+  decision?: DecisionMode,
+): { protein: number; carbs: number; fats: number } {
   if (decision === 'protein') {
-    return { protein: 0.7, carbs: 0.2, fats: 0.1 };
+    return { protein: 0.65, carbs: 0.2, fats: 0.15 };
   }
-
   if (decision === 'light') {
-    return { protein: 0.35, carbs: 0.35, fats: 0.3 };
+    return { protein: 0.3, carbs: 0.4, fats: 0.3 };
   }
 
-  // balanced (default)
-  return { protein: 0.4, carbs: 0.35, fats: 0.25 };
+  // Dynamic balanced — deprioritise fulfilled macros
+  const pw = remaining.protein <= 0 ? 0.05 : 0.4;
+  const cw = remaining.carbs   <= 0 ? 0.05 : 0.35;
+  const fw = remaining.fats    <= 0 ? 0.05 : 0.25;
+  const total = pw + cw + fw;
+  return { protein: pw / total, carbs: cw / total, fats: fw / total };
+}
+
+// ─── Macro Priority ───────────────────────────────────────────────────────────
+
+/**
+ * 📊 MACRO PRIORITY
+ * Returns the proportional importance of each macro based on what is still
+ * needed today.  The macro with the largest remaining amount gets the highest
+ * priority weight.  Fulfilled macros (≤ 0) receive zero priority.
+ */
+export function getMacroPriority(
+  remaining: MealMacro,
+): { protein: number; carbs: number; fats: number } {
+  const total =
+    Math.max(remaining.protein, 0) +
+    Math.max(remaining.carbs,   0) +
+    Math.max(remaining.fats,    0);
+
+  if (total === 0) return { protein: 0, carbs: 0, fats: 0 };
+
+  return {
+    protein: Math.max(remaining.protein, 0) / total,
+    carbs:   Math.max(remaining.carbs,   0) / total,
+    fats:    Math.max(remaining.fats,    0) / total,
+  };
 }
 
 /**
- * 📊 NORMALIZED SCORING SYSTEM
- * All distances normalized to 0-1 scale for consistent comparison
+ * 🏆 MOST CRITICAL MACRO
+ * Returns the single macro with the highest remaining need.
+ * Useful for UI messaging: "Te faltan principalmente CARBOHIDRATOS"
  */
+export function getMostCriticalMacro(
+  remaining: MealMacro,
+): 'protein' | 'carbs' | 'fats' {
+  const pr = Math.max(remaining.protein, 0);
+  const cr = Math.max(remaining.carbs,   0);
+  const fr = Math.max(remaining.fats,    0);
+  if (pr >= cr && pr >= fr) return 'protein';
+  if (cr >= fr) return 'carbs';
+  return 'fats';
+}
+
+// ─── Scoring Functions ────────────────────────────────────────────────────────
 
 /**
- * Calcula distancia normalizada de macros (0-1 scale)
- * Penaliza excedencias 3x más que deficiencias
- * Usa pesos dinámicos basados en el tipo de decisión
+ * 📊 SOFT MACRO DISTANCE (normalised, lower = better)
+ *
+ * For active macros (remaining > 0):
+ *   overshoot → penalised 2×  (too much is worse than too little)
+ *   undershoot → penalised 0.3×  (mild — partial fill is acceptable)
+ *
+ * For fulfilled macros (remaining ≤ 0):
+ *   any addition receives a soft, proportional penalty
+ *   NEVER hard-blocks the food — just discourages adding to a filled macro
  */
-function getNormalizedMacroDistance(
+/**
+ * Tiered deficit penalty:
+ *  - overshoot (ratio ≥ 1)   → quadratic penalty, discourages excess
+ *  - good match  (≥ 0.7)     → near-zero cost
+ *  - weak match  (≥ 0.4)     → moderate cost
+ *  - no contribution (< 0.4) → high penalty — food is irrelevant
+ *  - fulfilled macro (rem ≤ 0) → soft proportional penalty
+ */
+function deficitPenalty(consumed: number, rem: number): number {
+  if (rem > 0) {
+    const ratio = consumed / rem;
+    if (ratio >= 1)   return (ratio - 1) * 2; // overshoot
+    if (ratio >= 0.7) return 0.1;             // good partial fill
+    if (ratio >= 0.4) return 0.5;             // weak contribution
+    return 1.5;                               // essentially irrelevant
+  }
+  // Fulfilled macro: small soft penalty proportional to amount added
+  return consumed > 0 ? consumed / 10 : 0;
+}
+
+function softMacroDistance(
   meal: SuggestedMeal,
   remaining: MealMacro,
-  decision?: 'light' | 'balanced' | 'protein'
+  weights: { protein: number; carbs: number; fats: number },
 ): number {
-  // Normalizar por lo que queda (evita que valores grandes dominen)
-  const proteinError = remaining.protein > 0
-    ? (meal.totals.protein - remaining.protein) / remaining.protein
-    : meal.totals.protein > 0 ? 1 : 0;
-
-  const carbsError = remaining.carbs > 0
-    ? (meal.totals.carbs - remaining.carbs) / remaining.carbs
-    : meal.totals.carbs > 0 ? 1 : 0;
-
-  const fatsError = remaining.fats > 0
-    ? (meal.totals.fats - remaining.fats) / remaining.fats
-    : meal.totals.fats > 0 ? 1 : 0;
-
-  // Función de penalidad: excédente = 3x, deficiencia = 0.5x
-  const penaltyFn = (error: number) => {
-    if (error >= 0) return error * 3; // Excedencia: penalidad severa
-    return Math.abs(error) * 0.5; // Deficiencia: penalidad leve
-  };
-
-  const proteinPenalty = penaltyFn(proteinError);
-  const carbsPenalty = penaltyFn(carbsError);
-  const fatsPenalty = penaltyFn(fatsError);
-
-  // Usar pesos dinámicos basados en decisión
-  const weights = getMacroWeights(decision);
-  return (proteinPenalty * weights.protein + carbsPenalty * weights.carbs + fatsPenalty * weights.fats);
+  return (
+    deficitPenalty(meal.totals.protein, remaining.protein) * weights.protein +
+    deficitPenalty(meal.totals.carbs,   remaining.carbs)   * weights.carbs   +
+    deficitPenalty(meal.totals.fats,    remaining.fats)     * weights.fats
+  );
 }
 
 /**
- * ✅ MEAL COHERENCE: Evita combinaciones ilógicas
- * Ejemplo: tuna + honey = no sense
+ * 🎯 MACRO CONTRIBUTION SCORE
+ * Rewards meals that address the most critically missing macros.
+ * Returns a negative number — higher raw contribution = lower (better) score.
+ */
+function getMacroContributionScore(
+  meal: SuggestedMeal,
+  priority: { protein: number; carbs: number; fats: number },
+): number {
+  const raw =
+    meal.totals.protein * priority.protein +
+    meal.totals.carbs   * priority.carbs   +
+    meal.totals.fats    * priority.fats;
+  return -raw / 100;
+}
+
+/**
+ * 🔥 CALORIE PENALTY
+ * Penalises meals that overshoot the remaining calorie budget by more than 15 %.
+ */
+function getCaloriePenalty(meal: SuggestedMeal, remaining: MealMacro): number {
+  const remainingCals = calcCalories({
+    protein: Math.max(0, remaining.protein),
+    carbs:   Math.max(0, remaining.carbs),
+    fats:    Math.max(0, remaining.fats),
+  });
+  if (remainingCals <= 0) return 0;
+  const ratio = calcCalories(meal.totals) / remainingCals;
+  if (ratio <= 1.15) return 0;
+  if (ratio <= 1.5)  return (ratio - 1.15) * 0.5;
+  return (ratio - 1) * 0.8;
+}
+
+/**
+ * ✅ MEAL COHERENCE HELPERS
+ */
+
+/** Returns true if a food is "high-carb" — ≥25g carbs per serving. */
+function isHighCarb(food: FoodBlock): boolean {
+  return food.macros.carbs >= 25;
+}
+
+/**
+ * Returns true if the item list matches at least one defined MEAL_TEMPLATE.
+ * Mixed-category items act as wildcards — they satisfy any template slot.
+ * Meals with ONLY mixed-category items are considered non-matching (unrealistic).
+ */
+function matchesAnyTemplate(items: FoodBlock[]): boolean {
+  const catSet = new Set(items.map((i) => i.category ?? 'mixed'));
+  
+  // Mixed-only meals (all items have 'mixed' category) don't match realistic templates
+  if (catSet.size === 1 && catSet.has('mixed')) return false;
+  
+  return MEAL_TEMPLATES.some((template) =>
+    template.structure.every(
+      (req) => catSet.has(req) || catSet.has('mixed'),
+    ),
+  );
+}
+
+/**
+ * ✅ MEAL COHERENCE: hard-penalises illogical food pairings
  */
 function isMealCoherent(items: FoodBlock[]): boolean {
   const names = items.map((i) => i.name.toLowerCase());
 
-  // Pares de alimentos que NO deben combinarse
   const invalidPairs: [string, string][] = [
     ['atún', 'miel'],
     ['atun', 'miel'],
     ['pollo', 'miel'],
     ['carne', 'miel'],
     ['pavo', 'miel'],
+    ['aceite de oliva', 'manzana'],
+    ['mantequilla', 'atún'],
+    // Cereal / sweet grains mixed with savoury proteins
+    ['granola', 'pollo'],
+    ['granola', 'atún'],
+    ['granola', 'atun'],
+    ['granola', 'pavo'],
+    ['granola', 'carne'],
+    ['granola', 'salmón'],
+    ['granola', 'salmon'],
+    // Avena (oats) with savoury proteins
+    ['avena', 'pollo'],
+    ['avena', 'atún'],
+    ['avena', 'atun'],
+    ['avena', 'pavo'],
+    ['avena', 'carne'],
+    ['avena', 'salmón'],
+    ['avena', 'salmon'],
   ];
 
   for (const [food1, food2] of invalidPairs) {
@@ -261,626 +476,371 @@ function isMealCoherent(items: FoodBlock[]): boolean {
 }
 
 /**
+ * �️ MEAL REALISM PENALTY
+ * Checks whether a combination matches a recognised meal template.
+ * Mixed-category foods are treated as wildcards — no penalty when present.
+ */
+/** Returns the category repetition + fat/carb-only structural penalty. */
+function getStructuralPenalty(
+  cats: string[],
+  catSet: Set<string>,
+  hasMixed: boolean,
+  itemCount: number,
+): number {
+  let p = 0;
+  if (!hasMixed && catSet.size === 1 && itemCount >= 3) p += 0.3;
+  if (!hasMixed && !catSet.has('protein') && catSet.has('fats') && catSet.has('carbs') && itemCount >= 3) p += 0.1;
+  if (itemCount >= 3 && cats.filter((c) => c === 'carbs').length >= 2) p += 0.3;
+  return p;
+}
+
+function getMealRealismPenalty(items: FoodBlock[]): number {
+  if (items.length <= 1) return 0;
+
+  const cats     = items.map((i) => i.category ?? 'mixed');
+  const catSet   = new Set(cats);
+  const hasMixed = catSet.has('mixed');
+
+  // With category-driven selection, realism penalties are minimal
+  // Keep only structural coherence checks
+  let penalty = getStructuralPenalty(cats, catSet, hasMixed, items.length);
+
+  // Diversity bonus: reward balanced macro composition
+  if (catSet.has('protein') && catSet.has('carbs') && catSet.has('fats')) penalty -= 0.1;
+
+  return Math.max(0, penalty);
+}
+
+/**
  * 🎯 DECISION-AWARE PENALTY
- * Ajusta scoring según el tipo de decisión
- * ⚡ CRITICAL: Hard penalties for low-protein meals in protein mode
+ * Applies extra scoring pressure to enforce the selected meal type.
  */
 function getDecisionPenalty(
   meal: SuggestedMeal,
-  decision?: 'light' | 'balanced' | 'protein'
+  decision?: DecisionMode,
 ): number {
-  if (!decision || decision === 'balanced') {
-    return 0; // Sin penalidad adicional
-  }
+  if (!decision || decision === 'balanced') return 0;
 
-  const calories = meal.totals.protein * 4 + meal.totals.carbs * 4 + meal.totals.fats * 9;
+  const cals = calcCalories(meal.totals);
 
   if (decision === 'light') {
-    // Penalizar calorías altas y grasas
-    const caloriePenalty = Math.max(0, (calories - 300) / 300) * 0.3; // Max 0.3
-    const fatPenalty = Math.max(0, (meal.totals.fats - 10) / 10) * 0.2; // Max 0.2
-    return caloriePenalty + fatPenalty;
+    const calPenalty = Math.max(0, (cals - 350) / 350) * 0.4;
+    const fatPenalty = Math.max(0, (meal.totals.fats - 12) / 12) * 0.2;
+    return calPenalty + fatPenalty;
   }
 
   if (decision === 'protein') {
-    // ⚡ HARD PENALTIES for low-protein meals (critical fix)
-    // If protein is too low, penalty is very high (essentially excludes the meal)
-    if (meal.totals.protein < 10) {
-      return 5; // Effectively discard (higher than any macro distance score)
-    }
-
-    if (meal.totals.protein < 20) {
-      return 1.5; // Strong penalty for marginally low protein
-    }
-
-    // For protein >= 20g, apply ratio-based penalty for additional refinement
-    const proteinRatio = meal.totals.protein > 0
-      ? meal.totals.protein / Math.max(calories, 1)
-      : 0;
-
-    // Penalize if less than 30% of calories are protein
-    if (proteinRatio < 0.3) {
-      return (0.3 - proteinRatio) * 0.8; // Slightly stronger penalty than before (max 0.24)
-    }
+    if (meal.totals.protein < 10) return 5;   // Effectively discard
+    if (meal.totals.protein < 18) return 1.5; // Strong penalty
+    const ratio = meal.totals.protein / Math.max(cals, 1);
+    if (ratio < 0.28) return (0.28 - ratio) * 0.8;
   }
 
   return 0;
 }
 
 /**
- * 🔍 SCORE A CANDIDATE MEAL (Stage 2 refinement)
- * Combina: distancia + coherencia + decisión
+ * 🔍 COMPOSITE SCORE  (lower = better)
+ *
+ * Components:
+ *  1. Soft macro distance  — dynamic weights, post-protein/carb/fat aware
+ *  2. Calorie penalty      — discourages overshooting the calorie budget
+ *  3. Coherence penalty    — hard-excludes incoherent pairings (score += 10)
+ *  4. Decision penalty     — enforces light / protein constraints
+ *  5. Realism penalty      — discourages template mismatches
+ *  6. Simplicity bonus     — slight preference for 1–2 item meals
  */
-function scoreCandidate(
-  meal: SuggestedMeal,
-  remaining: MealMacro,
-  decision?: 'light' | 'balanced' | 'protein'
-): number {
-  // Use decision-aware macro distance scoring
-  const macroScore = getNormalizedMacroDistance(meal, remaining, decision);
-
-  // Penalidad por incoherencia
-  const coherencePenalty = isMealCoherent(meal.items) ? 0 : 2; // Score 2 = exclusión
-
-  // Penalidad por decisión (includes hard protein penalties)
-  const decisionPenalty = getDecisionPenalty(meal, decision);
-
-  // Slight preference for simpler meals (2 items better than 3)
-  const simplicity = meal.items.length <= 2 ? -0.05 : 0;
-
-  return macroScore + coherencePenalty + decisionPenalty + simplicity;
+function scoreMeal(meal: SuggestedMeal, ctx: ScoringContext): number {
+  const weights          = getDynamicMacroWeights(ctx.remaining, ctx.decision);
+  const priority         = getMacroPriority(ctx.remaining);
+  const coherencePenalty = isMealCoherent(meal.items) ? 0 : 10;
+  return (
+    softMacroDistance(meal, ctx.remaining, weights)  +
+    getMacroContributionScore(meal, priority)         +
+    getCaloriePenalty(meal, ctx.remaining)            +
+    coherencePenalty                                  +
+    getDecisionPenalty(meal, ctx.decision)            +
+    getMealRealismPenalty(meal.items)
+  );
 }
 
-/**
- * 🚀 STAGE 1: Generate candidate meals (macro-focused)
- * Returned as list of possibilities, not single best
- */
-function generateCandidateMeals(
-  sortedFoods: FoodBlock[],
-  remaining: MealMacro,
-  maxItems: number = 3
-): SuggestedMeal[] {
-  const candidates: Array<{ meal: SuggestedMeal; score: number }> = [];
+// ─── Food Sorting ─────────────────────────────────────────────────────────────
 
-  // 1-item meals
-  for (let idx = 0; idx < Math.min(sortedFoods.length, 20); idx++) {
-    const food = sortedFoods[idx];
-    const meal: SuggestedMeal = {
-      items: [food],
-      totals: food.macros,
-      nearestMatch: '',
+/**
+ * Sorts foods by how well they cover remaining macros.
+ * Mixed-category foods receive only a modest 25 % reduction (not the old 70 %).
+ * Uses the same dynamic weights as the scorer so sorting is context-aware.
+ */
+function sortByRelevance(
+  foods: FoodBlock[],
+  remaining: MealMacro,
+  decision?: DecisionMode,
+): FoodBlock[] {
+  // Use priority-aware scoring: the macro with the largest deficit drives ranking
+  const priority = getMacroPriority(remaining);
+  return [...foods].sort((a, b) => {
+    const score = (f: FoodBlock): number => {
+      let s =
+        f.macros.protein * priority.protein +
+        f.macros.carbs   * priority.carbs   +
+        f.macros.fats    * priority.fats;
+      // Mixed foods: slight reduction to prefer more specific options when equal
+      if (f.category === 'mixed') s *= 0.75;
+      return s;
     };
-
-    const score = getNormalizedMacroDistance(meal, remaining);
-    candidates.push({ meal, score });
-  }
-
-  // 2-item meals
-  if (maxItems >= 2 && sortedFoods.length > 1) {
-    for (let i = 0; i < Math.min(sortedFoods.length, 15); i++) {
-      for (let j = i + 1; j < Math.min(sortedFoods.length, 20); j++) {
-        // Skip duplicates
-        if (hasBaseFoodDuplicate([sortedFoods[i]], sortedFoods[j])) {
-          continue;
-        }
-
-        const meal: SuggestedMeal = {
-          items: [sortedFoods[i], sortedFoods[j]],
-          totals: {
-            protein: sortedFoods[i].macros.protein + sortedFoods[j].macros.protein,
-            carbs: sortedFoods[i].macros.carbs + sortedFoods[j].macros.carbs,
-            fats: sortedFoods[i].macros.fats + sortedFoods[j].macros.fats,
-          },
-          nearestMatch: '',
-        };
-
-        const score = getNormalizedMacroDistance(meal, remaining);
-        candidates.push({ meal, score });
-      }
-    }
-  }
-
-  // 3-item meals
-  if (maxItems >= 3 && sortedFoods.length > 2) {
-    for (let i = 0; i < Math.min(sortedFoods.length, 10); i++) {
-      for (let j = i + 1; j < Math.min(sortedFoods.length, 13); j++) {
-        if (hasBaseFoodDuplicate([sortedFoods[i]], sortedFoods[j])) {
-          continue;
-        }
-
-        for (let k = j + 1; k < Math.min(sortedFoods.length, 15); k++) {
-          if (hasBaseFoodDuplicate([sortedFoods[i], sortedFoods[j]], sortedFoods[k])) {
-            continue;
-          }
-
-          const meal: SuggestedMeal = {
-            items: [sortedFoods[i], sortedFoods[j], sortedFoods[k]],
-            totals: {
-              protein: sortedFoods[i].macros.protein + sortedFoods[j].macros.protein + sortedFoods[k].macros.protein,
-              carbs: sortedFoods[i].macros.carbs + sortedFoods[j].macros.carbs + sortedFoods[k].macros.carbs,
-              fats: sortedFoods[i].macros.fats + sortedFoods[j].macros.fats + sortedFoods[k].macros.fats,
-            },
-            nearestMatch: '',
-          };
-
-          const score = getNormalizedMacroDistance(meal, remaining);
-          candidates.push({ meal, score });
-        }
-      }
-    }
-  }
-
-  // Return top candidates (before reranking)
-  return candidates
-    .sort((a, b) => a.score - b.score)
-    .slice(0, 20)
-    .map((c) => c.meal);
-}
-
-/**
- * 🏆 STAGE 2: Re-rank and select best candidate
- */
-function selectBestMeal(
-  candidates: SuggestedMeal[],
-  remaining: MealMacro,
-  decision?: 'light' | 'balanced' | 'protein'
-): SuggestedMeal {
-  if (candidates.length === 0) {
-    return {
-      items: [],
-      totals: { protein: 0, carbs: 0, fats: 0 },
-      nearestMatch: 'Sin opciones seguras',
-    };
-  }
-
-  // Score each candidate with full criteria
-  const scored = candidates.map((meal) => ({
-    meal,
-    score: scoreCandidate(meal, remaining, decision),
-  }));
-
-  // Sort by score (lower = better)
-  scored.sort((a, b) => a.score - b.score);
-
-  const bestMeal = scored[0].meal;
-  const bestScore = scored[0].score;
-
-  // Generate description
-  if (bestScore >= 2) {
-    bestMeal.nearestMatch = 'Sin opciones seguras';
-  } else if (bestScore < 0.15) {
-    bestMeal.nearestMatch = '✅ Coincidencia perfecta';
-  } else if (bestScore < 0.35) {
-    bestMeal.nearestMatch = '🎯 Muy cercana';
-  } else if (bestScore < 0.6) {
-    bestMeal.nearestMatch = '👍 Buena aproximación';
-  } else {
-    bestMeal.nearestMatch = '📊 Aproximación';
-  }
-
-  return bestMeal;
-}
-
-/**
- * OLD FUNCTIONS RETAINED FOR COMPATIBILITY
- * (These are used earlier in the file)
- */
-
-/**
- * Obtiene el macro que más falta (prioridad)
- */
-function getLowestMacro(remaining: MealMacro): 'protein' | 'carbs' | 'fats' {
-  const percentages = {
-    protein: remaining.protein > 0 ? 50 / remaining.protein : 0,
-    carbs: remaining.carbs > 0 ? 50 / remaining.carbs : 0,
-    fats: remaining.fats > 0 ? 50 / remaining.fats : 0,
-  };
-  
-  if (percentages.protein >= percentages.carbs && percentages.protein >= percentages.fats) {
-    return 'protein';
-  } else if (percentages.carbs >= percentages.fats) {
-    return 'carbs';
-  } else {
-    return 'fats';
-  }
-}
-
-/**
- * Calcula relevancia de un alimento basado en cuánto se acerca a los macros faltantes
- * Considera todos los macros, no solo uno
- * Penaliza alimentos "demasiado versátiles" para forzar variedad
- */
-function calculateFoodRelevance(food: FoodBlock, remaining: MealMacro): number {
-  // Calcular qué porcentaje de cada macro faltante cubre este alimento
-  const proteinCoverage = remaining.protein > 0 ? food.macros.protein / remaining.protein : 0;
-  const carbsCoverage = remaining.carbs > 0 ? food.macros.carbs / remaining.carbs : 0;
-  const fatsCoverage = remaining.fats > 0 ? food.macros.fats / remaining.fats : 0;
-
-  // El mejor alimento es el que cubre de forma BALANCEADA sin exceder mucho
-  // Penalizar si cubre muy poco (<5%) o muy mucho (>150%)
-  const getScoreForCoverage = (coverage: number) => {
-    if (coverage === 0) return 0; // No aporta este macro
-    if (coverage < 0.05) return 0.1; // Muy poco
-    if (coverage > 1.5) return 0; // Excede demasiado
-    if (coverage > 1) return coverage * 0.5; // Levemente sobre pero penalizado
-    return coverage; // Ideal
-  };
-
-  const proteinScore = getScoreForCoverage(proteinCoverage);
-  const carbsScore = getScoreForCoverage(carbsCoverage);
-  const fatsScore = getScoreForCoverage(fatsCoverage);
-
-  // Retornar promedio ponderado (mayor puntuación = mejor match)
-  let score = (proteinScore + carbsScore + fatsScore) / 3;
-
-  // 🎯 PENALIDAD AGRESIVA POR VERSATILIDAD: Alimentos "demasiado adaptables" reciben penalidad severa
-  // Esto reduce DRÁSTICAMENTE la chance de alimentos como avena/granola
-  const isVersatileFood = food.category === 'mixed';
-  if (isVersatileFood) {
-    // Penalidad severa: reducir a 30% de su puntuación original
-    // Esto hace que sean candidatos muy débiles comparado con opciones especializadas
-    score *= 0.3;
-  }
-
-  return score;
-}
-
-/**
- * 🔍 Extrae el nombre base de un alimento (sin la información de cantidad)
- * "Avena (100g seco)" → "avena"
- * "Pollo (50g)" → "pollo"
- */
-function getBaseFoodName(foodName: string): string {
-  return foodName.split('(')[0].trim().toLowerCase();
-}
-
-/**
- * Verifica si un alimento está duplicado en una comida
- * Detecta "Avena (100g)" + "Avena (50g)" como duplicados
- */
-function hasBaseFoodDuplicate(foods: FoodBlock[], newFood: FoodBlock): boolean {
-  const newFoodBase = getBaseFoodName(newFood.name);
-  return foods.some((f) => getBaseFoodName(f.name) === newFoodBase);
-}
-
-/**
- * Filtra alimentos que NO contengan macros ya completados
- * Si un macro está al 100%, excluye alimentos "altos" en ese macro
- */
-function filterOutCompletedMacros(foods: FoodBlock[], targetMacros: MealMacro): FoodBlock[] {
-  return foods.filter((food) => {
-    // Si proteína está completa (≤ 0), rechazar alimentos altos en proteína (>5g)
-    if (targetMacros.protein === 0 && food.macros.protein > 5) {
-      return false;
-    }
-    
-    // Si carbohidratos están completos (≤ 0), rechazar alimentos altos en carbs (>5g)
-    if (targetMacros.carbs === 0 && food.macros.carbs > 5) {
-      return false;
-    }
-    
-    // Si grasas están completas (≤ 0), rechazar alimentos altos en grasas (>3g)
-    if (targetMacros.fats === 0 && food.macros.fats > 3) {
-      return false;
-    }
-    
-    return true;
+    return score(b) - score(a);
   });
 }
 
-/**
- * Ordena food blocks por relevancia basado en cuánto se acercan a los macros faltantes
- * Ahora considera TODOS los macros de forma balanceada, no solo uno
- */
-function sortFoodsByRelevance(foods: FoodBlock[], remaining: MealMacro): FoodBlock[] {
-  // Calcular relevancia para cada alimento
-  const foodsWithScore = foods.map((food) => ({
-    food,
-    relevance: calculateFoodRelevance(food, remaining),
-    // Agregar pequeño factor aleatorio para variar resultados
-    randomBoost: Math.random() * 0.15,
-  }));
+// ─── Candidate Generation ─────────────────────────────────────────────────────
 
-  // Ordenar por relevancia + random boost (mayor score = mejor)
-  foodsWithScore.sort(
-    (a, b) => (b.relevance + b.randomBoost) - (a.relevance + a.randomBoost)
-  );
-  return foodsWithScore.map((item) => item.food);
+/** Generates 1-item candidate meals from the top-ranked foods. */
+function generateSingleItemCandidates(foods: FoodBlock[]): SuggestedMeal[] {
+  const limit = Math.min(foods.length, 25);
+  const meals: SuggestedMeal[] = [];
+  for (let i = 0; i < limit; i++) {
+    meals.push(makeMeal([foods[i]]));
+  }
+  return meals;
+}
+
+/** Generates 2-item candidate meals, skipping base-food duplicates. */
+function generateDoubleItemCandidates(foods: FoodBlock[]): SuggestedMeal[] {
+  const meals: SuggestedMeal[] = [];
+  for (let i = 0; i < Math.min(foods.length, 22); i++) {
+    for (let j = i + 1; j < Math.min(foods.length, 27); j++) {
+      if (hasBaseFoodDuplicate([foods[i]], foods[j])) continue;
+      meals.push(makeMeal([foods[i], foods[j]]));
+    }
+  }
+  return meals;
+}
+
+/** Appends coherent 3-item meals built from foods[i] + foods[j] + foods[k] for all valid k. */
+function appendCoherentTriples(
+  foods: FoodBlock[],
+  i: number,
+  j: number,
+  meals: SuggestedMeal[],
+): void {
+  for (let k = j + 1; k < Math.min(foods.length, 19); k++) {
+    if (hasBaseFoodDuplicate([foods[i], foods[j]], foods[k])) continue;
+    const meal = makeMeal([foods[i], foods[j], foods[k]]);
+    if (isMealCoherent(meal.items)) meals.push(meal);
+  }
+}
+
+/** Generates 3-item candidate meals, filtered for coherence. */
+function generateTripleItemCandidates(foods: FoodBlock[]): SuggestedMeal[] {
+  const meals: SuggestedMeal[] = [];
+  for (let i = 0; i < Math.min(foods.length, 13); i++) {
+    for (let j = i + 1; j < Math.min(foods.length, 16); j++) {
+      if (hasBaseFoodDuplicate([foods[i]], foods[j])) continue;
+      appendCoherentTriples(foods, i, j, meals);
+    }
+  }
+  return meals;
 }
 
 /**
- * 🎯 FUNCIÓN PRINCIPAL: Genera una comida sugerida basada en macros faltantes
- * @param remaining Macros faltantes en el día
- * @param foodBlocks Lista de bloques de alimento disponibles
- * @param maxItems Máximo de items en la sugerencia (default: 4)
- * @param decision Tipo de decisión para ajustar algoritmo (light/balanced/protein)
- * @returns Comida sugerida con items y totales
+ * Generates all viable meal combinations up to maxItems.
+ * Delegates to dedicated helpers to keep cognitive complexity low.
+ */
+function generateCandidates(
+  foods: FoodBlock[],
+  maxItems: number,
+): SuggestedMeal[] {
+  const meals = generateSingleItemCandidates(foods);
+  if (maxItems >= 2 && foods.length >= 2) meals.push(...generateDoubleItemCandidates(foods));
+  if (maxItems >= 3 && foods.length >= 3) meals.push(...generateTripleItemCandidates(foods));
+  return meals;
+}
+
+// ─── Best Selection ───────────────────────────────────────────────────────────
+
+/** Scores all candidates and returns the one with the lowest composite score. */
+function selectBest(candidates: SuggestedMeal[], ctx: ScoringContext): SuggestedMeal {
+  if (candidates.length === 0) {
+    return { items: [], totals: { protein: 0, carbs: 0, fats: 0 }, nearestMatch: 'Sin opciones' };
+  }
+
+  const scored = candidates
+    .map((meal) => ({ meal, score: scoreMeal(meal, ctx) }))
+    .sort((a, b) => a.score - b.score);
+
+  const best  = scored[0].meal;
+  const score = scored[0].score;
+
+  if (score >= 10) {
+    best.nearestMatch = 'Sin opciones seguras';
+  } else if (score < 0.15) {
+    best.nearestMatch = '✅ Coincidencia perfecta';
+  } else if (score < 0.35) {
+    best.nearestMatch = '🎯 Muy cercana';
+  } else if (score < 0.6) {
+    best.nearestMatch = '👍 Buena aproximación';
+  } else {
+    best.nearestMatch = '📊 Aproximación';
+  }
+
+  // 0–1 realism indicator (1 = excellent, 0 = poor)
+  best.realismScore = Math.max(0, Math.min(1, 1 - score / 2));
+
+  return best;
+}
+
+// ─── Main Exported Functions ──────────────────────────────────────────────────
+
+/**
+ * 🎯 MAIN FUNCTION: generateSuggestedMeal
+ *
+ * Soft-constraint recommendation engine — NO hard macro blocking.
+ * Uses dynamic weights to handle post-protein / post-carb / post-fat modes.
+ *
+ * Signal-ready: wrap in Angular's `computed()` for reactive meal suggestions:
+ *   ```ts
+ *   suggestedMeal = computed(() =>
+ *     generateSuggestedMeal(store.remainingMacros(), FOOD_BLOCKS, 3, store.decisionMode())
+ *   );
+ *   ```
+ *
+ * @param remaining   Macros still needed today (negative values are treated as fulfilled)
+ * @param foodBlocks  Available food catalog (defaults to FOOD_BLOCKS)
+ * @param maxItems    Max items in the suggestion (1–4; internally capped at 3)
+ * @param decision    Meal type context (light / balanced / protein)
  */
 export function generateSuggestedMeal(
   remaining: MealMacro,
   foodBlocks: FoodBlock[] = FOOD_BLOCKS,
   maxItems: number = 4,
-  decision?: 'light' | 'balanced' | 'protein'
+  decision?: DecisionMode,
 ): SuggestedMeal {
-  // 🛑 VALIDACIÓN: Si todos los macros están al 100% o excedidos, retornar vacío
+  // All macros fulfilled — nothing left to suggest
   if (remaining.protein <= 0 && remaining.carbs <= 0 && remaining.fats <= 0) {
-    return {
-      items: [],
-      totals: { protein: 0, carbs: 0, fats: 0 },
-      nearestMatch: '✅ Macros completados',
-    };
+    return { items: [], totals: { protein: 0, carbs: 0, fats: 0 }, nearestMatch: '✅ Macros completados' };
   }
 
-  // 🎯 IMPORTANTE: Excluir macros que ya están completos (≤ 0)
-  // Solo buscar alimentos que contribuyan a los macros que aún faltan
-  const targetMacros: MealMacro = {
+  const ctx: ScoringContext = { remaining, decision };
+
+  // ── Soft pre-filter ────────────────────────────────────────────────────────
+  // CRITICAL: Never hard-block a food because a macro is fulfilled.
+  // Only remove foods that would overshoot the calorie budget by more than 3×
+  // and apply optional decision-specific pre-filters (still lenient).
+  const targetCals = calcCalories({
     protein: Math.max(0, remaining.protein),
-    carbs: Math.max(0, remaining.carbs),
-    fats: Math.max(0, remaining.fats),
-  };
-
-  // Si después de ajustar no queda nada, no hay sugerencia
-  if (targetMacros.protein === 0 && targetMacros.carbs === 0 && targetMacros.fats === 0) {
-    return {
-      items: [],
-      totals: { protein: 0, carbs: 0, fats: 0 },
-      nearestMatch: '✅ Macros completados',
-    };
-  }
-
-  // Calcular calorías restantes basado en MACROS ACTIVOS
-  const remainingCals = targetMacros.protein * 4 + targetMacros.carbs * 4 + targetMacros.fats * 9;
-  
-  // Si quedan pocos macro, usar solo alimentos de seguridad muy pequeños
-  let foodsToUse = foodBlocks;
-  if (remainingCals < 300) {
-    // Usar solo alimentos "seguros" para últimos macros (110% máximo)
-    foodsToUse = foodBlocks.filter((f) => {
-      const foodCals = f.macros.protein * 4 + f.macros.carbs * 4 + f.macros.fats * 9;
-      return foodCals <= remainingCals * 1.1;
-    });
-    
-    // Si no hay opciones de seguridad, usar el bloque original
-    if (foodsToUse.length === 0) {
-      foodsToUse = foodBlocks;
-    }
-  }
-
-  // Filtrar alimentos que no excedan más de 120% del macro restante (más conservador)
-  // Y que NO AGREGUEN macros que ya están completos
-  // 🚫 EXCLUIR: Avena (100g) y Granola - demasiado OP, fomentar variedad
-  let availableFoods = foodsToUse.filter((food) => {
-    // Bloquear específicamente alimentos que dominan demasiado
-    const isBlockedFood = food.name === 'Avena (100g seco)' || food.name === 'Granola (50g)';
-    if (isBlockedFood) {
-      return false; // Excluir completamente
-    }
-
-    // Si un macro está completado (targetMacros = 0), rechazar alimentos que lo contengan
-    const proteinOk = targetMacros.protein === 0 ? food.macros.protein === 0 : food.macros.protein <= targetMacros.protein * 1.2;
-    const carbsOk = targetMacros.carbs === 0 ? food.macros.carbs === 0 : food.macros.carbs <= targetMacros.carbs * 1.2;
-    const fatsOk = targetMacros.fats === 0 ? food.macros.fats === 0 : food.macros.fats <= targetMacros.fats * 1.2;
-
-    return proteinOk && carbsOk && fatsOk;
+    carbs:   Math.max(0, remaining.carbs),
+    fats:    Math.max(0, remaining.fats),
   });
 
-  // Aplicar filtrado adicional para excluir alimentos "altos" en macros completados
-  // (más flexible: permite 0-5g en lugar de exactamente 0)
-  availableFoods = filterOutCompletedMacros(availableFoods, targetMacros);
+  let foods = foodBlocks.filter((food) => {
+    const foodCals = calcCalories(food.macros);
+    // Skip foods that would massively overshoot the calorie budget
+    if (targetCals > 50 && foodCals > targetCals * 3) return false;
 
-  // Si no hay opciones disponibles, retornar vacío
-  if (availableFoods.length === 0) {
-    return {
-      items: [],
-      totals: { protein: 0, carbs: 0, fats: 0 },
-      nearestMatch: 'Sin opciones seguras',
-    };
-  }
-
-  // Ordenar por relevancia basado en macros ACTIVOS (completados = 0)
-  const sortedFoods = sortFoodsByRelevance(availableFoods, targetMacros);
-
-  // Generar combinaciones iterativamente
-  let bestMeal: SuggestedMeal = {
-    items: [],
-    totals: { protein: 0, carbs: 0, fats: 0 },
-    nearestMatch: 'No suggestions',
-  };
-  let bestDistance = Infinity;
-
-  // Generar meal de un solo item
-  for (const food of sortedFoods) {
-    const testMeal: SuggestedMeal = {
-      items: [food],
-      totals: food.macros,
-      nearestMatch: '',
-    };
-
-    const distance = getNormalizedMacroDistance(testMeal, targetMacros, decision);
-    
-    // Minimal penalty for simplicity - prefer compound meals over single items
-    const simplicity = testMeal.items.length <= 1 ? 0.1 : 0;
-    // ✅ DRASTICALLY REDUCED RANDOMNESS (0.2-0.5 instead of 12-40)
-    // Keeps scoring deterministic and macro-focused
-    const randomFactor = Math.random() * 0.3;
-    const score = distance + simplicity + randomFactor;
-
-    if (score < bestDistance) {
-      bestDistance = score;
-      bestMeal = testMeal;
+    // Decision-specific pre-filters (lenient — scoring handles the fine-tuning)
+    if (decision === 'protein') {
+      return food.category === 'protein' || food.macros.protein >= 15 || food.category === 'mixed';
     }
-  }
-
-  // Generar meals de 2 items (explorar MUCHO más combinaciones)
-  if (maxItems >= 2 && sortedFoods.length > 1) {
-    for (let i = 0; i < Math.min(sortedFoods.length, 25); i++) {
-      for (let j = i + 1; j < Math.min(sortedFoods.length, 30); j++) {
-        // 🚫 PREVENIR DUPLICADOS: No combinar "Avena (100g)" con "Avena (50g)"
-        if (hasBaseFoodDuplicate([sortedFoods[i]], sortedFoods[j])) {
-          continue;
-        }
-
-        const testMeal: SuggestedMeal = {
-          items: [sortedFoods[i], sortedFoods[j]],
-          totals: {
-            protein: sortedFoods[i].macros.protein + sortedFoods[j].macros.protein,
-            carbs: sortedFoods[i].macros.carbs + sortedFoods[j].macros.carbs,
-            fats: sortedFoods[i].macros.fats + sortedFoods[j].macros.fats,
-          },
-          nearestMatch: '',
-        };
-
-        const distance = getNormalizedMacroDistance(testMeal, targetMacros, decision);
-        const simplicity = testMeal.items.length <= 2 ? -0.05 : 0;
-        const randomFactor = Math.random() * 0.3;
-        const score = distance + simplicity + randomFactor;
-
-        if (score < bestDistance) {
-          bestDistance = score;
-          bestMeal = testMeal;
-        }
-      }
+    if (decision === 'light') {
+      return calcCalories(food.macros) <= 500;
     }
-  }
+    return true;
+  });
 
-  // Generar meals de 3 items (explorar aún más)
-  if (maxItems >= 3 && sortedFoods.length > 2) {
-    for (let i = 0; i < Math.min(sortedFoods.length, 12); i++) {
-      for (let j = i + 1; j < Math.min(sortedFoods.length, 15); j++) {
-        // 🚫 PREVENIR DUPLICADOS: No mezclar alimentos base iguales
-        if (hasBaseFoodDuplicate([sortedFoods[i]], sortedFoods[j])) {
-          continue;
-        }
+  // Fallback: if pre-filtering removed too many options, use full catalog
+  if (foods.length < 3) foods = foodBlocks;
 
-        for (let k = j + 1; k < Math.min(sortedFoods.length, 18); k++) {
-          // 🚫 PREVENIR DUPLICADOS: Verificar que k no sea duplicado de i ni j
-          if (
-            hasBaseFoodDuplicate([sortedFoods[i], sortedFoods[j]], sortedFoods[k])
-          ) {
-            continue;
-          }
+  // Sort by relevance — priority-aware: most-needed macro drives ranking
+  foods = sortByRelevance(foods, remaining, decision);
 
-          const testMeal: SuggestedMeal = {
-            items: [sortedFoods[i], sortedFoods[j], sortedFoods[k]],
-            totals: {
-              protein:
-                sortedFoods[i].macros.protein +
-                sortedFoods[j].macros.protein +
-                sortedFoods[k].macros.protein,
-              carbs:
-                sortedFoods[i].macros.carbs +
-                sortedFoods[j].macros.carbs +
-                sortedFoods[k].macros.carbs,
-              fats:
-                sortedFoods[i].macros.fats +
-                sortedFoods[j].macros.fats +
-                sortedFoods[k].macros.fats,
-            },
-            nearestMatch: '',
-          };
+  // Hard filter: remove foods that do not meaningfully contribute to ANY needed macro.
+  // A food passes if it helps at least one macro that still needs filling.
+  const hardFiltered = foods.filter((f) => {
+    const helpsProtein = remaining.protein > 0 && f.macros.protein >= 3;
+    const helpsCarbs   = remaining.carbs   > 0 && f.macros.carbs   >= 5;
+    const helpsFats    = remaining.fats    > 0 && f.macros.fats    >= 2;
+    return helpsProtein || helpsCarbs || helpsFats;
+  });
+  // Fallback: keep original list if hard filter is too restrictive
+  if (hardFiltered.length >= 3) foods = hardFiltered;
 
-          const distance = getNormalizedMacroDistance(testMeal, targetMacros, decision);
-          const simplicity = testMeal.items.length <= 2 ? -0.05 : 0;
-          const randomFactor = Math.random() * 0.3;
-          const score = distance + simplicity + randomFactor;
-
-          if (score < bestDistance) {
-            bestDistance = score;
-            bestMeal = testMeal;
-          }
-        }
-      }
-    }
-  }
-
-  // Generar matching description
-  if (bestMeal.items.length === 0) {
-    bestMeal.nearestMatch = 'Sin opciones seguras';
-  } else if (bestDistance < 15) {
-    bestMeal.nearestMatch = '✅ Coincidencia perfecta';
-  } else if (bestDistance < 30) {
-    bestMeal.nearestMatch = '🎯 Muy cercana';
-  } else if (bestDistance < 50) {
-    bestMeal.nearestMatch = '👍 Buena aproximación';
-  } else {
-    bestMeal.nearestMatch = '📊 Aproximación';
-  }
-
-  return bestMeal;
+  const candidates = generateCandidates(foods, Math.min(maxItems, 3));
+  return selectBest(candidates, ctx);
 }
 
 /**
- * Genera sugerencias filtradas por categoría de comida Y tipo de decisión
- * @param remaining Macros restantes
- * @param category Categoría de comida (breakfast, lunch, etc)
- * @param decision Tipo de decisión: 'light' (ligero), 'balanced' (balanceado), 'protein' (proteico)
+ * Generates a category-aware and decision-aware meal suggestion.
+ * Preferred foods for the given meal slot are ranked first.
+ *
+ * @param remaining  Macros still needed today
+ * @param category   Meal slot (breakfast, lunch, etc.)
+ * @param decision   Meal type context (light / balanced / protein)
  */
 export function generateSuggestedMealForCategory(
   remaining: MealMacro,
-  category: 'breakfast' | 'morning-snack' | 'lunch' | 'afternoon-snack' | 'dinner' | 'night-snack',
-  decision?: 'light' | 'balanced' | 'protein'
+  category: MealCategory,
+  decision?: DecisionMode,
 ): SuggestedMeal {
-  // Obtener alimentos preferidos para esta categoría
-  const preferredNames = PREFERRED_FOODS_BY_CATEGORY[category] || [];
-  
-  // Separar alimentos preferidos de otros
+  const preferredNames = PREFERRED_FOODS_BY_CATEGORY[category] ?? [];
   const preferredFoods = FOOD_BLOCKS.filter((f) => preferredNames.includes(f.name));
-  const otherFoods = FOOD_BLOCKS.filter((f) => !preferredNames.includes(f.name));
-  
-  // Priorizar preferidos pero incluir otros como fallback
+  const otherFoods     = FOOD_BLOCKS.filter((f) => !preferredNames.includes(f.name));
+
+  // Preferred foods first, others as fallback
   let orderedFoods = [...preferredFoods, ...otherFoods];
 
-  // 🎯 FILTROS POR TIPO DE DECISIÓN
-  if (decision === 'light') {
-    // 🟢 LIGERO: Menos calorías, menos grasas, proteína moderada
-    orderedFoods = orderedFoods.filter((f) => {
-      const calories = f.macros.protein * 4 + f.macros.carbs * 4 + f.macros.fats * 9;
-      // Excluir: alimentos muy altos en grasas o muy altos en calorías
-      return calories <= 400 && f.macros.fats <= 15; // Items ligeros
-    });
-  } else if (decision === 'protein') {
-    // 🔴 PROTEICO: SOLO alimentos específicamente proteicos (NO 'mixed' ambiguo)
-    // Favorecer: categoría protein pura, mínimo 15g de proteína
-    orderedFoods = orderedFoods.filter((f) => {
-      // Ser ESTRICTO: solo category === 'protein' O proteína >= 20g
-      return f.category === 'protein' || f.macros.protein >= 20;
-    });
-  }
-  // 🟡 BALANCED: No aplicar filtros especiales, usar todos
+  // ──── PRIMARY FILTER: Category tags (strict, no fallback) ────────────────────
+  // Only include foods valid for this meal slot — this is deterministic
+  const categoryFiltered = orderedFoods.filter((f) =>
+    f.mealTags.includes(category)
+  );
 
-  // Aplicar filtrado adicional según categoría
+  // If category filtering eliminates too many foods, log warning but continue
+  // (This should rarely happen with well-tagged foods)
+  if (categoryFiltered.length === 0) {
+    // Return empty suggestion if no foods match the category
+    return generateSuggestedMeal(remaining, [], 3, decision);
+  }
+  orderedFoods = categoryFiltered;
+
+  // ── Decision-based soft filtering ─────────────────────────────────────────
+  if (decision === 'light') {
+    orderedFoods = orderedFoods.filter((f) =>
+      calcCalories(f.macros) <= 450 && f.macros.fats <= 18,
+    );
+  } else if (decision === 'protein') {
+    orderedFoods = orderedFoods.filter((f) =>
+      f.category === 'protein' || f.macros.protein >= 18 || f.category === 'mixed',
+    );
+  }
+  // balanced: no pre-filter — scoring handles it
+
+  // ── Legacy category-specific refinements ────────────────────────────────────
   let filteredFoods = orderedFoods;
 
   if (category === 'breakfast') {
-    // Favorecer combinaciones balanceadas
-    filteredFoods = orderedFoods.filter(
-      (f) => !f.name.toLowerCase().includes('café') // Excluir bebidas pesadas
-    );
+    filteredFoods = orderedFoods.filter((f) => !f.name.toLowerCase().includes('café'));
   } else if (category === 'morning-snack' || category === 'afternoon-snack') {
-    // Snacks más ligeros y rápidos
-    filteredFoods = orderedFoods.filter(
-      (f) =>
-        f.macros.protein + f.macros.carbs + f.macros.fats < 300 || // Items pequeños
-        f.category === 'carbs' ||
-        f.name.includes('Yogurt') ||
-        f.name.includes('fruta') ||
-        f.name.includes('Fruto')
+    filteredFoods = orderedFoods.filter((f) =>
+      calcCalories(f.macros) < 400 ||
+      f.category === 'carbs'         ||
+      f.name.includes('Yogurt')      ||
+      f.name.includes('fruta')       ||
+      f.name.includes('Fruto'),
     );
-  } else if (category === 'lunch') {
-    // Comida principal: favorecer completas
-    // No filtrar, usamos todos
   } else if (category === 'dinner') {
-    // Cena más ligera: menos carbs
-    filteredFoods = orderedFoods.filter(
-      (f) => f.macros.carbs < 30 || f.category === 'protein' || f.category === 'fats'
+    filteredFoods = orderedFoods.filter((f) =>
+      f.macros.carbs < 35 || f.category === 'protein' || f.category === 'fats',
     );
   } else if (category === 'night-snack') {
-    // Snack nocturno muy ligero
-    filteredFoods = orderedFoods.filter(
-      (f) =>
-        f.macros.protein + f.macros.carbs + f.macros.fats < 200 && !f.name.includes('Granola')
+    filteredFoods = orderedFoods.filter((f) =>
+      calcCalories(f.macros) < 250 && !f.name.includes('Granola'),
     );
   }
+  // lunch: no additional filter — prefer full macros
+
+  // Fallback: if filtering left too few options, use full ordered list
+  if (filteredFoods.length < 3) filteredFoods = orderedFoods;
 
   return generateSuggestedMeal(remaining, filteredFoods, 3, decision);
 }
+
