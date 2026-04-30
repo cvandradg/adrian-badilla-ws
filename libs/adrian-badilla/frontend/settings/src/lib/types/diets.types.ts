@@ -4,8 +4,8 @@ export type SupercenterDoc = {
   name: string;
   route: string;
   province: string;
-  estimateLocation: string;
-  exactLocation: string;
+  displayFoodName: string;  // Nombre mostrado al usuario (en español)
+  foodNameForApi: string;   // Nombre exacto para API (en inglés)
   createdDate: unknown;
   lastModifiedDate: unknown;
   imgPrimeng: string;
@@ -24,8 +24,8 @@ export type RouteSupercenterItem = Pick<
   | 'name'
   | 'route'
   | 'province'
-  | 'estimateLocation'
-  | 'exactLocation'
+  | 'displayFoodName'
+  | 'foodNameForApi'
   | 'imgPrimeng'
   | 'status'
 > & {

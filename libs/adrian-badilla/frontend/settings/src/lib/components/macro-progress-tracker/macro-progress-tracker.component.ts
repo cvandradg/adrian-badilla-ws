@@ -5,9 +5,14 @@ import {
   input,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { settingsStoreDev } from '../../store/settings.store';
-import { calculateConsumedMacros, calculateAllMacroPercentages, generateMacroMessages, calculateMealRecommendation, generateRecommendationFeedback } from '../../store/with-macro-tracker.feature';
+import {
+  calculateConsumedMacros,
+  calculateAllMacroPercentages,
+  generateMacroMessages,
+} from '../../store/with-macro-tracker.feature';
+
+type MacroType = 'protein' | 'fats' | 'carbs';
 
 /**
  * Componente para mostrar el progreso de macronutrientes
@@ -16,7 +21,7 @@ import { calculateConsumedMacros, calculateAllMacroPercentages, generateMacroMes
 @Component({
   selector: 'lib-macro-progress-tracker',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './macro-progress-tracker.component.html',
   styleUrl: './macro-progress-tracker.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,25 +29,27 @@ import { calculateConsumedMacros, calculateAllMacroPercentages, generateMacroMes
 export class MacroProgressTrackerComponent {
   private readonly store = inject(settingsStoreDev);
 
-  // Exponer Math al template
+  // Expose Math to template
   Math = Math;
 
-  // Inputs opcionales para personalizar
-  showMessages = input<boolean>(true);
-  showCalories = input<boolean>(true);
-  compact = input<boolean>(false);
-  meals = input<any[]>([]); // Input para recibir meals del padre
+  // Optional inputs for customization
+  readonly showMessages = input<boolean>(true);
+  readonly showCalories = input<boolean>(true);
+  readonly compact = input<boolean>(false);
+  readonly meals = input<any[]>([]); // Input to receive meals from parent
 
-  // 🧮 Cálculos basados en meals input
-  consumedMacros = computed<any>(() => calculateConsumedMacros(this.meals()));
-  
-  macroSnapshot = computed<any>(() => {
-    const consumed = calculateConsumedMacros(this.meals());
+  // 🧮 Core calculations based on meals input
+  private readonly consumedMacros = computed(() =>
+    calculateConsumedMacros(this.meals())
+  );
+
+  readonly macroSnapshot = computed(() => {
+    const consumed = this.consumedMacros();
     const goals = this.store.dailyGoals();
     const percentages = calculateAllMacroPercentages(consumed, goals);
     const messages = generateMacroMessages(percentages, consumed);
-    
-    const remaining =  {
+
+    const remaining = {
       protein: Math.max(goals.protein - consumed.protein, 0),
       fats: Math.max(goals.fats - consumed.fats, 0),
       carbs: Math.max(goals.carbs - consumed.carbs, 0),
@@ -60,99 +67,11 @@ export class MacroProgressTrackerComponent {
         percentages.fats.isCompleted,
         percentages.carbs.isCompleted,
       ].filter(Boolean).length,
-    } as any;
-  });
-
-  totalCalories = computed<number>(() => {
-    return this.meals().reduce((total: number, meal: any) => {
-      if (meal.status === 'completed') {
-        return total + 
-          meal.macros.protein * 4 + 
-          meal.macros.carbs * 4 + 
-          meal.macros.fats * 9;
-      }
-      return total;
-    }, 0);
-  });
-
-  progressMessage = computed<string>(() => {
-    const percentages = this.macroSnapshot().percentages;
-    if (percentages.average.percentage >= 100) {
-      return '🎉 ¡Perfecto! Has completado todos tus macros';
-    }
-    if (this.macroSnapshot().completedCount >= 2) {
-      return '🔥 ¡Casi allá! Debes completar un macro más';
-    }
-    return '💪 Sigue comiendo para alcanzar tus metas';
-  });
-
-  /**
-   * Detecta si hay algún macro consumido (para mostrar/ocultar recomendaciones)
-   */
-  hasStartedDiet = computed<boolean>(() => {
-    const consumed = this.macroSnapshot().consumed;
-    return consumed.protein > 0 || consumed.carbs > 0 || consumed.fats > 0;
-  });
-
-  /**
-   * Detecta si ha completado todos los 3 macros al 100%
-   */
-  hasCompletedAllMacros = computed<boolean>(() => {
-    return this.macroSnapshot().isAllComplete;
-  });
-
-  /**
-   * Obtiene el color dynamic para una barra de progreso según el porcentaje
-   */
-  getMacroColor(macro: 'protein' | 'fats' | 'carbs'): string {
-    const percentage = this.macroSnapshot().percentages[macro].percentage;
-
-    if (percentage < 50) {
-      return '#ef4444'; // Rojo
-    } else if (percentage < 100) {
-      return '#eab308'; // Amarillo
-    } else if (this.macroSnapshot().percentages[macro].exceeded > 0) {
-      return '#f97316'; // Naranja
-    } else {
-      return '#22c55e'; // Verde
-    }
-  }
-
-  /**
-   * Filtra mensajes de un macro específico
-   */
-  getMessagesForMacro(
-    macro: 'protein' | 'fats' | 'carbs'
-  ): any[] {
-    return this.macroSnapshot().messages.filter(
-      (msg: any) => msg.macro === macro
-    );
-  }
-
-  /**
-   * Obtiene mensajes generales (no específicos de un macro)
-   */
-  getGeneralMessages(): any[] {
-    return this.macroSnapshot().messages.filter(
-      (msg: any) => msg.macro === 'overall'
-    );
-  }
-
-  /**
-   * 🧠 Recomendación inteligente de tipo de comida (calculada localmente)
-   */
-  mealRecommendation = computed(() => {
-    const consumed = calculateConsumedMacros(this.meals());
-    const dailyGoal = this.store.dailyGoals();
-    const percentages = calculateAllMacroPercentages(consumed, dailyGoal);
-    
-    const remaining = {
-      protein: Math.max(dailyGoal.protein - consumed.protein, 0),
-      carbs: Math.max(dailyGoal.carbs - consumed.carbs, 0),
-      fats: Math.max(dailyGoal.fats - consumed.fats, 0),
     };
-    
-    const totalCals = this.meals().reduce((total: number, meal: any) => {
+  });
+
+  readonly totalCalories = computed<number>(() => {
+    return this.meals().reduce((total: number, meal: any) => {
       if (meal.status === 'completed') {
         return (
           total +
@@ -163,32 +82,146 @@ export class MacroProgressTrackerComponent {
       }
       return total;
     }, 0);
-
-    return calculateMealRecommendation(
-      percentages,
-      remaining,
-      totalCals,
-      dailyGoal
-    );
   });
 
+  readonly progressMessage = computed<string>(() => {
+    const percentages = this.macroSnapshot().percentages;
+    if (percentages.average.percentage >= 100) {
+      return '🎉 ¡Perfecto! Has completado todos tus macros';
+    }
+    if (this.macroSnapshot().completedCount >= 2) {
+      return '🔥 ¡Casi allá! Debes completar un macro más';
+    }
+    return '💪 Sigue comiendo para alcanzar tus metas';
+  });
+
+  // 🎨 Color computeds for each macro (memoized, not recalculated on every detection)
+  readonly macroColors = computed<Record<MacroType, string>>(() => {
+    const percentages = this.macroSnapshot().percentages;
+    return {
+      protein: this.computeMacroColor(percentages.protein),
+      fats: this.computeMacroColor(percentages.fats),
+      carbs: this.computeMacroColor(percentages.carbs),
+    };
+  });
+
+  // 🎨 Stroke colors for circular progress (discrete ranges)
+  readonly strokeColors = computed<Record<MacroType, string>>(() => {
+    const percentages = this.macroSnapshot().percentages;
+    return {
+      protein: this.computeStrokeColor(percentages.protein.percentage),
+      fats: this.computeStrokeColor(percentages.fats.percentage),
+      carbs: this.computeStrokeColor(percentages.carbs.percentage),
+    };
+  });
+
+  // ✅ Completion status computeds
+  readonly hasStartedDiet = computed<boolean>(() => {
+    const consumed = this.macroSnapshot().consumed;
+    return consumed.protein > 0 || consumed.carbs > 0 || consumed.fats > 0;
+  });
+
+  readonly hasCompletedAllMacros = computed<boolean>(() => {
+    return this.macroSnapshot().isAllComplete;
+  });
+
+  // 🎯 ADHERENCE COACHING signals
+  readonly adherenceStatus = computed<'on-track' | 'behind' | 'ahead'>(() => {
+    const avg = this.macroSnapshot().percentages.average.percentage;
+    if (avg > 110) return 'ahead';
+    if (avg >= 65) return 'on-track';
+    return 'behind';
+  });
+
+  readonly adherenceStatusClass = computed<string>(() => {
+    const status = this.adherenceStatus();
+    if (status === 'on-track') return 'type--balanced';
+    if (status === 'behind') return 'type--high-protein';
+    return 'type--light';
+  });
+
+  readonly currentFocusMessage = computed<string>(() => {
+    const { percentages } = this.macroSnapshot();
+    const status = this.adherenceStatus();
+    if (status === 'ahead') {
+      return 'Estás por encima de tus metas del día. Modera el ritmo en las próximas comidas.';
+    }
+    if (status === 'on-track') {
+      return 'Estás alineado con tu plan de alimentación para este momento del día.';
+    }
+    const macros = [
+      { name: 'proteína', pct: percentages.protein.percentage },
+      { name: 'grasas', pct: percentages.fats.percentage },
+      { name: 'carbohidratos', pct: percentages.carbs.percentage },
+    ];
+    const lowest = macros.reduce((a, b) => (a.pct < b.pct ? a : b), macros[0]);
+    return `Estás por debajo de tu ingesta planificada de ${lowest.name} para este momento del día.`;
+  });
+
+  readonly nextStepMessage = computed<string>(() => {
+    const { percentages } = this.macroSnapshot();
+    const status = this.adherenceStatus();
+    if (status === 'on-track') {
+      return 'Tu próxima comida planificada te ayudará a alcanzar tus metas del día.';
+    }
+    if (status === 'ahead') {
+      return 'Considera una opción ligera para tu próxima comida y mantén el balance calórico.';
+    }
+    const macros = [
+      { name: 'proteína', pct: percentages.protein.percentage },
+      { name: 'grasas', pct: percentages.fats.percentage },
+      { name: 'carbohidratos', pct: percentages.carbs.percentage },
+    ];
+    const lowest = macros.reduce((a, b) => (a.pct < b.pct ? a : b), macros[0]);
+    return `Incluye alimentos ricos en ${lowest.name} en tu próxima comida para seguir tu plan.`;
+  });
+
+  // 🎯 Template helpers
+  readonly getMacroColor = (macro: MacroType): string => this.macroColors()[macro];
+  readonly getStrokeColor = (macro: MacroType): string => this.strokeColors()[macro];
+  readonly isMacroComplete = (macro: MacroType): boolean =>
+    this.macroSnapshot().percentages[macro].percentage >= 100;
+  readonly getMessagesForMacro = (macro: MacroType): any[] =>
+    this.macroSnapshot().messages.filter((msg: any) => msg.macro === macro);
+  readonly getGeneralMessages = (): any[] =>
+    this.macroSnapshot().messages.filter((msg: any) => msg.macro === 'overall');
+
   /**
-   * 💬 Feedback amigable sobre la recomendación
+   * Private helper: Compute macro color based on percentage thresholds
    */
-  recommendationFeedback = computed(() => {
-    const consumed = calculateConsumedMacros(this.meals());
-    const dailyGoal = this.store.dailyGoals();
-    const percentages = calculateAllMacroPercentages(consumed, dailyGoal);
-    const recommended = this.mealRecommendation();
-    
-    return generateRecommendationFeedback(recommended, percentages);
-  });
+  private computeMacroColor(percentage: any): string {
+    if (percentage.percentage < 50) {
+      return '#ef4444'; // Red
+    } else if (percentage.percentage < 100) {
+      return '#eab308'; // Yellow
+    } else if (percentage.exceeded > 0) {
+      return '#f97316'; // Orange
+    } else {
+      return '#22c55e'; // Green
+    }
+  }
 
   /**
-   * Formatea un número redondeando hacia arriba (sin decimales)
+   * Private helper: Compute stroke color in discrete ranges
+   */
+  private computeStrokeColor(percentage: number): string {
+    if (percentage < 25) {
+      return '#ef4444'; // Red 0-25%
+    } else if (percentage < 50) {
+      return '#f97316'; // Orange 25-50%
+    } else if (percentage < 75) {
+      return '#eab308'; // Yellow 50-75%
+    } else if (percentage < 100) {
+      return '#10b981'; // Light green 75-100%
+    } else {
+      return '#22c55e'; // Bright green 100%+
+    }
+  }
+
+  /**
+   * Format number with optional decimals
    */
   formatNumber(value: number, decimals: number = 0): string {
-    // Redondear hacia arriba
     const multiplier = Math.pow(10, decimals);
     const rounded = Math.ceil(value * multiplier) / multiplier;
     return rounded.toFixed(decimals);

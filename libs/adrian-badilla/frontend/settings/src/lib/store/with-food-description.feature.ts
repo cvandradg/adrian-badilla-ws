@@ -5,6 +5,7 @@ import {
   withComputed,
   withMethods,
   withState,
+  withFeature,
 } from '@ngrx/signals';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
@@ -19,6 +20,7 @@ import type {
 } from '../types/food-description.types';
 import type { RouteSupercenterItem, SupercenterDoc, WithId } from '../types/diets.types';
 import { MealTranslationService } from '../services/meal-translation.service';
+import { withDialogs } from './with-dialogs.feature';
 
 const DETAILED_NUTRIENT_KEYS: Record<keyof FoodNutritionData, string> = {
   calories: 'Calories',
@@ -85,7 +87,7 @@ function mapDetailedNutrition(
   );
 }
 
-export function withFoodDescription() {
+export function withFoodDescription<T extends Record<string, any>>(storeContext: T) {
   const http = inject(HttpClient);
   const apiKey = environment.spoonacular.appKey;
 
@@ -111,22 +113,24 @@ export function withFoodDescription() {
         foodData: store.foodData(),
         isDetailed: store.isDetailed(),
         isLoading: store.isLoading(),
-        hasFoodData: store.hasFoodData(),
-        canLoadDetails: store.canLoadDetails(),
-        hasError: store.hasError(),
+        hasFoodData: store['hasFoodData'](),
+        canLoadDetails: store['canLoadDetails'](),
+        hasError: store['hasError'](),
       })),
     })),
+
+    withFeature((innerStore) => withDialogs(storeContext)),
 
     withMethods((store) => ({
       initializeFoodDescriptionDialog: async (
         dialogData?: FoodDescriptionDialogData,
       ) => {
         // Usar displayName (en español) para el título si está disponible
-        // Usar exactLocation (en inglés) para la consulta de la API
+        // Usar foodNameForApi (en inglés) para la consulta de la API
         const displayName = dialogData?.diet?.displayName || 
-                           dialogData?.diet?.estimateLocation || 
+                           dialogData?.diet?.displayFoodName || 
                            'chicken breast';
-        const exactName = dialogData?.diet?.exactLocation || displayName;
+        const exactName = dialogData?.diet?.foodNameForApi || displayName;
 
         patchState(store, {
           foodName: displayName,
@@ -206,12 +210,11 @@ export function withFoodDescription() {
         }
       },
 
-      openDietDialog(
+      openDietDialog: (
         diet: RouteSupercenterItem,
         mealTranslationService: MealTranslationService,
-        openDialogFn: (component: Type<unknown>, data: WithId<SupercenterDoc>) => void,
         FoodDescriptionDialogComponent: Type<unknown>,
-      ) {
+      ) => {
         const foodNameForApi = diet.selectedFoodNameInEnglish || 
                               mealTranslationService.translateMealToEnglish(diet.name) ||
                               diet.name;
@@ -222,23 +225,40 @@ export function withFoodDescription() {
           ...diet,
           name: foodNameForApi,
           displayName: foodDisplayName,
+          displayFoodName: foodDisplayName,
+          foodNameForApi,
           createdDate: new Date(),
           lastModifiedDate: new Date(),
         } as WithId<SupercenterDoc>;
         
-        openDialogFn(FoodDescriptionDialogComponent, fullDiet);
+        store['openDialogFoodDescription'](FoodDescriptionDialogComponent, fullDiet);
       },
 
-      openDietDialogFromChild(
+      openDietDialogFromChild: (
         mealId: string,
         selectedRouteSupercenters: () => RouteSupercenterItem[],
         mealTranslationService: MealTranslationService,
-        openDialogFn: (component: Type<unknown>, data: WithId<SupercenterDoc>) => void,
         FoodDescriptionDialogComponent: Type<unknown>,
-      ) {
+      ) => {
         const meal = selectedRouteSupercenters().find((item) => item.id === mealId);
         if (meal) {
-          this.openDietDialog(meal, mealTranslationService, openDialogFn, FoodDescriptionDialogComponent);
+          const foodNameForApi = meal.selectedFoodNameInEnglish || 
+                                mealTranslationService.translateMealToEnglish(meal.name) ||
+                                meal.name;
+          
+          const foodDisplayName = meal.selectedFoodDisplayName || meal.selectedFoodName || meal.name;
+          
+          const fullDiet = {
+            ...meal,
+            name: foodNameForApi,
+            displayName: foodDisplayName,
+            displayFoodName: foodDisplayName,
+            foodNameForApi,
+            createdDate: new Date(),
+            lastModifiedDate: new Date(),
+          } as WithId<SupercenterDoc>;
+          
+          store['openDialogFoodDescription'](FoodDescriptionDialogComponent, fullDiet);
         }
       },
     }))

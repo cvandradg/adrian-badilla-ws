@@ -1,6 +1,6 @@
 <div class="macro-tracker">
   <!-- Sección de Dieta Info -->
-  <div class="diet-info-section">
+  <!-- <div class="diet-info-section">
     <div class="diet-title">Dieta: Maria Castrillo</div>
     <div class="diet-fields">
       <div class="diet-field">
@@ -12,7 +12,7 @@
         <span class="diet-field-value">6 de Abril 2026</span>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Header con mensaje general -->
   <div class="tracker-header">
@@ -29,14 +29,14 @@
     }
   </div>
 
-  <!-- 🧠 Panel de Recomendación Inteligente O Panel de Bienvenida O Panel de Celebración -->
+  <!-- 🎯 Panel de Adherencia al Plan / Bienvenida / Celebración -->
   @if (hasCompletedAllMacros()) {
     <div class="celebration-panel">
       <div class="celebration-content">
         <div class="celebration-icon">🎉</div>
-        <h3 class="celebration-title">¡Lo Lograste! 🏆</h3>
+        <h3 class="celebration-title">¡Plan Completado! 🏆</h3>
         <p class="celebration-message">
-          ¡Excelente trabajo! Has alcanzado todos tus objetivos de macronutrientes del día. Estás en el camino correcto hacia tus metas de salud y fitness.
+          ¡Excelente adherencia al plan! Has seguido tu dieta personalizada y alcanzado todos tus objetivos de macronutrientes del día.
         </p>
         <div class="celebration-stats">
           <div class="stat-item">
@@ -53,54 +53,39 @@
           </div>
         </div>
         <p class="celebration-footer">
-          ✨ Mantén la consistencia y verás resultados increíbles
+          ✨ La consistencia con tu plan es la clave para resultados duraderos
         </p>
       </div>
     </div>
   } @else if (hasStartedDiet()) {
-    <!-- Panel cuando ya ha comenzado la dieta -->
+    <!-- Panel de coaching de adherencia al plan -->
     <div class="recommendation-panel">
       <div class="recommendation-content">
-        <div class="recommendation-type" [class]="'type--' + mealRecommendation().type">
+        <div class="recommendation-type" [class]="adherenceStatusClass()">
           <span class="type-icon">
-            @switch(mealRecommendation().type) {
-              @case('light') {
-                🍜
-              }
-              @case('balanced') {
-                🥗
-              }
-              @case('high-protein') {
-                🥩
-              }
+            @switch (adherenceStatus()) {
+              @case ('on-track') { ✅ }
+              @case ('behind')   { ⚠️ }
+              @case ('ahead')    { 🚀 }
             }
           </span>
           <span class="type-name">
-            @switch(mealRecommendation().type) {
-              @case('light') {
-                Ligero
-              }
-              @case('balanced') {
-                Balanceado
-              }
-              @case('high-protein') {
-                Proteico
-              }
+            @switch (adherenceStatus()) {
+              @case ('on-track') { En Plan }
+              @case ('behind')   { Rezagado }
+              @case ('ahead')    { Adelantado }
             }
           </span>
         </div>
 
         <div class="recommendation-info">
-          <p class="recommendation-reason">{{ mealRecommendation().reason }}</p>
-          <span class="confidence-badge">
-            {{ mealRecommendation().confidence }}% confianza
-          </span>
+          <p class="recommendation-reason">{{ currentFocusMessage() }}</p>
         </div>
       </div>
 
-      <!-- Feedback Message -->
-      <div class="feedback-message" [class]="'alert--' + recommendationFeedback().type">
-        {{ recommendationFeedback().message }}
+      <!-- Next Step Message -->
+      <div class="feedback-message alert--info">
+        {{ nextStepMessage() }}
       </div>
     </div>
   } @else {
@@ -108,53 +93,93 @@
     <div class="welcome-panel">
       <div class="welcome-content">
         <div class="welcome-icon">🚀</div>
-        <h3 class="welcome-title">¡Comienza tu día hoy!</h3>
+        <h3 class="welcome-title">¡Comienza tu plan hoy!</h3>
         <p class="welcome-message">
-          Selecciona tu primera comida para comenzar a rastrear tus macronutrientes y recibir recomendaciones personalizadas.
+          Selecciona tu primera comida para comenzar a seguir tu plan de alimentación personalizado y monitorear tu progreso de macros.
         </p>
         <ul class="welcome-tips">
           <li>
             <span class="tip-icon">🎯</span>
-            <span class="tip-text">Selecciona comidas balanceadas para alcanzar tus metas</span>
+            <span class="tip-text">Sigue tu plan de comidas para alcanzar tus metas diarias</span>
           </li>
           <li>
             <span class="tip-icon">📈</span>
-            <span class="tip-text">Recibe recomendaciones en tiempo real basadas en lo que hayas comido</span>
+            <span class="tip-text">Monitorea tu progreso en tiempo real y mantente alineado con tu dieta</span>
           </li>
           <li>
             <span class="tip-icon">✨</span>
-            <span class="tip-text">¡Cuanto más preciso seas, mejores serán mis sugerencias!</span>
+            <span class="tip-text">¡Cada comida registrada te acerca más a tus objetivos de salud!</span>
           </li>
         </ul>
       </div>
     </div>
   }
 
-  <!-- Barra de progreso general (promedio) -->
-  <div class="macro-card macro-card--general">
-    <div class="macro-card__header">
-      <h4>Progreso General</h4>
-      <span class="percentage-badge">
-        {{ formatNumber(macroSnapshot().percentages.average.percentage, 1) }}%
-      </span>
-    </div>
-    <div class="progress-bar-container">
-      <div
-        class="progress-bar"
-        [style.width.%]="
-          Math.min(macroSnapshot().percentages.average.percentage, 100)
-        "
-        [style.backgroundColor]="
-          macroSnapshot().percentages.average.percentage >= 100
-            ? '#f97316'
-            : '#6366f1'
-        "
-      ></div>
-    </div>
-    <div class="macro-card__footer">
-      <span class="consumed">
+  <!-- MOBILE: Grid horizontal de círculos -->
+  <div class="macros-circles-horizontal">
+    <!-- Progreso General Simplificado -->
+    <div class="general-progress">
+      <div class="general-progress__header">
+        <h4>Progreso General</h4>
+        <span class="general-progress__percentage">
+          {{ formatNumber(macroSnapshot().percentages.average.percentage, 1) }}%
+        </span>
+      </div>
+      <div class="progress-bar-container">
+        <div
+          class="progress-bar"
+          [style.width.%]="
+            Math.min(macroSnapshot().percentages.average.percentage, 100)
+          "
+          [style.backgroundColor]="
+            macroSnapshot().percentages.average.percentage >= 100
+              ? '#f97316'
+              : '#6366f1'
+          "
+        ></div>
+      </div>
+      <span class="general-progress__footer">
         {{ formatNumber(macroSnapshot().completedCount) }}/3 macros completados
       </span>
+    </div>
+
+    <!-- Proteína -->
+    <div class="macro-circle-card" [style.--bg-color]="'#ef4444'" [class.is-complete]="isMacroComplete('protein')">
+      <div class="circle-wrapper">
+        <svg class="progress-ring" viewBox="0 0 100 100">
+          <circle class="progress-ring-circle" cx="50" cy="50" r="40" [style.--progress]="macroSnapshot().percentages.protein.percentage" [style.--stroke-color]="getStrokeColor('protein')"/>
+        </svg>
+        <div class="circle-center">
+          <span class="circle-percentage">{{ formatNumber(macroSnapshot().percentages.protein.percentage, 0) }}%</span>
+        </div>
+      </div>
+      <span class="circle-label">Proteína</span>
+    </div>
+
+    <!-- Grasas -->
+    <div class="macro-circle-card" [style.--bg-color]="'#f59e0b'" [class.is-complete]="isMacroComplete('fats')">
+      <div class="circle-wrapper">
+        <svg class="progress-ring" viewBox="0 0 100 100">
+          <circle class="progress-ring-circle" cx="50" cy="50" r="40" [style.--progress]="macroSnapshot().percentages.fats.percentage" [style.--stroke-color]="getStrokeColor('fats')"/>
+        </svg>
+        <div class="circle-center">
+          <span class="circle-percentage">{{ formatNumber(macroSnapshot().percentages.fats.percentage, 0) }}%</span>
+        </div>
+      </div>
+      <span class="circle-label">Grasas</span>
+    </div>
+
+    <!-- Carbs -->
+    <div class="macro-circle-card" [style.--bg-color]="'#3b82f6'" [class.is-complete]="isMacroComplete('carbs')">
+      <div class="circle-wrapper">
+        <svg class="progress-ring" viewBox="0 0 100 100">
+          <circle class="progress-ring-circle" cx="50" cy="50" r="40" [style.--progress]="macroSnapshot().percentages.carbs.percentage" [style.--stroke-color]="getStrokeColor('carbs')"/>
+        </svg>
+        <div class="circle-center">
+          <span class="circle-percentage">{{ formatNumber(macroSnapshot().percentages.carbs.percentage, 0) }}%</span>
+        </div>
+      </div>
+      <span class="circle-label">Carbs</span>
     </div>
   </div>
 

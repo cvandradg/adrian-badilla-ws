@@ -1,8 +1,9 @@
 :host {
   display: flex;
-  align-items: stretch;
-  justify-content: center;
+  flex-direction: column;
+  width: 100%;
   height: 100%;
+  min-height: 0;
 
   --p-tabs-tablist-background: transparent;
   --p-tabs-tabpanel-background: transparent;
@@ -18,11 +19,25 @@
   --p-tabs-tab-border-color: transparent !important;
   --p-tabs-tab-hover-background: hsla(0, 0%, 100%, 0.08);
   --p-tabs-tab-hover-border-color: transparent !important;
+
+  @media (min-width: 768px) {
+    align-items: stretch;
+    justify-content: center;
+  }
 }
 
 .purchase-orders-tabs {
   width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   box-shadow: inset 0.05rem 0 0 0 rgba(220, 240, 255, 0.12);
+
+  @media (max-width: 767px) {
+    overflow-y: auto;
+  }
 }
 
 :host ::ng-deep .purchase-orders-tablist {
@@ -32,6 +47,13 @@
   gap: 0 !important;
   border: none !important;
   background: transparent !important;
+  flex-wrap: wrap;
+  min-height: fit-content;
+
+  @media (max-width: 767px) {
+    flex-wrap: wrap;
+    height: auto;
+  }
 }
 
 :host ::ng-deep .p-tablist-tab-list {
@@ -56,6 +78,13 @@
   padding: 0 !important;
   background: transparent !important;
   margin: 0 !important;
+  min-width: 100px;
+
+  @media (max-width: 767px) {
+    flex: 1 1 auto;
+    min-height: 2.75rem;
+    font-size: 0.75rem !important;
+  }
 }
 
 :host ::ng-deep .p-tab[data-pc-section='root'] {

@@ -1,18 +1,18 @@
 /**
  * 🍽️ MEAL SUGGESTION COMPONENT EXAMPLE
- * 
+ *
  * This example shows how to integrate meal suggestions into your
  * existing meal dropdown/selection component.
- * 
+ *
  * Copy this pattern into your actual meal decision component.
  */
 
 import {
   Component,
   ChangeDetectionStrategy,
-  Input,
   computed,
   inject,
+  input,
   output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -29,7 +29,7 @@ type MealCategory =
 
 /**
  * EXAMPLE: Integration Pattern for Meal Suggestions
- * 
+ *
  * This component shows:
  * 1. How to inject the store
  * 2. How to compute category-specific suggestions
@@ -45,66 +45,56 @@ type MealCategory =
   standalone: true,
 })
 export class MealDropdownWithSuggestionsComponent {
-  @Input() mealId!: string;
-  @Input() mealCategory!: MealCategory;
-  @Input() predefinedOptions: Record<string, MealOption[]> = {};
+  private readonly store = inject(settingsStoreDev);
 
-  mealSelected = output<{
+  // Signal-based inputs (replaced @Input)
+  readonly mealId = input.required<string>();
+  readonly mealCategory = input.required<MealCategory>();
+  readonly predefinedOptions = input<Record<string, MealOption[]>>({});
+
+  // Signal-based output
+  readonly mealSelected = output<{
     id: string;
     foodName: string;
     macros: { protein: number; carbs: number; fats: number };
   }>();
 
-  private store = inject(settingsStoreDev);
-
-  // 🍽️ COMPUTE CATEGORY-SPECIFIC SUGGESTION
-  // This will update automatically as user selects/changes meals
-  suggestedMeal = computed(() => {
-    return this.store.getSuggestedMealByCategory(this.mealCategory);
+  // 🍽️ Compute category-specific suggestion (reactive, memoized)
+  readonly suggestedMeal = computed(() => {
+    return this.store.getSuggestedMealByCategory(this.mealCategory());
   });
 
-  // 🍽️ ALTERNATIVE: Use global suggestion
-  globalSuggestedMeal = this.store.suggestedMeal;
+  // 🍽️ Alternative: Use global suggestion
+  readonly globalSuggestedMeal = this.store.suggestedMeal;
 
   // 🎯 Handle suggestion selection
-  selectSuggestedMeal(suggested: SuggestedMeal) {
-    // Combine all food items into a descriptive name
-    const foodNames = suggested.items
-      .map((item) => item.name)
-      .join(' + ');
+  readonly selectSuggestedMeal = (suggested: SuggestedMeal) => {
+    const foodNames = suggested.items.map((item) => item.name).join(' + ');
 
-    // Emit the selection
     this.mealSelected.emit({
-      id: this.mealId,
+      id: this.mealId(),
       foodName: foodNames,
       macros: suggested.totals,
     });
-
-    // You could also:
-    // - Store this in a signal for UI state
-    // - Call a store method to apply the meal
-    // - Show a confirmation toast
-  }
+  };
 
   // 🎯 Handle predefined option selection
-  selectOption(option: MealOption) {
+  readonly selectOption = (option: MealOption) => {
     this.mealSelected.emit({
-      id: this.mealId,
+      id: this.mealId(),
       foodName: option.name,
       macros: option.macros,
     });
-  }
+  };
 
   // 🎨 Helper to get quality badge color
-  getMatchQualityColor(nearestMatch: string): string {
+  readonly getMatchQualityColor = (nearestMatch: string): string => {
     if (nearestMatch.includes('perfecta')) return 'success';
     if (nearestMatch.includes('cercana')) return 'info';
     if (nearestMatch.includes('Buena')) return 'warning';
     return 'secondary';
-  }
+  };
 
-  // 🔢 Redondear hacia arriba
-  roundUp(value: number): number {
-    return Math.ceil(value);
-  }
+  // 🔢 Round up utility
+  readonly roundUp = (value: number): number => Math.ceil(value);
 }

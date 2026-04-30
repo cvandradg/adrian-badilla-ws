@@ -17,10 +17,7 @@
             (click)="selectRoute(route.id)"
           >
             <div class="tabs-inner-content">
-              <fa-icon
-                [icon]="['fas', 'user']"
-                [style.font-size]="'1rem'"
-              ></fa-icon>
+              <i [class]="getDayIcon(route.name ?? '')"></i>
 
               <div class="route-name">
                 <div>{{ route.name }}</div>

@@ -1,5 +1,5 @@
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, signal, inject, DestroyRef } from '@angular/core';
 import { AdditionalInfoColumnComponent } from '../additional-info-column/additional-info-column.component';
 import { TabsModule } from 'primeng/tabs';
 import { AdrianBadillaDietsComponent } from '../adrian-badilla-diets/adrian-badilla-diets.component';
@@ -21,6 +21,17 @@ import { DialogService } from 'primeng/dynamicdialog';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsComponent {
+  readonly isMobile = signal(
+    globalThis.window?.matchMedia('(max-width: 767px)').matches ?? false
+  );
+
+  constructor() {
+    if (globalThis.window === undefined) return;
+    const mql = globalThis.window.matchMedia('(max-width: 767px)');
+    const handler = (e: MediaQueryListEvent) => this.isMobile.set(e.matches);
+    mql.addEventListener('change', handler);
+    inject(DestroyRef).onDestroy(() => mql.removeEventListener('change', handler));
+  }
   tabs: { route: string; label: string; icon: [string, string] }[] = [
     {
       route: 'diets',

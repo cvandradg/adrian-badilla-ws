@@ -9,90 +9,98 @@ import {
   input,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DatePipe, CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { DialogModule } from 'primeng/dialog';
 import { settingsStoreDev } from '../../store/settings.store';
 import type { ChatMessage } from '../../store/with-nutrition-chat.feature';
 
+/**
+ * Nutrition chat component with auto-scroll and message management
+ * Uses signals for reactive state management
+ */
 @Component({
   selector: 'lib-nutrition-chat',
   standalone: true,
-  imports: [FormsModule, DatePipe, CommonModule, ButtonModule, InputTextModule, DialogModule],
+  imports: [
+    FormsModule,
+    DatePipe,
+    ButtonModule,
+    InputTextModule,
+    DialogModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './nutrition-chat.component.html',
   styleUrl: './nutrition-chat.component.scss',
 })
 export class NutritionChatComponent {
-  readonly store = inject(settingsStoreDev);
-
-  // Control whether to show the CTA button (default: true)
-  showCtaButton = input<boolean>(true);
-
-  messages = this.store.chatMessages;
-  isLoading = this.store.chatIsLoading;
-  isChatOpen = this.store.isChatOpen;
-  inputText = signal('');
-
+  protected readonly store = inject(settingsStoreDev);
   private readonly messagesEnd = viewChild<ElementRef>('messagesEnd');
 
-  quickActions = [
+  // Control whether to show the CTA button (default: true)
+  readonly showCtaButton = input<boolean>(true);
+
+  // Store-derived signals (direct exposure from store)
+  readonly messages = this.store.chatMessages;
+  readonly isLoading = this.store.chatIsLoading;
+  readonly isChatOpen = this.store.isChatOpen;
+  readonly hasPendingAISuggestion = this.store.hasPendingAISuggestion;
+
+  // Local state
+  readonly inputText = signal<string>('');
+
+  // Quick action options
+  readonly quickActions = [
     { label: '🍽️ Sugerir comida', message: 'Sugiéreme una comida balanceada' },
     { label: '🥩 Alta proteína', message: 'Quiero comer algo proteico' },
     { label: '🥗 Ligero', message: 'Recomiéndame algo ligero' },
     { label: '📊 Ver macros', message: '¿Qué son los macronutrientes?' },
-  ];
+  ] as const;
 
   constructor() {
-    // Auto-scroll when messages change
+    // Auto-scroll to bottom when messages change
     effect(() => {
+      // Track dependencies
       this.messages();
       this.isLoading();
+      // Schedule scroll after render
       setTimeout(() => this.scrollToBottom(), 50);
     });
   }
 
-  sendMessage(text?: string) {
+  // 💬 Send message action
+  readonly sendMessage = (text?: string) => {
     const content = text ?? this.inputText();
     if (!content.trim()) return;
 
     this.store.sendChatMessage(content);
     this.inputText.set('');
-  }
+  };
 
-  onKeydown(event: KeyboardEvent) {
+  // ⌨️ Handle Enter key
+  readonly onKeydown = (event: KeyboardEvent) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       this.sendMessage();
     }
-  }
+  };
 
-  openChat() {
-    this.store.openChat();
-  }
+  // 🗨️ Chat UI actions
+  readonly openChat = () => this.store.openChat();
+  readonly closeChat = () => this.store.closeChat();
+  readonly clearChat = () => this.store.clearChat();
 
-  closeChat() {
-    this.store.closeChat();
-  }
+  // 🤖 AI suggestion actions
+  readonly applyAISuggestion = () => this.store.applyAISuggestionFromChat();
+  readonly rejectAISuggestion = () => this.store.rejectAISuggestionFromChat();
 
-  clearChat() {
-    this.store.clearChat();
-  }
+  // 🎯 Track messages by timestamp for *ngFor optimization
+  readonly trackByTimestamp = (_index: number, msg: ChatMessage): number =>
+    msg.timestamp;
 
-  applyAISuggestion() {
-    this.store.applyAISuggestionFromChat();
-  }
-
-  rejectAISuggestion() {
-    this.store.rejectAISuggestionFromChat();
-  }
-
-  trackByTimestamp(_index: number, msg: ChatMessage) {
-    return msg.timestamp;
-  }
-
-  private scrollToBottom() {
+  // Private helper: Scroll to messages end
+  private scrollToBottom(): void {
     const el = this.messagesEnd()?.nativeElement;
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'end' });

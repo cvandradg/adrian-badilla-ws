@@ -8,6 +8,18 @@ import {
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import type { RouteNavItem } from '../../types/diets.types';
 
+const DAY_ICONS: Record<string, string> = {
+  lunes: 'pi pi-calendar',
+  martes: 'pi pi-calendar',
+  miercoles: 'pi pi-calendar',
+  miércoles: 'pi pi-calendar',
+  jueves: 'pi pi-calendar',
+  viernes: 'pi pi-calendar',
+  sabado: 'pi pi-calendar',
+  sábado: 'pi pi-calendar',
+  domingo: 'pi pi-sun',
+};
+
 @Component({
   selector: 'lib-adrian-badilla-diets-details',
   imports: [FontAwesomeModule],
@@ -25,10 +37,12 @@ export class AdrianBadillaDietsDetailsComponent {
 
   readonly activeRouteIndex = computed(() => {
     const selectedId = this.selectedRouteId();
-    const index = this.routes().findIndex((route) => route.id === selectedId);
-
-    return Math.max(0, index);
+    return Math.max(0, this.routes().findIndex((r) => r.id === selectedId));
   });
+
+  getDayIcon(name: string | undefined): string {
+    return DAY_ICONS[name?.toLowerCase()?.trim() ?? ''] ?? 'pi pi-calendar';
+  }
 
   selectRoute(routeId: string): void {
     this.routeSelected.emit(routeId);

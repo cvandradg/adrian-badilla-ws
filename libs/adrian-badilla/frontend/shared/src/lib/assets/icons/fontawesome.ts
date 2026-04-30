@@ -51,6 +51,8 @@ import {
 } from '@fortawesome/pro-solid-svg-icons';
 import { faHouseTree } from '@fortawesome/pro-regular-svg-icons';
 import { faBicep } from '@fortawesome/pro-regular-svg-icons';
+import { faScaleBalanced } from '@fortawesome/pro-regular-svg-icons';
+
 
 
 export const FontAwesomeicons = [
@@ -95,5 +97,6 @@ export const FontAwesomeicons = [
   faEnvelopeCircleCheck,
   faCommentsQuestionCheck,
   //steven imports
-  faBicep
+  faBicep,
+  faScaleBalanced
 ];

@@ -30,8 +30,8 @@ export function withDietsCrud<T extends DietsCrudParentDeps>(
         name: string;
         route: string;
         province: string;
-        estimateLocation: string;
-        exactLocation: string;
+        displayFoodName: string;
+        foodNameForApi: string;
       }>(
         pipe(
           tap(() => innerStore._createDietSetLoading()),
@@ -42,8 +42,8 @@ export function withDietsCrud<T extends DietsCrudParentDeps>(
                 name: draft.name.trim(),
                 route: draft.route.trim(),
                 province: draft.province.trim(),
-                estimateLocation: draft.estimateLocation.trim(),
-                exactLocation: draft.exactLocation.trim(),
+                displayFoodName: draft.displayFoodName.trim(),
+                foodNameForApi: draft.foodNameForApi.trim(),
               },
             }),
           ),
@@ -59,8 +59,8 @@ export function withDietsCrud<T extends DietsCrudParentDeps>(
         name: string;
         route: string;
         province: string;
-        estimateLocation: string;
-        exactLocation: string;
+        displayFoodName: string;
+        foodNameForApi: string;
       }>(
         pipe(
           tap(() => innerStore._saveDietSetLoading()),
@@ -69,8 +69,8 @@ export function withDietsCrud<T extends DietsCrudParentDeps>(
               name: string;
               route: string;
               province: string;
-              estimateLocation: string;
-              exactLocation: string;
+              displayFoodName: string;
+              foodNameForApi: string;
             }>({
               collectionPath: 'diets',
               id: draft.id,
@@ -78,8 +78,8 @@ export function withDietsCrud<T extends DietsCrudParentDeps>(
                 name: draft.name.trim(),
                 route: draft.route.trim(),
                 province: draft.province.trim(),
-                estimateLocation: draft.estimateLocation.trim(),
-                exactLocation: draft.exactLocation.trim(),
+                displayFoodName: draft.displayFoodName.trim(),
+                foodNameForApi: draft.foodNameForApi.trim(),
               },
             }),
           ),

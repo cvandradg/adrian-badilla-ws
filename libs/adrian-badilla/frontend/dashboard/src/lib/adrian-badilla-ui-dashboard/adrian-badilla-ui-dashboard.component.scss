@@ -19,6 +19,10 @@
   --dashboard-panel-gap: #{tokens.$dashboard-panel-gap};
   --dashboard-panel-min-block-size: #{tokens.$dashboard-panel-min-block-size};
   --dashboard-content-blur: #{tokens.$dashboard-content-blur};
+
+  @media (max-width: 767px) {
+    padding-inline: 0;
+  }
 }
 
 mat-sidenav-container.dashboard-shell {
@@ -135,6 +139,12 @@ mat-sidenav-container.dashboard-shell {
 .dashboard-spacer {
   flex: 0 0 var(--dashboard-shell-spacing);
   block-size: var(--dashboard-shell-spacing);
+
+  @media (max-width: 767px) {
+    flex: 0 0 0;
+    block-size: 0;
+    display: none; // 👈 opcional pero recomendado
+  }
 }
 
 :host ::ng-deep .dashboard-shell > .mat-drawer-content,
@@ -164,11 +174,6 @@ mat-sidenav-container.dashboard-shell {
 .left-sidenav,
 .right-sidenav {
   min-block-size: var(--dashboard-panel-min-block-size);
-}
-
-.dashboard-spacer {
-  flex: 0 0 var(--dashboard-shell-spacing);
-  block-size: var(--dashboard-shell-spacing);
 }
 
 @media (min-width: 960px) {

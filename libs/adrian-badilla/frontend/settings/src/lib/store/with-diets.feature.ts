@@ -10,8 +10,8 @@ import {
   withDietsCrud,
 } from './with-diets-crud.feature';
 import {
-  withDietsDialogs,
-} from './with-diets-dialogs.feature';
+  withDialogs,
+} from './with-dialogs.feature';
 import {
   buildDietSubmitCommand,
 } from './diets-domain.utils';
@@ -21,17 +21,14 @@ type SettingsStoreDeps = DietsCrudParentDeps;
 
 export type EditableDiet = Pick<
   WithDietId<DietDoc>,
-  'id' | 'name' | 'route' | 'province' | 'estimateLocation' | 'exactLocation'
+  'id' | 'name' | 'route' | 'province' | 'displayFoodName' | 'foodNameForApi'
 >;
 
 export type DietDraft = Omit<EditableDiet, 'id'> & {
   id?: string | null;
 };
 
-function withDietsCallState<_>() {
-  const unusedType: _ | undefined = undefined;
-  void unusedType;
-
+function withDietsCallState<_T>() {
   return signalStoreFeature(
     withCustomCallState('createDiet'),
     withCustomCallState('saveDiet'),
@@ -45,7 +42,7 @@ export function withDiets<T extends SettingsStoreDeps>(settingsStore: T) {
     withFeature((innerStore) =>
       withDietsCrud(innerStore, settingsStore),
     ),
-    withFeature((innerStore) => withDietsDialogs(innerStore)),
+    withFeature((innerStore) => withDialogs(innerStore)),
     withMethods((innerStore) => ({
       submitDietDraft: (draft: DietDraft) => {
         const command = buildDietSubmitCommand(draft);

@@ -3,11 +3,13 @@ import {
   withState,
   withComputed,
   withMethods,
-  patchState
+  patchState,
+  withFeature,
 } from '@ngrx/signals';
-import { computed } from '@angular/core';
+import { Type, computed } from '@angular/core';
 import { MOCK_ROUTES, getMockRouteSupercenters } from '../mocks/adrian-badilla-diets.mock';
 import type { RouteNavItem, RouteSupercenterItem } from '../types/diets.types';
+import { withDialogs } from './with-dialogs.feature';
 
 interface RoutesState {
   routes: RouteNavItem[];
@@ -18,7 +20,7 @@ interface RoutesState {
   saveRouteisLoading: boolean;
 }
 
-export function withRoutes() {
+export function withRoutes<T extends Record<string, any>>(storeContext: T) {
   return signalStoreFeature(
     withState<RoutesState>({
       routes: MOCK_ROUTES,
@@ -36,6 +38,8 @@ export function withRoutes() {
       }),
       isSavingRoute: computed(() => store.createRouteisLoading() || store.saveRouteisLoading()),
     })),
+
+    withFeature((innerStore) => withDialogs(storeContext)),
 
     withMethods((store) => ({
       updateRouteSearchQuery(query: string) {
@@ -59,20 +63,20 @@ export function withRoutes() {
         patchState(store, { saveRouteisLoading: false });
       },
 
-      openDialogToAddRoute() {
-        console.log('open add route');
+      openDialogToAddRoute: (component: Type<unknown>) => {
+        store['openDialogToAddRoute'](component);
       },
 
-      openDialogToAddSupercenter() {
-        console.log('open add supercenter');
+      openDialogToAddSupercenter: (component: Type<unknown>) => {
+        store['openDialogToAddSupercenter'](component);
       },
 
-      openDialogToEditRouteDiet(_: any, id: string) {
-        console.log('edit diet', id);
+      openDialogToEditRouteDiet: (component: Type<unknown>, item: RouteSupercenterItem) => {
+        store['openDialogToEditRouteDiet'](component, item);
       },
 
-      openDialogToDeleteRoute(_: any, route: RouteNavItem) {
-        console.log('delete route', route);
+      openDialogToDeleteRoute: (component: Type<unknown>, route: RouteNavItem) => {
+        store['openDialogToDeleteRoute'](component, route);
       },
 
       applyMealDecisionToRoute(event: {
@@ -93,7 +97,7 @@ export function withRoutes() {
               selectedFoodName: event.option.name,
               selectedFoodNameInEnglish: event.optionNameInEnglish,
               selectedFoodDisplayName: event.optionNameInSpanish,
-              exactLocation: event.option.name,
+              foodNameForApi: event.option.name,
               // ✅ AUTO-MARCAR COMO 'completed'
               status: 'completed',
               macros: event.option.macros,
@@ -102,6 +106,17 @@ export function withRoutes() {
           return m;
         });
 
+        patchState(store, { selectedRouteSupercenters: updated });
+      },
+
+      updateSupercenterMealStatus(
+        id: string,
+        status: 'completed' | 'skipped' | 'pending',
+        macros?: { protein: number; carbs: number; fats: number }
+      ) {
+        const updated = store.selectedRouteSupercenters().map((m: any) =>
+          m.id === id ? { ...m, status, ...(macros ? { macros } : {}) } : m
+        );
         patchState(store, { selectedRouteSupercenters: updated });
       },
     }))

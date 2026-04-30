@@ -2,8 +2,8 @@ export type FoodDialogDiet = {
   id: string;
   name: string;
   displayName?: string;
-  estimateLocation: string;
-  exactLocation?: string;
+  displayFoodName: string;  // Nombre mostrado al usuario (en español)
+  foodNameForApi?: string;  // Nombre exacto para API (en inglés)
 };
 
 export type FoodDescriptionDialogData = {

@@ -6,3 +6,12 @@
   height: 100%;
   min-block-size: tokens.$dashboard-panel-min-block-size;
 }
+
+
+body {
+  background-color: #0b0f1a;
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}

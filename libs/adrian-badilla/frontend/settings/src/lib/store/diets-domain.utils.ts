@@ -1,12 +1,12 @@
-import type { SupercenterDoc as DietDoc, WithId as WithDietId } from '../types/diets.types';
+// Tipos y utilidades para el dominio de dietas
 
 type EditableDiet = {
   id: string;
   name: string;
   route: string;
   province: string;
-  estimateLocation: string;
-  exactLocation: string;
+  displayFoodName: string;  // Nombre mostrado al usuario
+  foodNameForApi: string;   // Nombre exacto para API
 };
 
 type DietDraft = Omit<EditableDiet, 'id'> & {
@@ -30,8 +30,8 @@ function trimDietDraft(
     name: draft.name.trim(),
     route: draft.route.trim(),
     province: draft.province.trim(),
-    estimateLocation: draft.estimateLocation.trim(),
-    exactLocation: draft.exactLocation.trim(),
+    displayFoodName: draft.displayFoodName.trim(),
+    foodNameForApi: draft.foodNameForApi.trim(),
   };
 }
 
@@ -65,8 +65,8 @@ export function toDeleteDietDialogData(
     name: diet.name,
     route: diet.route,
     province: diet.province,
-    estimateLocation: diet.estimateLocation,
-    exactLocation: diet.exactLocation,
+    displayFoodName: diet.displayFoodName,
+    foodNameForApi: diet.foodNameForApi,
     createdDate: null,
     lastModifiedDate: null,
   };

@@ -3,118 +3,8 @@
 @let routes = filteredRoutes(); @let routeSupercenters =
 selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
 (routes.length) {
-<form>
-  <div class="mt-3">
-    <div class="sub-title">Bucador y acciones generales</div>
-
-    <div class="actions-row mt-2">
-      <div class="left-actions">
-        <p-floatlabel variant="in" class="date-picker-container">
-          <p-iconfield>
-            <p-inputicon class="pi pi-search" />
-            <input
-              #routeSearchInput
-              pInputText
-              class="route-search-input"
-              id="on_label"
-              autocomplete="off"
-              [value]="routeSearchQuery()"
-              (input)="updateRouteSearchQuery(routeSearchInput.value)"
-            />
-
-            @if (routeSearchQuery()) {
-            <button
-              type="button"
-              class="route-search-clear"
-              (click)="clearRouteSearchQuery(routeSearchInput)"
-              aria-label="Limpiar búsqueda de rutas"
-            >
-              <i class="pi pi-times"></i>
-            </button>
-            }
-          </p-iconfield>
-          <label for="on_label">Buscador de ruta</label>
-        </p-floatlabel>
-
-        <p-button
-          icon="pi pi-filter"
-          type="button"
-          variant="text"
-          [raised]="true"
-          size="large"
-        />
-      </div>
-
-      <div>
-        <div>
-          <p-button
-            label="Supercenter"
-            icon="pi pi-home"
-            type="button"
-            variant="text"
-            [raised]="true"
-            (onClick)="openAddSupercenterDialog()"
-            size="large"
-            styleClass="add-route-btn"
-            class="mr-3"
-          />
-
-          <p-button
-            label="Ruta"
-            icon="pi pi-plus"
-            type="button"
-            variant="text"
-            [raised]="true"
-            (onClick)="openAddRouteDialog()"
-            size="large"
-            styleClass="add-route-btn"
-            class="mr-3"
-          />
-
-          @if (!isEditing()) {
-          <p-button
-            label="Modo Editor"
-            icon="pi pi-pencil"
-            type="button"
-            variant="text"
-            [raised]="true"
-            (onClick)="enableEditMode()"
-            size="large"
-            styleClass="add-route-btn"
-            class="mr-3"
-          />
-          } @else {
-          <p-button
-            label="Descartar"
-            icon="pi pi-times"
-            type="button"
-            [raised]="true"
-            (onClick)="discardEditMode()"
-            size="large"
-            styleClass="add-route-btn discard-btn"
-            class="mr-3"
-          />
-
-          <p-button
-            label="Guardar"
-            icon="pi pi-check"
-            type="submit"
-            [raised]="true"
-            [loading]="isSavingRoute()"
-            [disabled]="isSavingRoute()"
-            size="large"
-            styleClass="add-route-btn save-btn"
-            class="mr-3"
-          />
-          }
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div>
-    <div class="sub-title mt-3 mb-3">Rutas</div>
-  </div>
+<lib-macro-progress-tracker [meals]="routeSupercenters"/>
+   <br>
   <div class="routes-layout">
     <lib-adrian-badilla-diets-details
       [routes]="routes"
@@ -126,7 +16,6 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
 
     @if (selectedRouteItem; as activeRoute) {
     <section class="routes-content">
-      <lib-macro-progress-tracker [meals]="routeSupercenters"/>
       
       @if (!routeSupercenters.length) {
       <div class="card mt-3">
@@ -135,10 +24,10 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
             <div class="editor-empty-state__content">
               <i class="pi pi-map editor-empty-state__icon"></i>
               <div class="editor-empty-state__title">
-                Esta ruta aún no tiene supercenters asignados
+                Este dia no tiene dietas asignadas aun.
               </div>
               <div class="editor-empty-state__text">
-                Cuando agregues supercenters a esta ruta, se reflejarán
+                Cuando se agreguen dietas a seguir, se reflejarán
                 aquí.
               </div>
               <p-button
@@ -162,6 +51,7 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
         <p-timeline
           [value]="routeSupercenters"
           class="align-items-start route-timeline"
+          [class.timeline-complete]="isTimelineComplete()"
         >
           <ng-template #marker let-supercenter let-i="index">
             <div class="marker-with-actions">
@@ -179,8 +69,8 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
           <ng-template #content let-supercenter>
             <lib-adrian-badilla-diets-decision
               [meal]="mapToMeal(supercenter)"
-              (decisionChange)="applyDecisionFromChild($event)"
               (mealDialogRequested)="openDietDialogFromChild($event)"
+              (statusChange)="handleStatusChange($event)"
             />
           </ng-template>
         </p-timeline>
@@ -189,8 +79,5 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
     </section>
     }
   </div>
-</form>
 }
-
-<!-- 💬 NUTRITION CHAT (Modal Dialog) - Única instancia -->
 <lib-nutrition-chat></lib-nutrition-chat>
