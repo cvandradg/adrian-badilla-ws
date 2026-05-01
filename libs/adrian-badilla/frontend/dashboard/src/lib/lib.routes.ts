@@ -9,6 +9,11 @@ export const adrianBadillaDashboardRoutes: Route[] = [
     component: DashboardComponent,
     children: [
       {
+        path: 'inicio',
+        title: 'Inicio',
+        loadChildren: () => import('@adrian-badilla/home').then(m => m.HOME_ROUTES)
+      },
+      {
         path: 'products',
         title: 'Productos',
         loadChildren: () =>

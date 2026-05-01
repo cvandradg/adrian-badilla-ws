@@ -1,0 +1,26 @@
+<div class="promo-carousel">
+  <p-carousel
+    [value]="slides"
+    [numVisible]="3"
+    [numScroll]="1"
+    [circular]="true"
+    [autoplayInterval]="4500"
+    [responsiveOptions]="responsiveOptions"
+    [showNavigators]="true"
+    [showIndicators]="true"
+  >
+    <ng-template let-slide #item>
+      <div class="promo-carousel__slide">
+        <img [src]="slide.image" [alt]="slide.title" loading="lazy" />
+        <div class="promo-carousel__overlay"></div>
+        <span class="promo-carousel__tag" [style.color]="slide.tagColor" [style.border-color]="slide.tagColor">
+          {{ slide.tag }}
+        </span>
+        <div class="promo-carousel__info">
+          <h4 class="promo-carousel__title">{{ slide.title }}</h4>
+          <p class="promo-carousel__subtitle">{{ slide.subtitle }}</p>
+        </div>
+      </div>
+    </ng-template>
+  </p-carousel>
+</div>

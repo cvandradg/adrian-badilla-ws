@@ -1,0 +1,332 @@
+.leaderboard {
+  background: rgba(30, 41, 59, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: fadeInUp 0.5s ease-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(250, 204, 21, 0.08);
+    border-color: rgba(250, 204, 21, 0.2);
+  }
+
+  &__title {
+    color: #e2e8f0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid #334155;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: rgba(51, 65, 85, 0.3);
+    }
+  }
+
+  &__row-position {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  &__row-title {
+    color: #e2e8f0;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  &__row-value {
+    color: #94a3b8;
+    font-size: 0.85rem;
+  }
+}
+
+// Podium
+.podium {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr 1fr;
+  align-items: flex-end;
+  gap: 0.75rem;
+  padding: 2.5rem 1.5rem 0;
+  background:
+    radial-gradient(circle at 50% 100%, rgba(51, 65, 85, 0.3) 0%, transparent 70%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 19px,
+      rgba(51, 65, 85, 0.1) 19px,
+      rgba(51, 65, 85, 0.1) 20px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 19px,
+      rgba(51, 65, 85, 0.1) 19px,
+      rgba(51, 65, 85, 0.1) 20px
+    );
+  border-radius: 12px;
+  min-height: 300px;
+
+  &__column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    animation: fadeInUp 0.6s ease-out backwards;
+
+    &--second {
+      order: 1;
+      animation-delay: 0.2s;
+    }
+
+    &--first {
+      order: 2;
+      animation-delay: 0.1s;
+    }
+
+    &--third {
+      order: 3;
+      animation-delay: 0.3s;
+    }
+  }
+
+  &__crown {
+    font-size: 1.75rem;
+    margin-bottom: 0.25rem;
+
+    &--gold {
+      filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.7));
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    &--silver {
+      color: #94a3b8;
+      font-size: 1.35rem;
+    }
+
+    &--blue {
+      color: #38bdf8;
+      font-size: 1.35rem;
+      filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.5));
+    }
+  }
+
+  &__avatar {
+    width: 40px;
+    height: 40px;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+
+    &--first {
+      width: 48px;
+      height: 48px;
+      color: #94a3b8;
+      filter: drop-shadow(0 0 4px rgba(250, 204, 21, 0.2));
+    }
+  }
+
+  &__pedestal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    width: 100%;
+    padding: 1rem 0.75rem;
+    border-radius: 8px 8px 0 0;
+    border: 1px solid rgba(51, 65, 85, 0.6);
+    border-bottom: none;
+
+    &--first {
+      min-height: 90px;
+      background: linear-gradient(180deg, rgba(250, 204, 21, 0.06) 0%, rgba(10, 15, 25, 0.95) 100%);
+      border-color: rgba(250, 204, 21, 0.35);
+      box-shadow: 0 0 24px rgba(250, 204, 21, 0.08), inset 0 1px 0 rgba(250, 204, 21, 0.1);
+    }
+
+    &--second {
+      min-height: 65px;
+      background: rgba(10, 15, 25, 0.85);
+    }
+
+    &--third {
+      min-height: 55px;
+      background: rgba(10, 15, 25, 0.85);
+      border-color: rgba(56, 189, 248, 0.25);
+    }
+  }
+
+  &__base {
+    width: 100%;
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border-radius: 0 0 6px 6px;
+
+    &--first {
+      background: rgba(250, 204, 21, 0.12);
+      color: #facc15;
+      border: 1px solid rgba(250, 204, 21, 0.35);
+      border-top: none;
+    }
+
+    &--second {
+      background: rgba(15, 20, 30, 0.8);
+      color: #94a3b8;
+      border: 1px solid rgba(51, 65, 85, 0.6);
+      border-top: none;
+    }
+
+    &--third {
+      background: rgba(56, 189, 248, 0.05);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-top: none;
+    }
+  }
+
+  &__name {
+    color: #e2e8f0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  &__value {
+    color: #94a3b8;
+    font-size: 0.75rem;
+    text-align: center;
+
+    &--gold {
+      color: #facc15;
+    }
+
+    &--blue {
+      color: #38bdf8;
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+@media (max-width: 640px) {
+  .podium {
+    min-height: 200px;
+    padding: 1.5rem 0.5rem 0;
+    grid-template-columns: 1fr 1.3fr 1fr;
+    gap: 0.25rem;
+
+    &__crown {
+      font-size: 1.25rem;
+
+      &--gold {
+        font-size: 1.4rem;
+      }
+    }
+
+    &__avatar {
+      width: 28px;
+      height: 28px;
+
+      &--first {
+        width: 34px;
+        height: 34px;
+      }
+    }
+
+    &__pedestal {
+      padding: 0.5rem 0.25rem;
+
+      &--first {
+        min-height: 70px;
+      }
+
+      &--second {
+        min-height: 50px;
+      }
+
+      &--third {
+        min-height: 45px;
+      }
+    }
+
+    &__name {
+      font-size: 0.7rem;
+    }
+
+    &__value {
+      font-size: 0.6rem;
+    }
+
+    &__base {
+      font-size: 0.7rem;
+      padding: 0.35rem;
+    }
+  }
+
+  .leaderboard {
+    padding: 1rem;
+
+    &__row {
+      padding: 0.75rem 1rem;
+      grid-template-columns: 40px 1fr auto;
+      gap: 0.75rem;
+    }
+
+    &__row-position {
+      font-size: 0.8rem;
+    }
+
+    &__row-title {
+      font-size: 0.8rem;
+    }
+
+    &__row-value {
+      font-size: 0.75rem;
+    }
+  }
+}

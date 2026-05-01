@@ -1,0 +1,196 @@
+.welcome-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: rgba(30, 41, 59, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  border-radius: 16px;
+  padding: 1.75rem 2rem;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: -15%;
+    width: 50%;
+    height: 180%;
+    background: radial-gradient(ellipse, rgba(139, 92, 246, 0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -40%;
+    right: -15%;
+    width: 50%;
+    height: 180%;
+    background: radial-gradient(ellipse, rgba(34, 211, 238, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__greeting-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__wave {
+    font-size: 2.5rem;
+    animation: wave 2.5s ease-in-out infinite;
+    transform-origin: 70% 70%;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  &__greeting {
+    color: #e2e8f0;
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 0;
+    background: linear-gradient(135deg, #e2e8f0 30%, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  &__date {
+    color: #64748b;
+    font-size: 0.8rem;
+    margin: 0;
+  }
+
+  &__day {
+    color: #94a3b8;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+
+  &__badges {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  &__badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.85rem;
+    background: rgba(51, 65, 85, 0.3);
+    border: 1px solid rgba(51, 65, 85, 0.5);
+    border-radius: 20px;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      border-color: rgba(139, 92, 246, 0.4);
+    }
+
+    &--accent {
+      background: rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.25);
+
+      &:hover {
+        border-color: rgba(245, 158, 11, 0.5);
+      }
+    }
+  }
+
+  &__badge-icon {
+    font-size: 0.9rem;
+  }
+
+  &__badge-text {
+    color: #cbd5e1;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+
+  &__quote {
+    display: flex;
+    align-items: stretch;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+    padding: 1rem 1.25rem;
+    background: rgba(15, 23, 42, 0.3);
+    border-radius: 12px;
+    border: 1px solid rgba(51, 65, 85, 0.3);
+  }
+
+  &__quote-decoration {
+    width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #8b5cf6, #22d3ee);
+    flex-shrink: 0;
+  }
+
+  &__quote-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    justify-content: center;
+  }
+
+  &__quote-text {
+    color: #cbd5e1;
+    font-size: 0.92rem;
+    font-style: italic;
+    margin: 0;
+    line-height: 1.6;
+    quotes: none;
+  }
+
+  &__quote-author {
+    color: #64748b;
+    font-size: 0.72rem;
+    font-style: normal;
+    font-weight: 600;
+  }
+}
+
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  15% { transform: rotate(14deg); }
+  30% { transform: rotate(-8deg); }
+  40% { transform: rotate(14deg); }
+  50% { transform: rotate(-4deg); }
+  60% { transform: rotate(10deg); }
+  70% { transform: rotate(0deg); }
+}
+
+@media (max-width: 768px) {
+  .welcome-banner {
+    padding: 1.25rem 1.5rem;
+
+    &__top {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    &__greeting {
+      font-size: 1.3rem;
+    }
+
+    &__badges {
+      flex-wrap: wrap;
+    }
+  }
+}

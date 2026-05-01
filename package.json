@@ -37,6 +37,7 @@
     "@ngrx/operators": "21.0.0",
     "@ngrx/signals": "21.0.0",
     "@primeuix/themes": "^2.0.3",
+    "chart.js": "^4.5.1",
     "firebase": "^11.0.2",
     "firebase-tools": "^13.27.0",
     "primeicons": "^7.0.0",

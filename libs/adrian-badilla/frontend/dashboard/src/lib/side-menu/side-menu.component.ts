@@ -33,7 +33,7 @@ export class SideMenuComponent {
     {
       icon: ['far', 'house-tree'],
       label: 'Inicio',
-      route: '/dashboard',
+      route: '/dashboard/inicio',
       exact: true,
     },
     {

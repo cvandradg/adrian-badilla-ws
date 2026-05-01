@@ -1,0 +1,11 @@
+<div class="news-home">
+  <section class="news-home__section">
+    <h1 class="news-home__heading">Destacadas</h1>
+    <lib-news-highlight [featured]="featuredNews()" />
+  </section>
+
+  <section class="news-home__section">
+    <h2 class="news-home__heading">Últimas noticias</h2>
+    <lib-news-list [news]="latestNews()" />
+  </section>
+</div>
