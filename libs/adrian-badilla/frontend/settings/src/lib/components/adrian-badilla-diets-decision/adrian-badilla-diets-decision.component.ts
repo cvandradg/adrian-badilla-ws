@@ -17,6 +17,7 @@ const MEAL_KEYWORDS: readonly [string, MealKey][] = [
 
 @Component({
   selector: 'lib-adrian-badilla-diets-decision',
+  standalone: true,
   imports: [DecisionCardComponent],
   templateUrl: './adrian-badilla-diets-decision.component.html',
   styleUrl: './adrian-badilla-diets-decision.component.scss',

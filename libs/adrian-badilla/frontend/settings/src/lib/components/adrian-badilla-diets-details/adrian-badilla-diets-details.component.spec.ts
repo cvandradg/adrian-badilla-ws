@@ -12,6 +12,7 @@ describe('AdrianBadillaDietsDetailsComponent', () => {
 
     fixture = TestBed.createComponent(AdrianBadillaDietsDetailsComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('routes', []);
     fixture.detectChanges();
   });
 

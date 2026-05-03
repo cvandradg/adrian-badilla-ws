@@ -11,6 +11,7 @@ import { DecisionCardComponent } from '../decision-card/decision-card.component'
 
 @Component({
   selector: 'lib-routine-decision',
+  standalone: true,
   imports: [DecisionCardComponent],
   templateUrl: './routine-decision.component.html',
   styleUrl: './routine-decision.component.scss',

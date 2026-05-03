@@ -8,6 +8,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'lib-settings',
+  standalone: true,
   imports: [
     AdditionalInfoColumnComponent,
     TabsModule,

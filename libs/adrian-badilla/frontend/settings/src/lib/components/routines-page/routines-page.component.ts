@@ -14,6 +14,7 @@ import type { MealStatus } from '../../types/diet-decision.types';
 
 @Component({
   selector: 'lib-routines-page',
+  standalone: true,
   imports: [PrimeTimeline, NgClass, RoutineDecisionComponent, DayTimelineShellComponent],
   templateUrl: './routines-page.component.html',
   styleUrl: './routines-page.component.scss',

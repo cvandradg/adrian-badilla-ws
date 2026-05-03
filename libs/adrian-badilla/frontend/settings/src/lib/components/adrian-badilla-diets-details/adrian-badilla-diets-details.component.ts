@@ -22,6 +22,7 @@ const DAY_ICONS: Record<string, string> = {
 
 @Component({
   selector: 'lib-adrian-badilla-diets-details',
+  standalone: true,
   imports: [FontAwesomeModule],
   templateUrl: './adrian-badilla-diets-details.component.html',
   styleUrl: './adrian-badilla-diets-details.component.scss',

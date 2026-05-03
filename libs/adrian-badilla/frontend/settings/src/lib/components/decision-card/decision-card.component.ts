@@ -9,6 +9,7 @@ import type { DecisionItem } from '../../types/diet-decision.types';
 
 @Component({
   selector: 'lib-decision-card',
+  standalone: true,
   imports: [],
   templateUrl: './decision-card.component.html',
   styleUrl: './decision-card.component.scss',
