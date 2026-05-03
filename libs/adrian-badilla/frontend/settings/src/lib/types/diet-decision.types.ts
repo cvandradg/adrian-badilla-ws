@@ -1,5 +1,41 @@
 export type MealStatus = 'pending' | 'completed' | 'skipped';
 
+// 🃏 TYPED METADATA — each domain provides its own shape
+export type MealMetadata = {
+  macros: {
+    protein: number;
+    carbs: number;
+    fats: number;
+  };
+};
+
+export type RoutineMetadata = {
+  exercises: string[];
+};
+
+export type DecisionMetadata = MealMetadata | RoutineMetadata;
+
+// 🃏 GENERIC DECISION ITEM — used by DecisionCardComponent
+export interface DecisionItem {
+  id: string;
+  title: string;
+  subtitle?: string;
+  /** Optional day label — e.g. 'Monday'. Base for multi-day timeline support. */
+  day?: string;
+  status: MealStatus;
+  metadata?: DecisionMetadata;
+}
+
+// ─── Type guards ──────────────────────────────────────────────────────────────
+
+export function isMealMetadata(meta: DecisionMetadata | undefined): meta is MealMetadata {
+  return !!meta && 'macros' in meta;
+}
+
+export function isRoutineMetadata(meta: DecisionMetadata | undefined): meta is RoutineMetadata {
+  return !!meta && 'exercises' in meta;
+}
+
 export type MealDecision =
   | 'light'
   | 'balanced'

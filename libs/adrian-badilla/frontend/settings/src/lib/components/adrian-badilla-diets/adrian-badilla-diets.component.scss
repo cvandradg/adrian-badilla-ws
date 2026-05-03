@@ -148,56 +148,7 @@ label {
   border-radius: 3px;
 }
 
-:host .routes-layout {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  border-radius: 0;
-  min-height: 0;
-  height: auto;
-  overflow: visible;
-  flex: 1 1 auto;
-  gap: 0;
-
-  @media (min-width: 768px) {
-    display: grid;
-    grid-template-columns: 200px minmax(0, 1fr);
-    min-height: 22rem;
-    height: var(--routes-panel-height);
-    overflow: hidden;
-    border-radius: 8px;
-    gap: 0;
-  }
-}
-
-:host .routes-content {
-  background: rgba(220, 240, 255, 0.05);
-  min-height: 0;
-  overflow-y: auto;
-  flex: 1 1 auto;
-  min-width: 0;
-  padding: 0.5rem;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.212) transparent;
-
-  @media (min-width: 768px) {
-    min-height: 20rem;
-    height: 100%;
-    padding: 1.5rem 2.7rem;
-    max-height: none;
-  }
-}
-
-:host .routes-content::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-:host .routes-content::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.25);
-  border-radius: 999px;
-  border: 3px solid transparent;
-  background-clip: padding-box;
-}
+/* Layout now provided by lib-day-timeline-shell */
 
 .edit-title {
   display: flex;

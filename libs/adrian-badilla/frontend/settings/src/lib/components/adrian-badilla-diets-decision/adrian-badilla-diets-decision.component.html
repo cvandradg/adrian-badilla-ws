@@ -1,55 +1,20 @@
-<div class="meal-card" [class.is-accepted]="meal().status === 'completed'">
+<lib-decision-card
+  [item]="decisionItem()"
+  (statusChange)="handleStatusChange($event)"
+  (openChat)="openChat.emit($event)"
+  (openDetails)="mealDialogRequested.emit($event)"
+>
+  <div card-name class="decision-card-name">{{ fixedMeal().name }}</div>
 
-  <!-- HEADER -->
-  <div class="meal-header">
-    <div class="meal-title">{{ meal().baseName }}</div>
-    <div class="meal-time">{{ meal().time }}</div>
-    <div class="meal-status-actions">
-      <button
-        type="button"
-        class="status-btn status-btn--accept"
-        [class.active]="meal().status === 'completed'"
-        (click)="acceptMeal()"
-        title="Confirmar comida"
-      >
-        <i class="pi pi-check"></i>
-      </button>
-      <button
-        type="button"
-        class="status-btn status-btn--reject"
-        [class.active]="meal().status === 'skipped'"
-        (click)="rejectMeal()"
-        title="Rechazar comida"
-      >
-        <i class="pi pi-times"></i>
-      </button>
-    </div>
+  <div extra-content class="decision-extra-content">
+    <span class="decision-macro decision-macro--protein">🥩 {{ roundUp(fixedMeal().macros.protein) }}g</span>
+    <span class="decision-macro decision-macro--carbs">🍞 {{ roundUp(fixedMeal().macros.carbs) }}g</span>
+    <span class="decision-macro decision-macro--fats">🥑 {{ roundUp(fixedMeal().macros.fats) }}g</span>
   </div>
 
-  <!-- COMIDA FIJA DESDE MOCK -->
-  <div class="static-meal-card">
-    <span class="meal-option-name">{{ fixedMeal().name }}</span>
-    <div class="meal-bottom-row">
-      <button type="button" class="action-btn btn--info" (click)="toggleDropdown()" [class.open]="isDropdownOpen()" title="Ver preparación">
-        <i class="pi" [class.pi-chevron-down]="!isDropdownOpen()" [class.pi-chevron-up]="isDropdownOpen()"></i>
-      </button>
-      <button type="button" class="action-btn btn--ai" (click)="openChat()" title="Consultar IA">
-        <i class="pi pi-comments"></i>
-      </button>
-      <button type="button" class="action-btn btn--details" (click)="openDetails()" title="Ver detalles">
-        <i class="pi pi-search"></i>
-      </button>
-      <span class="macro protein">🥩 {{ roundUp(fixedMeal().macros.protein) }}g</span>
-      <span class="macro carbs">🍞 {{ roundUp(fixedMeal().macros.carbs) }}g</span>
-      <span class="macro fats">🥑 {{ roundUp(fixedMeal().macros.fats) }}g</span>
-    </div>
+  <div dropdown-content>
+    <div class="decision-dropdown__title">🍳 Preparación</div>
+    <p class="decision-dropdown__text">{{ preparationSummary() }}</p>
   </div>
+</lib-decision-card>
 
-  @if (isDropdownOpen()) {
-    <div class="meal-dropdown">
-      <div class="meal-dropdown__title">🍳 Preparación</div>
-      <p class="meal-dropdown__text">{{ preparationSummary() }}</p>
-    </div>
-  }
-
-</div>

@@ -1,0 +1,106 @@
+/* ── TIMELINE MARKERS (same as dietas) ────────────────── */
+
+:host ::ng-deep .p-timeline-event-opposite {
+  display: none;
+}
+
+:host ::ng-deep .p-timeline .p-timeline-event {
+  width: 100%;
+  flex: 1 1 100%;
+  min-width: 0;
+  overflow: visible;
+}
+
+:host ::ng-deep .p-timeline .p-timeline-event-content {
+  min-width: 0;
+  overflow: visible;
+  flex: 1 1 auto;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: rgba(220, 240, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.5s ease;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker i {
+  font-size: 1.4rem;
+  transition: color 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s ease;
+  position: relative;
+  z-index: 2;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker.completed {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.7);
+  animation: markerBreathGreen 3s ease-in-out infinite;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker.completed i {
+  color: #4ade80;
+  filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.6));
+  transform: scale(1.05);
+}
+
+:host ::ng-deep .route-timeline .timeline-marker.skipped {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.7);
+  animation: markerBreathRed 3s ease-in-out infinite;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker.skipped i {
+  color: #f87171;
+  filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.6));
+  transform: scale(1.05);
+}
+
+:host ::ng-deep .route-timeline .timeline-marker.pending {
+  background: rgba(220, 240, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:host ::ng-deep .route-timeline .timeline-marker.pending i {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+:host ::ng-deep .route-timeline .timeline-marker-button {
+  border: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker-button:hover {
+  transform: scale(1.08);
+}
+
+:host ::ng-deep .route-timeline .timeline-marker-button:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.65);
+  outline-offset: 2px;
+}
+
+@keyframes markerBreathGreen {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0), 0 0 8px rgba(34, 197, 94, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.12), 0 0 16px rgba(34, 197, 94, 0.35);
+  }
+}
+
+@keyframes markerBreathRed {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0), 0 0 8px rgba(239, 68, 68, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(239, 68, 68, 0.12), 0 0 16px rgba(239, 68, 68, 0.35);
+  }
+}

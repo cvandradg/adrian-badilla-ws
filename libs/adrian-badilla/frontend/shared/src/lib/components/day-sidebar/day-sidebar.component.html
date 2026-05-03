@@ -1,0 +1,14 @@
+<div class="days-sidebar">
+  @for (day of days(); track day.id) {
+    <div
+      class="day-item"
+      [class.active]="day.id === selectedDayId()"
+      [class.complete]="isComplete(day.id)"
+      (click)="daySelected.emit(day.id)"
+    >
+      <span class="day-label">{{ day.label }}</span>
+      <span class="day-date">{{ day.date }}</span>
+      <ng-content select="[day-extra]"></ng-content>
+    </div>
+  }
+</div>

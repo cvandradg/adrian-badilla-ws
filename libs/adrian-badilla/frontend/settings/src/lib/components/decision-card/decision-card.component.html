@@ -1,0 +1,76 @@
+<div class="meal-card" [class.is-accepted]="item().status === 'completed'">
+
+  <!-- HEADER -->
+  <div class="meal-header">
+    <div class="meal-title">{{ item().title }}</div>
+    @if (item().subtitle) {
+      <div class="meal-time">{{ item().subtitle }}</div>
+    }
+    <div class="meal-status-actions">
+      <button
+        type="button"
+        class="status-btn status-btn--accept"
+        [class.active]="item().status === 'completed'"
+        (click)="toggleComplete()"
+        title="Confirmar"
+      >
+        <i class="pi pi-check"></i>
+      </button>
+      <button
+        type="button"
+        class="status-btn status-btn--reject"
+        [class.active]="item().status === 'skipped'"
+        (click)="toggleSkip()"
+        title="Rechazar"
+      >
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- INNER CARD — title slot + action row + extra-content slot -->
+  <div class="static-meal-card">
+    <ng-content select="[card-name]"></ng-content>
+    <div class="meal-bottom-row">
+      <button
+        type="button"
+        class="action-btn btn--info"
+        (click)="toggleDropdown()"
+        [class.open]="isDropdownOpen()"
+        title="Ver más"
+      >
+        <i
+          class="pi"
+          [class.pi-chevron-down]="!isDropdownOpen()"
+          [class.pi-chevron-up]="isDropdownOpen()"
+        ></i>
+      </button>
+      <button
+        type="button"
+        class="action-btn btn--ai"
+        (click)="onOpenChat()"
+        title="Consultar IA"
+      >
+        <i class="pi pi-comments"></i>
+      </button>
+      <button
+        type="button"
+        class="action-btn btn--details"
+        (click)="onOpenDetails()"
+        title="Ver detalles"
+      >
+        <i class="pi pi-search"></i>
+      </button>
+      <!-- e.g. macros for meals, exercise count for routines -->
+      <ng-content select="[extra-content]"></ng-content>
+    </div>
+  </div>
+
+  <!-- DROPDOWN — populated by the consumer via dropdown-content slot -->
+  @if (isDropdownOpen()) {
+    <div class="meal-dropdown">
+      <ng-content select="[dropdown-content]"></ng-content>
+    </div>
+  }
+
+</div>

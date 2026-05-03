@@ -1,6 +1,4 @@
-﻿// Styles for content projected INTO lib-decision-card from this meal-specific wrapper.
-// Angular ViewEncapsulation: projected nodes belong to the projecting component's scope,
-// so these shared names stay here — safe to reuse for routine-decision wrappers too.
+// Styles for content projected INTO lib-decision-card from this routine wrapper.
 
 /* ── CARD NAME (card-name slot) ──────────────────────────────── */
 .decision-card-name {
@@ -12,21 +10,22 @@
   margin-bottom: 0.6rem;
 }
 
-/* ── EXTRA CONTENT (extra-content slot) ─────────────────────── */
+/* ── EXTRA CONTENT — exercise chips (extra-content slot) ─────── */
 .decision-extra-content {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
-.decision-macro {
-  font-size: 0.72rem;
+.decision-chip {
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: rgba(167, 139, 250, 0.1);
+  border: 1px solid rgba(167, 139, 250, 0.25);
+  color: #c4b5fd;
+  font-size: 0.7rem;
   white-space: nowrap;
-  flex-shrink: 0;
-
-  &--protein { color: rgba(254, 202, 202, 0.85); }
-  &--carbs   { color: rgba(253, 224, 71,  0.85); }
-  &--fats    { color: rgba(134, 239, 172, 0.85); }
 }
 
 /* ── DROPDOWN CONTENT (dropdown-content slot) ────────────────── */
@@ -40,9 +39,8 @@
 }
 
 .decision-dropdown__text {
-  margin: 0;
+  margin: 0 0 0.2rem;
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.75);
   line-height: 1.6;
 }
-

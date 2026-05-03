@@ -21,6 +21,8 @@ import { MealTranslationService } from '../../services/meal-translation.service'
 import { NgClass } from '@angular/common';
 import { AdrianBadillaDietsDecisionComponent } from '../adrian-badilla-diets-decision/adrian-badilla-diets-decision.component';
 import { NutritionChatComponent } from '../nutrition-chat/nutrition-chat.component';
+import { DayTimelineShellComponent } from '@adrian-badilla/ui/shared';
+import type { DayBase } from '@adrian-badilla/ui/shared';
 import type { RouteNavItem } from '../../types/diets.types';
 import { MacroProgressTrackerComponent } from '../macro-progress-tracker/macro-progress-tracker.component';
 
@@ -49,6 +51,7 @@ interface RouteFormState {
     NgClass,
     MacroProgressTrackerComponent,
     NutritionChatComponent,
+    DayTimelineShellComponent,
   ],
 })
 export class AdrianBadillaDietsComponent {
@@ -77,6 +80,16 @@ export class AdrianBadillaDietsComponent {
 
   // Computed UI state
   readonly isReadonly = computed(() => !this.isEditing());
+
+  /** Routes mapped to DayBase for DayTimelineShellComponent. */
+  readonly routeDays = computed<DayBase[]>(() =>
+    this.filteredRoutes().map((route) => ({
+      id: route.id,
+      label: route.name ?? '',
+      date: route.description ?? '',
+    }))
+  );
+
   readonly isTimelineComplete = computed(() => {
     const supercenters = this.selectedRouteSupercenters();
     if (!supercenters.length) return false;

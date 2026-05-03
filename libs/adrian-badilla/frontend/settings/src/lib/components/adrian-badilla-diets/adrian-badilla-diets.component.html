@@ -5,18 +5,15 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
 (routes.length) {
 <lib-macro-progress-tracker [meals]="routeSupercenters"/>
    <br>
-  <div class="routes-layout">
-    <lib-adrian-badilla-diets-details
-      [routes]="routes"
-      [selectedRouteId]="selectedRouteItem?.id ?? null"
-      [isEditorMode]="isEditing()"
-      (routeSelected)="selectRoute($event)"
-      (routeDeleteRequested)="openDeleteRouteDialog($event)"
-    />
+
+<lib-day-timeline-shell
+  [days]="routeDays()"
+  [selectedDayId]="selectedRouteItem?.id ?? ''"
+  (daySelected)="selectRoute($event)"
+>
 
     @if (selectedRouteItem; as activeRoute) {
-    <section class="routes-content">
-      
+
       @if (!routeSupercenters.length) {
       <div class="card mt-3">
         <div class="editor-bottom-form">
@@ -71,13 +68,16 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
               [meal]="mapToMeal(supercenter)"
               (mealDialogRequested)="openDietDialogFromChild($event)"
               (statusChange)="handleStatusChange($event)"
+              (openChat)="openChatForMeal($event)"
             />
           </ng-template>
         </p-timeline>
       </div>
       }
-    </section>
+
     }
-  </div>
+
+</lib-day-timeline-shell>
+
 }
 <lib-nutrition-chat></lib-nutrition-chat>

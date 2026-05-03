@@ -1,0 +1,23 @@
+<lib-decision-card
+  [item]="decisionItem()"
+  (statusChange)="statusChange.emit($event)"
+  (openDetails)="openDetails.emit($event)"
+  (openChat)="openChat.emit($event)"
+>
+  <div card-name class="decision-card-name">
+    {{ routine().name }}
+  </div>
+
+  <div extra-content class="decision-extra-content">
+    @for (exercise of routine().exercises; track exercise) {
+      <span class="decision-chip">🏋️ {{ exercise }}</span>
+    }
+  </div>
+
+  <div dropdown-content>
+    <div class="decision-dropdown__title">🏋️ Ejercicios</div>
+    @for (exercise of routine().exercises; track exercise) {
+      <p class="decision-dropdown__text">- {{ exercise }}</p>
+    }
+  </div>
+</lib-decision-card>

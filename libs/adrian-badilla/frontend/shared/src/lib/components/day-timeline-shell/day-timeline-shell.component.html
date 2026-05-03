@@ -1,0 +1,17 @@
+<div class="day-shell">
+
+  <!-- SIDEBAR -->
+  <lib-day-sidebar
+    class="day-shell__sidebar"
+    [days]="days()"
+    [selectedDayId]="selectedDayId()"
+    [completedDayIds]="completedDayIds()"
+    (daySelected)="daySelected.emit($event)"
+  />
+
+  <!-- CONTENT -->
+  <div class="day-shell__content">
+    <ng-content />
+  </div>
+
+</div>
