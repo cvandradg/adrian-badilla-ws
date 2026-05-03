@@ -7,7 +7,6 @@
     "moduleResolution": "bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "esModuleInterop": true,
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
@@ -17,52 +16,49 @@
     ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": ".",
     "paths": {
       "@adrian-badilla/ui/landing-page": [
-        "libs/adrian-badilla/frontend/landing-page/src/index.ts"
+        "./libs/adrian-badilla/frontend/landing-page/src/index.ts"
       ],
       "@adrian-badilla/ui/landing-page/routes": [
-        "libs/adrian-badilla/frontend/landing-page/src/lib/lib.routes.ts"
+        "./libs/adrian-badilla/frontend/landing-page/src/lib/lib.routes.ts"
       ],
       "@adrian-badilla/ui/shared": [
-        "libs/adrian-badilla/frontend/shared/src/index.ts"
+        "./libs/adrian-badilla/frontend/shared/src/index.ts"
       ],
       "@adrian-badilla/ui/shared/*": [
-        "libs/adrian-badilla/frontend/shared/src/lib/*"
+        "./libs/adrian-badilla/frontend/shared/src/lib/*"
       ],
-      "@shared/*": [
-        "libs/adrian-badilla/frontend/shared/*"
-      ],
+      "@shared/*": ["./libs/adrian-badilla/frontend/shared/*"],
       "@adrian-badilla/auth": [
-        "libs/adrian-badilla/frontend/auth/src/index.ts"
+        "./libs/adrian-badilla/frontend/auth/src/index.ts"
       ],
       "@adrian-badilla/auth/routes": [
-        "libs/adrian-badilla/frontend/auth/src/lib/lib.routes.ts"
+        "./libs/adrian-badilla/frontend/auth/src/lib/lib.routes.ts"
       ],
       "@shared/styles/*": [
-        "libs/adrian-badilla/frontend/shared/src/lib/styles/*"
+        "./libs/adrian-badilla/frontend/shared/src/lib/styles/*"
       ],
       "@adrian-badilla/dashboard/routes": [
-        "libs/adrian-badilla/frontend/dashboard/src/lib/lib.routes.ts"
+        "./libs/adrian-badilla/frontend/dashboard/src/lib/lib.routes.ts"
       ],
       "adrian-badilla/products": [
-        "libs/adrian-badilla/frontend/products/src/index.ts"
+        "./libs/adrian-badilla/frontend/products/src/index.ts"
       ],
       "adrian-badilla/settings": [
-        "libs/adrian-badilla/frontend/settings/src/index.ts"
+        "./libs/adrian-badilla/frontend/settings/src/index.ts"
       ],
       "@adrian-badilla/news": [
-        "libs/adrian-badilla/frontend/news/src/index.ts"
+        "./libs/adrian-badilla/frontend/news/src/index.ts"
       ],
       "@adrian-badilla/news/routes": [
-        "libs/adrian-badilla/frontend/news/src/lib/news.routes.ts"
+        "./libs/adrian-badilla/frontend/news/src/lib/news.routes.ts"
       ],
       "@adrian-badilla/home": [
-        "libs/adrian-badilla/frontend/home/src/index.ts"
+        "./libs/adrian-badilla/frontend/home/src/index.ts"
       ],
       "@adrian-badilla/home/routes": [
-        "libs/adrian-badilla/frontend/home/src/lib/home.routes.ts"
+        "./libs/adrian-badilla/frontend/home/src/lib/home.routes.ts"
       ]
     }
   },
