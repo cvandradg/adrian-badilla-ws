@@ -48,7 +48,7 @@ export function withLoginResources<T extends LoginDeps>(store: T) {
                 return;
               }
               innerStore.loginSetSuccess();
-              router.navigateByUrl('/dashboard', { replaceUrl: true });
+              router.navigateByUrl('/dashboard/inicio', { replaceUrl: true });
             },
             error: (err: unknown) =>
               innerStore.loginSetError(mapFirebaseAuthErrorToMessage(err)),
@@ -72,7 +72,7 @@ export function withLoginResources<T extends LoginDeps>(store: T) {
                     return;
                   }
                   innerStore.loginSetSuccess();
-                  router.navigateByUrl('/dashboard', { replaceUrl: true });
+                  router.navigateByUrl('/dashboard/inicio', { replaceUrl: true });
                 },
                 error: (err: unknown) =>
                   innerStore.loginSetError(mapFirebaseAuthErrorToMessage(err)),

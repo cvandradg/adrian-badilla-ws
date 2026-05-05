@@ -3,6 +3,7 @@
 
 .navbar {
   @include mixins.navbar-layout;
+  position: relative;
 
   .logo {
     font-weight: tokens.$font-weight-bold;
@@ -24,6 +25,15 @@
     color: tokens.$color-neutral-100;
     font-size: clamp(2rem, 5vw, 2.5rem);
     cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      color: #4ade80;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
   }
 
   .nav-links {
@@ -42,17 +52,151 @@
     @include mixins.cta-button;
     margin-left: clamp(2rem, 5vw, 3rem);
   }
+
+  /* Mobile menu dropdown - replaced by PrimeNG Drawer */
+  .mobile-menu,
+  .mobile-nav-links,
+  .mobile-cta {
+    display: none;
+  }
+}
+
+@keyframes slideDownMenu {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @include mixins.respond-to('mobile') {
   .navbar {
-    .navbar-toggle {
-      display: block;
+    .navbar-toggle { display: block; }
+    .nav-links, .cta { display: none; }
+  }
+}
+
+/* drawer styles are in global styles.scss — PrimeNG appends drawer to body */
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  width: 100%;
+
+  .drawer-logo {
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: contain;
+  }
+
+  .drawer-close {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: background 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+  }
+}
+
+.drawer-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 0;
+  flex: 1;
+
+  .drawer-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.75rem;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.05rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    transition: background 0.2s ease, color 0.2s ease, padding-left 0.2s ease;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 3px;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.4);
+      opacity: 0;
+      transition: opacity 0.2s ease;
     }
 
-    .nav-links,
-    .cta {
-      display: none;
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      padding-left: 2.25rem;
+
+      &::before { opacity: 1; }
+    }
+
+    &:active {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    &__icon {
+      font-size: 1.1rem;
+      opacity: 0.7;
+      flex-shrink: 0;
+    }
+
+    &__text {
+      flex: 1;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.drawer-footer {
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+
+  .drawer-cta {
+    display: block;
+    width: 100%;
+    padding: 0.95rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #fff;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.07) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.12) 100%);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
 }

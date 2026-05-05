@@ -4,6 +4,8 @@
 :host {
   --padding: 2rem;
   --card-height: 20.18rem;
+  display: block;
+  isolation: isolate;
 }
 
 .title {
