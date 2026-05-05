@@ -29,8 +29,8 @@
     }
   </div>
 
-  <!-- 🎯 Panel de Adherencia al Plan / Bienvenida / Celebración -->
-  @if (hasCompletedAllMacros()) {
+  <!-- 🎯 Panel de Adherencia al Plan / Bienvenida / Celebración - COMENTADO -->
+  <!-- @if (hasCompletedAllMacros()) {
     <div class="celebration-panel">
       <div class="celebration-content">
         <div class="celebration-icon">🎉</div>
@@ -57,7 +57,7 @@
         </p>
       </div>
     </div>
-  } @else if (hasStartedDiet()) {
+  } --> @if (hasStartedDiet()) {
     <!-- Panel de coaching de adherencia al plan -->
     <div class="recommendation-panel">
       <div class="recommendation-content">
@@ -89,8 +89,8 @@
       </div>
     </div>
   } @else {
-    <!-- Panel de bienvenida cuando no ha comenzado -->
-    <div class="welcome-panel">
+    <!-- Panel de bienvenida cuando no ha comenzado - COMENTADO -->
+    <!-- <div class="welcome-panel">
       <div class="welcome-content">
         <div class="welcome-icon">🚀</div>
         <h3 class="welcome-title">¡Comienza tu plan hoy!</h3>
@@ -112,37 +112,37 @@
           </li>
         </ul>
       </div>
-    </div>
+    </div> -->
   }
+
+  <!-- Progreso General (visible en ambas versiones) -->
+  <div class="general-progress">
+    <div class="general-progress__header">
+      <h4>Progreso General</h4>
+      <span class="general-progress__percentage">
+        {{ formatNumber(macroSnapshot().percentages.average.percentage, 1) }}%
+      </span>
+    </div>
+    <div class="progress-bar-container">
+      <div
+        class="progress-bar"
+        [style.width.%]="
+          Math.min(macroSnapshot().percentages.average.percentage, 100)
+        "
+        [style.backgroundColor]="
+          macroSnapshot().percentages.average.percentage >= 100
+            ? '#f97316'
+            : '#6366f1'
+        "
+      ></div>
+    </div>
+    <span class="general-progress__footer">
+      {{ formatNumber(macroSnapshot().completedCount) }}/3 macros completados
+    </span>
+  </div>
 
   <!-- MOBILE: Grid horizontal de círculos -->
   <div class="macros-circles-horizontal">
-    <!-- Progreso General Simplificado -->
-    <div class="general-progress">
-      <div class="general-progress__header">
-        <h4>Progreso General</h4>
-        <span class="general-progress__percentage">
-          {{ formatNumber(macroSnapshot().percentages.average.percentage, 1) }}%
-        </span>
-      </div>
-      <div class="progress-bar-container">
-        <div
-          class="progress-bar"
-          [style.width.%]="
-            Math.min(macroSnapshot().percentages.average.percentage, 100)
-          "
-          [style.backgroundColor]="
-            macroSnapshot().percentages.average.percentage >= 100
-              ? '#f97316'
-              : '#6366f1'
-          "
-        ></div>
-      </div>
-      <span class="general-progress__footer">
-        {{ formatNumber(macroSnapshot().completedCount) }}/3 macros completados
-      </span>
-    </div>
-
     <!-- Proteína -->
     <div class="macro-circle-card" [style.--bg-color]="'#ef4444'" [class.is-complete]="isMacroComplete('protein')">
       <div class="circle-wrapper">

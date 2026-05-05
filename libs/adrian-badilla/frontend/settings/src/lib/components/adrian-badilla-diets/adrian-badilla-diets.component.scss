@@ -1,11 +1,8 @@
 :host {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+  display: block;
   width: 100%;
   box-sizing: border-box;
   padding: 0;
-  overflow: hidden;
 
   --date-range-control-height: 3.5rem;
   --routes-panel-height: 40vh;
@@ -18,7 +15,7 @@
   --p-timeline-event-marker-content-background: transparent;
 
   @media (min-width: 768px) {
-    padding: 0 1rem 1rem;
+    padding: 0 1.5rem 1.5rem;
   }
 }
 

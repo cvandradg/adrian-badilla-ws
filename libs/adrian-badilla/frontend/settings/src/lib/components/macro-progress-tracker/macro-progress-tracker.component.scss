@@ -953,17 +953,8 @@
     font-size: 0.8rem;
   }
 
-  /* 📊 MACROS CIRCLES HORIZONTAL - Mobile Only */
-  .macros-circles-horizontal {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.6rem;
-    margin-top: 1rem;
-    padding: 0;
-  }
-
+  /* 📊 GENERAL PROGRESS - Visible en todas las versiones */
   .general-progress {
-    grid-column: 1 / -1;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -998,6 +989,15 @@
     font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.7);
     text-align: center;
+  }
+
+  /* 📊 MACROS CIRCLES HORIZONTAL - Mobile Only */
+  .macros-circles-horizontal {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    margin-top: 1rem;
+    padding: 0;
   }
 
   .macro-circle-card {
@@ -1141,14 +1141,61 @@
     display: none !important;
   }
 
+  // Enhanced general progress on desktop
+  .general-progress {
+    display: flex !important;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(79, 70, 229, 0.08) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 0.875rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .general-progress__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0;
+    }
+  }
+
+  .general-progress__percentage {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #a5b4fc;
+  }
+
+  .progress-bar-container {
+    height: 14px;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 7px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+
+  .general-progress__footer {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+  }
+
   // Show macros grid on desktop
   .macros-grid {
     display: grid !important;
-  }
-
-  // Show progress bar on desktop
-  .progress-bar-container {
-    display: block !important;
   }
 }
  

@@ -24,6 +24,7 @@ import { NutritionChatComponent } from '../nutrition-chat/nutrition-chat.compone
 import { DayTimelineShellComponent } from '@adrian-badilla/ui/shared';
 import type { DayBase } from '@adrian-badilla/ui/shared';
 import type { RouteNavItem } from '../../types/diets.types';
+import { getMockRouteSupercenters } from '../../mocks/adrian-badilla-diets.mock';
 import { MacroProgressTrackerComponent } from '../macro-progress-tracker/macro-progress-tracker.component';
 
 // Extract form state into a focused signal
@@ -94,6 +95,21 @@ export class AdrianBadillaDietsComponent {
     const supercenters = this.selectedRouteSupercenters();
     if (!supercenters.length) return false;
     return supercenters.every((meal: any) => meal.status === 'completed');
+  });
+
+  /** Set of day IDs (routes) where every supercenter is completed — passed to DayTimelineShellComponent. */
+  readonly completedDayIds = computed(() => {
+    const routes = this.filteredRoutes();
+    const completed = new Set<string>();
+    
+    routes.forEach(route => {
+      const supercenters = getMockRouteSupercenters(route.id);
+      if (supercenters.length > 0 && supercenters.every((s: any) => s.status === 'completed')) {
+        completed.add(route.id);
+      }
+    });
+    
+    return completed;
   });
 
   // Extracted form accessors for cleaner template binding

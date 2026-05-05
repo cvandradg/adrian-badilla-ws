@@ -5,20 +5,10 @@
   height: 100%;
   min-height: 0;
 
-  --p-tabs-tablist-background: transparent;
-  --p-tabs-tabpanel-background: transparent;
-
-  --p-tabs-tab-border-width: 0 !important;
-  --p-tabs-tab-border: none !important;
-
-  --p-tabs-tab-active-color: #37aadf;
-  --p-tabs-active-bar-background: #37aadf;
-  --p-tabs-tab-active-border-color: transparent !important;
-  --p-tabs-tab-color: hsla(0, 0%, 100%, 0.6);
-  --p-tabs-tab-hover-color: hsla(0, 0%, 100%, 0.6);
-  --p-tabs-tab-border-color: transparent !important;
-  --p-tabs-tab-hover-background: hsla(0, 0%, 100%, 0.08);
-  --p-tabs-tab-hover-border-color: transparent !important;
+  --tab-hover-bg: linear-gradient(135deg, rgba(22, 47, 67, 0.9) 0%, rgba(16, 34, 49, 0.86) 100%);
+  --tab-active-bg: radial-gradient(circle at top, rgba(61, 165, 194, 0.16), transparent 62%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.018) 26%, rgba(255, 255, 255, 0) 100%),
+    rgba(11, 23, 36, 0.98);
 
   @media (min-width: 768px) {
     align-items: stretch;
@@ -30,123 +20,123 @@
   width: 100%;
   flex: 1 1 auto;
   min-height: 0;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: inset 0.05rem 0 0 0 rgba(220, 240, 255, 0.12);
-
-  @media (max-width: 767px) {
-    overflow-y: auto;
-  }
 }
 
-:host ::ng-deep .purchase-orders-tablist {
+/* ── Flex chain: card → p-tabs → tabpanels → tabpanel ── */
+:host ::ng-deep .card {
   display: flex !important;
-  width: 100%;
-  border-bottom: none !important;
-  gap: 0 !important;
-  border: none !important;
-  background: transparent !important;
-  flex-wrap: wrap;
-  min-height: fit-content;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
 
-  @media (max-width: 767px) {
-    flex-wrap: wrap;
-    height: auto;
-  }
+:host ::ng-deep .purchase-orders-tabs-root {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: 100% !important;
+}
+
+:host ::ng-deep .p-tablist {
+  flex: 0 0 auto !important;
+  border: none !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)) !important;
+  background-color: rgba(5, 12, 20, 0.5) !important;
 }
 
 :host ::ng-deep .p-tablist-tab-list {
-  border: none !important;
+  display: flex !important;
+  gap: 0.35rem !important;
+  padding: 0.35rem 0.35rem 0 !important;
+  border-bottom: 1px solid rgba(132, 165, 188, 0.14) !important;
   background: transparent !important;
 }
 
-:host ::ng-deep .purchase-orders-tablist .p-tab {
+:host ::ng-deep .p-tabpanels {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 1rem 1.25rem !important;
+  background: transparent !important;
+}
+
+:host ::ng-deep .p-tabpanel {
+  min-height: 0 !important;
+  padding: 0 !important;
+}
+
+/* ── Tab item design (moofyvip style) ── */
+:host ::ng-deep .purchase-orders-tablist .p-tab,
+:host ::ng-deep .p-tab {
+  position: relative !important;
   flex: 1 1 0 !important;
   height: 3.5rem !important;
+  padding: 0 !important;
+  margin: 0 !important;
   font-size: 0.85rem !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  gap: 0.5rem !important;
   text-transform: uppercase !important;
-  border: none !important;
-  border-bottom: 1px solid rgba(220, 240, 255, 0.2) !important;
-  border-right: 1px solid rgba(220, 240, 255, 0.1) !important;
-  border-top: none !important;
-  border-left: none !important;
-  position: relative !important;
-  padding: 0 !important;
-  background: transparent !important;
-  margin: 0 !important;
-  min-width: 100px;
-
-  @media (max-width: 767px) {
-    flex: 1 1 auto;
-    min-height: 2.75rem;
-    font-size: 0.75rem !important;
-  }
+  border: 1px solid transparent !important;
+  border-bottom: none !important;
+  border-radius: 1rem 1rem 0 0 !important;
+  background: rgba(255, 255, 255, 0.012) !important;
+  color: var(--app-text-soft) !important;
+  cursor: pointer !important;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease !important;
+  min-width: 0 !important;
 }
 
-:host ::ng-deep .p-tab[data-pc-section='root'] {
-  border: none !important;
-  background: transparent !important;
-  margin: 0 !important;
-  padding: 0 !important;
+:host ::ng-deep .p-tab:hover {
+  background: var(--tab-hover-bg) !important;
+  border-color: rgba(148, 191, 214, 0.18) !important;
+  color: var(--app-text) !important;
 }
 
-:host ::ng-deep .p-tab-header {
-  border: none !important;
-  background: transparent !important;
+:host ::ng-deep .p-tab[aria-selected='true'] {
+  background: var(--tab-active-bg) !important;
+  border-color: rgba(132, 165, 188, 0.18) !important;
+  color: var(--app-text) !important;
+  transform: translateY(1px) !important;
+}
+
+:host ::ng-deep .p-tab[aria-selected='true']::after {
+  content: '' !important;
+  position: absolute !important;
+  left: 1rem !important;
+  right: 1rem !important;
+  bottom: -1px !important;
+  height: 2px !important;
+  background: var(--app-accent-strong) !important;
+  border-radius: 999px !important;
+}
+
+:host ::ng-deep .p-tab[aria-selected='true'] .tab-icon {
+  color: var(--app-accent) !important;
+}
+
+:host ::ng-deep .p-tab .tab-icon {
+  color: inherit !important;
 }
 
 :host ::ng-deep .p-tablist-active-bar {
-  background: #37aadf !important;
-  height: 2px !important;
-  bottom: -1px !important;
+  display: none !important;
 }
 
-:host ::ng-deep .purchase-orders-tablist .p-tab:last-child {
-  border-right: none !important;
+@media (max-width: 767px) {
+  :host ::ng-deep .p-tab {
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+    font-size: 0.75rem !important;
+    gap: 0 !important;
+    height: 2.75rem !important;
+  }
 }
 
-:host ::ng-deep .purchase-orders-tablist .p-tab .tab-icon {
-  color: inherit !important;
-  margin-right: 0.5rem !important;
-}
 
-:host
-  ::ng-deep
-  .purchase-orders-tablist
-  .p-tab[aria-selected='true']
-  .tab-icon {
-  color: #ffffff !important;
-}
-
-:host ::ng-deep .purchase-orders-tablist .p-tab[aria-selected='true'] {
-  border-bottom: 1px solid rgba(220, 240, 255, 0.2) !important;
-  background: transparent !important;
-}
-
-:host ::ng-deep .purchase-orders-tablist .p-tab[aria-selected='true']:hover {
-  background-color: #19739c1a !important;
-}
-
-:host ::ng-deep .p-tabs-nav {
-  border: none !important;
-  background: transparent !important;
-}
-
-:host ::ng-deep .p-tab {
-  border: none !important;
-  background: transparent !important;
-}
-
-:host ::ng-deep .p-tabs {
-  background: transparent !important;
-  border: none !important;
-}
-
-:host ::ng-deep .p-tablist {
-  border: none !important;
-  background: transparent !important;
-}

@@ -27,10 +27,11 @@ mat-nav-list {
   overflow: hidden;
   margin: 0 0 0.5rem;
   block-size: 5rem;
-  border-radius: 0 !important;
+  border-radius: 0.95rem !important;
   border-left: 3px solid transparent;
-  border: 0.01em solid tokens.$dashboard-border-subtle;
-  color: tokens.$dashboard-text-muted;
+  border: 1px solid tokens.$dashboard-border-subtle;
+  background: rgba(255, 255, 255, 0.02);
+  color: tokens.$dashboard-text-soft;
   text-decoration: none;
   transition: background-color 100ms ease-in-out, box-shadow 100ms ease-in-out,
     color 100ms ease-in-out, border-color 100ms ease-in-out;
@@ -38,23 +39,34 @@ mat-nav-list {
   &::after {
     @include surfaces.corner-notch(
       $size: 12px,
-      $bg: rgba(255, 255, 255, 0.144)
+      $bg: rgba(255, 255, 255, 0.12)
     );
   }
 
   &:not(.menu-item--active):hover {
     background-color: tokens.$dashboard-hover-surface;
+    border-color: tokens.$dashboard-border-strong;
   }
 
   &.menu-item--active {
     color: tokens.$dashboard-text-primary;
     border-left-color: tokens.$dashboard-glow-outer;
-    box-shadow: inset 0 0 30px tokens.$dashboard-glow-outer,
-      0 0 3px tokens.$dashboard-glow-outer;
+    background: linear-gradient(
+      90deg,
+      rgba(61, 165, 194, 0.18),
+      rgba(255, 255, 255, 0.02) 72%
+    );
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 12px 24px rgba(0, 0, 0, 0.24);
 
     &::after {
       @include surfaces.corner-notch-base(12px);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.719));
+      background: linear-gradient(
+        135deg,
+        rgba(138, 200, 212, 0.84),
+        rgba(61, 165, 194, 0.38)
+      );
     }
 
     fa-icon,
@@ -67,7 +79,7 @@ mat-nav-list {
     @include typography.font-sans;
     font-size: 0.875rem;
     font-weight: 400;
-    color: tokens.$dashboard-text-muted;
+    color: tokens.$dashboard-text-soft;
     line-height: normal;
   }
 }

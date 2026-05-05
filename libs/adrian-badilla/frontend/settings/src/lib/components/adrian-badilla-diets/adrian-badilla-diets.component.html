@@ -9,6 +9,7 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
 <lib-day-timeline-shell
   [days]="routeDays()"
   [selectedDayId]="selectedRouteItem?.id ?? ''"
+  [completedDayIds]="completedDayIds()"
   (daySelected)="selectRoute($event)"
 >
 
