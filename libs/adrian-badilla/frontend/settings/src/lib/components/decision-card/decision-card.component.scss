@@ -32,17 +32,22 @@
 
   // ✅ Accepted state
   &.is-accepted {
-    border-color: rgba(34, 197, 94, 0.5);
-    background: rgba(34, 197, 94, 0.03);
-    animation: cardAcceptPulse 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 1;
+    border-color: rgba(34, 211, 238, 0.5);
+    background: rgba(34, 211, 238, 0.03);
+    animation: cardAcceptGlow 0.8s ease-out 1;
   }
 }
 
-@keyframes cardAcceptPulse {
-  0%   { transform: scale(1) translateY(0); }
-  50%  { transform: scale(1.12) translateY(-14px); }
-  85%  { transform: scale(1.02) translateY(-1px); }
-  100% { transform: scale(1) translateY(0); }
+@keyframes cardAcceptGlow {
+  0% {
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 24px rgba(34, 211, 238, 0.4), 0 2px 16px rgba(0, 0, 0, 0.25);
+  }
+  100% {
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+  }
 }
 
 /* ── HEADER ──────────────────────────────────────────────────── */
@@ -84,18 +89,18 @@
   &:hover { transform: scale(1.1); }
 
   &--accept {
-    background: rgba(34, 197, 94, 0.08);
-    border-color: rgba(34, 197, 94, 0.3);
-    color: #4ade80;
+    background: rgba(34, 211, 238, 0.08);
+    border-color: rgba(34, 211, 238, 0.3);
+    color: #06b6d4;
 
     &:hover {
-      background: rgba(34, 197, 94, 0.18);
-      border-color: rgba(34, 197, 94, 0.6);
+      background: rgba(34, 211, 238, 0.18);
+      border-color: rgba(34, 211, 238, 0.6);
     }
     &.active {
-      background: rgba(34, 197, 94, 0.25);
-      border-color: #4ade80;
-      color: #86efac;
+      background: rgba(34, 211, 238, 0.25);
+      border-color: #06b6d4;
+      color: #22d3ee;
     }
   }
 

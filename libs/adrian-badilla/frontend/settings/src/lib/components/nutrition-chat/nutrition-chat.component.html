@@ -1,18 +1,37 @@
-<!-- 🤖 AI Chat Dialog -->
-<p-dialog
-  [visible]="isChatOpen()"
-  (onHide)="closeChat()"
-  [modal]="true"
-  [header]="'🤖 Asistente Nutricional'"
-  [style]="{ width: '100%', 'max-width': '600px' }"
-  [maximizable]="true"
-  [position]="'center'"
->
-  <div class="chat-container">
+<!-- ─── FAB ──────────────────────────────────────────────────────────────────── -->
+@if (!isChatOpen()) {
+  <button
+    class="chat-fab"
+    [attr.aria-label]="'Abrir chat de nutrición'"
+    (click)="toggleChat()"
+  >
+    <i class="pi pi-sparkles"></i>
+  </button>
+}
+
+<!-- ─── FULLSCREEN OVERLAY ──────────────────────────────────────────────────── -->
+@if (isChatOpen()) {
+  <div class="chat-overlay" role="dialog" aria-label="Chat panel">
+
+    <!-- Header -->
+    <div class="chat-header">
+      <div class="header-content">
+        <h2 class="chat-title">🤖 Asistente Nutricional</h2>
+      </div>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-arrow-left"
+        class="p-button-text close-button"
+        (click)="closeChat()"
+        aria-label="Cerrar chat"
+        pRipple
+      ></button>
+    </div>
+
     <!-- Messages area -->
     <div class="chat-messages">
       @if (messages().length === 0) {
-        <!-- Welcome state -->
         <div class="welcome-state">
           <div class="welcome-icon">🤖</div>
           <h3>¡Hola! Soy tu asistente nutricional</h3>
@@ -20,7 +39,6 @@
             Puedo ayudarte con sugerencias de comida, información de alimentos y explicaciones sobre
             macronutrientes.
           </p>
-
           <div class="quick-actions">
             @for (action of quickActions; track action.label) {
               <button class="quick-action-btn" (click)="sendMessage(action.message)">
@@ -30,7 +48,6 @@
           </div>
         </div>
       } @else {
-        <!-- Message list -->
         @for (msg of messages(); track trackByTimestamp($index, msg)) {
           <div class="message" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
             @if (msg.role === 'assistant') {
@@ -42,9 +59,7 @@
               [class.assistant-bubble]="msg.role === 'assistant'"
             >
               <span class="message-text">{{ msg.content }}</span>
-              <span class="message-time">
-                {{ msg.timestamp | date: 'HH:mm' }}
-              </span>
+              <span class="message-time">{{ msg.timestamp | date: 'HH:mm' }}</span>
             </div>
             @if (msg.role === 'user') {
               <div class="avatar user-avatar">👤</div>
@@ -52,7 +67,6 @@
           </div>
         }
 
-        <!-- Typing indicator -->
         @if (isLoading()) {
           <div class="message assistant">
             <div class="avatar assistant-avatar">🤖</div>
@@ -66,30 +80,16 @@
           </div>
         }
 
-        <!-- 🤖 AI Suggestion Actions -->
         @if (store.hasPendingAISuggestion()) {
           <div class="ai-suggestion-actions">
             <div class="suggestion-prompt">¿Te parece bien esta recomendación?</div>
             <div class="suggestion-buttons">
-              <button
-                pButton
-                type="button"
-                label="✅ Aplicar"
-                (click)="applyAISuggestion()"
-                class="p-button-success"
-              ></button>
-              <button
-                pButton
-                type="button"
-                label="❌ Rechazar"
-                (click)="rejectAISuggestion()"
-                class="p-button-text p-button-secondary"
-              ></button>
+              <button pButton type="button" label="✅ Aplicar" (click)="applyAISuggestion()" class="p-button-success"></button>
+              <button pButton type="button" label="❌ Rechazar" (click)="rejectAISuggestion()" class="p-button-text p-button-secondary"></button>
             </div>
           </div>
         }
 
-        <!-- Quick actions after messages -->
         <div class="inline-quick-actions">
           @for (action of quickActions; track action.label) {
             <button class="inline-action-btn" (click)="sendMessage(action.message)">
@@ -102,42 +102,45 @@
       }
     </div>
 
-    <!-- Input area -->
-    <div class="chat-input-area">
-      <div class="input-wrapper">
-        <input
-          type="text"
-          [(ngModel)]="inputText"
-          (keydown)="onKeydown($event)"
-          placeholder="Escribe tu pregunta..."
-          class="chat-input"
-          [disabled]="isLoading()"
-        />
-        <button
-          pButton
-          type="button"
-          icon="pi pi-send"
-          (click)="sendMessage()"
-          [disabled]="isLoading() || !inputText()"
-          class="send-button"
-          pRipple
-        ></button>
+    <!-- Footer: input + clear -->
+    <div class="chat-footer">
+      <div class="chat-input-area">
+        <div class="input-wrapper">
+          <input
+            type="text"
+            [(ngModel)]="inputText"
+            (keydown)="onKeydown($event)"
+            placeholder="Escribe tu pregunta..."
+            class="chat-input"
+            [disabled]="isLoading()"
+          />
+          <button
+            pButton
+            type="button"
+            icon="pi pi-send"
+            (click)="sendMessage()"
+            [disabled]="isLoading() || !inputText()"
+            class="send-button"
+            pRipple
+          ></button>
+        </div>
       </div>
+
+      @if (messages().length > 0) {
+        <div class="clear-chat-area">
+          <button
+            pButton
+            type="button"
+            label="Limpiar chat"
+            icon="pi pi-trash"
+            (click)="store.clearChat()"
+            class="p-button-text p-button-secondary"
+            size="small"
+          ></button>
+        </div>
+      }
     </div>
 
-    <!-- Clear chat button -->
-    @if (messages().length > 0) {
-      <div class="clear-chat-area">
-        <button
-          pButton
-          type="button"
-          label="Limpiar chat"
-          icon="pi pi-trash"
-          (click)="clearChat()"
-          class="p-button-text p-button-secondary"
-          size="small"
-        ></button>
-      </div>
-    }
   </div>
-</p-dialog>
+}
+

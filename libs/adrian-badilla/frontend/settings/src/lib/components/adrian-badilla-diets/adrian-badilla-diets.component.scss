@@ -11,7 +11,7 @@
   --p-floatlabel-focus-color: hsla(0, 0%, 100%, 0.7);
   --p-inputtext-focus-border-color: hsla(0, 0%, 100%, 0.2);
   --p-button-text-primary-color: #fff;
-  --p-timeline-event-connector-color: rgba(200, 220, 255, 0.7);
+  --p-timeline-event-connector-color: #22d3ee;
   --p-timeline-event-marker-content-background: transparent;
 
   @media (min-width: 768px) {
@@ -180,11 +180,11 @@ label {
 }
 
 :host ::ng-deep .route-timeline .timeline-marker {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
   background: rgba(220, 240, 255, 0.08);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -195,22 +195,22 @@ label {
 }
 
 :host ::ng-deep .route-timeline .timeline-marker i {
-  font-size: 1.4rem;
+  font-size: 1rem;
   transition: color 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s ease;
   position: relative;
   z-index: 2;
 }
 
-// ✅ COMPLETED — subtle emerald ring breath
+// ✅ COMPLETED — subtle cyan/blue ring breath
 :host ::ng-deep .route-timeline .timeline-marker.completed {
-  background: rgba(34, 197, 94, 0.1);
-  border-color: rgba(34, 197, 94, 0.7);
-  animation: markerBreathGreen 3s ease-in-out infinite;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.08), rgba(34, 211, 238, 0.1));
+  border-color: rgba(34, 211, 238, 0.8);
+  animation: markerBreathCyan 3s ease-in-out infinite;
 }
 
 :host ::ng-deep .route-timeline .timeline-marker.completed i {
-  color: #4ade80;
-  filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.6));
+  color: #22d3ee;
+  filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.8));
   transform: scale(1.05);
 }
 
@@ -254,12 +254,12 @@ label {
 }
 
 // Marker breath keyframes — synced with connector
-@keyframes markerBreathGreen {
+@keyframes markerBreathCyan {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0), 0 0 8px rgba(34, 197, 94, 0.2);
+    box-shadow: 0 0 0 0 rgba(34, 211, 238, 0), 0 0 8px rgba(34, 211, 238, 0.3);
   }
   50% {
-    box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.12), 0 0 16px rgba(34, 197, 94, 0.35);
+    box-shadow: 0 0 0 6px rgba(34, 211, 238, 0.2), 0 0 18px rgba(34, 211, 238, 0.5);
   }
 }
 
@@ -347,11 +347,16 @@ label {
   min-width: 0;
   overflow: visible;
   flex: 1 1 auto;
+  padding-right: 0;
 }
 
 :host ::ng-deep .route-timeline {
   padding-top: 0.75rem;
+  padding-left: 0.5rem;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 :host .routes-empty {
@@ -519,8 +524,8 @@ label {
 }
 
 .timeline-marker.completed {
-  background-color: #22c55e;
-  border-color: #22c55e;
+  background-color: #22d3ee;
+  border-color: #22d3ee;
 }
 
 .timeline-marker.skipped {
@@ -533,17 +538,17 @@ label {
 }
 
 :host ::ng-deep .route-timeline .timeline-marker.decision-light {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(34, 197, 94, 0.15));
-  border: 2px solid #22c55e;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(139, 92, 246, 0.2), rgba(34, 211, 238, 0.15));
+  border: 2px solid #22d3ee;
   box-shadow:
-    0 0 8px rgba(34, 197, 94, 0.7),
-    0 0 16px rgba(34, 197, 94, 0.5),
-    inset 0 0 12px rgba(34, 197, 94, 0.25);
+    0 0 12px rgba(34, 211, 238, 0.8),
+    0 0 20px rgba(34, 211, 238, 0.6),
+    inset 0 0 16px rgba(34, 211, 238, 0.3);
   animation: markerGlowLightPulse 2s infinite;
 }
 
 :host ::ng-deep .route-timeline .timeline-marker.decision-light i {
-  color: #4ade80;
+  color: #22d3ee;
   font-weight: 700;
   transition: all 0.3s ease;
   text-shadow: none;
@@ -584,7 +589,7 @@ label {
 }
 
 .timeline-marker.pulse-completed {
-  animation: markerBreathGreen 3s ease-in-out infinite;
+  animation: markerBreathCyan 3s ease-in-out infinite;
 }
 
 .timeline-marker.pulse-skipped {
@@ -604,8 +609,8 @@ label {
 
 // CSS :has() — reactively colors connector with marker
 :host ::ng-deep .route-timeline .p-timeline-event-separator:has(.timeline-marker.completed) .p-timeline-event-connector {
-  background-color: rgba(34, 197, 94, 0.5) !important;
-  animation: connectorBreathGreen 3s ease-in-out infinite;
+  background-color: rgba(34, 211, 238, 0.5) !important;
+  animation: connectorBreathCyan 3s ease-in-out infinite;
 }
 
 :host ::ng-deep .route-timeline .p-timeline-event-separator:has(.timeline-marker.skipped) .p-timeline-event-connector {
@@ -615,8 +620,8 @@ label {
 
 // Fallback: DOM class approach
 :host ::ng-deep .route-timeline .p-timeline-event-connector.completed-line {
-  background-color: rgba(34, 197, 94, 0.5) !important;
-  animation: connectorBreathGreen 3s ease-in-out infinite;
+  background-color: rgba(34, 211, 238, 0.5) !important;
+  animation: connectorBreathCyan 3s ease-in-out infinite;
 }
 
 :host ::ng-deep .route-timeline .p-timeline-event-connector.balanced-line {
@@ -634,14 +639,14 @@ label {
 }
 
 // Connector breath — same 3s cycle as markers
-@keyframes connectorBreathGreen {
+@keyframes connectorBreathCyan {
   0%, 100% {
-    background-color: rgba(34, 197, 94, 0.35);
-    box-shadow: 0 0 4px rgba(34, 197, 94, 0.1);
+    background-color: rgba(34, 211, 238, 0.4);
+    box-shadow: 0 0 6px rgba(34, 211, 238, 0.15);
   }
   50% {
-    background-color: rgba(34, 197, 94, 0.65);
-    box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+    background-color: rgba(34, 211, 238, 0.75);
+    box-shadow: 0 0 14px rgba(34, 211, 238, 0.4);
   }
 }
 
@@ -677,11 +682,11 @@ label {
 }
 
 :host ::ng-deep .route-timeline.timeline-complete .timeline-marker.completed {
-  animation: markerBreathGreen 3s ease-in-out infinite;
+  animation: markerBreathCyan 3s ease-in-out infinite;
 }
 
 :host ::ng-deep .route-timeline.timeline-complete .p-timeline-event-connector.completed-line {
-  animation: connectorBreathGreen 3s ease-in-out infinite;
+  animation: connectorBreathCyan 3s ease-in-out infinite;
 }
 
 // Subtle sparkle effects on timeline completion
@@ -694,12 +699,12 @@ label {
   height: 100%;
   pointer-events: none;
   background: 
-    radial-gradient(2px 2px at 15% 25%, rgba(34, 197, 94, 0.8) 0%, transparent 100%),
-    radial-gradient(2px 2px at 85% 35%, rgba(74, 222, 128, 0.7) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 25% 60%, rgba(34, 197, 94, 0.6) 0%, transparent 100%),
-    radial-gradient(2px 2px at 75% 70%, rgba(74, 222, 128, 0.8) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 45% 15%, rgba(34, 197, 94, 0.7) 0%, transparent 100%),
-    radial-gradient(2px 2px at 60% 80%, rgba(74, 222, 128, 0.65) 0%, transparent 100%);
+    radial-gradient(2px 2px at 15% 25%, rgba(34, 211, 238, 0.8) 0%, transparent 100%),
+    radial-gradient(2px 2px at 85% 35%, rgba(52, 224, 232, 0.7) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 25% 60%, rgba(34, 211, 238, 0.6) 0%, transparent 100%),
+    radial-gradient(2px 2px at 75% 70%, rgba(52, 224, 232, 0.8) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 45% 15%, rgba(34, 211, 238, 0.7) 0%, transparent 100%),
+    radial-gradient(2px 2px at 60% 80%, rgba(52, 224, 232, 0.65) 0%, transparent 100%);
   background-size: 
     100% 100%,
     100% 100%,
@@ -728,5 +733,20 @@ label {
   }
   100% {
     opacity: 0;
+  }
+}
+
+@keyframes markerGlowLightPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 8px rgba(34, 211, 238, 0.6),
+      0 0 16px rgba(34, 211, 238, 0.4),
+      inset 0 0 12px rgba(34, 211, 238, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 16px rgba(34, 211, 238, 0.9),
+      0 0 28px rgba(34, 211, 238, 0.7),
+      inset 0 0 20px rgba(34, 211, 238, 0.4);
   }
 }

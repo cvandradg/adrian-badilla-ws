@@ -20,7 +20,6 @@ import { FoodDescriptionDialogComponent } from '../../dialog/food-description-di
 import { MealTranslationService } from '../../services/meal-translation.service';
 import { NgClass } from '@angular/common';
 import { AdrianBadillaDietsDecisionComponent } from '../adrian-badilla-diets-decision/adrian-badilla-diets-decision.component';
-import { NutritionChatComponent } from '../nutrition-chat/nutrition-chat.component';
 import { DayTimelineShellComponent } from '@adrian-badilla/ui/shared';
 import type { DayBase } from '@adrian-badilla/ui/shared';
 import type { RouteNavItem } from '../../types/diets.types';
@@ -51,7 +50,6 @@ interface RouteFormState {
     AdrianBadillaDietsDetailsComponent,
     NgClass,
     MacroProgressTrackerComponent,
-    NutritionChatComponent,
     DayTimelineShellComponent,
   ],
 })

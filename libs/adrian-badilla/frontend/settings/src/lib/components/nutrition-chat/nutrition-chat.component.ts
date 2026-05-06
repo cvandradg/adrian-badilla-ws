@@ -6,20 +6,15 @@ import {
   viewChild,
   ElementRef,
   effect,
-  input,
+  HostListener,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { DialogModule } from 'primeng/dialog';
 import { settingsStoreDev } from '../../store/settings.store';
 import type { ChatMessage } from '../../store/with-nutrition-chat.feature';
 
-/**
- * Nutrition chat component with auto-scroll and message management
- * Uses signals for reactive state management
- */
 @Component({
   selector: 'lib-nutrition-chat',
   standalone: true,
@@ -28,7 +23,6 @@ import type { ChatMessage } from '../../store/with-nutrition-chat.feature';
     DatePipe,
     ButtonModule,
     InputTextModule,
-    DialogModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './nutrition-chat.component.html',
@@ -38,13 +32,12 @@ export class NutritionChatComponent {
   protected readonly store = inject(settingsStoreDev);
   private readonly messagesEnd = viewChild<ElementRef>('messagesEnd');
 
-  // Control whether to show the CTA button (default: true)
-  readonly showCtaButton = input<boolean>(true);
+  // Chat open/close state
+  readonly isChatOpen = signal<boolean>(false);
 
-  // Store-derived signals (direct exposure from store)
+  // Store-derived signals
   readonly messages = this.store.chatMessages;
   readonly isLoading = this.store.chatIsLoading;
-  readonly isChatOpen = this.store.isChatOpen;
   readonly hasPendingAISuggestion = this.store.hasPendingAISuggestion;
 
   // Local state
@@ -59,21 +52,27 @@ export class NutritionChatComponent {
   ] as const;
 
   constructor() {
-    // Auto-scroll to bottom when messages change
     effect(() => {
-      // Track dependencies
       this.messages();
       this.isLoading();
-      // Schedule scroll after render
       setTimeout(() => this.scrollToBottom(), 50);
     });
   }
 
-  // 💬 Send message action
+  // FAB toggle
+  readonly toggleChat = () => this.isChatOpen.update(v => !v);
+  readonly closeChat = () => this.isChatOpen.set(false);
+
+  // ESC key closes chat
+  @HostListener('document:keydown.escape')
+  onEscapeKey() {
+    if (this.isChatOpen()) this.closeChat();
+  }
+
+  // 💬 Send message
   readonly sendMessage = (text?: string) => {
     const content = text ?? this.inputText();
     if (!content.trim()) return;
-
     this.store.sendChatMessage(content);
     this.inputText.set('');
   };
@@ -86,24 +85,16 @@ export class NutritionChatComponent {
     }
   };
 
-  // 🗨️ Chat UI actions
-  readonly openChat = () => this.store.openChat();
-  readonly closeChat = () => this.store.closeChat();
-  readonly clearChat = () => this.store.clearChat();
-
   // 🤖 AI suggestion actions
   readonly applyAISuggestion = () => this.store.applyAISuggestionFromChat();
   readonly rejectAISuggestion = () => this.store.rejectAISuggestionFromChat();
 
-  // 🎯 Track messages by timestamp for *ngFor optimization
+  // 🎯 Track messages by timestamp
   readonly trackByTimestamp = (_index: number, msg: ChatMessage): number =>
     msg.timestamp;
 
-  // Private helper: Scroll to messages end
   private scrollToBottom(): void {
     const el = this.messagesEnd()?.nativeElement;
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
 }

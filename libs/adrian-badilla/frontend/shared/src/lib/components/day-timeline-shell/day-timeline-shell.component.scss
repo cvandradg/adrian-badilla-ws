@@ -5,7 +5,7 @@
   width: 100%;
   box-sizing: border-box;
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
 
   --p-timeline-event-connector-color: rgba(200, 220, 255, 0.7);
   --p-timeline-event-marker-content-background: transparent;
@@ -31,14 +31,13 @@
     grid-template-columns: 200px minmax(0, 1fr);
     min-height: 22rem;
     height: 100%;
-    overflow: hidden;
+    overflow: visible;
     border-radius: 8px;
     gap: 0;
   }
 }
 
 .day-shell__content {
-  background: rgba(220, 240, 255, 0.05);
   min-height: 0;
   overflow-y: auto;
   flex: 1 1 auto;
