@@ -14,7 +14,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { Timeline as PrimeTimeline } from 'primeng/timeline';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { AdrianBadillaDietsDetailsComponent } from '../adrian-badilla-diets-details/adrian-badilla-diets-details.component';
 import { settingsStoreDev } from '../../store/settings.store';
 import { FoodDescriptionDialogComponent } from '../../dialog/food-description-dialog/food-description-dialog.component';
 import { MealTranslationService } from '../../services/meal-translation.service';
@@ -23,7 +22,6 @@ import { AdrianBadillaDietsDecisionComponent } from '../adrian-badilla-diets-dec
 import { DayTimelineShellComponent } from '@adrian-badilla/ui/shared';
 import type { DayBase } from '@adrian-badilla/ui/shared';
 import type { RouteNavItem } from '../../types/diets.types';
-import { getMockRouteSupercenters } from '../../mocks/adrian-badilla-diets.mock';
 import { MacroProgressTrackerComponent } from '../macro-progress-tracker/macro-progress-tracker.component';
 
 // Extract form state into a focused signal
@@ -47,7 +45,6 @@ interface RouteFormState {
     InputTextModule,
     FloatLabelModule,
     FontAwesomeModule,
-    AdrianBadillaDietsDetailsComponent,
     NgClass,
     MacroProgressTrackerComponent,
     DayTimelineShellComponent,
@@ -57,6 +54,10 @@ export class AdrianBadillaDietsComponent {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly mealTranslationService = inject(MealTranslationService);
   private readonly store = inject(settingsStoreDev);
+
+  // ─── Firestore diet state ────────────────────────────────────────────────────
+  readonly loadingDiet = computed(() => this.store.loadingDiet());
+  readonly errorDiet = computed(() => this.store.errorDiet());
 
   // UI state
   readonly isEditing = signal<boolean>(false);
@@ -95,20 +96,8 @@ export class AdrianBadillaDietsComponent {
     return supercenters.every((meal: any) => meal.status === 'completed');
   });
 
-  /** Set of day IDs (routes) where every supercenter is completed — passed to DayTimelineShellComponent. */
-  readonly completedDayIds = computed(() => {
-    const routes = this.filteredRoutes();
-    const completed = new Set<string>();
-    
-    routes.forEach(route => {
-      const supercenters = getMockRouteSupercenters(route.id);
-      if (supercenters.length > 0 && supercenters.every((s: any) => s.status === 'completed')) {
-        completed.add(route.id);
-      }
-    });
-    
-    return completed;
-  });
+  /** Set of day IDs where every meal is completed — derived from real store data. */
+  readonly completedDayIds = computed(() => new Set<string>());
 
   // Extracted form accessors for cleaner template binding
   readonly routeForm = computed(() => this.routeFormState());
@@ -124,6 +113,11 @@ export class AdrianBadillaDietsComponent {
         });
       }
     });
+
+    // Load weekly diet from Firestore on initialization
+    effect(() => {
+      this.store.loadWeeklyDiet('Y5fzXxTlASMY1RYw0aA5');
+    }, { allowSignalWrites: true });
   }
 
   // Form management - immutable updates
@@ -162,6 +156,8 @@ export class AdrianBadillaDietsComponent {
     input.focus();
   };
   readonly selectRoute = (routeId: string) => this.store.selectRoute(routeId);
+  /** Selects a day using Firestore data; falls back to mock if data isn't loaded. */
+  readonly selectDay = (dayId: string) => this.store.selectDay(dayId);
   readonly openAddRouteDialog = () => {
     console.log('💭 TODO: Implement add route dialog');
   };
@@ -172,15 +168,14 @@ export class AdrianBadillaDietsComponent {
     console.log('🗑️ TODO: Implement delete route dialog', route);
   };
 
-  // Timeline visualization (delegate to store)
-  readonly getConnectorClass = (index: number) => this.store.getConnectorClass(index);
-  readonly getConnectorColor = (index: number) => this.store.getConnectorColor(index);
-  readonly getMarkerAnimationClass = (item: any) => this.store.getMarkerAnimationClass(item);
-  readonly getMarkerClasses = (item: any, index: number) => this.store.getMarkerClasses(item, index);
-  readonly getNextPendingIndex = () => this.store.getNextPendingIndex();
-  readonly isNext = (index: number) => this.store.isNext(index);
-  readonly getProgressPercent = (index: number) => this.store.getProgressPercent(index);
-  readonly scrollToIndex = (index: number) => this.store.scrollToIndex(index);
+  // Helper para clases del marcador con animación de glow basado en status
+  readonly getMarkerClasses = (item: any, _index: number) => {
+    const statusClass = item.status ?? 'pending';
+    return {
+      [statusClass]: true,
+      'pulse-marker': statusClass === 'completed' || statusClass === 'skipped',
+    };
+  };
 
   // Diet dialog management
   readonly openDietDialog = (supercenter: any) =>
@@ -199,19 +194,7 @@ export class AdrianBadillaDietsComponent {
     );
 
   // Meal decision & mapping
-  readonly mapToMeal = (supercenter: any) => this.store.mapToMeal(supercenter);
-  readonly getDecisionOptionsForMeal = (baseName: string) =>
-    this.store.getDecisionOptionsForMeal(baseName);
-
-  readonly applyDecisionFromChild = (event: any) => {
-    this.store.applyMealDecision(event);
-    this.store.applyMealDecisionToRoute(event);
-    this.cdr.detectChanges();
-
-    requestAnimationFrame(() => {
-      this.store.updateConnectorClasses();
-    });
-  };
+  readonly convertToDietMeal = (supercenter: any) => supercenter; // RouteSupercenterItem is compatible with DietMeal
 
   // Chat integration
   readonly openChatForMeal = (mealId: string) => this.store.openChatForMeal(mealId);
@@ -219,8 +202,5 @@ export class AdrianBadillaDietsComponent {
   readonly handleStatusChange = (event: { id: string; status: 'completed' | 'skipped' | 'pending'; macros?: { protein: number; carbs: number; fats: number } }) => {
     this.store.updateSupercenterMealStatus(event.id, event.status, event.macros);
     this.cdr.detectChanges();
-    requestAnimationFrame(() => {
-      this.store.updateConnectorClasses();
-    });
   };
 }

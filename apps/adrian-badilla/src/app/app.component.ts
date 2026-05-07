@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NutritionChatComponent } from 'adrian-badilla/settings';
 
 @Component({
-  imports: [RouterModule, NutritionChatComponent],
+  imports: [RouterModule],
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

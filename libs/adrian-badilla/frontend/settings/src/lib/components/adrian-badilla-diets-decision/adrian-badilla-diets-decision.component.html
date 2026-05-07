@@ -4,17 +4,27 @@
   (openChat)="openChat.emit($event)"
   (openDetails)="mealDialogRequested.emit($event)"
 >
-  <div card-name class="decision-card-name">{{ fixedMeal().name }}</div>
+  <div card-name class="decision-card-name">{{ meal().displayFoodName }}</div>
 
   <div extra-content class="decision-extra-content">
-    <span class="decision-macro decision-macro--protein">🥩 {{ roundUp(fixedMeal().macros.protein) }}g</span>
-    <span class="decision-macro decision-macro--carbs">🍞 {{ roundUp(fixedMeal().macros.carbs) }}g</span>
-    <span class="decision-macro decision-macro--fats">🥑 {{ roundUp(fixedMeal().macros.fats) }}g</span>
+    <span class="decision-macro decision-macro--protein">🥩 {{ roundUp(meal().macros.protein) }}g</span>
+    <span class="decision-macro decision-macro--carbs">🍞 {{ roundUp(meal().macros.carbs) }}g</span>
+    <span class="decision-macro decision-macro--fats">🥑 {{ roundUp(meal().macros.fats) }}g</span>
   </div>
 
   <div dropdown-content>
-    <div class="decision-dropdown__title">🍳 Preparación</div>
-    <p class="decision-dropdown__text">{{ preparationSummary() }}</p>
+    <div class="decision-dropdown__title">👨‍🍳 Preparación</div>
+    <ul class="decision-dropdown__bullet-list">
+      @for (item of descriptionBullets(); track item; let idx = $index) {
+        <li 
+          class="bullet-item"
+          [class.bullet-item--highlighted]="highlightedBulletIndex() === idx"
+          (click)="onBulletClick(idx)"
+        >
+          {{ item }}
+        </li>
+      }
+    </ul>
   </div>
 </lib-decision-card>
 

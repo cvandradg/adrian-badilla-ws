@@ -46,3 +46,87 @@
   line-height: 1.6;
 }
 
+/* ── BULLET LIST RENDERING ────────────────────────────────────── */
+.decision-dropdown__bullet-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bullet-item {
+  margin: 0;
+  padding: 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  will-change: color;
+
+  /* Custom gradient diamond using ::before */
+  &::before {
+    content: '◆';
+    flex-shrink: 0;
+    min-width: 0.8rem;
+    min-height: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    color: rgba(165, 180, 252, 0.7);
+    transition: all 0.3s ease;
+    will-change: transform, text-shadow;
+  }
+
+  /* Hover state for interactivity */
+  &:hover {
+    color: rgba(255, 255, 255, 0.9);
+
+    &::before {
+      color: rgba(165, 180, 252, 0.9);
+    }
+  }
+
+  /* Highlighted state when clicked */
+  &--highlighted {
+    color: rgba(255, 255, 255, 1);
+
+    &::before {
+      color: rgba(165, 180, 252, 1);
+      font-size: 0.75rem;
+      text-shadow: 0 0 12px rgba(165, 180, 252, 0.8), 0 0 20px rgba(134, 239, 172, 0.5);
+      transform: scale(1.2);
+    }
+  }
+
+  /* Responsive: tighter spacing on smaller screens */
+  @media (max-width: 640px) {
+    font-size: 0.8rem;
+    gap: 0.375rem;
+
+    &--highlighted::before {
+      transform: scale(1.1);
+    }
+  }
+}
+
+/* ── CARD SPARKLE EFFECT ────────────────────────────────────── */
+:host ::ng-deep .lib-decision-card.completed {
+  animation: cardSparkle 2s ease-in-out infinite;
+}
+
+@keyframes cardSparkle {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(34, 211, 238, 0);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.4), 0 0 24px rgba(34, 211, 238, 0.2);
+  }
+}
+

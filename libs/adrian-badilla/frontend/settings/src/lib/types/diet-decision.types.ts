@@ -55,14 +55,16 @@ export interface MealOption {
 
 export interface DietMeal {
   id: string;
-  name: string;
+  name: string;           // tipo de comida (ej: DESAYUNO)
+  displayFoodName: string; // comida real (ej: Sopa Maruchan)
   baseName: string;
   time: string;
+  lastModifiedLabel?: string;
   status: MealStatus;
   decision?: MealDecision;
   selectedFoodName?: string | null;
-  decisionOptions?: Partial<Record<MealDecision, MealOption[]>>;
   macros: MealMacro;
+  description?:string
 }
 
 // 📊 MACRO TRACKER TYPES

@@ -7,7 +7,6 @@ import {
   withFeature,
 } from '@ngrx/signals';
 import { Type, computed } from '@angular/core';
-import { MOCK_ROUTES, getMockRouteSupercenters } from '../mocks/adrian-badilla-diets.mock';
 import type { RouteNavItem, RouteSupercenterItem } from '../types/diets.types';
 import { withDialogs } from './with-dialogs.feature';
 
@@ -23,9 +22,9 @@ interface RoutesState {
 export function withRoutes<T extends Record<string, any>>(storeContext: T) {
   return signalStoreFeature(
     withState<RoutesState>({
-      routes: MOCK_ROUTES,
-      selectedRoute: MOCK_ROUTES[0] ?? null,
-      selectedRouteSupercenters: getMockRouteSupercenters(MOCK_ROUTES[0]?.id ?? ''),
+      routes: [],
+      selectedRoute: null,
+      selectedRouteSupercenters: [],
       routeSearchQuery: '',
       createRouteisLoading: false,
       saveRouteisLoading: false,
@@ -54,7 +53,6 @@ export function withRoutes<T extends Record<string, any>>(storeContext: T) {
         const route = store.routes().find((r) => r.id === routeId);
         patchState(store, {
           selectedRoute: route ?? null,
-          selectedRouteSupercenters: getMockRouteSupercenters(routeId),
         });
       },
 

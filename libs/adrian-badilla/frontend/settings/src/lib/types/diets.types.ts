@@ -40,4 +40,5 @@ export type RouteSupercenterItem = Pick<
     carbs: number;
     fats: number;
   };
+  description?: string;
 };

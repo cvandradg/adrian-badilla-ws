@@ -42,14 +42,14 @@
   overflow-y: auto;
   flex: 1 1 auto;
   min-width: 0;
-  padding: 0.5rem;
+  padding: 0.2rem;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.212) transparent;
 
   @media (min-width: 768px) {
     min-height: 20rem;
     height: 100%;
-    padding: 1.5rem 2.7rem;
+    padding: 0.2rem;
     max-height: none;
   }
 }

@@ -10,7 +10,7 @@ export function mapMealToDecisionItem(meal: DietMeal): DecisionItem {
   return {
     id: meal.id,
     title: meal.baseName,
-    subtitle: meal.time,
+    subtitle: meal.lastModifiedLabel,
     status: meal.status,
     metadata,
   };

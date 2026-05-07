@@ -666,18 +666,6 @@ export function withNutritionChat() {
           decision = 'high-protein';
         }
 
-        const applyMealDecisionMethod = (store as any).applyMealDecision;
-        
-        if (applyMealDecisionMethod) {
-          applyMealDecisionMethod({
-            id: suggestion.mealId,
-            decision,
-            option: mealOption,
-            optionNameInSpanish: foodNames,
-            optionNameInEnglish: foodNames,
-          });
-        }
-
         setTimeout(() => {
           patchState(store, {
             pendingAISuggestion: null,
