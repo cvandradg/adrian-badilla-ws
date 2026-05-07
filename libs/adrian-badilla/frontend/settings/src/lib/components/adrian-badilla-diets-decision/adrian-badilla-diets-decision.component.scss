@@ -96,6 +96,7 @@
   /* Highlighted state when clicked */
   &--highlighted {
     color: rgba(255, 255, 255, 1);
+    text-shadow: 0 0 8px rgba(165, 180, 252, 0.6), 0 0 12px rgba(134, 239, 172, 0.4);
 
     &::before {
       color: rgba(165, 180, 252, 1);

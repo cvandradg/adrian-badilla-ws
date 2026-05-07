@@ -6,27 +6,31 @@
   background: linear-gradient(180deg, #0e1b29 0%, #04090f 100%) !important;
   border: none !important;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7) !important;
-  max-height: 85vh !important;
-  overflow-y: auto !important;
+  height: auto !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
   z-index: 9999 !important;
+  display: flex !important;
+  flex-direction: column !important;
 
   .p-drawer-header {
     padding: 0 !important;
     background: #0e1b29 !important;
     border-bottom: none !important;
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 1 !important;
+    flex-shrink: 0 !important;
   }
 
   .p-drawer-content {
     padding: 0 !important;
     background: transparent !important;
-    overflow-y: auto !important;
+    overflow: hidden !important;
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
 }
 .p-datepicker-panel {

@@ -62,6 +62,59 @@ body {
     ) no-repeat fixed;
 }
 
+/* ── Tap / Focus highlight removal ────────────────────────────────────────── */
+/* Removes browser-default blue tap flash on mobile without breaking keyboard a11y. */
+*,
+*::before,
+*::after {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a,
+button,
+[role="button"],
+[tabindex] {
+  outline: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(138, 200, 212, 0.6);
+    outline-offset: 2px;
+  }
+
+  &:active {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Remove browser selection highlight on interactive elements */
+button,
+a,
+[role="button"] {
+  &::selection {
+    background: transparent;
+  }
+}
+
+/* Angular CDK focus states */
+.cdk-focused,
+.cdk-program-focused,
+.cdk-mouse-focused {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* PrimeNG focus states */
+.p-component:focus,
+.p-button:focus,
+.p-element:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 /* Scrollbar: global by design because browser pseudo-elements cannot be scoped usefully. */
 ::-webkit-scrollbar {
   width: 0.2rem;
