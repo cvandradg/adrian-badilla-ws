@@ -1,2 +1,4 @@
 <router-outlet></router-outlet>
-<lib-nutrition-chat />
+@if (chatResource.value()) {
+  <ng-container *ngComponentOutlet="chatResource.value()!" />
+}
