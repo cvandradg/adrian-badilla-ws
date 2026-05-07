@@ -117,7 +117,7 @@ export class AdrianBadillaDietsComponent {
     // Load weekly diet from Firestore on initialization
     effect(() => {
       this.store.loadWeeklyDiet('Y5fzXxTlASMY1RYw0aA5');
-    }, { allowSignalWrites: true });
+    });
   }
 
   // Form management - immutable updates
