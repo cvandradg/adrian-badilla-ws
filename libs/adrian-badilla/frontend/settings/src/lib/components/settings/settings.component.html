@@ -4,7 +4,7 @@
 
 <div class="purchase-orders-tabs">
   <div class="card">
-    <p-tabs value="rutas" class="purchase-orders-tabs-root">
+    <p-tabs [value]="activeTab()" (onChange)="onTabChange($event)" class="purchase-orders-tabs-root">
       <p-tablist class="purchase-orders-tablist">
         @for (tab of tabs; track tab.route) {
         <p-tab

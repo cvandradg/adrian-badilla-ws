@@ -5,7 +5,6 @@
     [mode]="isNarrow() ? 'over' : 'side'"
     [opened]="!isNarrow()"
     [style.width]="leftWidth()"
-    [style.height]="'fit-content'"
     [class.is-collapsed]="collapsed()"
   >
     <adrian-badilla-side-menu [collapsed]="collapsed()" />
@@ -18,7 +17,6 @@
     [mode]="isNarrow() ? 'over' : 'side'"
     [opened]="!isNarrow() && rightPinnedOpen()"
     [style.width]="rightWidth()"
-    [style.height]="'fit-content'"
   >
     <adrian-badilla-description-side-panel />
   </mat-sidenav>

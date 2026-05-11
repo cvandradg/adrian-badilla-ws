@@ -1,5 +1,4 @@
 import { signalStore, withFeature } from '@ngrx/signals';
-import { withDiets } from './with-diets.feature';
 import { withFirestoreCrud } from '../../../../shared/src/lib/stores/firestoreStore/utils/with-firestore-crud.feature';
 import { withFoodDescription } from './with-food-description.feature';
 import { withRoutes } from './with-routes.feature';
@@ -15,6 +14,5 @@ export const settingsStoreDev = signalStore(
     withFeature((store) => withRoutes(store)),
     withFeature(() => withMacroTracker()),
     withFeature(() => withNutritionChat()),
-    withFeature((store) => withDiets(store)),
     withFeature(() => withDietQueries()),
 );

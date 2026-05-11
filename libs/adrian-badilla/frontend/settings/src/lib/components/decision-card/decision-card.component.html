@@ -29,38 +29,12 @@
   </div>
 
   <!-- INNER CARD — title slot + action row + extra-content slot -->
-  <div class="static-meal-card">
-    <ng-content select="[card-name]"></ng-content>
+  <div class="static-meal-card" (click)="toggleDropdown()">
+    <div class="card-name-trigger">
+      <ng-content select="[card-name]"></ng-content>
+      <i class="pi pi-chevron-down dropdown-chevron" [class.rotate]="isDropdownOpen()"></i>
+    </div>
     <div class="meal-bottom-row">
-      <button
-        type="button"
-        class="action-btn btn--info"
-        (click)="toggleDropdown()"
-        [class.open]="isDropdownOpen()"
-        title="Ver más"
-      >
-        <i
-          class="pi"
-          [class.pi-chevron-down]="!isDropdownOpen()"
-          [class.pi-chevron-up]="isDropdownOpen()"
-        ></i>
-      </button>
-      <button
-        type="button"
-        class="action-btn btn--ai"
-        (click)="onOpenChat()"
-        title="Consultar IA"
-      >
-        <i class="pi pi-comments"></i>
-      </button>
-      <button
-        type="button"
-        class="action-btn btn--details"
-        (click)="onOpenDetails()"
-        title="Ver detalles"
-      >
-        <i class="pi pi-search"></i>
-      </button>
       <!-- e.g. macros for meals, exercise count for routines -->
       <ng-content select="[extra-content]"></ng-content>
     </div>

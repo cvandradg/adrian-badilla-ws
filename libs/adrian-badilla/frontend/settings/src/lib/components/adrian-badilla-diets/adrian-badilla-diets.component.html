@@ -3,9 +3,6 @@
 @let routes = filteredRoutes(); @let routeSupercenters =
 selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
 (routes.length) {
-<lib-macro-progress-tracker [meals]="routeSupercenters"/>
-   <br>
-
 <lib-day-timeline-shell
   [days]="routeDays()"
   [selectedDayId]="selectedRouteItem?.id ?? ''"
@@ -45,7 +42,7 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
       }
 
       @if (routeSupercenters.length) {
-      <div class="card mt-4">
+      <div class="card">
         <p-timeline
           [value]="routeSupercenters"
           class="align-items-start route-timeline"
@@ -79,5 +76,6 @@ selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
     }
 
 </lib-day-timeline-shell>
+<lib-macro-progress-tracker [meals]="routeSupercenters"/>
 
 }

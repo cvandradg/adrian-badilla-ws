@@ -8,7 +8,9 @@
     "format": "npx nx format --base=main --head=HEAD",
     "build": " yarn && npx nx build adrian-badilla && npx nx run-many -t test",
     "s": "yarn && npx nx lint adrian-badilla && npx nx build adrian-badilla && npx nx run-many -t test && npx nx serve adrian-badilla",
-    "r": "yarn && npx nx serve adrian-badilla"
+    "r": "yarn && npx nx serve adrian-badilla",
+    "build:prod": "nx build adrian-badilla --configuration=production",
+    "deploy": "yarn build:prod && firebase deploy"
   },
   "private": true,
   "dependencies": {

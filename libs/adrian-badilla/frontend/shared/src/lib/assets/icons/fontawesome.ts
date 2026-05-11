@@ -5,6 +5,7 @@ import {
   faClipboardQuestion,
   faRightToBracket,
   faEnvelopeCircleCheck,
+  faMessageQuestion,
 } from '@fortawesome/pro-light-svg-icons';
 
 import { faGripLines } from '@fortawesome/pro-thin-svg-icons';
@@ -48,6 +49,9 @@ import {
   faPersonDollyEmpty,
   faArrowRight,
   faPaperPlane,
+  faCapsule,
+  faHatChef,
+  faMessageQuestion as faMessageQuestionSolid,
 } from '@fortawesome/pro-solid-svg-icons';
 import { faHouseTree } from '@fortawesome/pro-regular-svg-icons';
 import { faBicep } from '@fortawesome/pro-regular-svg-icons';
@@ -98,5 +102,8 @@ export const FontAwesomeicons = [
   faCommentsQuestionCheck,
   //steven imports
   faBicep,
-  faScaleBalanced
+  faScaleBalanced,
+  faCapsule,
+  faHatChef,
+  faMessageQuestionSolid
 ];

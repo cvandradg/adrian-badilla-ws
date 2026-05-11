@@ -26,6 +26,8 @@ export class SettingsComponent {
     globalThis.window?.matchMedia('(max-width: 767px)').matches ?? false
   );
 
+  readonly activeTab = signal('diets');
+
   constructor() {
     if (globalThis.window === undefined) return;
     const mql = globalThis.window.matchMedia('(max-width: 767px)');
@@ -50,6 +52,11 @@ export class SettingsComponent {
       icon: ['fas', 'bars'],
     },
   ];
+
+  onTabChange(event: any): void {
+    const tabRoutes = ['diets', 'productos', 'apariencia'];
+    this.activeTab.set(tabRoutes[event.index] || 'diets');
+  }
 
   routes = Array.from({ length: 24 }, (_, i) => i + 1);
   activeRouteIndex = 0;

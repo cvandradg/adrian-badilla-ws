@@ -1,0 +1,6 @@
+/* ── Ensure full viewport height for the app ── */
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}

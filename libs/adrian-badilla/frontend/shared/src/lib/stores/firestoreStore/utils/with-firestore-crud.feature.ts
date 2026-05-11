@@ -27,7 +27,7 @@ function toPathArgs(path: string): [string, ...string[]] {
   return parts as [string, ...string[]];
 }
 
-function collectionRef<T extends DocumentData>(
+export function collectionRef<T extends DocumentData>(
   firestore: Firestore,
   path: string,
 ): CollectionReference<T, T> {
@@ -37,7 +37,7 @@ function collectionRef<T extends DocumentData>(
   ) as unknown as CollectionReference<T, T>;
 }
 
-function documentRef<T extends DocumentData>(
+export function documentRef<T extends DocumentData>(
   firestore: Firestore,
   path: string,
 ): DocumentReference<T, T> {

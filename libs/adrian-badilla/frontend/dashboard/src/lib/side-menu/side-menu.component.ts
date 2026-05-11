@@ -37,21 +37,40 @@ export class SideMenuComponent {
       exact: true,
     },
     {
-      icon: ['fas', 'shirt'],
-      label: 'Productos',
-      route: '/dashboard/products',
-      exact: false,
-    },
-    {
       icon: ['fas', 'salad'],
       label: 'Dietas',
       route: '/dashboard/dietas',
       exact: false,
     },
+
     {
       icon: ['fas', 'dumbbell'],
       label: 'Rutinas',
       route: '/dashboard/rutinas',
+      exact: false,
+    },
+    {
+      icon: ['fas', 'shirt'],
+      label: 'Accesorios',
+      route: '/dashboard/accesorios',
+      exact: false,
+    },
+    {
+      icon: ['fas', 'capsule'],
+      label: 'Suplementos',
+      route: '/dashboard/suplementos',
+      exact: false,
+    },
+    {
+      icon: ['fas', 'hat-chef'],
+      label: 'Cocina',
+      route: '/dashboard/cocina',
+      exact: false,
+    },
+    {
+      icon: ['fas', 'message-question'],
+      label: 'Ayuda',
+      route: '/dashboard/ayuda',
       exact: false,
     },
   ]);

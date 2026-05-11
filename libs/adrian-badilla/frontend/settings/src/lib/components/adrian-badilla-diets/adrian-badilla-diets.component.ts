@@ -5,7 +5,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   inject,
-  effect,
 } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { InputIconModule } from 'primeng/inputicon';
@@ -23,7 +22,6 @@ import { DayTimelineShellComponent } from '@adrian-badilla/ui/shared';
 import type { DayBase } from '@adrian-badilla/ui/shared';
 import type { RouteNavItem } from '../../types/diets.types';
 import { MacroProgressTrackerComponent } from '../macro-progress-tracker/macro-progress-tracker.component';
-
 // Extract form state into a focused signal
 interface RouteFormState {
   readonly routeName: string;
@@ -101,24 +99,6 @@ export class AdrianBadillaDietsComponent {
 
   // Extracted form accessors for cleaner template binding
   readonly routeForm = computed(() => this.routeFormState());
-
-  constructor() {
-    // Sync form state when selected route changes
-    effect(() => {
-      const selectedRoute = this.selectedRoute();
-      if (selectedRoute) {
-        this.updateFormState({
-          routeName: selectedRoute.name ?? '',
-          routeDescription: selectedRoute.description ?? '',
-        });
-      }
-    });
-
-    // Load weekly diet from Firestore on initialization
-    effect(() => {
-      this.store.loadWeeklyDiet('Y5fzXxTlASMY1RYw0aA5');
-    });
-  }
 
   // Form management - immutable updates
   private updateFormState(updates: Partial<RouteFormState>) {

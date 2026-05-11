@@ -5,6 +5,7 @@ import {
   input,
   ChangeDetectionStrategy,
 } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { settingsStoreDev } from '../../store/settings.store';
 import {
   calculateConsumedMacros,
@@ -21,7 +22,7 @@ type MacroType = 'protein' | 'fats' | 'carbs';
 @Component({
   selector: 'lib-macro-progress-tracker',
   standalone: true,
-  imports: [],
+  imports: [NgClass],
   templateUrl: './macro-progress-tracker.component.html',
   styleUrl: './macro-progress-tracker.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -175,6 +176,81 @@ export class MacroProgressTrackerComponent {
     const lowest = macros.reduce((a, b) => (a.pct < b.pct ? a : b), macros[0]);
     return `Incluye alimentos ricos en ${lowest.name} en tu próxima comida para seguir tu plan.`;
   });
+
+  // ── RING & STATUS SIGNALS ─────────────────────────────────────
+
+  /** Animated ring color based on average adherence */
+  readonly ringColor = computed<string>(() => {
+    const avg = this.macroSnapshot().percentages.average.percentage;
+    if (avg >= 100) return '#22c55e';
+    if (avg >= 70)  return '#22d3ee';
+    if (avg >= 40)  return '#f59e0b';
+    return '#ef4444';
+  });
+
+  /** SVG stroke-dashoffset for the ring (circumference = 238.76) */
+  readonly ringOffset = computed<number>(() => {
+    const avg = Math.min(this.macroSnapshot().percentages.average.percentage, 100);
+    return 238.76 * (1 - avg / 100);
+  });
+
+  /** Human-readable status label */
+  readonly statusLabel = computed<string>(() => {
+    const avg = this.macroSnapshot().percentages.average.percentage;
+    const { percentages } = this.macroSnapshot();
+    if (!this.hasStartedDiet()) return 'Sin iniciar';
+    if (avg >= 100) return 'Plan completo';
+    if (avg >= 85)  return 'Buen progreso';
+    if (avg >= 65)  return 'En ritmo';
+    const lowest = [
+      { label: 'Faltan proteínas',     pct: percentages.protein.percentage },
+      { label: 'Faltan carbohidratos', pct: percentages.carbs.percentage },
+      { label: 'Faltan grasas',        pct: percentages.fats.percentage },
+    ].reduce((a, b) => (a.pct < b.pct ? a : b), { label: 'Equilibrio perfecto', pct: 100 });
+    return lowest.label;
+  });
+
+  /** CSS class for the status chip */
+  readonly statusChipClass = computed<string>(() => {
+    const avg = this.macroSnapshot().percentages.average.percentage;
+    if (!this.hasStartedDiet()) return 'chip--neutral';
+    if (avg >= 100) return 'chip--complete';
+    if (avg >= 65)  return 'chip--on-track';
+    if (avg >= 40)  return 'chip--behind';
+    return 'chip--low';
+  });
+
+  /** Small ring offset (r=14, circumference=87.96) */
+  readonly ringOffsetSmall = computed<number>(() => {
+    const avg = Math.min(this.macroSnapshot().percentages.average.percentage, 100);
+    return 87.96 * (1 - avg / 100);
+  });
+
+  /** Per-macro chip state for compact bar */
+  readonly macroChips = computed(() => {
+    const { percentages } = this.macroSnapshot();
+    return [
+      { key: 'protein', label: 'Proteína', pct: percentages.protein.percentage, colorClass: 'chip--protein' },
+      { key: 'carbs',   label: 'Carbs',    pct: percentages.carbs.percentage,   colorClass: 'chip--carbs'   },
+      { key: 'fats',    label: 'Grasas',   pct: percentages.fats.percentage,    colorClass: 'chip--fats'    },
+    ].map(m => ({
+      ...m,
+      icon: this.macroIcon(m.pct),
+      stateClass: this.macroStateClass(m.pct),
+    }));
+  });
+
+  private macroIcon(pct: number): string {
+    if (pct >= 100) return '✓';
+    if (pct >= 55)  return '↑';
+    return '↓';
+  }
+
+  private macroStateClass(pct: number): string {
+    if (pct >= 100) return 'state--done';
+    if (pct >= 55)  return 'state--mid';
+    return 'state--low';
+  }
 
   // 🎯 Template helpers
   readonly getMacroColor = (macro: MacroType): string => this.macroColors()[macro];

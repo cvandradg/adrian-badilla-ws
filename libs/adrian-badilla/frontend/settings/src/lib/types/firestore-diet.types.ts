@@ -1,3 +1,55 @@
+import { Timestamp } from "firebase/firestore";
+
+// ─── Shared Macro Types ──────────────────────────────────────────────────────
+
+/**
+ * Daily macro nutrient goals set on a Diet document.
+ * Source of truth for macro calculations — never derived or persisted elsewhere.
+ */
+export interface DailyTarget {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fats: number;
+}
+
+/**
+ * Macros consumed within a single day.
+ * Stored in: users/{uid}/daily-status/{date}.consumed
+ * Calculated client-side from completed meals — NOT stored in meal documents.
+ */
+export interface ConsumedMacros {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fats: number;
+}
+
+// ─── Daily Status ────────────────────────────────────────────────────────────
+
+/**
+ * Daily progress document stored at: users/{uid}/daily-status/{date}
+ *
+ * Architecture notes:
+ * - `consumed` is the sum of macros from completedMeals only
+ * - `completedMeals` and `rejectedMeals` contain meal IDs (not full objects)
+ * - Percentages and derived values are NEVER stored here — computed from signals
+ * - This document is written only on user action (meal completion/rejection)
+ */
+export interface DailyStatus {
+  consumed: ConsumedMacros;
+  /** IDs of meals the user marked as eaten for this day */
+  completedMeals: string[];
+  /** IDs of meals the user explicitly skipped */
+  rejectedMeals: string[];
+}
+
+/** DailyStatus enriched with its Firestore document ID (the ISO date string) */
+export interface DailyStatusEntry extends DailyStatus {
+  /** ISO date key — matches the Firestore document ID (e.g. '2026-05-11') */
+  date: string;
+}
+
 /** Canonical meal type keys */
 export type MealType =
   | 'breakfast'
@@ -48,4 +100,19 @@ export interface FirestoreMeal extends FirestoreMealDoc {
 export interface DietDay {
   dayId: string;
   meals: FirestoreMeal[];
+}
+
+export interface Diet {
+  id: string;
+
+  name: string;
+
+  /**
+   * Daily macro goals for this diet plan.
+   * Used by withMacroTracker to compute percentages and recommendations.
+   */
+  dailyTarget: DailyTarget;
+
+  startDate?: Timestamp;
+  endDate?: Timestamp;
 }

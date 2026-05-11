@@ -3,10 +3,11 @@
 
 :host {
   color: var(--app-text);
-  display: block;
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
   padding: 0 1.5rem;
-  height: 100svh;
+  min-height: 100dvh;
   margin-inline: auto;
   --mat-sidenav-container-shape: none;
   --dashboard-text-soft: #{tokens.$dashboard-text-soft};
@@ -30,14 +31,15 @@ mat-sidenav-container.dashboard-shell {
   max-inline-size: var(--dashboard-shell-max-inline-size);
   margin-inline: auto;
   block-size: 100%;
+  flex: 1;
 }
 
 .dashboard-content {
-  block-size: 100%;
-  overflow-x: hidden;
-  min-block-size: 0;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-block-size: 0;
+  overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -190,6 +192,10 @@ mat-sidenav-container.dashboard-shell {
 }
 
 .dashboard-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
   border-radius: 1.25rem;
   border: 1px solid var(--app-border) !important;
   box-shadow: var(--app-shadow) !important;
@@ -204,9 +210,6 @@ mat-sidenav-container.dashboard-shell {
   -webkit-backdrop-filter: blur(18px);
   overflow-y: auto;
   overflow-x: hidden;
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
 
   @media (max-width: 767px) {
     border-radius: 0;
@@ -225,13 +228,12 @@ mat-sidenav-container.dashboard-shell {
 }
 
 .dashboard-spacer {
-  flex: 0 0 var(--dashboard-shell-spacing);
-  block-size: var(--dashboard-shell-spacing);
+  flex: 0 0 auto;
+  height: var(--dashboard-shell-spacing);
 
   @media (max-width: 767px) {
-    flex: 0 0 0;
-    block-size: 0;
-    display: none; // 👈 opcional pero recomendado
+    height: 0;
+    display: none;
   }
 }
 
