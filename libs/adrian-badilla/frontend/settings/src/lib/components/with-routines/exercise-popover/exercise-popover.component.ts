@@ -3,13 +3,18 @@ import {
   Component,
   computed,
   input,
+  output,
   signal,
 } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { CommonModule } from '@angular/common';
+import type { ExerciseMock } from '../../../mocks/exercises.mock';
 
 @Component({
   selector: 'lib-exercise-popover',
   standalone: true,
+  imports: [CommonModule, DragDropModule],
   templateUrl: './exercise-popover.component.html',
   styleUrl: './exercise-popover.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,15 +31,18 @@ import { animate, style, transition, trigger } from '@angular/animations';
   ],
 })
 export class ExercisePopoverComponent {
-  readonly exerciseName = input.required<string>();
-  readonly videoUrl = input<string>('');
-  readonly description = input<string>('');
+  readonly exercise = input.required<ExerciseMock>();
+  readonly onClose = input.required<() => void>();
 
   readonly #videoError = signal(false);
 
-  readonly showVideo = computed(() => !!this.videoUrl() && !this.#videoError());
+  readonly showVideo = computed(() => !!this.exercise().videoUrl && !this.#videoError());
 
   onVideoError(): void {
     this.#videoError.set(true);
+  }
+
+  close(): void {
+    this.onClose()();
   }
 }

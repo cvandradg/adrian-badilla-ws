@@ -1,15 +1,26 @@
-<div class="exercise-popover" [@popIn]>
+<div class="exercise-popover" [@popIn] cdkDrag>
 
   <div class="exercise-popover__header">
-    <span class="exercise-popover__icon">🏋️</span>
-    <span class="exercise-popover__name">{{ exerciseName() }}</span>
+    <div class="exercise-popover__header-content">
+      <span class="exercise-popover__icon">🏋️</span>
+      <span class="exercise-popover__name">{{ exercise().name }}</span>
+    </div>
+    <button
+      type="button"
+      class="exercise-popover__close-btn"
+      (click)="close()"
+      aria-label="Cerrar"
+      title="Cerrar"
+    >
+      <i class="pi pi-times"></i>
+    </button>
   </div>
 
   @if (showVideo()) {
     <div class="exercise-popover__video-wrapper">
       <video
         class="exercise-popover__video"
-        [src]="videoUrl()"
+        [src]="exercise().videoUrl"
         autoplay
         loop
         muted
@@ -24,11 +35,15 @@
     </div>
   }
 
-  @if (description()) {
-    <div class="exercise-popover__description">
+  <div class="exercise-popover__description">
+    <div class="exercise-popover__description-header">
       <h4 class="exercise-popover__description-title">Ejecución correcta</h4>
-      <p class="exercise-popover__description-text">{{ description() }}</p>
+      <div class="exercise-popover__reps">
+        <span class="exercise-popover__reps-icon">🔢</span>
+        <span class="exercise-popover__reps-value">{{ exercise().targetReps }}</span>
+      </div>
     </div>
-  }
+    <p class="exercise-popover__description-text">{{ exercise().description }}</p>
+  </div>
 
 </div>

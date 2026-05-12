@@ -8,8 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { RoutinesOverlayService } from '../routines-overlay.service';
-import { EXERCISE_VIDEOS } from '../exercise-videos.constants';
-import { EXERCISE_DESCRIPTIONS } from '../exercise-descriptions.constants';
+import { EXERCISES_MOCK } from '../../../mocks/exercises.mock';
 
 /**
  * ExerciseDropdownComponent
@@ -55,10 +54,9 @@ export class ExerciseDropdownComponent {
     if (!isSameExercise) {
       this.activeExercise.set(exerciseName);
       const origin = event.currentTarget as Element;
-      const videoUrl = EXERCISE_VIDEOS[exerciseName] ?? '';
-      const description = EXERCISE_DESCRIPTIONS[exerciseName] ?? '';
+      const exerciseMock = EXERCISES_MOCK[exerciseName];
 
-      this.#overlay.open(origin, exerciseName, videoUrl, description, this.#vcr, () => {
+      this.#overlay.open(origin, exerciseMock, this.#vcr, () => {
         this.activeExercise.set(null);
       });
     }

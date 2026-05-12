@@ -2,6 +2,7 @@ import { Injectable, ViewContainerRef, inject } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { ExercisePopoverComponent } from './exercise-popover/exercise-popover.component';
+import type { ExerciseMock } from '../../mocks/exercises.mock';
 
 /**
  * RoutinesOverlayService
@@ -17,41 +18,31 @@ export class RoutinesOverlayService {
   #activeRef: OverlayRef | null = null;
 
   /**
-   * Opens an exercise preview popover anchored to the given origin element.
+   * Opens an exercise preview popover centered on the screen.
    * Closes any previously open popover first.
    * Calls `onClose` when the popover is dismissed (e.g. backdrop click).
    */
   open(
     origin: Element,
-    exerciseName: string,
-    videoUrl: string,
-    description: string,
+    exercise: ExerciseMock,
     vcr: ViewContainerRef,
     onClose: () => void,
   ): void {
     this.close();
 
+    // Use GlobalPositionStrategy with proper centering
     const positionStrategy = this.#overlay
       .position()
-      .flexibleConnectedTo(origin)
-      .withPositions([
-        // Prefer right of icon, vertically centered
-        { originX: 'end', originY: 'center', overlayX: 'start', overlayY: 'center', offsetX: 10 },
-        // Fallback: left of icon
-        { originX: 'start', originY: 'center', overlayX: 'end', overlayY: 'center', offsetX: -10 },
-        // Fallback: below icon, aligned to left
-        { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 6 },
-        // Fallback: above icon
-        { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -6 },
-      ])
-      .withFlexibleDimensions(false)
-      .withPush(true);
-
+      .global()
+      .centerHorizontally()
+      .centerVertically();
+    
     this.#activeRef = this.#overlay.create({
       positionStrategy,
       hasBackdrop: true,
       backdropClass: 'cdk-overlay-transparent-backdrop',
-      scrollStrategy: this.#overlay.scrollStrategies.reposition(),
+      scrollStrategy: this.#overlay.scrollStrategies.block(),
+      panelClass: 'exercise-overlay-panel',
     });
 
     this.#activeRef.backdropClick().subscribe(() => {
@@ -61,9 +52,11 @@ export class RoutinesOverlayService {
 
     const portal = new ComponentPortal(ExercisePopoverComponent, vcr);
     const componentRef = this.#activeRef.attach(portal);
-    componentRef.setInput('exerciseName', exerciseName);
-    componentRef.setInput('videoUrl', videoUrl);
-    componentRef.setInput('description', description);
+    componentRef.setInput('exercise', exercise);
+    componentRef.setInput('onClose', () => {
+      this.close();
+      onClose();
+    });
   }
 
   close(): void {
