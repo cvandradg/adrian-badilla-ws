@@ -1,16 +1,21 @@
 :host {
   display: flex;
   flex-direction: column;
+  /* 
+    Mobile: Use 100% to respect parent container (router-slot with flex layout)
+    Desktop: Also use 100% since parent handles the full height
+  */
   height: 100%;
   width: 100%;
   box-sizing: border-box;
   padding: 0;
-  overflow: visible;
+  overflow: hidden;
 
   --p-timeline-event-connector-color: rgba(200, 220, 255, 0.7);
   --p-timeline-event-marker-content-background: transparent;
 
   @media (min-width: 768px) {
+    overflow: visible;
     padding: 0 1rem 1rem;
   }
 }
@@ -21,8 +26,8 @@
   align-items: stretch;
   border-radius: 0;
   min-height: 0;
-  height: auto;
-  overflow: visible;
+  height: 100%;
+  overflow: hidden;
   flex: 1 1 auto;
   gap: 0;
 
@@ -40,11 +45,14 @@
 .day-shell__content {
   min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   flex: 1 1 auto;
   min-width: 0;
   padding: 0.2rem;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.212) transparent;
+  /* Mobile: prevent layout shift from scrollbars */
+  -webkit-overflow-scrolling: touch;
 
   @media (min-width: 768px) {
     min-height: 20rem;

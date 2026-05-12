@@ -82,6 +82,10 @@ mat-sidenav-container.dashboard-shell {
   border-bottom: 1px solid var(--app-border);
   backdrop-filter: blur(12px);
   line-height: 1.5;
+  /* Mobile: sticky header so it stays visible during scroll */
+  position: sticky;
+  top: 0;
+  z-index: 100;
 
   @media (max-width: 767px) {
     padding: 0.7rem 1rem;
@@ -209,8 +213,13 @@ mat-sidenav-container.dashboard-shell {
     var(--app-surface);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  overflow-y: auto;
-  overflow-x: hidden;
+  /* Mobile: Don't set overflow here; let children handle scrolling */
+  overflow: hidden;
+
+  @media (min-width: 768px) {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 
   @media (max-width: 767px) {
     margin-top: 0;
