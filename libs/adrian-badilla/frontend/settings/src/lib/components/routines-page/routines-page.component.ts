@@ -5,14 +5,16 @@ import {
   signal,
 } from '@angular/core';
 import { SharedItemTimelineComponent } from '../shared-item-timeline/shared-item-timeline.component';
+import { RoutineProgressTrackerComponent } from '../routine-progress-tracker/routine-progress-tracker.component';
 import { ROUTINE_DAYS_MOCK } from '../../mocks/routines.mock';
+import { calculateRoutineProgressMetrics } from '../../store/with-routine-tracker.feature';
 import type { RoutineDay } from '../../adapters/decision-item.adapters';
 import type { MealStatus } from '../../types/diet-decision.types';
 
 @Component({
   selector: 'lib-routines-page',
   standalone: true,
-  imports: [SharedItemTimelineComponent],
+  imports: [SharedItemTimelineComponent, RoutineProgressTrackerComponent],
   templateUrl: './routines-page.component.html',
   styleUrl: './routines-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,5 +66,13 @@ export class RoutinesPageComponent {
   /** Extracts the minimal DayBase fields for the timeline shell. */
   readonly routineDays = computed(() =>
     this.days().map(({ id, label, date }) => ({ id, label, date }))
+  );
+
+  /**
+   * 📊 Live progress metrics for the selected day.
+   * Recalculates whenever routines status or selected day changes.
+   */
+  readonly progressMetrics = computed(() =>
+    calculateRoutineProgressMetrics(this.days(), this.selectedDayId())
   );
 }

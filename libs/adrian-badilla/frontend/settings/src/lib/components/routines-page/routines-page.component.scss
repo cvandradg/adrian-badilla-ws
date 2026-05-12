@@ -9,6 +9,27 @@
   overflow: hidden;
 }
 
+/* ── Page wrapper: timeline + tracker ────────────────────────── */
+.routines-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Timeline takes all remaining space; internal scroll lives inside DayTimelineShellComponent */
+.routines-page__timeline {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Tracker is pinned below — never shrinks, never scrolls */
+.routines-page__tracker {
+  flex: 0 0 auto;
+}
+
 // Timeline styles moved to ActivityTimelineComponent
 
 /* ── TIMELINE MARKERS ─────────────────────────────────────────── */

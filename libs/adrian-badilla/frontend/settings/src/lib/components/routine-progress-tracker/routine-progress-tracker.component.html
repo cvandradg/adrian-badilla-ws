@@ -1,0 +1,82 @@
+<section class="tracker" [class.tracker--complete]="metrics().isComplete" aria-label="Progreso de rutina">
+
+  <!-- ── Header row ──────────────────────────────────────────────────────── -->
+  <div class="tracker__header">
+    <span class="tracker__label">
+      <i class="pi pi-chart-line"></i>
+      Progreso de rutina
+    </span>
+
+    <div class="tracker__header-right">
+      <span class="tracker__count">
+        {{ metrics().completedCount }}<span class="tracker__count-sep">/</span>{{ metrics().totalCount }}
+      </span>
+      <span class="tracker__pct" [ngClass]="pctColorClass()">
+        {{ metrics().completionPercentage }}%
+      </span>
+    </div>
+  </div>
+
+  <!-- ── Progress bar ────────────────────────────────────────────────────── -->
+  <div class="tracker__bar-track" role="progressbar"
+    [attr.aria-valuenow]="metrics().completionPercentage"
+    aria-valuemin="0" aria-valuemax="100">
+    <div class="tracker__bar-fill"
+      [style.width.%]="barWidth()"
+      [class.tracker__bar-fill--complete]="metrics().isComplete">
+    </div>
+  </div>
+
+  <!-- ── Stats row ───────────────────────────────────────────────────────── -->
+  <div class="tracker__stats">
+
+    <!-- Volume -->
+    <div class="stat">
+      <i class="pi pi-box stat__icon stat__icon--volume"></i>
+      <span class="stat__value">{{ formattedVolume() }}</span>
+      <span class="stat__unit">kg vol</span>
+    </div>
+
+    <!-- Streak -->
+    <div class="stat" [class.stat--streak-active]="metrics().streak > 0">
+      <i class="pi pi-bolt stat__icon stat__icon--streak"></i>
+      <span class="stat__value">{{ streakLabel() }}</span>
+    </div>
+
+    <!-- Duration -->
+    <div class="stat">
+      <i class="pi pi-clock stat__icon stat__icon--time"></i>
+      <span class="stat__value">~{{ metrics().estimatedDurationMinutes }}</span>
+      <span class="stat__unit">min</span>
+    </div>
+
+    <!-- PRs badge -->
+    @if (metrics().newPRs.length > 0) {
+      <div class="stat stat--pr">
+        <i class="pi pi-trophy stat__icon stat__icon--pr"></i>
+        <span class="stat__value">{{ metrics().newPRs.length }}</span>
+        <span class="stat__unit">PR{{ metrics().newPRs.length > 1 ? 's' : '' }}</span>
+      </div>
+    }
+
+  </div>
+
+  <!-- ── PR detail chips ─────────────────────────────────────────────────── -->
+  @if (metrics().newPRs.length > 0) {
+    <div class="tracker__prs">
+      @for (pr of visiblePRs(); track pr.exercise) {
+        <span class="pr-chip">
+          <i class="pi pi-star-fill pr-chip__star"></i>
+          {{ pr.exercise }} · {{ pr.weight }} kg
+        </span>
+      }
+      @if (extraPRCount() > 0) {
+        <span class="pr-chip pr-chip--more">+{{ extraPRCount() }} más</span>
+      }
+    </div>
+  }
+
+  <!-- ── Motivation message ──────────────────────────────────────────────── -->
+  <p class="tracker__message">{{ metrics().motivationMessage }}</p>
+
+</section>
