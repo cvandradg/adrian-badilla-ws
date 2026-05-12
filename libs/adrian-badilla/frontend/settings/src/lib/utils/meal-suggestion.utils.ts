@@ -712,7 +712,7 @@ function selectBest(candidates: SuggestedMeal[], ctx: ScoringContext): Suggested
 export function generateSuggestedMeal(
   remaining: MealMacro,
   foodBlocks: FoodBlock[] = FOOD_BLOCKS,
-  maxItems: number = 4,
+  maxItems = 4,
   decision?: DecisionMode,
 ): SuggestedMeal {
   // All macros fulfilled — nothing left to suggest

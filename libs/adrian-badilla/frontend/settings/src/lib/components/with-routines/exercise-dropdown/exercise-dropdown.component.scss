@@ -1,0 +1,87 @@
+/* ── Exercise Dropdown ────────────────────────────────────────────────────── */
+
+.exercise-dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.exercise-dropdown__header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+  color: rgba(165, 180, 252, 0.8);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ── Exercise Row ─────────────────────────────────────────────────────────── */
+
+.exercise-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.28rem 0.35rem;
+  border-radius: 6px;
+  transition: background 120ms ease;
+
+  &:hover {
+    background: rgba(167, 139, 250, 0.06);
+  }
+}
+
+.exercise-row__name {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.5;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+}
+
+/* ── Eye Button ───────────────────────────────────────────────────────────── */
+
+.exercise-row__eye-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(165, 180, 252, 0.4);
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    color 140ms ease;
+
+  .pi {
+    font-size: 0.82rem;
+    pointer-events: none;
+  }
+
+  &:hover {
+    background: rgba(167, 139, 250, 0.14);
+    color: rgba(165, 180, 252, 0.9);
+  }
+
+  &.is-active {
+    background: rgba(167, 139, 250, 0.2);
+    color: #a78bfa;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(167, 139, 250, 0.5);
+    outline-offset: 1px;
+  }
+}

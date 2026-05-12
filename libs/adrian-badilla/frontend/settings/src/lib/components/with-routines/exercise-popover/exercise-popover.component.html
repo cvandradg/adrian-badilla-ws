@@ -1,0 +1,27 @@
+<div class="exercise-popover" [@popIn]>
+
+  <div class="exercise-popover__header">
+    <span class="exercise-popover__icon">🏋️</span>
+    <span class="exercise-popover__name">{{ exerciseName() }}</span>
+  </div>
+
+  @if (showVideo()) {
+    <div class="exercise-popover__video-wrapper">
+      <video
+        class="exercise-popover__video"
+        [src]="videoUrl()"
+        autoplay
+        loop
+        muted
+        playsinline
+        (error)="onVideoError()"
+      ></video>
+    </div>
+  } @else {
+    <div class="exercise-popover__placeholder">
+      <i class="pi pi-play-circle exercise-popover__placeholder-icon"></i>
+      <span class="exercise-popover__placeholder-text">Preview próximamente</span>
+    </div>
+  }
+
+</div>

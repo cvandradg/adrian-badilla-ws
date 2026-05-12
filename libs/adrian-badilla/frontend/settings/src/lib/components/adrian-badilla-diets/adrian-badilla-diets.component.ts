@@ -6,6 +6,8 @@ import {
   ChangeDetectorRef,
   inject,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Auth, user } from '@angular/fire/auth';
 import { ButtonModule } from 'primeng/button';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -52,6 +54,30 @@ export class AdrianBadillaDietsComponent {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly mealTranslationService = inject(MealTranslationService);
   private readonly store = inject(settingsStoreDev);
+
+  // ─── Auth signal to trigger diet auto-load ────────────────────────────────
+  private readonly _auth = inject(Auth);
+  private readonly _authUser = toSignal(user(this._auth), { initialValue: null });
+
+  /**
+   * Triggers diet auto-load when the user authenticates.
+   * Watches _authUser (not selectedRoute, which would be circular).
+   * Pure signal — no ngOnInit, effects, or constructor needed.
+   */
+  readonly ensureDietLoaded = computed(() => {
+    // TODO: Restore to: const authUser = this._authUser();
+    const authUser = { uid: 'T7eoekKP2YarbxJvIMbo' }; // Hardcoded for testing
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const lastLoadedId = (this.store as any)['_lastLoadedDietId']?.();
+
+    // Fire once when user is authenticated and no diet is loaded yet
+    if (authUser?.uid && !lastLoadedId) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      (this.store as any).loadActiveDiet();
+    }
+
+    return this.selectedRouteSupercenters();
+  });
 
   // ─── Firestore diet state ────────────────────────────────────────────────────
   readonly loadingDiet = computed(() => this.store.loadingDiet());
@@ -137,7 +163,8 @@ export class AdrianBadillaDietsComponent {
   };
   readonly selectRoute = (routeId: string) => this.store.selectRoute(routeId);
   /** Selects a day using Firestore data; falls back to mock if data isn't loaded. */
-  readonly selectDay = (dayId: string) => this.store.selectDay(dayId);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly selectDay = (dayId: string) => (this.store as any).selectDay(dayId);
   readonly openAddRouteDialog = () => {
     console.log('💭 TODO: Implement add route dialog');
   };

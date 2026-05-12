@@ -29,18 +29,4 @@
 }
 
 /* ── DROPDOWN CONTENT (dropdown-content slot) ────────────────── */
-.decision-dropdown__title {
-  margin-bottom: 0.5rem;
-  color: rgba(165, 180, 252, 0.8);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.decision-dropdown__text {
-  margin: 0 0 0.2rem;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.75);
-  line-height: 1.6;
-}
+/* ExerciseDropdownComponent handles its own styles. */

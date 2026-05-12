@@ -1,7 +1,7 @@
 
 
 @let routes = filteredRoutes(); @let routeSupercenters =
-selectedRouteSupercenters(); @let selectedRouteItem = selectedRoute(); @if
+ensureDietLoaded(); @let selectedRouteItem = selectedRoute(); @if
 (routes.length) {
 <lib-day-timeline-shell
   [days]="routeDays()"

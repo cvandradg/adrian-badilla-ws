@@ -15,9 +15,6 @@
   </div>
 
   <div dropdown-content>
-    <div class="decision-dropdown__title">🏋️ Ejercicios</div>
-    @for (exercise of routine().exercises; track exercise) {
-      <p class="decision-dropdown__text">- {{ exercise }}</p>
-    }
+    <lib-exercise-dropdown [exercises]="routine().exercises" />
   </div>
 </lib-decision-card>

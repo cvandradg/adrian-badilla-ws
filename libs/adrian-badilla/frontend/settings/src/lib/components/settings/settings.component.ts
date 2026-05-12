@@ -1,5 +1,5 @@
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, signal, inject, DestroyRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, signal, inject, DestroyRef, AfterViewInit } from '@angular/core';
 import { AdditionalInfoColumnComponent } from '../additional-info-column/additional-info-column.component';
 import { TabsModule } from 'primeng/tabs';
 import { AdrianBadillaDietsComponent } from '../adrian-badilla-diets/adrian-badilla-diets.component';
@@ -21,7 +21,7 @@ import { DialogService } from 'primeng/dynamicdialog';
   styleUrl: './settings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsComponent {
+export class SettingsComponent implements AfterViewInit {
   readonly isMobile = signal(
     globalThis.window?.matchMedia('(max-width: 767px)').matches ?? false
   );

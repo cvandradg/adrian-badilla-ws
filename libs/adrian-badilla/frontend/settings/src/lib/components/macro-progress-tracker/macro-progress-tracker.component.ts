@@ -297,7 +297,7 @@ export class MacroProgressTrackerComponent {
   /**
    * Format number with optional decimals
    */
-  formatNumber(value: number, decimals: number = 0): string {
+  formatNumber(value: number, decimals = 0): string {
     const multiplier = Math.pow(10, decimals);
     const rounded = Math.ceil(value * multiplier) / multiplier;
     return rounded.toFixed(decimals);

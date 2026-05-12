@@ -8,11 +8,12 @@ import {
 import type { DecisionItem, MealStatus } from '../../types/diet-decision.types';
 import { mapRoutineToDecisionItem, type Routine } from '../../adapters/decision-item.adapters';
 import { DecisionCardComponent } from '../decision-card/decision-card.component';
+import { ExerciseDropdownComponent } from '../with-routines/exercise-dropdown/exercise-dropdown.component';
 
 @Component({
   selector: 'lib-routine-decision',
   standalone: true,
-  imports: [DecisionCardComponent],
+  imports: [DecisionCardComponent, ExerciseDropdownComponent],
   templateUrl: './routine-decision.component.html',
   styleUrl: './routine-decision.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

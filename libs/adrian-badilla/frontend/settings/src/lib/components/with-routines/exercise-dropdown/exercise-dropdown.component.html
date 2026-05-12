@@ -1,0 +1,25 @@
+<div class="exercise-dropdown">
+
+  <div class="exercise-dropdown__header">
+    <span>🏋️</span>
+    <span>Ejercicios</span>
+  </div>
+
+  @for (exercise of exercises(); track exercise) {
+    <div class="exercise-row">
+      <span class="exercise-row__name">{{ exercise }}</span>
+
+      <button
+        type="button"
+        class="exercise-row__eye-btn"
+        [class.is-active]="isActive(exercise)"
+        (click)="togglePreview($event, exercise)"
+        [title]="'Ver preview: ' + exercise"
+        aria-label="Ver preview del ejercicio"
+      >
+        <i class="pi pi-eye"></i>
+      </button>
+    </div>
+  }
+
+</div>
