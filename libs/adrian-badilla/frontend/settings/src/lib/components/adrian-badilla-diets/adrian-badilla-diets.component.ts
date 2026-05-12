@@ -13,14 +13,11 @@ import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { Timeline as PrimeTimeline } from 'primeng/timeline';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { settingsStoreDev } from '../../store/settings.store';
 import { FoodDescriptionDialogComponent } from '../../dialog/food-description-dialog/food-description-dialog.component';
 import { MealTranslationService } from '../../services/meal-translation.service';
-import { NgClass } from '@angular/common';
-import { AdrianBadillaDietsDecisionComponent } from '../adrian-badilla-diets-decision/adrian-badilla-diets-decision.component';
-import { DayTimelineShellComponent } from '@adrian-badilla/ui/shared';
+import { SharedItemTimelineComponent } from '../shared-item-timeline/shared-item-timeline.component';
 import type { DayBase } from '@adrian-badilla/ui/shared';
 import type { RouteNavItem } from '../../types/diets.types';
 import { MacroProgressTrackerComponent } from '../macro-progress-tracker/macro-progress-tracker.component';
@@ -37,17 +34,14 @@ interface RouteFormState {
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    AdrianBadillaDietsDecisionComponent,
+    SharedItemTimelineComponent,
     ButtonModule,
-    PrimeTimeline,
     InputIconModule,
     IconFieldModule,
     InputTextModule,
     FloatLabelModule,
     FontAwesomeModule,
-    NgClass,
     MacroProgressTrackerComponent,
-    DayTimelineShellComponent,
   ],
 })
 export class AdrianBadillaDietsComponent {
@@ -175,15 +169,6 @@ export class AdrianBadillaDietsComponent {
     console.log('🗑️ TODO: Implement delete route dialog', route);
   };
 
-  // Helper para clases del marcador con animación de glow basado en status
-  readonly getMarkerClasses = (item: any, _index: number) => {
-    const statusClass = item.status ?? 'pending';
-    return {
-      [statusClass]: true,
-      'pulse-marker': statusClass === 'completed' || statusClass === 'skipped',
-    };
-  };
-
   // Diet dialog management
   readonly openDietDialog = (supercenter: any) =>
     this.store.openDietDialog(
@@ -199,9 +184,6 @@ export class AdrianBadillaDietsComponent {
       this.mealTranslationService,
       FoodDescriptionDialogComponent
     );
-
-  // Meal decision & mapping
-  readonly convertToDietMeal = (supercenter: any) => supercenter; // RouteSupercenterItem is compatible with DietMeal
 
   // Chat integration
   readonly openChatForMeal = (mealId: string) => this.store.openChatForMeal(mealId);

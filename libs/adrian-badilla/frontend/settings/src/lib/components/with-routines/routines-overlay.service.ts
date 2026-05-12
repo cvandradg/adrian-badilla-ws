@@ -25,6 +25,7 @@ export class RoutinesOverlayService {
     origin: Element,
     exerciseName: string,
     videoUrl: string,
+    description: string,
     vcr: ViewContainerRef,
     onClose: () => void,
   ): void {
@@ -62,6 +63,7 @@ export class RoutinesOverlayService {
     const componentRef = this.#activeRef.attach(portal);
     componentRef.setInput('exerciseName', exerciseName);
     componentRef.setInput('videoUrl', videoUrl);
+    componentRef.setInput('description', description);
   }
 
   close(): void {

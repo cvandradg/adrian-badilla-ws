@@ -1,6 +1,5 @@
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, signal, inject, DestroyRef, AfterViewInit } from '@angular/core';
-import { AdditionalInfoColumnComponent } from '../additional-info-column/additional-info-column.component';
 import { TabsModule } from 'primeng/tabs';
 import { AdrianBadillaDietsComponent } from '../adrian-badilla-diets/adrian-badilla-diets.component';
 import { MacroProgressTrackerComponent } from '../macro-progress-tracker/macro-progress-tracker.component';
@@ -10,7 +9,6 @@ import { DialogService } from 'primeng/dynamicdialog';
   selector: 'lib-settings',
   standalone: true,
   imports: [
-    AdditionalInfoColumnComponent,
     TabsModule,
     FontAwesomeModule,
     AdrianBadillaDietsComponent,

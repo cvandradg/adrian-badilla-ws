@@ -1,81 +1,22 @@
 
+@let items = ensureDietLoaded();
 
-@let routes = filteredRoutes(); @let routeSupercenters =
-ensureDietLoaded(); @let selectedRouteItem = selectedRoute(); @if
-(routes.length) {
-<lib-day-timeline-shell
-  [days]="routeDays()"
-  [selectedDayId]="selectedRouteItem?.id ?? ''"
-  [completedDayIds]="completedDayIds()"
-  (daySelected)="selectDay($event)"
->
-
-    @if (selectedRouteItem; as activeRoute) {
-
-      @if (!routeSupercenters.length) {
-      <div class="card mt-3">
-        <div class="editor-bottom-form">
-          <div class="editor-empty-state">
-            <div class="editor-empty-state__content">
-              <i class="pi pi-map editor-empty-state__icon"></i>
-              <div class="editor-empty-state__title">
-                Este dia no tiene dietas asignadas aun.
-              </div>
-              <div class="editor-empty-state__text">
-                Cuando se agreguen dietas a seguir, se reflejarán
-                aquí.
-              </div>
-              <p-button
-                label="Agregar supercenters"
-                icon="pi pi-plus"
-                type="button"
-                variant="text"
-                [raised]="true"
-                (onClick)="openAddSupercenterDialog()"
-                size="large"
-                styleClass="add-route-btn"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      }
-
-      @if (routeSupercenters.length) {
-      <div class="card">
-        <p-timeline
-          [value]="routeSupercenters"
-          class="align-items-start route-timeline"
-          [class.timeline-complete]="isTimelineComplete()"
-        >
-          <ng-template #marker let-supercenter let-i="index">
-            <div class="marker-with-actions">
-              <button
-                type="button"
-                class="timeline-marker timeline-marker-button"
-                [ngClass]="getMarkerClasses(supercenter, i)"
-                (click)="openDietDialog(supercenter)"
-              >
-                <i [class]="supercenter.imgPrimeng"></i>
-              </button>
-            </div>
-          </ng-template>
-
-          <ng-template #content let-supercenter>
-            <lib-adrian-badilla-diets-decision
-              [meal]="convertToDietMeal(supercenter)"
-              (mealDialogRequested)="openDietDialogFromChild($event)"
-              (statusChange)="handleStatusChange($event)"
-              (openChat)="openChatForMeal($event)"
-            />
-          </ng-template>
-        </p-timeline>
-      </div>
-      }
-
-    }
-
-</lib-day-timeline-shell>
-<lib-macro-progress-tracker [meals]="routeSupercenters"/>
-
+@if (filteredRoutes().length) {
+  <lib-shared-item-timeline
+    [days]="routeDays()"
+    [selectedDayId]="selectedRoute()?.id ?? ''"
+    [completedDayIds]="completedDayIds()"
+    [items]="items"
+    [isTimelineComplete]="isTimelineComplete()"
+    emptyTitle="Este dia no tiene dietas asignadas aun."
+    emptyText="Cuando se agreguen dietas a seguir, se reflejarán aquí."
+    emptyButtonLabel="Agregar supercenters"
+    (daySelected)="selectDay($event)"
+    (markerClick)="openDietDialog($event)"
+    (statusChange)="handleStatusChange($event)"
+    (openChat)="openChatForMeal($event)"
+    (itemDetails)="openDietDialogFromChild($event)"
+    (emptyAction)="openAddSupercenterDialog()"
+  />
+  <lib-macro-progress-tracker [meals]="items" />
 }

@@ -1,0 +1,45 @@
+<lib-decision-card
+  [item]="decisionItem()"
+  (statusChange)="handleStatusChange($event)"
+  (openChat)="openChat.emit($event)"
+  (openDetails)="itemDetails.emit($event)"
+>
+  <div card-name class="decision-card-name">
+    @if (isRoutine()) {
+      {{ asRoutine().name }}
+    } @else {
+      {{ asMeal().displayFoodName }}
+    }
+  </div>
+
+  <div extra-content class="decision-extra-content">
+    @if (isRoutine()) {
+      @for (exercise of asRoutine().exercises; track exercise) {
+        <span class="decision-chip">🏋️ {{ exercise }}</span>
+      }
+    } @else {
+      <span class="decision-macro decision-macro--protein">🥩 {{ roundUp(asMeal().macros?.protein ?? 0) }}g</span>
+      <span class="decision-macro decision-macro--carbs">🍞 {{ roundUp(asMeal().macros?.carbs ?? 0) }}g</span>
+      <span class="decision-macro decision-macro--fats">🥑 {{ roundUp(asMeal().macros?.fats ?? 0) }}g</span>
+    }
+  </div>
+
+  <div dropdown-content>
+    @if (isRoutine()) {
+      <lib-exercise-dropdown [exercises]="asRoutine().exercises" />
+    } @else {
+      <div class="decision-dropdown__title">👨‍🍳 Preparación</div>
+      <ul class="decision-dropdown__bullet-list">
+        @for (bulletItem of descriptionBullets(); track bulletItem; let idx = $index) {
+          <li
+            class="bullet-item"
+            [class.bullet-item--highlighted]="highlightedBulletIndex() === idx"
+            (click)="onBulletClick(idx)"
+          >
+            {{ bulletItem }}
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</lib-decision-card>

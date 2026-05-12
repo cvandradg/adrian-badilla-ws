@@ -24,4 +24,11 @@
     </div>
   }
 
+  @if (description()) {
+    <div class="exercise-popover__description">
+      <h4 class="exercise-popover__description-title">Ejecución correcta</h4>
+      <p class="exercise-popover__description-text">{{ description() }}</p>
+    </div>
+  }
+
 </div>

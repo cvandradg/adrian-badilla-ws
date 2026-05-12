@@ -7,7 +7,7 @@
  */
 export const EXERCISE_VIDEOS: Record<string, string> = {
   // ── Pierna ─────────────────────────────────────────────────────────────
-  'Squat': '',
+  'Squat': '/global/assets/videos/15079385_1080_1920_30fps.mp4',
   'Leg Press': '',
   'Lunges': '',
   'Leg Extension': '',

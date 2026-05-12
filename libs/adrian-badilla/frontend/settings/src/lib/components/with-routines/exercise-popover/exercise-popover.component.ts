@@ -28,6 +28,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 export class ExercisePopoverComponent {
   readonly exerciseName = input.required<string>();
   readonly videoUrl = input<string>('');
+  readonly description = input<string>('');
 
   readonly #videoError = signal(false);
 

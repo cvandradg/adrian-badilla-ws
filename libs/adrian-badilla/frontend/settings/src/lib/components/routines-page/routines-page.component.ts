@@ -4,18 +4,15 @@ import {
   computed,
   signal,
 } from '@angular/core';
-import { Timeline as PrimeTimeline } from 'primeng/timeline';
-import { NgClass } from '@angular/common';
-import { RoutineDecisionComponent } from '../routine-decision/routine-decision.component';
-import { DayTimelineShellComponent } from '@adrian-badilla/ui/shared';
+import { SharedItemTimelineComponent } from '../shared-item-timeline/shared-item-timeline.component';
 import { ROUTINE_DAYS_MOCK } from '../../mocks/routines.mock';
-import type { Routine, RoutineDay } from '../../adapters/decision-item.adapters';
+import type { RoutineDay } from '../../adapters/decision-item.adapters';
 import type { MealStatus } from '../../types/diet-decision.types';
 
 @Component({
   selector: 'lib-routines-page',
   standalone: true,
-  imports: [PrimeTimeline, NgClass, RoutineDecisionComponent, DayTimelineShellComponent],
+  imports: [SharedItemTimelineComponent],
   templateUrl: './routines-page.component.html',
   styleUrl: './routines-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -60,13 +57,12 @@ export class RoutinesPageComponent {
     console.log('Open details for routine', id);
   }
 
-  getMarkerClass(routine: Routine): string {
-    if (routine.status === 'completed') return 'completed';
-    if (routine.status === 'skipped') return 'skipped';
-    return 'pending';
-  }
-
   isDayComplete(day: RoutineDay): boolean {
     return day.routines.length > 0 && day.routines.every((r) => r.status === 'completed');
   }
+
+  /** Extracts the minimal DayBase fields for the timeline shell. */
+  readonly routineDays = computed(() =>
+    this.days().map(({ id, label, date }) => ({ id, label, date }))
+  );
 }

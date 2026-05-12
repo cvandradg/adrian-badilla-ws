@@ -1,0 +1,29 @@
+/* ── TIMELINE BASE ────────────────────────────────────────────── */
+
+:host ::ng-deep .p-timeline-event-opposite {
+  display: none;
+}
+
+:host ::ng-deep .p-timeline .p-timeline-event {
+  width: 100%;
+  flex: 1 1 100%;
+  min-width: 0;
+  overflow: visible;
+}
+
+:host ::ng-deep .p-timeline .p-timeline-event-content {
+  min-width: 0;
+  overflow: visible;
+  flex: 1 1 auto;
+  padding-right: 0.2rem;
+  padding-left: 0.2rem;
+}
+
+:host ::ng-deep .route-timeline {
+  padding-top: 0.5rem;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}

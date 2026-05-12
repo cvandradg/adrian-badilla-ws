@@ -1,0 +1,66 @@
+<lib-day-timeline-shell
+  [days]="days()"
+  [selectedDayId]="selectedDayId()"
+  [completedDayIds]="completedDayIds()"
+  (daySelected)="daySelected.emit($event)"
+>
+
+  @if (!items().length) {
+    <div class="card mt-3">
+      <div class="editor-bottom-form">
+        <div class="editor-empty-state">
+          <div class="editor-empty-state__content">
+            <i class="pi pi-map editor-empty-state__icon"></i>
+            <div class="editor-empty-state__title">{{ emptyTitle() }}</div>
+            <div class="editor-empty-state__text">{{ emptyText() }}</div>
+            @if (emptyButtonLabel()) {
+              <p-button
+                [label]="emptyButtonLabel()!"
+                icon="pi pi-plus"
+                type="button"
+                variant="text"
+                [raised]="true"
+                (onClick)="emptyAction.emit()"
+                size="large"
+                styleClass="add-route-btn"
+              />
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (items().length) {
+    <div class="card">
+      <p-timeline
+        [value]="items()"
+        class="align-items-start route-timeline"
+        [class.timeline-complete]="isTimelineComplete()"
+      >
+        <ng-template #marker let-item>
+          <div class="marker-with-actions">
+            <button
+              type="button"
+              class="timeline-marker timeline-marker-button"
+              [ngClass]="getMarkerClasses(item)"
+              (click)="markerClick.emit(item)"
+            >
+              <i [class]="getMarkerIcon(item)"></i>
+            </button>
+          </div>
+        </ng-template>
+
+        <ng-template #content let-item>
+          <lib-shared-item-decision
+            [item]="item"
+            (statusChange)="statusChange.emit($event)"
+            (openChat)="openChat.emit($event)"
+            (itemDetails)="itemDetails.emit($event)"
+          />
+        </ng-template>
+      </p-timeline>
+    </div>
+  }
+
+</lib-day-timeline-shell>

@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { RoutinesOverlayService } from '../routines-overlay.service';
 import { EXERCISE_VIDEOS } from '../exercise-videos.constants';
+import { EXERCISE_DESCRIPTIONS } from '../exercise-descriptions.constants';
 
 /**
  * ExerciseDropdownComponent
@@ -55,8 +56,9 @@ export class ExerciseDropdownComponent {
       this.activeExercise.set(exerciseName);
       const origin = event.currentTarget as Element;
       const videoUrl = EXERCISE_VIDEOS[exerciseName] ?? '';
+      const description = EXERCISE_DESCRIPTIONS[exerciseName] ?? '';
 
-      this.#overlay.open(origin, exerciseName, videoUrl, this.#vcr, () => {
+      this.#overlay.open(origin, exerciseName, videoUrl, description, this.#vcr, () => {
         this.activeExercise.set(null);
       });
     }

@@ -1,17 +1,20 @@
 /* ── Exercise Popover — Glassmorphism floating card ──────────────────────── */
 
 .exercise-popover {
-  width: 220px;
-  border-radius: 12px;
+  width: 320px;
+  max-height: 80vh;
+  border-radius: 14px;
   overflow: hidden;
-  background: rgba(12, 17, 30, 0.92);
+  background: rgba(12, 17, 30, 0.94);
   backdrop-filter: blur(20px) saturate(1.3);
   -webkit-backdrop-filter: blur(20px) saturate(1.3);
   border: 1px solid rgba(167, 139, 250, 0.22);
   box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.55),
-    0 0 0 1px rgba(167, 139, 250, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    0 16px 48px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(167, 139, 250, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
 }
 
 /* ── Header ─────────────────────────────────────────────────────────────── */
@@ -44,12 +47,13 @@
 /* ── Video ───────────────────────────────────────────────────────────────── */
 
 .exercise-popover__video-wrapper {
-  aspect-ratio: 4 / 3;
-  background: rgba(0, 0, 0, 0.35);
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.3) 100%);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .exercise-popover__video {
@@ -79,4 +83,50 @@
   color: rgba(255, 255, 255, 0.3);
   text-align: center;
   letter-spacing: 0.02em;
+}
+
+/* ── Description ─────────────────────────────────────────────────────────── */
+
+.exercise-popover__description {
+  padding: 1rem 1.2rem;
+  border-top: 1px solid rgba(167, 139, 250, 0.1);
+  background: rgba(167, 139, 250, 0.02);
+  flex: 1;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(167, 139, 250, 0.25);
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(167, 139, 250, 0.4);
+    }
+  }
+}
+
+.exercise-popover__description-title {
+  margin: 0 0 0.6rem 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(165, 180, 252, 0.9);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.exercise-popover__description-text {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: justify;
+  letter-spacing: 0.01em;
+  word-spacing: 0.05em;
 }

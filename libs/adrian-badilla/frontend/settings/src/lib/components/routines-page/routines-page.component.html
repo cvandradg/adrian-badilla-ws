@@ -1,41 +1,11 @@
-@let activeDay = selectedDay();
-
-<lib-day-timeline-shell
-  [days]="days()"
+<lib-shared-item-timeline
+  [days]="routineDays()"
   [selectedDayId]="selectedDayId()"
   [completedDayIds]="completedDayIds()"
+  [items]="selectedDay()?.routines ?? []"
+  [isTimelineComplete]="isTimelineComplete()"
   (daySelected)="selectDay($event)"
->
-
-  @if (activeDay) {
-    <div class="card mt-4">
-      <p-timeline
-        [value]="activeDay.routines"
-        class="align-items-start route-timeline"
-        [class.timeline-complete]="isTimelineComplete()"
-      >
-        <ng-template #marker let-routine>
-          <div class="marker-with-actions">
-            <button
-              type="button"
-              class="timeline-marker timeline-marker-button"
-              [ngClass]="getMarkerClass(routine)"
-            >
-              <i class="pi pi-calendar"></i>
-            </button>
-          </div>
-        </ng-template>
-
-        <ng-template #content let-routine>
-          <lib-routine-decision
-            [routine]="routine"
-            (statusChange)="handleStatusChange($event)"
-            (openChat)="openChat($event)"
-            (openDetails)="openDetails($event)"
-          />
-        </ng-template>
-      </p-timeline>
-    </div>
-  }
-
-</lib-day-timeline-shell>
+  (statusChange)="handleStatusChange($event)"
+  (openChat)="openChat($event)"
+  (itemDetails)="openDetails($event)"
+/>
