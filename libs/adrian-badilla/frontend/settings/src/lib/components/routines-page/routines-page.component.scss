@@ -10,6 +10,8 @@
 }
 
 /* ── Page wrapper: timeline + tracker ────────────────────────── */
+/* On mobile, dashboard :host has height:100dvh so height:100% resolves
+   correctly through the flex chain — no viewport unit math needed here. */
 .routines-page {
   display: flex;
   flex-direction: column;

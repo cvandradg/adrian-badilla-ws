@@ -2,13 +2,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  signal,
+  inject,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Auth, user } from '@angular/fire/auth';
 import { SharedItemTimelineComponent } from '../shared-item-timeline/shared-item-timeline.component';
 import { RoutineProgressTrackerComponent } from '../routine-progress-tracker/routine-progress-tracker.component';
-import { ROUTINE_DAYS_MOCK } from '../../mocks/routines.mock';
+import { settingsStoreDev } from '../../store/settings.store';
 import { calculateRoutineProgressMetrics } from '../../store/with-routine-tracker.feature';
-import type { RoutineDay } from '../../adapters/decision-item.adapters';
 import type { MealStatus } from '../../types/diet-decision.types';
 
 @Component({
@@ -20,35 +21,66 @@ import type { MealStatus } from '../../types/diet-decision.types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoutinesPageComponent {
-  readonly days = signal<RoutineDay[]>(ROUTINE_DAYS_MOCK);
-  readonly selectedDayId = signal(ROUTINE_DAYS_MOCK[0].id);
+  private readonly store = inject(settingsStoreDev);
 
-  readonly selectedDay = computed(() =>
-    this.days().find((d) => d.id === this.selectedDayId())
+  // ─── Auth trigger (same pattern as AdrianBadillaDietsComponent) ─────────
+  private readonly _auth = inject(Auth);
+  private readonly _authUser = toSignal(user(this._auth), { initialValue: null });
+
+  /**
+   * Triggers routine auto-load exactly once when the user is authenticated.
+   * Uses computed() as a reactive trigger — no ngOnInit, no effects.
+   *
+   * The return value (`selectedDayRoutines`) keeps this computed alive
+   * so Angular doesn't prune it as unused.
+   */
+  readonly ensureRoutineLoaded = computed(() => {
+    // 🔧 Development: Using hardcoded userId for testing. Remove once Firebase Auth is properly configured.
+    const authUser = { uid: 'T7eoekKP2YarbxJvIMbo' };
+    // eslint-disable-next-line no-commented-code
+    // const authUser = this._authUser(); // Production: Use authenticated user from Firebase
+
+    if (authUser?.uid && !this.store.routineDays().length) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      this.store.loadActiveRoutine();
+    }
+
+    return this.store.selectedDayRoutines();
+  });
+
+  // ─── Store signals (presentational bindings) ─────────────────────────────
+
+  readonly loadingRoutine = computed(() => this.store.loadingRoutine());
+  readonly errorRoutine   = computed(() => this.store.errorRoutine());
+
+  readonly routineDayBases       = computed(() => this.store.routineDayBases());
+  readonly selectedRoutineDayId  = computed(() => this.store.selectedRoutineDayId() ?? '');
+  readonly selectedDayRoutines   = computed(() => this.store.selectedDayRoutines());
+  readonly isSelectedDayComplete = computed(() => this.store.isSelectedDayComplete());
+  readonly completedRoutineDayIds = computed(() => this.store.completedRoutineDayIds());
+
+  // ─── Progress tracker metrics ─────────────────────────────────────────────
+
+  /**
+   * Derives live progress metrics from the store's routine days.
+   * `withRoutineTracker` pure functions receive the store data and recalculate
+   * automatically whenever a status changes.
+   */
+  readonly progressMetrics = computed(() =>
+    calculateRoutineProgressMetrics(
+      this.store.routineDays(),
+      this.store.selectedRoutineDayId() ?? '',
+    )
   );
 
-  readonly isTimelineComplete = computed(() =>
-    this.selectedDay()?.routines.every((r) => r.status === 'completed') ?? false
-  );
+  // ─── Event handlers (delegate to store) ─────────────────────────────────
 
-  /** Set of day IDs where every routine is completed — passed to DaySidebarComponent. */
-  readonly completedDayIds = computed(
-    () => new Set(this.days().filter((d) => this.isDayComplete(d)).map((d) => d.id))
-  );
-
-  selectDay(id: string): void {
-    this.selectedDayId.set(id);
+  selectDay(dayId: string): void {
+    this.store.selectRoutineDay(dayId);
   }
 
   handleStatusChange(event: { id: string; status: MealStatus }): void {
-    this.days.update((days) =>
-      days.map((day) => ({
-        ...day,
-        routines: day.routines.map((r) =>
-          r.id === event.id ? { ...r, status: event.status } : r
-        ),
-      }))
-    );
+    this.store.updateRoutineExerciseStatus(event);
   }
 
   openChat(id: string): void {
@@ -58,21 +90,5 @@ export class RoutinesPageComponent {
   openDetails(id: string): void {
     console.log('Open details for routine', id);
   }
-
-  isDayComplete(day: RoutineDay): boolean {
-    return day.routines.length > 0 && day.routines.every((r) => r.status === 'completed');
-  }
-
-  /** Extracts the minimal DayBase fields for the timeline shell. */
-  readonly routineDays = computed(() =>
-    this.days().map(({ id, label, date }) => ({ id, label, date }))
-  );
-
-  /**
-   * 📊 Live progress metrics for the selected day.
-   * Recalculates whenever routines status or selected day changes.
-   */
-  readonly progressMetrics = computed(() =>
-    calculateRoutineProgressMetrics(this.days(), this.selectedDayId())
-  );
 }
+

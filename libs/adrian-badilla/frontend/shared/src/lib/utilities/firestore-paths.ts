@@ -17,6 +17,10 @@ export const userPaths = {
   routine: (uid: string, routineId: string) =>
     `users/${uid}/routines/${routineId}`,
 
+  /** Subcollection name matches the Firestore typo "exercices" intentionally. */
+  exercises: (uid: string, routineId: string) =>
+    `users/${uid}/routines/${routineId}/exercices`,
+
   dailyStatus: (uid: string) =>
     `users/${uid}/daily-status`,
 

@@ -23,6 +23,10 @@
 
   @media (max-width: 767px) {
     padding-inline: 0;
+    /* Definite height is required so that height:100% propagates correctly
+       through the entire flex chain down to routines-page and other pages.
+       min-height alone does NOT create a definite height for % children. */
+    height: 100dvh;
   }
 }
 

@@ -3,11 +3,11 @@
   <!-- ── Scrollable timeline area ─────────────────────────────────────── -->
   <div class="routines-page__timeline">
     <lib-shared-item-timeline
-      [days]="routineDays()"
-      [selectedDayId]="selectedDayId()"
-      [completedDayIds]="completedDayIds()"
-      [items]="selectedDay()?.routines ?? []"
-      [isTimelineComplete]="isTimelineComplete()"
+      [days]="routineDayBases()"
+      [selectedDayId]="selectedRoutineDayId()"
+      [completedDayIds]="completedRoutineDayIds()"
+      [items]="ensureRoutineLoaded()"
+      [isTimelineComplete]="isSelectedDayComplete()"
       (daySelected)="selectDay($event)"
       (statusChange)="handleStatusChange($event)"
       (openChat)="openChat($event)"

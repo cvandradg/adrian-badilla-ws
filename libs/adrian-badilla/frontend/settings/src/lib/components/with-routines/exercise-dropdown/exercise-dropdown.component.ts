@@ -8,13 +8,17 @@ import {
   signal,
 } from '@angular/core';
 import { RoutinesOverlayService } from '../routines-overlay.service';
-import { EXERCISES_MOCK } from '../../../mocks/exercises.mock';
+import { settingsStoreDev } from '../../../store/settings.store';
 
 /**
  * ExerciseDropdownComponent
  *
  * Renders a list of exercises as rows, each with a 👁 icon that opens
  * a floating preview popover via CDK Overlay.
+ *
+ * Exercise detail data (description, video, targetReps) is sourced from
+ * the `settingsStoreDev` exerciseLookup signal — populated by
+ * `withRoutineQueries` from Firestore. No static mock data.
  *
  * Provided in: RoutinesOverlayService (per-instance, isolated overlay lifecycle).
  * Used in: RoutineDecisionComponent dropdown-content slot.
@@ -33,6 +37,7 @@ export class ExerciseDropdownComponent {
   readonly #vcr = inject(ViewContainerRef);
   readonly #overlay = inject(RoutinesOverlayService);
   readonly #destroyRef = inject(DestroyRef);
+  readonly #store = inject(settingsStoreDev);
 
   /** Tracks which exercise has an open popover. */
   readonly activeExercise = signal<string | null>(null);
@@ -54,9 +59,12 @@ export class ExerciseDropdownComponent {
     if (!isSameExercise) {
       this.activeExercise.set(exerciseName);
       const origin = event.currentTarget as Element;
-      const exerciseMock = EXERCISES_MOCK[exerciseName];
+      // Look up exercise detail from store (sourced from Firestore)
+      const exerciseDetail = this.#store.exerciseLookup()[exerciseName];
 
-      this.#overlay.open(origin, exerciseMock, this.#vcr, () => {
+      if (!exerciseDetail) return;
+
+      this.#overlay.open(origin, exerciseDetail, this.#vcr, () => {
         this.activeExercise.set(null);
       });
     }
@@ -66,3 +74,4 @@ export class ExerciseDropdownComponent {
     return this.activeExercise() === exerciseName;
   }
 }
+

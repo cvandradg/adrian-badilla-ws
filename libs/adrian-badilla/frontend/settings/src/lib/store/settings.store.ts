@@ -5,6 +5,7 @@ import { withRoutes } from './with-routes.feature';
 import { withMacroTracker } from './with-macro-tracker.feature';
 import { withNutritionChat } from './with-nutrition-chat.feature';
 import { withDietQueries } from './with-diet-queries.feature';
+import { withRoutineQueries } from './with-routine-queries.feature';
 
 export const settingsStoreDev = signalStore(
   {providedIn: 'root'},
@@ -15,4 +16,5 @@ export const settingsStoreDev = signalStore(
     withFeature(() => withMacroTracker()),
     withFeature(() => withNutritionChat()),
     withFeature(() => withDietQueries()),
+    withFeature(() => withRoutineQueries()),
 );
