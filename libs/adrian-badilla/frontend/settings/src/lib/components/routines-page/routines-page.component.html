@@ -1,6 +1,9 @@
 <div class="routines-page">
 
   <!-- ── Scrollable timeline area ─────────────────────────────────────── -->
+  <!-- lib-shared-item-timeline is ALWAYS rendered so the day sidebar stays
+       visible. When the selected day has no exercises, restDayLabel causes
+       the rest-day card to appear inside the content area instead. -->
   <div class="routines-page__timeline">
     <lib-shared-item-timeline
       [days]="routineDayBases()"
@@ -8,6 +11,7 @@
       [completedDayIds]="completedRoutineDayIds()"
       [items]="ensureRoutineLoaded()"
       [isTimelineComplete]="isSelectedDayComplete()"
+      [restDayLabel]="isRestDay() ? selectedDayLabel() : null"
       (daySelected)="selectDay($event)"
       (statusChange)="handleStatusChange($event)"
       (openChat)="openChat($event)"

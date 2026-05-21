@@ -1,0 +1,573 @@
+/* ── Page Wrapper ────────────────────────────────────────────────────────── */
+
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0 1rem 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  color: var(--app-text, #f1f5f9);
+}
+
+/* ── Top Bar ─────────────────────────────────────────────────────────────── */
+
+.profile-page__topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.profile-page__back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(167, 139, 250, 0.15);
+    color: #c4b5fd;
+    border-color: rgba(167, 139, 250, 0.3);
+  }
+}
+
+.profile-page__topbar-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: rgba(241, 245, 249, 0.9);
+}
+
+/* ── Hero ─────────────────────────────────────────────────────────────────── */
+
+.profile-page__hero {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem 1.25rem 1.35rem;
+  border-radius: 18px;
+  background: linear-gradient(
+    135deg,
+    rgba(88, 28, 135, 0.52) 0%,
+    rgba(49, 46, 129, 0.38) 45%,
+    rgba(7, 14, 23, 0.92) 100%
+  );
+  border: 1px solid rgba(167, 139, 250, 0.28);
+  box-shadow:
+    0 8px 32px rgba(88, 28, 135, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.profile-page__avatar-ring {
+  width: 5.5rem;
+  height: 5.5rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  padding: 3px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(167, 139, 250, 0.9) 0deg,
+    rgba(52, 211, 153, 0.75) 120deg,
+    rgba(96, 165, 250, 0.8) 240deg,
+    rgba(167, 139, 250, 0.9) 360deg
+  );
+  box-shadow: 0 0 20px rgba(167, 139, 250, 0.35);
+  animation: avatarSpin 8s linear infinite;
+
+  @keyframes avatarSpin {
+    to { filter: hue-rotate(360deg); }
+  }
+}
+
+.profile-page__avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.profile-page__identity {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.profile-page__name {
+  margin: 0 0 0.4rem 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #e9d5ff;
+  background: linear-gradient(90deg, #e9d5ff, #c4b5fd 60%, #a5f3d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-page__goal {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0.28rem 0.6rem;
+  border-radius: 8px;
+  background: rgba(167, 139, 250, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.22);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(196, 181, 253, 0.9);
+  line-height: 1.5;
+  white-space: normal;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+/* ── Tab Switcher ────────────────────────────────────────────────────────── */
+
+.profile-page__tabs {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 0.3rem;
+}
+
+.profile-page__tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: rgba(241, 245, 249, 0.45);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 180ms ease;
+
+  .pi { font-size: 0.85rem; }
+
+  &:hover:not(.is-active) {
+    color: rgba(241, 245, 249, 0.75);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &.is-active {
+    background: rgba(167, 139, 250, 0.18);
+    color: #c4b5fd;
+    border: 1px solid rgba(167, 139, 250, 0.3);
+    box-shadow: 0 2px 12px rgba(167, 139, 250, 0.15);
+  }
+}
+
+/* ── Stats Grid ──────────────────────────────────────────────────────────── */
+
+.profile-page__stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+
+  @media (max-width: 460px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem 0.4rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+  gap: 0.2rem;
+  text-align: center;
+  transition: transform 150ms ease;
+
+  &:hover { transform: translateY(-2px); }
+  &:nth-child(1) { border-color: rgba(251, 191, 36, 0.22); }
+  &:nth-child(2) { border-color: rgba(52, 211, 153, 0.22); }
+  &:nth-child(3) { border-color: rgba(96, 165, 250, 0.22); }
+  &:nth-child(4) { border-color: rgba(167, 139, 250, 0.22); }
+  &:nth-child(5) { border-color: rgba(248, 113, 113, 0.22); }
+}
+
+.stat-card__label {
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(241, 245, 249, 0.45);
+}
+
+.stat-card__value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: rgba(241, 245, 249, 0.92);
+
+  small {
+    font-size: 0.65rem;
+    font-weight: 400;
+    color: rgba(241, 245, 249, 0.45);
+    margin-left: 0.15em;
+  }
+}
+
+/* ── Section ─────────────────────────────────────────────────────────────── */
+
+.profile-page__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.profile-page__section-title {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(241, 245, 249, 0.75);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.profile-page__section-subtitle {
+  margin: 0;
+  font-size: 0.78rem;
+  color: rgba(241, 245, 249, 0.4);
+}
+
+/* ── Measurements ────────────────────────────────────────────────────────── */
+
+.measurements-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.measurement-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+  border-left: 2px solid rgba(167, 139, 250, 0.3);
+}
+
+.measurement-item__label {
+  font-size: 0.78rem;
+  color: rgba(241, 245, 249, 0.5);
+}
+
+.measurement-item__value {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(241, 245, 249, 0.85);
+}
+
+/* ── Progress Photos ─────────────────────────────────────────────────────── */
+
+.progress-main-photo {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  height: 200px;
+}
+
+.progress-main-photo__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.progress-main-photo__label {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 0.6rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  font-size: 0.75rem;
+  color: rgba(241, 245, 249, 0.9);
+}
+
+.progress-thumbnails {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+.progress-thumb {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 150ms ease;
+  width: 5.5rem;
+
+  &.is-selected {
+    border-color: rgba(167, 139, 250, 0.55);
+    box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.15);
+  }
+}
+
+.progress-thumb__img {
+  width: 100%;
+  height: 4rem;
+  object-fit: cover;
+  display: block;
+}
+
+.progress-thumb__label {
+  font-size: 0.62rem;
+  color: rgba(241, 245, 249, 0.5);
+  padding: 0 0.25rem 0.35rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ══════════ HISTORIAL TAB ══════════ */
+
+.measurement-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Snapshot Item ── */
+.msnap {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  animation: snapIn 250ms ease both;
+}
+
+@keyframes snapIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.msnap--latest .msnap__card {
+  border-color: rgba(167, 139, 250, 0.35);
+  background: linear-gradient(145deg, rgba(167, 139, 250, 0.08), rgba(30, 27, 55, 0.5));
+}
+
+/* ── Connector ── */
+.msnap__connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 1.5rem;
+  padding-top: 0.5rem;
+}
+
+.msnap__dot {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: rgba(167, 139, 250, 0.5);
+  border: 2px solid rgba(167, 139, 250, 0.25);
+  flex-shrink: 0;
+
+  &.msnap__dot--pulse {
+    background: rgba(52, 211, 153, 0.85);
+    border-color: rgba(52, 211, 153, 0.4);
+    box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.12), 0 0 8px rgba(52, 211, 153, 0.4);
+    animation: dotPulse 2s ease-in-out infinite;
+  }
+}
+
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.12), 0 0 8px rgba(52, 211, 153, 0.4); }
+  50%       { box-shadow: 0 0 0 7px rgba(52, 211, 153, 0.06), 0 0 16px rgba(52, 211, 153, 0.3); }
+}
+
+.msnap__line {
+  flex: 1;
+  width: 2px;
+  margin-top: 4px;
+  background: linear-gradient(to bottom, rgba(167, 139, 250, 0.25), rgba(167, 139, 250, 0.05));
+}
+
+/* ── Card ── */
+.msnap__card {
+  flex: 1;
+  min-width: 0;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.025);
+  padding: 0.875rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.msnap__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.msnap__date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.msnap__label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: rgba(241, 245, 249, 0.9);
+}
+
+.msnap__date {
+  font-size: 0.72rem;
+  color: rgba(241, 245, 249, 0.4);
+}
+
+.msnap__current-badge {
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  color: rgba(110, 231, 183, 0.9);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* ── Key Stats Row ── */
+.msnap__key-stats {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.msnap__kstat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0.35rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  gap: 0.1rem;
+  text-align: center;
+}
+
+.msnap__kstat-label {
+  font-size: 0.65rem;
+  color: rgba(241, 245, 249, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.msnap__kstat-value {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: rgba(241, 245, 249, 0.9);
+
+  small {
+    font-size: 0.6rem;
+    color: rgba(241, 245, 249, 0.4);
+  }
+}
+
+/* ── Delta badges ── */
+.msnap__delta {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+
+  &.msnap__delta--up {
+    color: rgba(110, 231, 183, 0.9);
+    background: rgba(52, 211, 153, 0.1);
+  }
+
+  &.msnap__delta--down {
+    color: rgba(248, 113, 113, 0.9);
+    background: rgba(248, 113, 113, 0.1);
+  }
+
+  &.msnap__delta--sm {
+    font-size: 0.6rem;
+  }
+}
+
+/* ── Mini Measures grid ── */
+.msnap__measures {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+}
+
+.msnap__measure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.35rem 0.25rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: center;
+}
+
+.msnap__measure-lbl {
+  font-size: 0.6rem;
+  color: rgba(241, 245, 249, 0.38);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.msnap__measure-val {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(241, 245, 249, 0.8);
+}

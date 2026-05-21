@@ -98,3 +98,66 @@
 ::ng-deep .p-dialog.add-edit-dialog .p-dialog-header {
   background: rgba(0, 0, 0, 0.35) !important;
 }
+
+/* ── User Profile Dialog (Angular Material) ─────────────────────────────── */
+.user-profile-dialog-backdrop {
+  background: rgba(3, 7, 12, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.user-profile-dialog-panel .mat-mdc-dialog-container {
+  --mdc-dialog-container-color: transparent;
+  --mdc-dialog-container-shape: 0px;
+  padding: 0;
+  overflow: visible;
+  box-shadow: none;
+}
+
+.user-profile-dialog-panel .mat-mdc-dialog-surface {
+  background: transparent;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+  overflow: visible;
+}
+
+/* ProfilePageComponent inside dialog */
+.user-profile-dialog-panel lib-profile-page {
+  display: block;
+}
+
+.user-profile-dialog-panel lib-profile-page .profile-page {
+  position: relative;
+  background: linear-gradient(160deg, #14283b 0%, #04090f 100%);
+  border: 1px solid rgba(132, 165, 188, 0.14);
+  border-radius: 0;
+  overflow-y: auto;
+  max-height: 85dvh;
+  width: min(520px, 95vw);
+  margin: 0;
+  max-width: unset;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(132, 165, 188, 0.15) transparent;
+}
+
+@media (max-width: 599px) {
+  .user-profile-dialog-panel {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 !important;
+    max-width: 100vw !important;
+    width: 100vw !important;
+  }
+
+  .user-profile-dialog-panel .mat-mdc-dialog-container {
+    border-radius: 20px 20px 0 0;
+  }
+
+  .user-profile-dialog-panel lib-profile-page .profile-page {
+    width: 100vw;
+    max-height: 100dvh;
+    border-radius: 0;
+    border: none;
+  }
+}

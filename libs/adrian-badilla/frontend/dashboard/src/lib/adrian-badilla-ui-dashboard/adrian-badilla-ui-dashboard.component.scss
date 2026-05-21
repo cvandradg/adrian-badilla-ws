@@ -90,15 +90,38 @@ mat-sidenav-container.dashboard-shell {
   position: sticky;
   top: 0;
   z-index: 100;
+  overflow: hidden; /* prevent horizontal scroll */
 
   @media (max-width: 767px) {
     padding: 0.7rem 1rem;
     border-radius: 0;
+
+    /* Swap positions: user icon → left, menu icon → right */
+    .header-start { order: 2; }
+    .header-actions { order: 1; }
   }
 }
 
 .menu-toggle {
   cursor: pointer;
+}
+
+.navbar-logo {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  opacity: 0.85;
+  transition: opacity 150ms ease;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  @media (max-width: 767px) {
+    width: 32px;
+    height: 32px;
+  }
 }
 
 .title {
@@ -256,9 +279,13 @@ mat-sidenav-container.dashboard-shell {
 }
 
 :host ::ng-deep .mat-drawer-backdrop.mat-drawer-shown {
-  backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   background: tokens.$dashboard-backdrop;
+  /* Force GPU compositing layer — required for backdrop-filter
+     to render in production builds on mobile Chrome/WebView */
+  transform: translateZ(0);
+  will-change: backdrop-filter;
 }
 
 .right-sidenav {

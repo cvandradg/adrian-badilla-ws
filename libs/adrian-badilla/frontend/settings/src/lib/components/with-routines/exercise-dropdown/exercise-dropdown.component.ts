@@ -58,7 +58,8 @@ export class ExerciseDropdownComponent {
 
     if (!isSameExercise) {
       this.activeExercise.set(exerciseName);
-      const origin = event.currentTarget as Element;
+      // Use the button row itself as origin anchor
+      const origin = (event.currentTarget as Element);
       // Look up exercise detail from store (sourced from Firestore)
       const exerciseDetail = this.#store.exerciseLookup()[exerciseName];
 

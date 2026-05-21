@@ -3,16 +3,19 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, startWith } from 'rxjs';
 import { DescriptionSidePanelComponent } from '../description-side-panel/description-side-panel.component';
 import { SideMenuComponent } from '../side-menu/side-menu.component';
+import { ProfilePageComponent } from '../profile-page/profile-page.component';
 
 const DASHBOARD_MOBILE_WIDTH = 'var(--dashboard-panel-mobile-inline-size)';
 const DASHBOARD_EXPANDED_WIDTH = 'var(--dashboard-panel-inline-size)';
@@ -27,6 +30,7 @@ const DASHBOARD_SIDENAV_GAP = 'var(--dashboard-panel-gap)';
     SideMenuComponent,
     RouterModule,
     MatSidenavModule,
+    MatDialogModule,
     DescriptionSidePanelComponent,
     FontAwesomeModule,
   ],
@@ -36,6 +40,7 @@ const DASHBOARD_SIDENAV_GAP = 'var(--dashboard-panel-gap)';
 })
 export class DashboardComponent {
   readonly #router = inject(Router);
+  readonly #dialog = inject(MatDialog);
 
   private readonly bpState = toSignal(
     inject(BreakpointObserver).observe('(max-width:1681px)'),
@@ -46,6 +51,7 @@ export class DashboardComponent {
 
   readonly isNarrow = computed(() => this.bpState().matches);
   readonly collapsed = signal(false);
+  readonly leftOpen = signal(false);
   readonly rightPinnedOpen = signal(true);
   readonly isScraperRunning = signal(false);
 
@@ -77,10 +83,18 @@ export class DashboardComponent {
       : '0'
   );
 
-  onMenuClick(left: MatSidenav) {
-    return this.isNarrow()
-      ? left.toggle()
-      : this.collapsed.update((isCollapsed) => !isCollapsed);
+  onMenuClick(): void {
+    if (this.isNarrow()) {
+      this.leftOpen.update((open) => !open);
+    } else {
+      this.collapsed.update((isCollapsed) => !isCollapsed);
+    }
+  }
+
+  onBackdropClick(): void {
+    if (this.isNarrow()) {
+      this.leftOpen.set(false);
+    }
   }
 
   onRightToggle(right: MatSidenav) {
@@ -96,6 +110,21 @@ export class DashboardComponent {
     ),
     { initialValue: null }
   );
+
+  // Close mobile sidebar automatically on every route navigation
+  private readonly _closeOnNav = effect(() => {
+    if (this.navEnd() && this.isNarrow()) {
+      this.leftOpen.set(false);
+    }
+  });
+
+  onUserProfileClick(): void {
+    this.#dialog.open(ProfilePageComponent, {
+      panelClass: 'user-profile-dialog-panel',
+      backdropClass: 'user-profile-dialog-backdrop',
+      maxWidth: '100vw',
+    });
+  }
 
   readonly headerTitle = computed(() => {
     this.navEnd();

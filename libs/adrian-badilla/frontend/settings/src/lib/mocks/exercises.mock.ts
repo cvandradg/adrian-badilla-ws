@@ -8,4 +8,6 @@ export interface ExerciseMock {
   videoUrl: string;
   description: string;
   targetReps: number;
+  /** Muscle-group / movement-pattern label — mirrors `FirestoreExercise.type`. */
+  type?: string;
 }

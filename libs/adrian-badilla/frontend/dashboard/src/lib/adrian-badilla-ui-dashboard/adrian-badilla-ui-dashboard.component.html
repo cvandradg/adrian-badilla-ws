@@ -1,9 +1,10 @@
-<mat-sidenav-container class="dashboard-shell" [autosize]="true">
+<mat-sidenav-container class="dashboard-shell" [autosize]="true" [hasBackdrop]="true" (backdropClick)="onBackdropClick()">
   <mat-sidenav
     #left
     class="left-sidenav"
+    [position]="isNarrow() ? 'end' : 'start'"
     [mode]="isNarrow() ? 'over' : 'side'"
-    [opened]="!isNarrow()"
+    [opened]="isNarrow() ? leftOpen() : true"
     [style.width]="leftWidth()"
     [class.is-collapsed]="collapsed()"
   >
@@ -28,15 +29,21 @@
   >
     <div class="dashboard-container">
       <div class="container-header">
-        <div class="inline-flex gap-3">
+        <div class="header-start inline-flex gap-3">
+          <img
+            src="/global/assets/img/ab-logo-circle.svg"
+            alt="Adrián Badilla"
+            class="navbar-logo"
+          />
           <fa-icon
             [icon]="['fas', 'bars']"
             class="fa-lg menu-toggle"
-            (click)="onMenuClick(left)"
-            (keydown.enter)="onMenuClick(left)"
+            (click)="onMenuClick()"
+            (keydown.enter)="onMenuClick()"
             tabindex="0"
+            role="button"
+            aria-label="Abrir menú de navegación"
           />
-          <div class="title">{{ headerTitle() }}</div>
         </div>
 
         <div class="header-actions">
@@ -51,7 +58,12 @@
             </div>
             }
 
-            <button type="button" class="login-button">
+            <button
+              type="button"
+              class="login-button"
+              (click)="onUserProfileClick()"
+              aria-label="Perfil de usuario"
+            >
               <fa-icon [icon]="['fas', 'user']"></fa-icon>
               <span>Ingresar</span>
             </button>

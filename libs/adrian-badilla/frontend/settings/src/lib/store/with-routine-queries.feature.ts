@@ -132,6 +132,16 @@ export function withRoutineQueries() {
               .map((d) => d.id),
           )
         ),
+
+        /** True when data is loaded and the selected day has no exercises (e.g. Domingo). */
+        isSelectedDayRestDay: computed(() => {
+          const routineDays = store.routineDays();
+          if (routineDays.length === 0) return false; // data not loaded yet
+          const dayId = store.selectedRoutineDayId();
+          if (!dayId) return false;
+          const day = routineDays.find((d) => d.id === dayId);
+          return !day || day.routines.length === 0;
+        }),
       };
     }),
 

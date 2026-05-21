@@ -31,6 +31,12 @@ export class SharedItemTimelineComponent {
   readonly emptyTitle = input<string>('No hay elementos asignados aún.');
   readonly emptyText = input<string>('Cuando se agreguen elementos, se reflejarán aquí.');
   readonly emptyButtonLabel = input<string | null>(null);
+  /**
+   * When set to a non-null string, replaces the generic empty state with
+   * a rest-day card showing this label (e.g. "Domingo").
+   * The sidebar stays visible regardless.
+   */
+  readonly restDayLabel = input<string | null>(null);
 
   // ─── Outputs ──────────────────────────────────────────────────────────────
   readonly daySelected = output<string>();

@@ -50,14 +50,20 @@ export class RoutinesPageComponent {
 
   // ─── Store signals (presentational bindings) ─────────────────────────────
 
-  readonly loadingRoutine = computed(() => this.store.loadingRoutine());
-  readonly errorRoutine   = computed(() => this.store.errorRoutine());
-
   readonly routineDayBases       = computed(() => this.store.routineDayBases());
   readonly selectedRoutineDayId  = computed(() => this.store.selectedRoutineDayId() ?? '');
   readonly selectedDayRoutines   = computed(() => this.store.selectedDayRoutines());
   readonly isSelectedDayComplete = computed(() => this.store.isSelectedDayComplete());
   readonly completedRoutineDayIds = computed(() => this.store.completedRoutineDayIds());
+
+  /** True when the selected day has no exercises (rest day, e.g. Domingo). */
+  readonly isRestDay = computed(() => this.store.isSelectedDayRestDay());
+
+  /** Label of the selected day (e.g. "Domingo") — used in the rest-day card. */
+  readonly selectedDayLabel = computed(() => {
+    const id = this.selectedRoutineDayId();
+    return this.routineDayBases().find((d) => d.id === id)?.label ?? '';
+  });
 
   // ─── Progress tracker metrics ─────────────────────────────────────────────
 

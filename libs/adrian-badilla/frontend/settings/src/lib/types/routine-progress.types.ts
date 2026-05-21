@@ -1,11 +1,3 @@
-// ─── Working set ────────────────────────────────────────────────────────────
-
-/** A single set performed during a routine (reps + weight). */
-export interface WorkingSet {
-  reps: number;
-  weight: number; // kg — use 0 for bodyweight exercises
-}
-
 // ─── Exercise benchmark (mock working weight) ───────────────────────────────
 
 /**

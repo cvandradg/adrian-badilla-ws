@@ -6,20 +6,20 @@
   </div>
 
   @for (exercise of exercises(); track exercise) {
-    <div class="exercise-row">
+    <button
+      type="button"
+      class="exercise-row"
+      [class.is-active]="isActive(exercise)"
+      (click)="togglePreview($event, exercise)"
+      [attr.aria-label]="'Ver ejercicio: ' + exercise"
+      [attr.aria-expanded]="isActive(exercise)"
+      [title]="'Ver preview: ' + exercise"
+    >
       <span class="exercise-row__name">{{ exercise }}</span>
-
-      <button
-        type="button"
-        class="exercise-row__eye-btn"
-        [class.is-active]="isActive(exercise)"
-        (click)="togglePreview($event, exercise)"
-        [title]="'Ver preview: ' + exercise"
-        aria-label="Ver preview del ejercicio"
-      >
+      <span class="exercise-row__eye-btn" aria-hidden="true">
         <i class="pi pi-eye"></i>
-      </button>
-    </div>
+      </span>
+    </button>
   }
 
 </div>

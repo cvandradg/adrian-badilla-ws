@@ -9,8 +9,6 @@
   overflow: hidden;
 }
 
-/* ── TIMELINE BASE ────────────────────────────────────────────── */
-
 :host ::ng-deep .p-timeline-event-opposite {
   display: none;
 }
@@ -37,4 +35,91 @@
   position: relative;
   display: flex;
   flex-direction: column;
+}
+
+/* ── Rest day card ─────────────────────────────────────────────── */
+
+.rest-day-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  margin: 24px 16px;
+  padding: 36px 24px 32px;
+  border-radius: 20px;
+  border: 1px solid rgba(167, 139, 250, 0.18);
+  background: rgba(88, 28, 135, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: restCardIn 360ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.rest-day-card__icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(167, 139, 250, 0.3);
+  background: rgba(124, 58, 237, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: floatIcon 3s ease-in-out infinite;
+
+  i {
+    font-size: 1.75rem;
+    color: #c084fc;
+    filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.5));
+  }
+}
+
+.rest-day-card__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.rest-day-card__message {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+  max-width: 300px;
+}
+
+.rest-day-card__tips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.rest-day-card__tip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+
+  i {
+    font-size: 0.72rem;
+    color: #a78bfa;
+  }
+}
+
+@keyframes restCardIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes floatIcon {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-7px); }
 }

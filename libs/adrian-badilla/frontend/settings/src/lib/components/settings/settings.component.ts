@@ -2,7 +2,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, signal, inject, DestroyRef, AfterViewInit } from '@angular/core';
 import { TabsModule } from 'primeng/tabs';
 import { AdrianBadillaDietsComponent } from '../adrian-badilla-diets/adrian-badilla-diets.component';
-import { MacroProgressTrackerComponent } from '../macro-progress-tracker/macro-progress-tracker.component';
+import { DietHistorySettingsComponent } from '../diet-history/diet-history.component';
 import { DialogService } from 'primeng/dynamicdialog';
 
 @Component({
@@ -12,7 +12,7 @@ import { DialogService } from 'primeng/dynamicdialog';
     TabsModule,
     FontAwesomeModule,
     AdrianBadillaDietsComponent,
-    MacroProgressTrackerComponent,
+    DietHistorySettingsComponent,
   ],
   providers:[DialogService],
   templateUrl: './settings.component.html',
@@ -41,8 +41,8 @@ export class SettingsComponent implements AfterViewInit {
     },
     {
       route: 'productos',
-      label: 'Progreso',
-      icon: ['fas', 'bars'],
+      label: 'Historial',
+      icon: ['fas', 'rotate-back'],
     },
     {
       route: 'apariencia',

@@ -1,0 +1,273 @@
+<div class="profile-page">
+
+  <!-- ── Top bar ── -->
+  <div class="profile-page__topbar">
+    <button type="button" class="profile-page__back" (click)="goBack()" aria-label="Volver">
+      <i class="pi pi-arrow-left" aria-hidden="true"></i>
+    </button>
+    <span class="profile-page__topbar-title">Mi Perfil</span>
+  </div>
+
+  <!-- ── Hero ── -->
+  <div class="profile-page__hero">
+    <div class="profile-page__avatar-ring">
+      <img
+        class="profile-page__avatar"
+        [src]="profile().avatarUrl"
+        [alt]="profile().name"
+        loading="eager"
+      />
+    </div>
+    <div class="profile-page__identity">
+      <h1 class="profile-page__name">{{ profile().name }}</h1>
+      <p class="profile-page__goal">🎯 {{ profile().fitnessGoal }}</p>
+    </div>
+  </div>
+
+  <!-- ── Tab switcher ── -->
+  <div class="profile-page__tabs" role="tablist">
+    <button
+      type="button"
+      class="profile-page__tab"
+      [class.is-active]="activeTab() === 'resumen'"
+      (click)="setTab('resumen')"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'resumen'"
+    >
+      <i class="pi pi-user" aria-hidden="true"></i>
+      Resumen
+    </button>
+    <button
+      type="button"
+      class="profile-page__tab"
+      [class.is-active]="activeTab() === 'historial'"
+      (click)="setTab('historial')"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'historial'"
+    >
+      <i class="pi pi-chart-line" aria-hidden="true"></i>
+      Historial
+    </button>
+  </div>
+
+  <!-- ══════════ RESUMEN TAB ══════════ -->
+  @if (activeTab() === 'resumen') {
+
+    <!-- Stats Grid -->
+    <div class="profile-page__stats-grid" role="list" aria-label="Estadísticas">
+      <div class="stat-card" role="listitem">
+        <span class="stat-card__label">Edad</span>
+        <span class="stat-card__value">{{ profile().age }}<small>años</small></span>
+      </div>
+      <div class="stat-card" role="listitem">
+        <span class="stat-card__label">Peso</span>
+        <span class="stat-card__value">{{ profile().weightKg | number:'1.1-1' }}<small>kg</small></span>
+      </div>
+      <div class="stat-card" role="listitem">
+        <span class="stat-card__label">Altura</span>
+        <span class="stat-card__value">{{ profile().heightCm }}<small>cm</small></span>
+      </div>
+      <div class="stat-card" role="listitem">
+        <span class="stat-card__label">IMC</span>
+        <span class="stat-card__value">{{ bmi() }}</span>
+      </div>
+      <div class="stat-card" role="listitem">
+        <span class="stat-card__label">Grasa</span>
+        <span class="stat-card__value">{{ profile().bodyFatPercent | number:'1.1-1' }}<small>%</small></span>
+      </div>
+    </div>
+
+    <!-- Body Measurements -->
+    <div class="profile-page__section">
+      <h3 class="profile-page__section-title">📏 Medidas Corporales</h3>
+      <div class="measurements-grid">
+        <div class="measurement-item">
+          <span class="measurement-item__label">Pecho</span>
+          <span class="measurement-item__value">{{ profile().measurements.chest }} cm</span>
+        </div>
+        <div class="measurement-item">
+          <span class="measurement-item__label">Cintura</span>
+          <span class="measurement-item__value">{{ profile().measurements.waist }} cm</span>
+        </div>
+        <div class="measurement-item">
+          <span class="measurement-item__label">Caderas</span>
+          <span class="measurement-item__value">{{ profile().measurements.hips }} cm</span>
+        </div>
+        <div class="measurement-item">
+          <span class="measurement-item__label">Bícep Izq.</span>
+          <span class="measurement-item__value">{{ profile().measurements.bicepLeft }} cm</span>
+        </div>
+        <div class="measurement-item">
+          <span class="measurement-item__label">Bícep Der.</span>
+          <span class="measurement-item__value">{{ profile().measurements.bicepRight }} cm</span>
+        </div>
+        <div class="measurement-item">
+          <span class="measurement-item__label">Muslo</span>
+          <span class="measurement-item__value">{{ profile().measurements.thighLeft }} cm</span>
+        </div>
+        <div class="measurement-item">
+          <span class="measurement-item__label">Pantorrilla</span>
+          <span class="measurement-item__value">{{ profile().measurements.calf }} cm</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Photos -->
+    <div class="profile-page__section">
+      <h3 class="profile-page__section-title">📸 Fotos de Progreso</h3>
+
+      @if (selectedPhoto()) {
+        <div class="progress-main-photo">
+          <img
+            class="progress-main-photo__img"
+            [src]="selectedPhoto()!.url"
+            [alt]="selectedPhoto()!.label"
+            loading="lazy"
+          />
+          <span class="progress-main-photo__label">{{ selectedPhoto()!.label }}</span>
+        </div>
+      }
+
+      <div class="progress-thumbnails" role="list" aria-label="Fotos de progreso">
+        @for (photo of profile().progressPhotos; track photo.id) {
+          <button
+            type="button"
+            class="progress-thumb"
+            [class.is-selected]="selectedPhoto()?.id === photo.id"
+            (click)="selectPhoto(photo)"
+            [attr.aria-label]="'Ver foto de ' + photo.label"
+            [attr.aria-pressed]="selectedPhoto()?.id === photo.id"
+          >
+            <img
+              class="progress-thumb__img"
+              [src]="photo.url"
+              [alt]="photo.label"
+              loading="lazy"
+            />
+            <span class="progress-thumb__label">{{ photo.label }}</span>
+          </button>
+        }
+      </div>
+    </div>
+
+  }
+
+  <!-- ══════════ HISTORIAL TAB ══════════ -->
+  @if (activeTab() === 'historial') {
+
+    <div class="profile-page__section">
+      <h3 class="profile-page__section-title">📊 Evolución de Medidas</h3>
+      <p class="profile-page__section-subtitle">Comparación entre mediciones</p>
+    </div>
+
+    <div class="measurement-timeline" role="list">
+      @for (snap of history(); track snap.id; let i = $index; let isLast = $last) {
+
+        <div class="msnap" [class.msnap--latest]="i === 0" role="listitem">
+
+          <!-- Connector -->
+          <div class="msnap__connector">
+            <div class="msnap__dot" [class.msnap__dot--pulse]="i === 0"></div>
+            @if (!isLast) { <div class="msnap__line"></div> }
+          </div>
+
+          <!-- Card -->
+          <div class="msnap__card">
+
+            <div class="msnap__header">
+              <div class="msnap__date-group">
+                <span class="msnap__label">{{ snap.label }}</span>
+                <span class="msnap__date">{{ snap.date | date:'dd MMM yyyy' }}</span>
+              </div>
+              @if (i === 0) {
+                <span class="msnap__current-badge">Actual</span>
+              }
+            </div>
+
+            <!-- Key stats row -->
+            <div class="msnap__key-stats">
+              <div class="msnap__kstat">
+                <span class="msnap__kstat-label">Peso</span>
+                <span class="msnap__kstat-value">{{ snap.weightKg | number:'1.1-1' }} <small>kg</small></span>
+                @let wDelta = getDelta(history(), i, 'weightKg');
+                @if (wDelta) {
+                  <span class="msnap__delta" [class.msnap__delta--up]="wDelta.positive" [class.msnap__delta--down]="!wDelta.positive">
+                    {{ wDelta.positive ? '▲' : '▼' }} {{ wDelta.value }}
+                  </span>
+                }
+              </div>
+              <div class="msnap__kstat">
+                <span class="msnap__kstat-label">Grasa</span>
+                <span class="msnap__kstat-value">{{ snap.bodyFatPercent | number:'1.1-1' }} <small>%</small></span>
+                @let fDelta = getDelta(history(), i, 'bodyFatPercent');
+                @if (fDelta) {
+                  <span class="msnap__delta" [class.msnap__delta--up]="fDelta.positive" [class.msnap__delta--down]="!fDelta.positive">
+                    {{ fDelta.positive ? '▲' : '▼' }} {{ fDelta.value }}
+                  </span>
+                }
+              </div>
+              <div class="msnap__kstat">
+                <span class="msnap__kstat-label">IMC</span>
+                <span class="msnap__kstat-value">{{ snap.bmi }}</span>
+                @let bDelta = getDelta(history(), i, 'bmi');
+                @if (bDelta) {
+                  <span class="msnap__delta" [class.msnap__delta--up]="bDelta.positive" [class.msnap__delta--down]="!bDelta.positive">
+                    {{ bDelta.positive ? '▲' : '▼' }} {{ bDelta.value }}
+                  </span>
+                }
+              </div>
+            </div>
+
+            <!-- Measurements mini grid -->
+            <div class="msnap__measures">
+              <div class="msnap__measure">
+                <span class="msnap__measure-lbl">Pecho</span>
+                <span class="msnap__measure-val">{{ snap.measurements.chest }}</span>
+                @let chDelta = getMeasurementDelta(history(), i, 'chest');
+                @if (chDelta) {
+                  <span class="msnap__delta msnap__delta--sm" [class.msnap__delta--up]="chDelta.positive" [class.msnap__delta--down]="!chDelta.positive">
+                    {{ chDelta.positive ? '+' : '-' }}{{ chDelta.value }}
+                  </span>
+                }
+              </div>
+              <div class="msnap__measure">
+                <span class="msnap__measure-lbl">Cintura</span>
+                <span class="msnap__measure-val">{{ snap.measurements.waist }}</span>
+                @let waDelta = getMeasurementDelta(history(), i, 'waist');
+                @if (waDelta) {
+                  <span class="msnap__delta msnap__delta--sm" [class.msnap__delta--up]="waDelta.positive" [class.msnap__delta--down]="!waDelta.positive">
+                    {{ waDelta.positive ? '+' : '-' }}{{ waDelta.value }}
+                  </span>
+                }
+              </div>
+              <div class="msnap__measure">
+                <span class="msnap__measure-lbl">Bícep</span>
+                <span class="msnap__measure-val">{{ snap.measurements.bicepRight }}</span>
+                @let biDelta = getMeasurementDelta(history(), i, 'bicepRight');
+                @if (biDelta) {
+                  <span class="msnap__delta msnap__delta--sm" [class.msnap__delta--up]="biDelta.positive" [class.msnap__delta--down]="!biDelta.positive">
+                    {{ biDelta.positive ? '+' : '-' }}{{ biDelta.value }}
+                  </span>
+                }
+              </div>
+              <div class="msnap__measure">
+                <span class="msnap__measure-lbl">Muslo</span>
+                <span class="msnap__measure-val">{{ snap.measurements.thighLeft }}</span>
+                @let thDelta = getMeasurementDelta(history(), i, 'thighLeft');
+                @if (thDelta) {
+                  <span class="msnap__delta msnap__delta--sm" [class.msnap__delta--up]="thDelta.positive" [class.msnap__delta--down]="!thDelta.positive">
+                    {{ thDelta.positive ? '+' : '-' }}{{ thDelta.value }}
+                  </span>
+                }
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      }
+    </div>
+
+  }
+
+</div>

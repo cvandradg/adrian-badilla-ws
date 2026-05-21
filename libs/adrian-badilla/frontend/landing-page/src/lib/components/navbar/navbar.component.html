@@ -11,7 +11,7 @@
     class="navbar-toggle" 
     aria-label="Abrir menú"
     (click)="toggleMenu()"
-    [attr.aria-expanded]="isMenuOpen()"
+    [attr.aria-expanded]="isMenuOpen"
   >
     <span aria-hidden="true">&#9776;</span>
   </button>
@@ -37,7 +37,6 @@
   position="top"
   styleClass="mobile-drawer"
   [modal]="false"
-  [dismissible]="true"
   [showCloseIcon]="false"
 >
   <ng-template #header>
@@ -54,11 +53,11 @@
   </ng-template>
 
   <nav class="drawer-nav" aria-label="Menú móvil">
-    <a href="#" class="drawer-link" (click)="closeMenu()">
+    <a href="#" class="drawer-link" (click)="closeMenu(); $event.preventDefault()">
       <span class="drawer-link__icon">&#9993;</span>
       <span class="drawer-link__text">Contáctanos</span>
     </a>
-    <a href="#" class="drawer-link" (click)="closeMenu()">
+    <a href="#" class="drawer-link" (click)="closeMenu(); $event.preventDefault()">
       <span class="drawer-link__icon">&#127882;</span>
       <span class="drawer-link__text">Eventos</span>
     </a>

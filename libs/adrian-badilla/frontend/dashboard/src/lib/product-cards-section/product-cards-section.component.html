@@ -1,0 +1,75 @@
+<section class="store">
+
+  <!-- ── Toolbar ── -->
+  <div class="store__toolbar">
+    <span class="store__count">{{ products().length }} Productos</span>
+    <button type="button" class="store__filter-btn" aria-label="Filtrar productos">
+      <span>Filtrar</span>
+      <i class="pi pi-sliders-h" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <!-- ── Grid ── -->
+  <div class="store__grid">
+    @for (product of products(); track product.id) {
+      <article
+        class="product-card"
+        [class.is-added]="isAdded(product.id)"
+        [attr.aria-label]="product.name"
+      >
+        <!-- Image area -->
+        <div class="product-card__img-wrap">
+          <img
+            class="product-card__img"
+            [src]="activeImage(product.id)"
+            [alt]="product.name"
+            loading="lazy"
+          />
+          @if (product.badge) {
+            <span class="product-card__badge">{{ product.badge }}</span>
+          }
+
+          <!-- Quick-add button -->
+          <button
+            type="button"
+            class="product-card__quick-add"
+            (click)="onAddToCart($event, product.id)"
+            [attr.aria-label]="isAdded(product.id) ? 'Agregado' : 'Agregar al carrito'"
+          >
+            @if (isAdded(product.id)) {
+              <i class="pi pi-check" aria-hidden="true"></i>
+            } @else {
+              <i class="pi pi-shopping-cart" aria-hidden="true"></i>
+            }
+          </button>
+        </div>
+
+        <!-- Variant thumbnails -->
+        @if (product.variants && product.variants.length > 0) {
+          <div class="product-card__variants" role="list" [attr.aria-label]="'Variantes de ' + product.name">
+            @for (v of product.variants; track v; let i = $index) {
+              <button
+                type="button"
+                class="variant-thumb"
+                [class.is-active]="activeVariantIndex(product.id) === i"
+                (click)="selectVariant(product.id, i)"
+                [attr.aria-label]="'Variante ' + (i + 1)"
+                [attr.aria-pressed]="activeVariantIndex(product.id) === i"
+              >
+                <img [src]="v" [alt]="'Variante ' + (i + 1)" loading="lazy" />
+              </button>
+            }
+          </div>
+        }
+
+        <!-- Info -->
+        <div class="product-card__info">
+          <h3 class="product-card__name">{{ product.name }}</h3>
+          <span class="product-card__category">{{ product.category | titlecase }}</span>
+          <span class="product-card__price">{{ product.price | currency:'USD':'symbol':'1.2-2' }}</span>
+        </div>
+      </article>
+    }
+  </div>
+
+</section>

@@ -40,6 +40,8 @@ export interface Routine {
   time: string;
   status: DecisionItem['status'];
   exercises: string[];
+  /** Muscle-group / movement-pattern label (e.g. "Push", "Pull"). Matches the card title. */
+  type?: string;
 }
 
 export interface RoutineDay {
