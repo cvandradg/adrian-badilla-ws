@@ -33,9 +33,13 @@ export function withRoutes<T extends Record<string, any>>(storeContext: T) {
     withComputed((store) => ({
       filteredRoutes: computed(() => {
         const query = store.routeSearchQuery().toLowerCase();
-        return store.routes().filter((r) => r.name?.toLowerCase().includes(query));
+        return store
+          .routes()
+          .filter((r) => r.name?.toLowerCase().includes(query));
       }),
-      isSavingRoute: computed(() => store.createRouteisLoading() || store.saveRouteisLoading()),
+      isSavingRoute: computed(
+        () => store.createRouteisLoading() || store.saveRouteisLoading()
+      ),
     })),
 
     withFeature((innerStore) => withDialogs(storeContext)),
@@ -57,7 +61,6 @@ export function withRoutes<T extends Record<string, any>>(storeContext: T) {
       },
 
       saveRoute(data: any) {
-        console.log('💾 Mock saveRoute', data);
         patchState(store, { saveRouteisLoading: false });
       },
 
@@ -69,11 +72,17 @@ export function withRoutes<T extends Record<string, any>>(storeContext: T) {
         store['openDialogToAddSupercenter'](component);
       },
 
-      openDialogToEditRouteDiet: (component: Type<unknown>, item: RouteSupercenterItem) => {
+      openDialogToEditRouteDiet: (
+        component: Type<unknown>,
+        item: RouteSupercenterItem
+      ) => {
         store['openDialogToEditRouteDiet'](component, item);
       },
 
-      openDialogToDeleteRoute: (component: Type<unknown>, route: RouteNavItem) => {
+      openDialogToDeleteRoute: (
+        component: Type<unknown>,
+        route: RouteNavItem
+      ) => {
         store['openDialogToDeleteRoute'](component, route);
       },
 
@@ -112,9 +121,11 @@ export function withRoutes<T extends Record<string, any>>(storeContext: T) {
         status: 'completed' | 'skipped' | 'pending',
         macros?: { protein: number; carbs: number; fats: number }
       ) {
-        const updated = store.selectedRouteSupercenters().map((m: any) =>
-          m.id === id ? { ...m, status, ...(macros ? { macros } : {}) } : m
-        );
+        const updated = store
+          .selectedRouteSupercenters()
+          .map((m: any) =>
+            m.id === id ? { ...m, status, ...(macros ? { macros } : {}) } : m
+          );
         patchState(store, { selectedRouteSupercenters: updated });
       },
     }))

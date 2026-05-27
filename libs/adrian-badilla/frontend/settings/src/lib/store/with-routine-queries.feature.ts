@@ -62,22 +62,28 @@ interface RoutineQueriesState {
 // ─── Pure helpers (extracted to keep computed/methods ≤ 4 nesting levels) ───────
 
 function isDayComplete(day: RoutineDay): boolean {
-  return day.routines.length > 0 && day.routines.every((r) => r.status === 'completed');
+  return (
+    day.routines.length > 0 &&
+    day.routines.every((r) => r.status === 'completed')
+  );
 }
 
-function getRoutinesForDay(routineDays: RoutineDay[], dayId: string | null): Routine[] {
+function getRoutinesForDay(
+  routineDays: RoutineDay[],
+  dayId: string | null
+): Routine[] {
   if (!dayId) return [];
   return routineDays.find((d) => d.id === dayId)?.routines ?? [];
 }
 
 function updateRoutineStatus(
   routineDays: RoutineDay[],
-  event: { id: string; status: MealStatus },
+  event: { id: string; status: MealStatus }
 ): RoutineDay[] {
   return routineDays.map((day) => ({
     ...day,
     routines: day.routines.map((r) =>
-      r.id === event.id ? { ...r, status: event.status } : r,
+      r.id === event.id ? { ...r, status: event.status } : r
     ),
   }));
 }
@@ -108,7 +114,9 @@ export function withRoutineQueries() {
 
         /** DayBase[] for the day sidebar (id + label only). */
         routineDayBases: computed((): DayBase[] =>
-          store.routineDays().map(({ id, label, date }) => ({ id, label, date }))
+          store
+            .routineDays()
+            .map(({ id, label, date }) => ({ id, label, date }))
         ),
 
         /** Routines to display in the timeline for the currently selected day. */
@@ -125,12 +133,14 @@ export function withRoutineQueries() {
         }),
 
         /** Set of day IDs where ALL routines are completed — used for sidebar checkmarks. */
-        completedRoutineDayIds: computed((): Set<string> =>
-          new Set(
-            store.routineDays()
-              .filter(isDayComplete)
-              .map((d) => d.id),
-          )
+        completedRoutineDayIds: computed(
+          (): Set<string> =>
+            new Set(
+              store
+                .routineDays()
+                .filter(isDayComplete)
+                .map((d) => d.id)
+            )
         ),
 
         /** True when data is loaded and the selected day has no exercises (e.g. Domingo). */
@@ -148,18 +158,22 @@ export function withRoutineQueries() {
     // ─── Primary data-fetch method ──────────────────────────────────────────
     withMethods((store) => ({
       async loadRoutineExercises(routineId: string): Promise<void> {
-        // 🔧 Development: Using hardcoded userId for testing. Remove once Firebase Auth is properly configured.
-        const userId = 'T7eoekKP2YarbxJvIMbo';
-        // eslint-disable-next-line no-commented-code
-        // const userId = store['_routineUserId'](); // Production: Use authenticated userId
+        // TODO: Restore to: const userId = store['_routineUserId']();
+        const userId = 'T7eoekKP2YarbxJvIMbo'; // Hardcoded for testing
 
         if (!userId) {
-          patchState(store, { loadingRoutine: false, errorRoutine: 'Usuario no autenticado.' });
+          patchState(store, {
+            loadingRoutine: false,
+            errorRoutine: 'Usuario no autenticado.',
+          });
           return;
         }
 
         // Cache hit — skip re-fetch
-        if (store['_lastLoadedRoutineId']() === routineId && store.routineDays().length > 0) {
+        if (
+          store['_lastLoadedRoutineId']() === routineId &&
+          store.routineDays().length > 0
+        ) {
           return;
         }
 
@@ -169,7 +183,7 @@ export function withRoutineQueries() {
           // Fetch all exercises — no compound orderBy needed (avoids Firestore composite index).
           // Sorting is handled in groupExercisesByDay() via dayOrder + order fields.
           const snap = await getDocs(
-            collection(firestore, userPaths.exercises(userId, routineId)),
+            collection(firestore, userPaths.exercises(userId, routineId))
           );
 
           const allExercises: FirestoreExercise[] = snap.docs.map((doc) => ({
@@ -192,7 +206,9 @@ export function withRoutineQueries() {
           patchState(store, {
             loadingRoutine: false,
             errorRoutine:
-              error instanceof Error ? error.message : 'Error al cargar los ejercicios.',
+              error instanceof Error
+                ? error.message
+                : 'Error al cargar los ejercicios.',
           });
         }
       },
@@ -201,10 +217,8 @@ export function withRoutineQueries() {
     // ─── Auto-discover the first available routine ──────────────────────────
     withMethods((store) => ({
       async loadActiveRoutine(): Promise<void> {
-        // 🔧 Development: Using hardcoded userId for testing. Remove once Firebase Auth is properly configured.
-        const userId = 'T7eoekKP2YarbxJvIMbo';
-        // eslint-disable-next-line no-commented-code
-        // const userId = store['_routineUserId'](); // Production: Use authenticated userId
+        // TODO: Restore to: const userId = store['_routineUserId']();
+        const userId = 'T7eoekKP2YarbxJvIMbo'; // Hardcoded for testing
 
         if (!userId) return;
 
@@ -213,14 +227,16 @@ export function withRoutineQueries() {
 
         try {
           const snap = await getDocs(
-            query(collection(firestore, userPaths.routines(userId)), limit(1)),
+            query(collection(firestore, userPaths.routines(userId)), limit(1))
           );
 
           const firstRoutine = snap.docs[0];
           if (firstRoutine) {
             await store.loadRoutineExercises(firstRoutine.id);
           }
-        } catch { /* empty state shown by component */ }
+        } catch {
+          /* empty state shown by component */
+        }
       },
 
       /** Called when the user taps a day in the sidebar. */
@@ -229,11 +245,14 @@ export function withRoutineQueries() {
       },
 
       /** Called when the user marks an exercise as completed / skipped / pending. */
-      updateRoutineExerciseStatus(event: { id: string; status: MealStatus }): void {
+      updateRoutineExerciseStatus(event: {
+        id: string;
+        status: MealStatus;
+      }): void {
         patchState(store, {
           routineDays: updateRoutineStatus(store.routineDays(), event),
         });
       },
-    })),
+    }))
   );
 }

@@ -31,6 +31,7 @@ html {
   --app-accent-glow: rgba(138, 200, 212, 0.22);
   --app-shadow: 0 24px 64px rgba(0, 0, 0, 0.42);
   --app-shadow-soft: 0 16px 36px rgba(0, 0, 0, 0.3);
+  --app-font-scale: 1;
   color-scheme: dark;
   background-color: var(--app-canvas-bottom);
 }
@@ -42,9 +43,9 @@ body {
   height: 100%;
   overflow-x: hidden;
   font-family: 'Google Sans Flex', Roboto, Avenir, Helvetica, Arial, sans-serif;
+  font-size: calc(1rem * var(--app-font-scale, 1));
   color: var(--app-text);
-  background:
-    radial-gradient(
+  background: radial-gradient(
       circle at top,
       rgba(97, 148, 182, 0.2),
       transparent 32%
@@ -55,11 +56,12 @@ body {
       transparent 24%
     ),
     linear-gradient(
-      180deg,
-      var(--app-canvas-top),
-      #0a1520 44%,
-      var(--app-canvas-bottom)
-    ) no-repeat fixed;
+        180deg,
+        var(--app-canvas-top),
+        #0a1520 44%,
+        var(--app-canvas-bottom)
+      )
+      no-repeat fixed;
 }
 
 /* ── Tap / Focus highlight removal ────────────────────────────────────────── */
@@ -72,7 +74,7 @@ body {
 
 a,
 button,
-[role="button"],
+[role='button'],
 [tabindex] {
   outline: none;
 
@@ -93,7 +95,7 @@ button,
 /* Remove browser selection highlight on interactive elements */
 button,
 a,
-[role="button"] {
+[role='button'] {
   &::selection {
     background: transparent;
   }

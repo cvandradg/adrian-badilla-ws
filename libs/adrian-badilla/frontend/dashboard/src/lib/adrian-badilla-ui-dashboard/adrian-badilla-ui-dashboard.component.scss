@@ -96,9 +96,12 @@ mat-sidenav-container.dashboard-shell {
     padding: 0.7rem 1rem;
     border-radius: 0;
 
-    /* Swap positions: user icon → left, menu icon → right */
-    .header-start { order: 2; }
-    .header-actions { order: 1; }
+    .header-start {
+      order: 2;
+    }
+    .header-actions {
+      order: 1;
+    }
   }
 }
 
@@ -148,24 +151,22 @@ mat-sidenav-container.dashboard-shell {
   white-space: nowrap;
   text-align: center;
   cursor: pointer;
-  transition:
-    background 150ms ease,
-    border-color 150ms ease,
-    color 150ms ease,
-    box-shadow 150ms ease,
-    transform 150ms ease;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease,
+    box-shadow 150ms ease, transform 150ms ease;
 
   &:hover {
     background: rgba(61, 165, 194, 0.14);
     border-color: var(--app-border-strong);
     color: var(--app-text);
-    box-shadow: 0 8px 24px rgba(61, 165, 194, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 24px rgba(61, 165, 194, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
     transform: translateY(-2px);
   }
 
   &:active {
     transform: translateY(0);
-    box-shadow: 0 4px 12px rgba(61, 165, 194, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    box-shadow: 0 4px 12px rgba(61, 165, 194, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
   &:focus-visible {
@@ -231,8 +232,7 @@ mat-sidenav-container.dashboard-shell {
   border-radius: 1.25rem;
   border: 1px solid var(--app-border) !important;
   box-shadow: var(--app-shadow) !important;
-  background:
-    linear-gradient(
+  background: linear-gradient(
       180deg,
       rgba(255, 255, 255, 0.035),
       rgba(255, 255, 255, 0.015)

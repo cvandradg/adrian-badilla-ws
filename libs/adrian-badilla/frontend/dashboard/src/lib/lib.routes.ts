@@ -10,7 +10,8 @@ export const adrianBadillaDashboardRoutes: Route[] = [
       {
         path: 'inicio',
         title: 'Inicio',
-        loadChildren: () => import('@adrian-badilla/home').then(m => m.HOME_ROUTES)
+        loadChildren: () =>
+          import('@adrian-badilla/home').then((m) => m.HOME_ROUTES),
       },
       {
         path: 'products',
@@ -67,6 +68,14 @@ export const adrianBadillaDashboardRoutes: Route[] = [
           import('./profile-page/profile-page.component').then(
             (m) => m.ProfilePageComponent
           ),
+      },
+      {
+        path: 'configuracion',
+        title: 'Configuración',
+        loadComponent: () =>
+          import(
+            '../../../settings/src/lib/components/app-config-page/app-config-page.component'
+          ).then((m) => m.AppConfigPageComponent),
       },
     ],
   },

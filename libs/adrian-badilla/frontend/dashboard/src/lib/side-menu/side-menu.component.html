@@ -1,26 +1,32 @@
-<div class="sidenav-header" [class.sidenav-header--collapsed]="sideNavCollapsed()">
-
+<div
+  class="sidenav-header"
+  [class.sidenav-header--collapsed]="sideNavCollapsed()"
+>
   <!-- Avatar -->
   <div class="profile-avatar">
     @if (photoURL()) {
-      <img class="profile-avatar__img" [src]="photoURL()!" alt="Foto de perfil" loading="lazy" />
+    <img
+      class="profile-avatar__img"
+      [src]="photoURL()!"
+      alt="Foto de perfil"
+      loading="lazy"
+    />
     } @else {
-      <div class="profile-avatar__initials">{{ initials() }}</div>
+    <div class="profile-avatar__initials">{{ initials() }}</div>
     }
     <div class="profile-avatar__status" aria-hidden="true"></div>
   </div>
 
   <!-- Name + badge (hidden when collapsed) -->
   @if (!sideNavCollapsed()) {
-    <div class="profile-info">
-      <span class="profile-info__name">{{ displayName() }}</span>
-      <span class="profile-info__badge">
-        <i class="pi pi-bolt" aria-hidden="true"></i>
-        Activo
-      </span>
-    </div>
+  <div class="profile-info">
+    <span class="profile-info__name">{{ displayName() }}</span>
+    <span class="profile-info__badge">
+      <i class="pi pi-bolt" aria-hidden="true"></i>
+      Activo
+    </span>
+  </div>
   }
-
 </div>
 <mat-nav-list>
   @for (item of menuItems(); track item) {
@@ -32,6 +38,7 @@
     #rla="routerLinkActive"
     [activated]="rla.isActive"
     class="menu-item"
+    (click)="menuItemSelected.emit()"
   >
     <fa-icon matListItemIcon [icon]="item.icon"></fa-icon>
 

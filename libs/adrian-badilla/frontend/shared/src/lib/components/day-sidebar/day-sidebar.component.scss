@@ -1,7 +1,38 @@
+/* ── Host ─────────────────────────────────────────────────────────────────── */
+/*
+ * Changed from `display: contents` to `display: block` so the new wrapper div
+ * (.day-scroll-wrapper) becomes the layout participant instead of the inner
+ * .days-sidebar. On desktop the host is in the 200px grid column; on mobile
+ * it is a flex-column child. Both cases work with block layout.
+ */
 :host {
-  display: contents; // the sidebar itself is layout-neutral; the parent grid controls sizing
+  display: block;
+  height: 100%;
+
+  @media (max-width: 767px) {
+    height: auto;
+  }
 }
 
+/* ── Scroll wrapper: positions the edge overlays ─────────────────────────── */
+.day-scroll-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  /*
+   * On mobile the wrapper clips the hidden native scrollbar so it never shows.
+   * The overlay arrows live inside the wrapper and are positioned absolutely.
+   */
+  @media (max-width: 767px) {
+    flex-direction: row;
+    height: auto;
+    overflow: hidden; /* hides the native scrollbar that bleeds below */
+  }
+}
+
+/* ── Days list ───────────────────────────────────────────────────────────── */
 .days-sidebar {
   display: flex;
   flex-direction: column;
@@ -9,15 +40,25 @@
   overflow-y: auto;
   overflow-x: visible;
   padding: 4px 0;
+  flex: 1 1 auto;
 
   @media (max-width: 767px) {
     flex-direction: row;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 4px 0 8px;
+    padding: 4px 0;
+
+    /* Hide native scrollbar — arrows + swipe handle navigation */
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    -webkit-overflow-scrolling: touch; /* smooth momentum on iOS */
   }
 }
 
+/* ── Day item ────────────────────────────────────────────────────────────── */
 .day-item {
   display: flex;
   flex-direction: column;
@@ -27,8 +68,14 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   background: rgba(255, 255, 255, 0.02);
   cursor: pointer;
-  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.3s ease;
+  transition: background 0.18s ease, border-color 0.18s ease,
+    box-shadow 0.3s ease;
   flex-shrink: 0;
+
+  /* Button reset */
+  font: inherit;
+  text-align: left;
+  outline-offset: 2px;
 
   &:hover {
     background: rgba(167, 139, 250, 0.08);
@@ -45,7 +92,7 @@
     background: rgba(34, 197, 94, 0.08);
     animation: dayCompleteGlow 3s ease-in-out infinite;
 
-    .day-label { 
+    .day-label {
       color: #4ade80;
       filter: drop-shadow(0 0 3px rgba(34, 197, 94, 0.5));
     }
@@ -53,11 +100,13 @@
 }
 
 @keyframes dayCompleteGlow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 0 0 rgba(34, 197, 94, 0), 0 0 8px rgba(34, 197, 94, 0.2);
   }
   50% {
-    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12), 0 0 16px rgba(34, 197, 94, 0.35);
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12),
+      0 0 16px rgba(34, 197, 94, 0.35);
   }
 }
 
@@ -72,4 +121,84 @@
   font-size: 0.72rem;
   color: rgba(255, 255, 255, 0.45);
   white-space: nowrap;
+}
+
+/* ── Scroll edge overlay (fade + arrow) — MOBILE ONLY ───────────────────── */
+.scroll-edge {
+  /* Hidden on desktop — vertical layout never needs scroll arrows */
+  display: none;
+
+  @media (max-width: 767px) {
+    display: flex;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 3.5rem;
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 200ms ease;
+
+    &--visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    &--left {
+      left: 0;
+      background: linear-gradient(
+        90deg,
+        rgba(5, 12, 20, 0.9) 0%,
+        rgba(5, 12, 20, 0.5) 55%,
+        transparent 100%
+      );
+    }
+
+    &--right {
+      right: 0;
+      background: linear-gradient(
+        -90deg,
+        rgba(5, 12, 20, 0.9) 0%,
+        rgba(5, 12, 20, 0.5) 55%,
+        transparent 100%
+      );
+    }
+  }
+}
+
+/* ── Scroll arrow button ─────────────────────────────────────────────────── */
+.scroll-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  border: 1px solid rgba(138, 200, 212, 0.4);
+  background: rgba(8, 18, 32, 0.82);
+  color: var(--app-accent, #8ac8d4);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  flex-shrink: 0;
+  transition: background 150ms ease, border-color 150ms ease,
+    transform 120ms ease;
+
+  &:hover {
+    background: rgba(138, 200, 212, 0.12);
+    border-color: rgba(138, 200, 212, 0.65);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  .pi {
+    font-size: 0.68rem;
+    line-height: 1;
+    pointer-events: none;
+  }
 }

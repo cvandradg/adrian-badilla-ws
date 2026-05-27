@@ -126,6 +126,24 @@ export class MacroProgressTrackerComponent {
     return this.macroSnapshot().isAllComplete;
   });
 
+  // ─── Progress bar + percentage color (mirror RoutineProgressTracker) ────────
+
+  readonly barWidth = computed<number>(() =>
+    Math.min(
+      100,
+      Math.max(0, this.macroSnapshot().percentages.average.percentage)
+    )
+  );
+
+  readonly pctColorClass = computed<string>(() => {
+    if (this.hasCompletedAllMacros()) return 'pct--done';
+    if (this.macroSnapshot().percentages.average.percentage >= 50)
+      return 'pct--mid';
+    if (this.macroSnapshot().percentages.average.percentage > 0)
+      return 'pct--low';
+    return 'pct--zero';
+  });
+
   // 🎯 ADHERENCE COACHING signals
   readonly adherenceStatus = computed<'on-track' | 'behind' | 'ahead'>(() => {
     const avg = this.macroSnapshot().percentages.average.percentage;
@@ -183,14 +201,17 @@ export class MacroProgressTrackerComponent {
   readonly ringColor = computed<string>(() => {
     const avg = this.macroSnapshot().percentages.average.percentage;
     if (avg >= 100) return '#22c55e';
-    if (avg >= 70)  return '#22d3ee';
-    if (avg >= 40)  return '#f59e0b';
+    if (avg >= 70) return '#22d3ee';
+    if (avg >= 40) return '#f59e0b';
     return '#ef4444';
   });
 
   /** SVG stroke-dashoffset for the ring (circumference = 238.76) */
   readonly ringOffset = computed<number>(() => {
-    const avg = Math.min(this.macroSnapshot().percentages.average.percentage, 100);
+    const avg = Math.min(
+      this.macroSnapshot().percentages.average.percentage,
+      100
+    );
     return 238.76 * (1 - avg / 100);
   });
 
@@ -200,13 +221,16 @@ export class MacroProgressTrackerComponent {
     const { percentages } = this.macroSnapshot();
     if (!this.hasStartedDiet()) return 'Sin iniciar';
     if (avg >= 100) return 'Plan completo';
-    if (avg >= 85)  return 'Buen progreso';
-    if (avg >= 65)  return 'En ritmo';
+    if (avg >= 85) return 'Buen progreso';
+    if (avg >= 65) return 'En ritmo';
     const lowest = [
-      { label: 'Faltan proteínas',     pct: percentages.protein.percentage },
+      { label: 'Faltan proteínas', pct: percentages.protein.percentage },
       { label: 'Faltan carbohidratos', pct: percentages.carbs.percentage },
-      { label: 'Faltan grasas',        pct: percentages.fats.percentage },
-    ].reduce((a, b) => (a.pct < b.pct ? a : b), { label: 'Equilibrio perfecto', pct: 100 });
+      { label: 'Faltan grasas', pct: percentages.fats.percentage },
+    ].reduce((a, b) => (a.pct < b.pct ? a : b), {
+      label: 'Equilibrio perfecto',
+      pct: 100,
+    });
     return lowest.label;
   });
 
@@ -215,14 +239,17 @@ export class MacroProgressTrackerComponent {
     const avg = this.macroSnapshot().percentages.average.percentage;
     if (!this.hasStartedDiet()) return 'chip--neutral';
     if (avg >= 100) return 'chip--complete';
-    if (avg >= 65)  return 'chip--on-track';
-    if (avg >= 40)  return 'chip--behind';
+    if (avg >= 65) return 'chip--on-track';
+    if (avg >= 40) return 'chip--behind';
     return 'chip--low';
   });
 
   /** Small ring offset (r=14, circumference=87.96) */
   readonly ringOffsetSmall = computed<number>(() => {
-    const avg = Math.min(this.macroSnapshot().percentages.average.percentage, 100);
+    const avg = Math.min(
+      this.macroSnapshot().percentages.average.percentage,
+      100
+    );
     return 87.96 * (1 - avg / 100);
   });
 
@@ -230,10 +257,25 @@ export class MacroProgressTrackerComponent {
   readonly macroChips = computed(() => {
     const { percentages } = this.macroSnapshot();
     return [
-      { key: 'protein', label: 'Proteína', pct: percentages.protein.percentage, colorClass: 'chip--protein' },
-      { key: 'carbs',   label: 'Carbs',    pct: percentages.carbs.percentage,   colorClass: 'chip--carbs'   },
-      { key: 'fats',    label: 'Grasas',   pct: percentages.fats.percentage,    colorClass: 'chip--fats'    },
-    ].map(m => ({
+      {
+        key: 'protein',
+        label: 'Proteína',
+        pct: percentages.protein.percentage,
+        colorClass: 'chip--protein',
+      },
+      {
+        key: 'carbs',
+        label: 'Carbs',
+        pct: percentages.carbs.percentage,
+        colorClass: 'chip--carbs',
+      },
+      {
+        key: 'fats',
+        label: 'Grasas',
+        pct: percentages.fats.percentage,
+        colorClass: 'chip--fats',
+      },
+    ].map((m) => ({
       ...m,
       icon: this.macroIcon(m.pct),
       stateClass: this.macroStateClass(m.pct),
@@ -242,19 +284,21 @@ export class MacroProgressTrackerComponent {
 
   private macroIcon(pct: number): string {
     if (pct >= 100) return '✓';
-    if (pct >= 55)  return '↑';
+    if (pct >= 55) return '↑';
     return '↓';
   }
 
   private macroStateClass(pct: number): string {
     if (pct >= 100) return 'state--done';
-    if (pct >= 55)  return 'state--mid';
+    if (pct >= 55) return 'state--mid';
     return 'state--low';
   }
 
   // 🎯 Template helpers
-  readonly getMacroColor = (macro: MacroType): string => this.macroColors()[macro];
-  readonly getStrokeColor = (macro: MacroType): string => this.strokeColors()[macro];
+  readonly getMacroColor = (macro: MacroType): string =>
+    this.macroColors()[macro];
+  readonly getStrokeColor = (macro: MacroType): string =>
+    this.strokeColors()[macro];
   readonly isMacroComplete = (macro: MacroType): boolean =>
     this.macroSnapshot().percentages[macro].percentage >= 100;
   readonly getMessagesForMacro = (macro: MacroType): any[] =>

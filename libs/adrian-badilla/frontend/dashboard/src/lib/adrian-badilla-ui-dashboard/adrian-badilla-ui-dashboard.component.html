@@ -1,23 +1,28 @@
-<mat-sidenav-container class="dashboard-shell" [autosize]="true" [hasBackdrop]="true" (backdropClick)="onBackdropClick()">
+<mat-sidenav-container class="dashboard-shell" [autosize]="true">
   <mat-sidenav
     #left
     class="left-sidenav"
     [position]="isNarrow() ? 'end' : 'start'"
     [mode]="isNarrow() ? 'over' : 'side'"
-    [opened]="isNarrow() ? leftOpen() : true"
+    [opened]="!isNarrow()"
     [style.width]="leftWidth()"
+    [style.height]="drawerHeight()"
     [class.is-collapsed]="collapsed()"
   >
-    <adrian-badilla-side-menu [collapsed]="collapsed()" />
+    <adrian-badilla-side-menu
+      [collapsed]="collapsed()"
+      (menuItemSelected)="onLeftNavigationItemSelected(left)"
+    />
   </mat-sidenav>
 
   <mat-sidenav
     #right
     class="right-sidenav"
-    position="end"
+    [position]="isNarrow() ? 'start' : 'end'"
     [mode]="isNarrow() ? 'over' : 'side'"
     [opened]="!isNarrow() && rightPinnedOpen()"
     [style.width]="rightWidth()"
+    [style.height]="drawerHeight()"
   >
     <adrian-badilla-description-side-panel />
   </mat-sidenav>
@@ -38,8 +43,8 @@
           <fa-icon
             [icon]="['fas', 'bars']"
             class="fa-lg menu-toggle"
-            (click)="onMenuClick()"
-            (keydown.enter)="onMenuClick()"
+            (click)="onMenuClick(left)"
+            (keydown.enter)="onMenuClick(left)"
             tabindex="0"
             role="button"
             aria-label="Abrir menú de navegación"
@@ -79,6 +84,10 @@
                 : 'var(--dashboard-text-soft)'
             "
             (click)="onRightToggle(right)"
+            (keydown.enter)="onRightToggle(right)"
+            tabindex="0"
+            role="button"
+            aria-label="Alternar panel derecho"
           ></fa-icon>
         </div>
       </div>

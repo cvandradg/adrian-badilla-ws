@@ -7,6 +7,7 @@ import {
   computed,
   inject,
   Input,
+  output,
   signal,
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
@@ -29,9 +30,13 @@ type MenuItem = {
 })
 export class SideMenuComponent {
   private readonly _auth = inject(Auth);
-  private readonly _authUser = toSignal(user(this._auth), { initialValue: null });
+  private readonly _authUser = toSignal(user(this._auth), {
+    initialValue: null,
+  });
 
   readonly sideNavCollapsed = signal(false);
+  readonly menuItemSelected = output<void>();
+
   @Input() set collapsed(value: boolean) {
     this.sideNavCollapsed.set(value);
   }
@@ -63,7 +68,7 @@ export class SideMenuComponent {
       route: '/dashboard/inicio',
       exact: true,
     },
-        {
+    {
       icon: ['fas', 'user'],
       label: 'Perfil',
       route: '/dashboard/perfil',
@@ -101,11 +106,10 @@ export class SideMenuComponent {
       exact: false,
     },
     {
-      icon: ['fas', 'message-question'],
-      label: 'Ayuda',
-      route: '',
+      icon: ['fas', 'sliders'],
+      label: 'Configuración',
+      route: '/dashboard/configuracion',
       exact: false,
     },
-
   ]);
 }

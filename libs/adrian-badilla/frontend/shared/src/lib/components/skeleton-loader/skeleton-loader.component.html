@@ -1,0 +1,53 @@
+<!-- ── "page" variant: mirrors the day-sidebar + timeline shell layout ────── -->
+@if (variant() === 'page') {
+<div class="sk-page">
+  <!-- Day sidebar strip -->
+  <div class="sk-page__sidebar">
+    @for (_ of rowArray(); track $index) {
+    <div class="sk-block sk-block--day"></div>
+    }
+  </div>
+
+  <!-- Timeline cards -->
+  <div class="sk-page__timeline">
+    @for (_ of rowArray(); track $index) {
+    <div class="sk-card">
+      <div class="sk-card__header">
+        <div class="sk-block sk-block--icon"></div>
+        <div class="sk-block sk-block--title"></div>
+      </div>
+      <div class="sk-block sk-block--line sk-block--short"></div>
+      <div class="sk-block sk-block--line"></div>
+    </div>
+    }
+  </div>
+</div>
+}
+
+<!-- ── "list" variant: plain rows ─────────────────────────────────────────── -->
+@if (variant() === 'list') {
+<div class="sk-list">
+  @for (_ of rowArray(); track $index) {
+  <div class="sk-list__row">
+    <div class="sk-block sk-block--icon"></div>
+    <div class="sk-list__row-lines">
+      <div class="sk-block sk-block--line"></div>
+      <div class="sk-block sk-block--line sk-block--short"></div>
+    </div>
+  </div>
+  }
+</div>
+}
+
+<!-- ── "card" variant: grid of cards ─────────────────────────────────────── -->
+@if (variant() === 'card') {
+<div class="sk-cards">
+  @for (_ of rowArray(); track $index) {
+  <div class="sk-card">
+    <div class="sk-block sk-block--title"></div>
+    <div class="sk-block sk-block--line"></div>
+    <div class="sk-block sk-block--line sk-block--short"></div>
+  </div>
+  }
+</div>
+}

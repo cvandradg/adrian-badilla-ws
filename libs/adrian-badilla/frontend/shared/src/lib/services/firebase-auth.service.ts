@@ -31,7 +31,6 @@ export class FirebaseAuthService {
 
   readonly user$ = user(this.auth);
   readonly authState$ = authState(this.auth);
-  // esto debe de ser with computed
 
   getCurrentUser() {
     return this.user$;

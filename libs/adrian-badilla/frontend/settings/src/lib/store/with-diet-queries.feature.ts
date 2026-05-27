@@ -87,11 +87,17 @@ export function withDietQueries() {
         const userId = 'T7eoekKP2YarbxJvIMbo'; // Hardcoded for testing
 
         if (!userId) {
-          patchState(store, { loadingDiet: false, errorDiet: 'Usuario no autenticado.' });
+          patchState(store, {
+            loadingDiet: false,
+            errorDiet: 'Usuario no autenticado.',
+          });
           return;
         }
 
-        if (store['_lastLoadedDietId']() === dietId && Object.keys(store['mealsByDay']()).length > 0) {
+        if (
+          store['_lastLoadedDietId']() === dietId &&
+          Object.keys(store['mealsByDay']()).length > 0
+        ) {
           return;
         }
 
@@ -104,8 +110,8 @@ export function withDietQueries() {
             query(
               collection(store['_firestore'], mealsPath),
               orderBy('dayOrder'),
-              orderBy('order'),
-            ),
+              orderBy('order')
+            )
           );
 
           const allMeals: FirestoreMeal[] = snap.docs.map((doc) => ({
@@ -125,20 +131,23 @@ export function withDietQueries() {
 
           const firstDayId = routes[0]?.id;
 
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           patchState(store as any, {
             mealsByDay,
             loadingDiet: false,
             _lastLoadedDietId: dietId,
             routes,
             selectedRoute: routes[0] ?? null,
-            selectedRouteSupercenters: firstDayId ? (mealsByDay[firstDayId] ?? []) : [],
+            selectedRouteSupercenters: firstDayId
+              ? mealsByDay[firstDayId] ?? []
+              : [],
           });
-
         } catch (error) {
           patchState(store, {
             loadingDiet: false,
-            errorDiet: error instanceof Error ? error.message : 'Error al cargar la dieta semanal',
+            errorDiet:
+              error instanceof Error
+                ? error.message
+                : 'Error al cargar la dieta semanal',
           });
         }
       },
@@ -169,7 +178,6 @@ export function withDietQueries() {
           }
 
           await store.loadWeeklyDiet(firstDiet.id);
-
         } catch (error) {
           // Silently handle errors
         }
@@ -183,17 +191,19 @@ export function withDietQueries() {
           return;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         patchState(store as any, {
-          selectedRoute: { id: dayId, name: DAY_LABELS[dayId] ?? dayId, description: 'Semana actual' },
+          selectedRoute: {
+            id: dayId,
+            name: DAY_LABELS[dayId] ?? dayId,
+            description: 'Semana actual',
+          },
           selectedRouteSupercenters: meals,
         });
       },
-    })),
+    }))
   );
 }
 
 // Keep mapMeal/getIcon exported so existing usages don't break
 export { adaptFirestoreMeal as mapMeal } from '../adapters/firestore-meal.adapter';
 export { MEAL_ICONS as getIcon } from '../constants/diet.constants';
-

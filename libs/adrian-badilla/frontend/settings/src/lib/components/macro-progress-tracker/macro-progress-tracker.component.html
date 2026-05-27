@@ -1,19 +1,73 @@
-<div class="macro-bar">
-
-  <span class="bar-score" [style.color]="ringColor()">{{ Math.round(macroSnapshot().percentages.average.percentage) }}%</span>
-  <span class="bar-dot">·</span>
-  <span class="bar-status" [ngClass]="statusChipClass()">{{ statusLabel() }}</span>
-
-  <div class="bar-divider"></div>
-
-  @for (chip of macroChips(); track chip.key) {
-    <span class="m-chip" [ngClass]="[chip.colorClass, chip.stateClass]">
-      <span class="m-chip__icon">{{ chip.icon }}</span>{{ chip.label }}
+<section
+  class="tracker"
+  [class.tracker--complete]="hasCompletedAllMacros()"
+  aria-label="Progreso de dietas"
+>
+  <!-- ── Header row ──────────────────────────────────────────────────────── -->
+  <div class="tracker__header">
+    <span class="tracker__label">
+      <i class="pi pi-chart-line"></i>
+      Progreso de dietas
     </span>
-  }
 
-  @if (showCalories() && totalCalories() > 0) {
-    <span class="bar-kcal">{{ formatNumber(totalCalories()) }} kcal</span>
-  }
+    @if (totalCalories() > 0) {
+    <div class="stat stat--kcal">
+      <i class="pi pi-trophy stat__icon stat__icon--kcal"></i>
+      <span class="stat__value">{{ Math.round(totalCalories()) }}</span>
+      <span class="stat__unit">kcal</span>
+    </div>
+    }
 
-</div>
+    <div class="tracker__header-right">
+      <span class="tracker__count">
+        {{ macroSnapshot().completedCount
+        }}<span class="tracker__count-sep">/</span>3
+      </span>
+      <span class="tracker__pct" [ngClass]="pctColorClass()">
+        {{ Math.round(macroSnapshot().percentages.average.percentage) }}%
+      </span>
+    </div>
+  </div>
+
+  <!-- ── Progress bar ────────────────────────────────────────────────────── -->
+  <div class="tracker__bar-track" aria-hidden="true">
+    <div
+      class="tracker__bar-fill"
+      [style.width.%]="barWidth()"
+      [class.tracker__bar-fill--complete]="hasCompletedAllMacros()"
+    ></div>
+  </div>
+
+  <!-- ── Stats row ───────────────────────────────────────────────────────── -->
+  <div class="tracker__stats">
+    <!-- Proteína -->
+    <div class="stat">
+      <span class="stat__icon stat__icon--protein" aria-hidden="true">🥩</span>
+      <span class="stat__value">{{
+        Math.round(macroSnapshot().consumed.protein)
+      }}</span>
+      <span class="stat__unit">g prot</span>
+    </div>
+
+    <!-- Carbs -->
+    <div class="stat">
+      <span class="stat__icon stat__icon--carbs" aria-hidden="true">🍞</span>
+      <span class="stat__value">{{
+        Math.round(macroSnapshot().consumed.carbs)
+      }}</span>
+      <span class="stat__unit">g carbs</span>
+    </div>
+
+    <!-- Grasas -->
+    <div class="stat">
+      <span class="stat__icon stat__icon--fats" aria-hidden="true">🥑</span>
+      <span class="stat__value">{{
+        Math.round(macroSnapshot().consumed.fats)
+      }}</span>
+      <span class="stat__unit">g grasas</span>
+    </div>
+  </div>
+
+  <!-- ── Motivation message ──────────────────────────────────────────────── -->
+  <p class="tracker__message">{{ progressMessage() }}</p>
+</section>

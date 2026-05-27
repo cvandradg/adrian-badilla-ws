@@ -1,22 +1,27 @@
-
 @let items = ensureDietLoaded();
 
-@if (filteredRoutes().length) {
-  <lib-shared-item-timeline
-    [days]="routeDays()"
-    [selectedDayId]="selectedRoute()?.id ?? ''"
-    [completedDayIds]="completedDayIds()"
-    [items]="items"
-    [isTimelineComplete]="isTimelineComplete()"
-    emptyTitle="Este dia no tiene dietas asignadas aun."
-    emptyText="Cuando se agreguen dietas a seguir, se reflejarán aquí."
-    emptyButtonLabel="Agregar supercenters"
-    (daySelected)="selectDay($event)"
-    (markerClick)="openDietDialog($event)"
-    (statusChange)="handleStatusChange($event)"
-    (openChat)="openChatForMeal($event)"
-    (itemDetails)="openDietDialogFromChild($event)"
-    (emptyAction)="openAddSupercenterDialog()"
-  />
-  <lib-macro-progress-tracker [meals]="items" />
-}
+<div class="diets-page">
+  <div class="diets-page__timeline">
+    @if (filteredRoutes().length) {
+    <lib-shared-item-timeline
+      [days]="routeDays()"
+      [selectedDayId]="selectedRoute()?.id ?? ''"
+      [completedDayIds]="completedDayIds()"
+      [items]="items"
+      [isTimelineComplete]="isTimelineComplete()"
+      emptyTitle="Este dia no tiene dietas asignadas aun."
+      emptyText="Cuando se agreguen dietas a seguir, se reflejarán aquí."
+      emptyButtonLabel="Agregar supercenters"
+      (daySelected)="selectDay($event)"
+      (markerClick)="openDietDialog($event)"
+      (statusChange)="handleStatusChange($event)"
+      (openChat)="openChatForMeal($event)"
+      (itemDetails)="openDietDialogFromChild($event)"
+      (emptyAction)="openAddSupercenterDialog()"
+    />
+    }
+  </div>
+  @if (filteredRoutes().length) {
+  <lib-macro-progress-tracker class="diets-page__tracker" [meals]="items" />
+  }
+</div>

@@ -1,17 +1,17 @@
 /* ── Wrapper ─────────────────────────────────────────────────────────────── */
 
-.diet-history {
+.section-history {
   padding: 1.5rem 1.25rem;
   max-width: 720px;
 }
 
 /* ── Header ──────────────────────────────────────────────────────────────── */
 
-.diet-history__head {
+.section-history__head {
   margin-bottom: 2rem;
 }
 
-.diet-history__title {
+.section-history__title {
   margin: 0 0 0.25rem 0;
   font-size: 1.25rem;
   font-weight: 700;
@@ -19,7 +19,7 @@
   letter-spacing: -0.02em;
 }
 
-.diet-history__subtitle {
+.section-history__subtitle {
   margin: 0 0 1rem 0;
   font-size: 0.85rem;
   color: var(--app-text-muted, rgba(241, 245, 249, 0.5));
@@ -27,7 +27,7 @@
 
 /* ── Filter chips ────────────────────────────────────────────────────────── */
 
-.diet-history__filters {
+.section-history__filters {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -63,7 +63,7 @@
 
 /* ── Timeline ────────────────────────────────────────────────────────────── */
 
-.diet-history__timeline {
+.section-history__timeline {
   display: flex;
   flex-direction: column;
 }
@@ -264,7 +264,7 @@
 
 /* ── Empty ───────────────────────────────────────────────────────────────── */
 
-.diet-history__empty {
+.section-history__empty {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -285,12 +285,12 @@
 /* ══════════ DESKTOP OVERRIDES ══════════ */
 
 @media (min-width: 768px) {
-  .diet-history {
+  .section-history {
     max-width: none;
     padding: 2rem 2.5rem 3rem;
   }
 
-  .diet-history__head {
+  .section-history__head {
     margin-bottom: 2.5rem;
     display: flex;
     align-items: flex-end;
@@ -299,23 +299,28 @@
     gap: 1rem;
   }
 
-  .diet-history__title {
+  .section-history__title {
     font-size: 1.5rem;
     letter-spacing: -0.03em;
   }
 
-  .diet-history__subtitle {
+  .section-history__subtitle {
     font-size: 0.88rem;
     margin-bottom: 0;
   }
 
-  .diet-history__filters {
+  .section-history__filters {
     gap: 0.6rem;
   }
 
   .filter-chip {
     padding: 0.38rem 1rem;
     font-size: 0.82rem;
+  }
+
+  /* Timeline layout: shift from narrow to full-width premium cards */
+  .section-history__timeline {
+    gap: 0;
   }
 
   .timeline-item {
@@ -336,8 +341,6 @@
   .timeline-item__card {
     padding: 1.35rem 1.5rem;
     border-radius: 18px;
-    transition: transform 180ms ease, box-shadow 180ms ease,
-      background 180ms ease, border-color 180ms ease;
 
     &:hover {
       border-color: rgba(167, 139, 250, 0.18);
@@ -345,6 +348,9 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
     }
+
+    transition: transform 180ms ease, box-shadow 180ms ease,
+      background 180ms ease, border-color 180ms ease;
   }
 
   .timeline-item__card-header {

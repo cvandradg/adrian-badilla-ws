@@ -51,7 +51,9 @@ export class AdrianBadillaDietsComponent {
 
   // ─── Auth signal to trigger diet auto-load ────────────────────────────────
   private readonly _auth = inject(Auth);
-  private readonly _authUser = toSignal(user(this._auth), { initialValue: null });
+  private readonly _authUser = toSignal(user(this._auth), {
+    initialValue: null,
+  });
 
   /**
    * Triggers diet auto-load when the user authenticates.
@@ -61,12 +63,10 @@ export class AdrianBadillaDietsComponent {
   readonly ensureDietLoaded = computed(() => {
     // TODO: Restore to: const authUser = this._authUser();
     const authUser = { uid: 'T7eoekKP2YarbxJvIMbo' }; // Hardcoded for testing
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const lastLoadedId = (this.store as any)['_lastLoadedDietId']?.();
 
     // Fire once when user is authenticated and no diet is loaded yet
     if (authUser?.uid && !lastLoadedId) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       (this.store as any).loadActiveDiet();
     }
 
@@ -91,8 +91,12 @@ export class AdrianBadillaDietsComponent {
   readonly filteredRoutes = computed(() => this.store.filteredRoutes());
   readonly sortedRoutes = computed(() => this.store.routes());
   readonly selectedRoute = computed(() => this.store.selectedRoute());
-  readonly selectedRouteSupercenters = computed(() => this.store.selectedRouteSupercenters());
-  readonly createRouteisLoading = computed(() => this.store.createRouteisLoading());
+  readonly selectedRouteSupercenters = computed(() =>
+    this.store.selectedRouteSupercenters()
+  );
+  readonly createRouteisLoading = computed(() =>
+    this.store.createRouteisLoading()
+  );
   readonly saveRouteisLoading = computed(() => this.store.saveRouteisLoading());
   readonly isSavingRoute = computed(() => this.store.isSavingRoute());
 
@@ -122,7 +126,7 @@ export class AdrianBadillaDietsComponent {
 
   // Form management - immutable updates
   private updateFormState(updates: Partial<RouteFormState>) {
-    this.routeFormState.update(current => ({
+    this.routeFormState.update((current) => ({
       ...current,
       ...updates,
     }));
@@ -150,7 +154,8 @@ export class AdrianBadillaDietsComponent {
   };
 
   // Route management actions
-  readonly updateRouteSearchQuery = (query: string) => this.store.updateRouteSearchQuery(query);
+  readonly updateRouteSearchQuery = (query: string) =>
+    this.store.updateRouteSearchQuery(query);
   readonly clearRouteSearchQuery = (input: HTMLInputElement) => {
     this.store.clearRouteSearchQuery();
     input.focus();
@@ -160,13 +165,13 @@ export class AdrianBadillaDietsComponent {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly selectDay = (dayId: string) => (this.store as any).selectDay(dayId);
   readonly openAddRouteDialog = () => {
-    console.log('💭 TODO: Implement add route dialog');
+    // TODO: Implement add route dialog
   };
   readonly openAddSupercenterDialog = () => {
-    console.log('💭 TODO: Implement add supercenter dialog');
+    // TODO: Implement add supercenter dialog
   };
-  readonly openDeleteRouteDialog = (route: RouteNavItem) => {
-    console.log('🗑️ TODO: Implement delete route dialog', route);
+  readonly openDeleteRouteDialog = (_route: RouteNavItem) => {
+    // TODO: Implement delete route dialog
   };
 
   // Diet dialog management
@@ -186,10 +191,19 @@ export class AdrianBadillaDietsComponent {
     );
 
   // Chat integration
-  readonly openChatForMeal = (mealId: string) => this.store.openChatForMeal(mealId);
+  readonly openChatForMeal = (mealId: string) =>
+    this.store.openChatForMeal(mealId);
 
-  readonly handleStatusChange = (event: { id: string; status: 'completed' | 'skipped' | 'pending'; macros?: { protein: number; carbs: number; fats: number } }) => {
-    this.store.updateSupercenterMealStatus(event.id, event.status, event.macros);
+  readonly handleStatusChange = (event: {
+    id: string;
+    status: 'completed' | 'skipped' | 'pending';
+    macros?: { protein: number; carbs: number; fats: number };
+  }) => {
+    this.store.updateSupercenterMealStatus(
+      event.id,
+      event.status,
+      event.macros
+    );
     this.cdr.detectChanges();
   };
 }

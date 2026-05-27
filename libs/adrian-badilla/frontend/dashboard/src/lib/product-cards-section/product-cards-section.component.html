@@ -1,53 +1,198 @@
 <section class="store">
+  <!-- ── Layout wrapper: sidebar + main ── -->
+  <div
+    class="store__layout"
+    [class.store__layout--sidebar-open]="filterSidebarOpen()"
+  >
+    <!-- ── Filter Sidebar (desktop only) ── -->
+    <aside class="store__sidebar" aria-label="Filtros de productos">
+      <div class="store__sidebar-head">
+        <span class="store__sidebar-title">Filtros</span>
+      </div>
 
-  <!-- ── Toolbar ── -->
-  <div class="store__toolbar">
-    <span class="store__count">{{ products().length }} Productos</span>
-    <button type="button" class="store__filter-btn" aria-label="Filtrar productos">
-      <span>Filtrar</span>
-      <i class="pi pi-sliders-h" aria-hidden="true"></i>
-    </button>
-  </div>
-
-  <!-- ── Grid ── -->
-  <div class="store__grid">
-    @for (product of products(); track product.id) {
-      <article
-        class="product-card"
-        [class.is-added]="isAdded(product.id)"
-        [attr.aria-label]="product.name"
-      >
-        <!-- Image area -->
-        <div class="product-card__img-wrap">
-          <img
-            class="product-card__img"
-            [src]="activeImage(product.id)"
-            [alt]="product.name"
-            loading="lazy"
-          />
-          @if (product.badge) {
-            <span class="product-card__badge">{{ product.badge }}</span>
-          }
-
-          <!-- Quick-add button -->
-          <button
-            type="button"
-            class="product-card__quick-add"
-            (click)="onAddToCart($event, product.id)"
-            [attr.aria-label]="isAdded(product.id) ? 'Agregado' : 'Agregar al carrito'"
+      <!-- Category filter -->
+      <div class="filter-group">
+        <div class="filter-group__label">Categoría</div>
+        <div class="filter-group__options">
+          <label
+            class="filter-option"
+            [class.is-active]="selectedCategory() === 'all'"
           >
-            @if (isAdded(product.id)) {
-              <i class="pi pi-check" aria-hidden="true"></i>
-            } @else {
-              <i class="pi pi-shopping-cart" aria-hidden="true"></i>
-            }
-          </button>
+            <input
+              type="radio"
+              name="store-category"
+              value="all"
+              [checked]="selectedCategory() === 'all'"
+              (change)="setCategory('all')"
+            />
+            <span>Todos</span>
+            <span class="filter-option__count">{{ products().length }}</span>
+          </label>
+          <label
+            class="filter-option"
+            [class.is-active]="selectedCategory() === 'suplemento'"
+          >
+            <input
+              type="radio"
+              name="store-category"
+              value="suplemento"
+              [checked]="selectedCategory() === 'suplemento'"
+              (change)="setCategory('suplemento')"
+            />
+            <span>Suplementos</span>
+            <span class="filter-option__count">{{ supplementCount() }}</span>
+          </label>
+          <label
+            class="filter-option"
+            [class.is-active]="selectedCategory() === 'accesorio'"
+          >
+            <input
+              type="radio"
+              name="store-category"
+              value="accesorio"
+              [checked]="selectedCategory() === 'accesorio'"
+              (change)="setCategory('accesorio')"
+            />
+            <span>Accesorios</span>
+            <span class="filter-option__count">{{ accessoryCount() }}</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Sort filter (sidebar version — desktop) -->
+      <div class="filter-group">
+        <div class="filter-group__label">Ordenar por</div>
+        <div class="filter-group__options">
+          <label
+            class="filter-option"
+            [class.is-active]="sortBy() === 'featured'"
+          >
+            <input
+              type="radio"
+              name="store-sort"
+              value="featured"
+              [checked]="sortBy() === 'featured'"
+              (change)="sortBy.set('featured')"
+            />
+            <span>Destacados</span>
+          </label>
+          <label
+            class="filter-option"
+            [class.is-active]="sortBy() === 'price-asc'"
+          >
+            <input
+              type="radio"
+              name="store-sort"
+              value="price-asc"
+              [checked]="sortBy() === 'price-asc'"
+              (change)="sortBy.set('price-asc')"
+            />
+            <span>Precio: menor a mayor</span>
+          </label>
+          <label
+            class="filter-option"
+            [class.is-active]="sortBy() === 'price-desc'"
+          >
+            <input
+              type="radio"
+              name="store-sort"
+              value="price-desc"
+              [checked]="sortBy() === 'price-desc'"
+              (change)="sortBy.set('price-desc')"
+            />
+            <span>Precio: mayor a menor</span>
+          </label>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── Main: toolbar + grid ── -->
+    <div class="store__main">
+      <!-- Toolbar -->
+      <div class="store__toolbar">
+        <button
+          type="button"
+          class="store__filter-toggle"
+          (click)="toggleSidebar()"
+          [attr.aria-expanded]="filterSidebarOpen()"
+          aria-controls="store-sidebar"
+        >
+          @if (filterSidebarOpen()) {
+          <i class="pi pi-times" aria-hidden="true"></i>
+          <span>Ocultar filtros</span>
+          } @else {
+          <i class="pi pi-sliders-h" aria-hidden="true"></i>
+          <span>Mostrar filtros</span>
+          }
+        </button>
+
+        <div class="store__sort-wrap">
+          <label class="store__sort-label" for="store-sort-select"
+            >Ordenar:</label
+          >
+          <select
+            id="store-sort-select"
+            class="store__sort-select"
+            [value]="sortBy()"
+            (change)="setSort($event)"
+            aria-label="Ordenar productos"
+          >
+            <option value="featured">Destacados</option>
+            <option value="price-asc">Precio: menor a mayor</option>
+            <option value="price-desc">Precio: mayor a menor</option>
+          </select>
         </div>
 
-        <!-- Variant thumbnails -->
-        @if (product.variants && product.variants.length > 0) {
-          <div class="product-card__variants" role="list" [attr.aria-label]="'Variantes de ' + product.name">
+        <span class="store__count"
+          >{{ filteredProducts().length }} Productos</span
+        >
+      </div>
+
+      <!-- ── Grid ── -->
+      <div class="store__grid">
+        @for (product of filteredProducts(); track product.id) {
+        <article
+          class="product-card"
+          [class.is-added]="isAdded(product.id)"
+          [attr.aria-label]="product.name"
+        >
+          <!-- Image area -->
+          <div class="product-card__img-wrap">
+            <img
+              class="product-card__img"
+              [src]="activeImage(product.id)"
+              [alt]="product.name"
+              loading="lazy"
+            />
+            @if (product.badge) {
+            <span class="product-card__badge">{{ product.badge }}</span>
+            }
+
+            <!-- Quick-add button -->
+            <button
+              type="button"
+              class="product-card__quick-add"
+              (click)="onAddToCart($event, product.id)"
+              [attr.aria-label]="
+                isAdded(product.id) ? 'Agregado' : 'Agregar al carrito'
+              "
+            >
+              @if (isAdded(product.id)) {
+              <i class="pi pi-check" aria-hidden="true"></i>
+              } @else {
+              <i class="pi pi-shopping-cart" aria-hidden="true"></i>
+              }
+            </button>
+          </div>
+
+          <!-- Variant thumbnails -->
+          @if (product.variants && product.variants.length > 0) {
+          <ul
+            class="product-card__variants"
+            [attr.aria-label]="'Variantes de ' + product.name"
+          >
             @for (v of product.variants; track v; let i = $index) {
+            <li>
               <button
                 type="button"
                 class="variant-thumb"
@@ -58,18 +203,26 @@
               >
                 <img [src]="v" [alt]="'Variante ' + (i + 1)" loading="lazy" />
               </button>
+            </li>
             }
+          </ul>
+          }
+
+          <!-- Info -->
+          <div class="product-card__info">
+            <h3 class="product-card__name">{{ product.name }}</h3>
+            <span class="product-card__category">{{
+              product.category | titlecase
+            }}</span>
+            <span class="product-card__price">{{
+              product.price | currency : 'USD' : 'symbol' : '1.2-2'
+            }}</span>
           </div>
+        </article>
         }
-
-        <!-- Info -->
-        <div class="product-card__info">
-          <h3 class="product-card__name">{{ product.name }}</h3>
-          <span class="product-card__category">{{ product.category | titlecase }}</span>
-          <span class="product-card__price">{{ product.price | currency:'USD':'symbol':'1.2-2' }}</span>
-        </div>
-      </article>
-    }
+      </div>
+    </div>
+    <!-- /store__main -->
   </div>
-
+  <!-- /store__layout -->
 </section>
