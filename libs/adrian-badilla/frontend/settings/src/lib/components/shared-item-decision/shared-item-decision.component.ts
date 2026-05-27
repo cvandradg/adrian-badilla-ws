@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { DecisionCardComponent } from '../decision-card/decision-card.component';
-import { ExerciseDropdownComponent } from '../with-routines/exercise-dropdown/exercise-dropdown.component';
+import { ExerciseDropdownComponent } from '../exercise-controls/exercise-dropdown/exercise-dropdown.component';
 import { splitTextToBulletItems } from '@adrian-badilla/ui/shared';
 import type { DecisionItem, MealStatus } from '../../types/diet-decision.types';
 import {
@@ -71,11 +71,16 @@ export class SharedItemDecisionComponent {
     );
   }
 
-  handleStatusChange(event: { id: string; status: DecisionItem['status'] }): void {
+  handleStatusChange(event: {
+    id: string;
+    status: DecisionItem['status'];
+  }): void {
     if (isRoutineItem(this.item())) {
       this.statusChange.emit({ id: event.id, status: event.status });
     } else {
-      this.statusChange.emit(enrichMealStatus(this.decisionItem(), event.status));
+      this.statusChange.emit(
+        enrichMealStatus(this.decisionItem(), event.status)
+      );
     }
   }
 

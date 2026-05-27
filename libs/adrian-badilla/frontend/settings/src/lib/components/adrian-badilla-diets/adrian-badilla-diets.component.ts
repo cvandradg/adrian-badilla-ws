@@ -15,7 +15,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { settingsStoreDev } from '../../store/settings.store';
-import { FoodDescriptionDialogComponent } from '../../dialog/food-description-dialog/food-description-dialog.component';
+import { FoodDescriptionDialogComponent } from '../dialogs/food-description-dialog/food-description-dialog.component';
 import { MealTranslationService } from '../../services/meal-translation.service';
 import { SharedItemTimelineComponent } from '../shared-item-timeline/shared-item-timeline.component';
 import type { DayBase } from '@adrian-badilla/ui/shared';

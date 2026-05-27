@@ -2,7 +2,7 @@ import { Injectable, ViewContainerRef, inject } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { ExercisePopoverComponent } from './exercise-popover/exercise-popover.component';
-import type { ExerciseMock } from '../../mocks/exercises.mock';
+import type { ExerciseMock } from '../../mock/exercises.mock';
 
 /**
  * RoutinesOverlayService
@@ -26,7 +26,7 @@ export class RoutinesOverlayService {
     origin: Element,
     exercise: ExerciseMock,
     vcr: ViewContainerRef,
-    onClose: () => void,
+    onClose: () => void
   ): void {
     this.close();
 
@@ -36,7 +36,7 @@ export class RoutinesOverlayService {
       .global()
       .centerHorizontally()
       .centerVertically();
-    
+
     this.#activeRef = this.#overlay.create({
       positionStrategy,
       hasBackdrop: true,

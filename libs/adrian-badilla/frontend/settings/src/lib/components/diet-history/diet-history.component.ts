@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { DIET_HISTORY_MOCK } from '../../mocks/diet-history.mock';
+import { DIET_HISTORY_MOCK } from '../../mock/diet-history.mock';
 import { SectionHistoryComponent } from '../section-history/section-history.component';
 import type { HistoryEntry } from '../../types/section-history.types';
 

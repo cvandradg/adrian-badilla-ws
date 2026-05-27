@@ -25,7 +25,7 @@ export const adrianBadillaDashboardRoutes: Route[] = [
         path: 'dietas',
         title: 'Dietas',
         loadChildren: () =>
-          import('../../../settings/src/lib/lib.routes').then(
+          import('../../../settings/src/lib/settings.routes').then(
             (module) => module.settingsRoutes
           ),
       },
@@ -33,7 +33,7 @@ export const adrianBadillaDashboardRoutes: Route[] = [
         path: 'rutinas',
         title: 'Rutinas',
         loadChildren: () =>
-          import('../../../settings/src/lib/lib.routes').then(
+          import('../../../settings/src/lib/settings.routes').then(
             (module) => module.routinesRoutes
           ),
       },

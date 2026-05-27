@@ -17,7 +17,7 @@ import {
   EXERCISE_BENCHMARKS,
   MOCK_PERSONAL_RECORDS,
   MOCK_SESSION_HISTORY,
-} from '../mocks/mock-routine-progress.data';
+} from '../mock/mock-routine-progress.data';
 
 // ─── Simulated "today" for mock purposes ────────────────────────────────────
 // Matches the project's current date context so the streak calculates correctly.
@@ -183,11 +183,11 @@ export function generateRoutineMotivationMessage(
   streak: number
 ): string {
   if (isComplete && streak >= 7) return '🏆 ¡Semana perfecta! Eres imparable';
-  if (isComplete)               return '🎉 ¡Rutina completada! Gran sesión';
-  if (percentage >= 75)         return '🔥 ¡Casi listo! Un último esfuerzo';
-  if (percentage >= 50)         return '💪 Vas muy bien, ¡sigue así!';
-  if (percentage >= 25)         return '⚡ Buen inicio, ¡mantén el ritmo!';
-  if (percentage > 0)           return '🏋️ ¡Comenzaste! Cada rep cuenta';
+  if (isComplete) return '🎉 ¡Rutina completada! Gran sesión';
+  if (percentage >= 75) return '🔥 ¡Casi listo! Un último esfuerzo';
+  if (percentage >= 50) return '💪 Vas muy bien, ¡sigue así!';
+  if (percentage >= 25) return '⚡ Buen inicio, ¡mantén el ritmo!';
+  if (percentage > 0) return '🏋️ ¡Comenzaste! Cada rep cuenta';
   return '🎯 ¡Empieza tu rutina de hoy!';
 }
 
@@ -208,16 +208,23 @@ export function calculateRoutineProgressMetrics(
   days: RoutineDay[],
   selectedDayId: string,
   sessionHistory: RoutineSessionRecord[] = MOCK_SESSION_HISTORY,
-  historicalPRs: PersonalRecord[]       = MOCK_PERSONAL_RECORDS
+  historicalPRs: PersonalRecord[] = MOCK_PERSONAL_RECORDS
 ): RoutineProgressMetrics {
-  const { percentage, completed, total } = calculateCompletionPercentage(days, selectedDayId);
+  const { percentage, completed, total } = calculateCompletionPercentage(
+    days,
+    selectedDayId
+  );
   const isComplete = percentage === 100 && total > 0;
 
-  const totalVolume             = calculateRoutineVolume(days, selectedDayId);
-  const newPRs                  = detectNewPRs(days, selectedDayId, historicalPRs);
+  const totalVolume = calculateRoutineVolume(days, selectedDayId);
+  const newPRs = detectNewPRs(days, selectedDayId, historicalPRs);
   const estimatedDurationMinutes = estimateRoutineDuration(days, selectedDayId);
-  const streak                  = calculateStreak(sessionHistory, isComplete);
-  const motivationMessage       = generateRoutineMotivationMessage(percentage, isComplete, streak);
+  const streak = calculateStreak(sessionHistory, isComplete);
+  const motivationMessage = generateRoutineMotivationMessage(
+    percentage,
+    isComplete,
+    streak
+  );
 
   return {
     completionPercentage: percentage,

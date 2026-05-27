@@ -15,7 +15,7 @@ import {
   type UserProfileMock,
   type ProgressPhoto,
   type MeasurementSnapshot,
-} from '../mock/user-profile/user-profile.mock';
+} from '../../mock/user-profile/user-profile.mock';
 
 type ProfileTab = 'resumen' | 'historial' | 'galeria';
 

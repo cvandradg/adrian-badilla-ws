@@ -35,7 +35,7 @@ import {
 import { Auth, user } from '@angular/fire/auth';
 import { userPaths } from '@adrian-badilla/ui/shared';
 import type { FirestoreExercise } from '../types/firestore-routine.types';
-import type { ExerciseMock } from '../mocks/exercises.mock';
+import type { ExerciseMock } from '../mock/exercises.mock';
 import type { Routine, RoutineDay } from '../adapters/decision-item.adapters';
 import type { MealStatus } from '../types/diet-decision.types';
 import type { DayBase } from '@adrian-badilla/ui/shared';

@@ -18,7 +18,7 @@ import { SectionHistoryComponent } from '../section-history/section-history.comp
 import { settingsStoreDev } from '../../store/settings.store';
 import { calculateRoutineProgressMetrics } from '../../store/with-routine-tracker.feature';
 import type { MealStatus } from '../../types/diet-decision.types';
-import { ROUTINE_HISTORY_MOCK } from '../../mocks/routine-history.mock';
+import { ROUTINE_HISTORY_MOCK } from '../../mock/routine-history.mock';
 import type { HistoryEntry } from '../../types/section-history.types';
 import { SkeletonLoaderComponent } from '@adrian-badilla/ui/shared';
 

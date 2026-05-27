@@ -9,7 +9,7 @@ import {
 import { animate, style, transition, trigger } from '@angular/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import type { ExerciseMock } from '../../../mocks/exercises.mock';
+import type { ExerciseMock } from '../../../mock/exercises.mock';
 
 @Component({
   selector: 'lib-exercise-popover',
@@ -24,7 +24,7 @@ import type { ExerciseMock } from '../../../mocks/exercises.mock';
         style({ opacity: 0, transform: 'scale(0.88) translateY(-8px)' }),
         animate(
           '180ms cubic-bezier(0.25, 0.8, 0.25, 1)',
-          style({ opacity: 1, transform: 'scale(1) translateY(0)' }),
+          style({ opacity: 1, transform: 'scale(1) translateY(0)' })
         ),
       ]),
     ]),
@@ -36,7 +36,9 @@ export class ExercisePopoverComponent {
 
   readonly #videoError = signal(false);
 
-  readonly showVideo = computed(() => !!this.exercise().videoUrl && !this.#videoError());
+  readonly showVideo = computed(
+    () => !!this.exercise().videoUrl && !this.#videoError()
+  );
 
   onVideoError(): void {
     this.#videoError.set(true);

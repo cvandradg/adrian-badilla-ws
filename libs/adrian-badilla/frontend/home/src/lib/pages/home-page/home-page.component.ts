@@ -8,7 +8,7 @@ import { LeaderboardComponent } from '../../components/leaderboard/leaderboard.c
 import { PromoCarouselComponent } from '../../components/promo-carousel/promo-carousel.component';
 import { WelcomeBannerComponent } from '../../components/welcome-banner/welcome-banner.component';
 import { NewsListComponent, NewsStore } from '@adrian-badilla/news';
-import { injectHomeStore, provideHomeStore } from '../../store/home.feature';
+import { injectHomeStore, provideHomeStore } from '../../store/home.providers';
 
 @Component({
   selector: 'lib-home-page',

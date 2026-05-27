@@ -3,7 +3,7 @@ import { FoodDescriptionDialogComponent } from './food-description-dialog.compon
 import { Firestore } from '@angular/fire/firestore';
 import { DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { provideHttpClient } from '@angular/common/http';
-import { settingsStoreDev } from '../../store/settings.store';
+import { settingsStoreDev } from '../../../store/settings.store';
 
 describe('FoodDescriptionDialogComponent', () => {
   let component: FoodDescriptionDialogComponent;
@@ -16,22 +16,25 @@ describe('FoodDescriptionDialogComponent', () => {
         provideHttpClient(),
         { provide: Firestore, useValue: {} },
         { provide: DynamicDialogConfig, useValue: { data: null } },
-        { provide: settingsStoreDev, useValue: {
-          routes: () => [],
-          selectedRoute: () => null,
-          routeSearchQuery: () => '',
-          filteredRoutes: () => [],
-          selectedRouteSupercenters: () => [],
-          createRouteisLoading: () => false,
-          saveRouteisLoading: () => false,
-          isSavingRoute: () => false,
-          foodDescriptionVm: () => null,
-          chatMessages: () => [],
-          chatIsLoading: () => false,
-          isChatOpen: () => false,
-          hasPendingAISuggestion: () => false,
-          initializeFoodDescriptionDialog: jest.fn(),
-        }},
+        {
+          provide: settingsStoreDev,
+          useValue: {
+            routes: () => [],
+            selectedRoute: () => null,
+            routeSearchQuery: () => '',
+            filteredRoutes: () => [],
+            selectedRouteSupercenters: () => [],
+            createRouteisLoading: () => false,
+            saveRouteisLoading: () => false,
+            isSavingRoute: () => false,
+            foodDescriptionVm: () => null,
+            chatMessages: () => [],
+            chatIsLoading: () => false,
+            isChatOpen: () => false,
+            hasPendingAISuggestion: () => false,
+            initializeFoodDescriptionDialog: jest.fn(),
+          },
+        },
         DialogService,
       ],
     }).compileComponents();

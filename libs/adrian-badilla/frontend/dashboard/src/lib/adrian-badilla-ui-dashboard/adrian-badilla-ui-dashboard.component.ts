@@ -14,7 +14,7 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, startWith } from 'rxjs';
 import { DescriptionSidePanelComponent } from '../description-side-panel/description-side-panel.component';
 import { SideMenuComponent } from '../side-menu/side-menu.component';
-import { ProfilePageComponent } from '../profile-page/profile-page.component';
+import { ProfilePageComponent } from '../pages/profile-page/profile-page.component';
 
 const DASHBOARD_MOBILE_WIDTH = 'var(--dashboard-panel-mobile-inline-size)';
 const DASHBOARD_EXPANDED_WIDTH = 'var(--dashboard-panel-inline-size)';

@@ -1,6 +1,6 @@
 import type { FirestoreExercise } from '../types/firestore-routine.types';
 import type { Routine, RoutineDay } from './decision-item.adapters';
-import type { ExerciseMock } from '../mocks/exercises.mock';
+import type { ExerciseMock } from '../mock/exercises.mock';
 import {
   DAYS_ORDER,
   getDayOrder,
@@ -11,7 +11,9 @@ import {
 // ─── Internal helpers ─────────────────────────────────────────────────────────
 
 function formatMinutesToTime(minutes: number): string {
-  const h = Math.floor(minutes / 60).toString().padStart(2, '0');
+  const h = Math.floor(minutes / 60)
+    .toString()
+    .padStart(2, '0');
   const m = (minutes % 60).toString().padStart(2, '0');
   return `${h}:${m}`;
 }
@@ -31,12 +33,14 @@ function formatMinutesToTime(minutes: number): string {
  *
  * The resulting array is ready to be consumed by `SharedItemTimelineComponent`.
  */
-export function groupExercisesByDay(exercises: FirestoreExercise[]): RoutineDay[] {
+export function groupExercisesByDay(
+  exercises: FirestoreExercise[]
+): RoutineDay[] {
   // 1️⃣ Expand: one exercise can belong to multiple days.
   //    Seed all canonical days first so they are present in correct order
   //    even when Firebase returns no exercises for a day (e.g. Domingo).
   const byDay = new Map<string, FirestoreExercise[]>(
-    DAYS_ORDER.map((d) => [d, []]),
+    DAYS_ORDER.map((d) => [d, []])
   );
   for (const ex of exercises) {
     for (const day of normalizeDays(ex)) {
@@ -63,7 +67,7 @@ export function groupExercisesByDay(exercises: FirestoreExercise[]): RoutineDay[
           time: formatMinutesToTime(typeExercises[0]?.time ?? 0),
           status: 'pending' as const,
           exercises: typeExercises.map((ex) => ex.name),
-        }),
+        })
       );
 
       return {
@@ -83,7 +87,7 @@ export function groupExercisesByDay(exercises: FirestoreExercise[]): RoutineDay[
  * `ExercisePopoverComponent` and `RoutinesOverlayService` need zero changes.
  */
 export function buildExerciseLookup(
-  exercises: FirestoreExercise[],
+  exercises: FirestoreExercise[]
 ): Record<string, ExerciseMock> {
   return exercises.reduce<Record<string, ExerciseMock>>((acc, ex) => {
     acc[ex.name] = {
