@@ -1,5 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { afterNextRender, Component, inject } from '@angular/core';
 import { DailySummaryComponent } from '../../components/daily-summary/daily-summary.component';
 import { SmartRecommendationComponent } from '../../components/smart-recommendation/smart-recommendation.component';
 import { WeeklyProgressComponent } from '../../components/weekly-progress/weekly-progress.component';
@@ -14,7 +13,6 @@ import { injectHomeStore, provideHomeStore } from '../../store/home.providers';
   selector: 'lib-home-page',
   standalone: true,
   imports: [
-    CommonModule,
     DailySummaryComponent,
     SmartRecommendationComponent,
     WeeklyProgressComponent,
@@ -28,24 +26,25 @@ import { injectHomeStore, provideHomeStore } from '../../store/home.providers';
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.scss',
 })
-export class HomePageComponent implements OnInit {
+export class HomePageComponent {
   private readonly store = injectHomeStore();
   private readonly newsStore = inject(NewsStore);
 
-  dailySummary = this.store.dailySummary;
-  recommendation = this.store.recommendation;
-  streak = this.store.streak;
-  weeklyProgress = this.store.weeklyProgress;
-  achievements = this.store.achievements;
-  remainingCalories = this.store.remainingCalories;
-  isGoalReached = this.store.isGoalReached;
-  macroPercentages = this.store.macroPercentages;
-  topThree = this.store.topThree;
-  restOfList = this.store.restOfList;
-  latestNews = this.newsStore.latestNews;
+  readonly dailySummary = this.store.dailySummary;
+  readonly recommendation = this.store.recommendation;
+  readonly streak = this.store.streak;
+  readonly weeklyProgress = this.store.weeklyProgress;
+  readonly achievements = this.store.achievements;
+  readonly remainingCalories = this.store.remainingCalories;
+  readonly isGoalReached = this.store.isGoalReached;
+  readonly macroPercentages = this.store.macroPercentages;
+  readonly topThree = this.store.topThree;
+  readonly restOfList = this.store.restOfList;
+  readonly latestNews = this.newsStore.latestNews;
 
-  ngOnInit(): void {
+  /** Trigger data loading after first render — replaces ngOnInit. */
+  readonly #load = afterNextRender(() => {
     this.store.loadHomeData();
     this.newsStore.loadNews();
-  }
+  });
 }

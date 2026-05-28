@@ -1,12 +1,12 @@
 import {
   Component,
   ChangeDetectionStrategy,
+  DestroyRef,
   inject,
   signal,
   viewChild,
   ElementRef,
   effect,
-  HostListener,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -18,12 +18,7 @@ import type { ChatMessage } from '../../store/with-nutrition-chat.feature';
 @Component({
   selector: 'lib-nutrition-chat',
   standalone: true,
-  imports: [
-    FormsModule,
-    DatePipe,
-    ButtonModule,
-    InputTextModule,
-  ],
+  imports: [FormsModule, DatePipe, ButtonModule, InputTextModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './nutrition-chat.component.html',
   styleUrl: './nutrition-chat.component.scss',
@@ -31,6 +26,7 @@ import type { ChatMessage } from '../../store/with-nutrition-chat.feature';
 export class NutritionChatComponent {
   protected readonly store = inject(settingsStoreDev);
   private readonly messagesEnd = viewChild<ElementRef>('messagesEnd');
+  private readonly destroyRef = inject(DestroyRef);
 
   // Chat open/close state
   readonly isChatOpen = signal<boolean>(false);
@@ -51,23 +47,27 @@ export class NutritionChatComponent {
     { label: '📊 Ver macros', message: '¿Qué son los macronutrientes?' },
   ] as const;
 
-  constructor() {
-    effect(() => {
-      this.messages();
-      this.isLoading();
-      setTimeout(() => this.scrollToBottom(), 50);
-    });
-  }
+  /** Scroll to bottom whenever messages or loading state changes — no constructor needed. */
+  readonly #scrollEffect = effect(() => {
+    this.messages();
+    this.isLoading();
+    setTimeout(() => this.scrollToBottom(), 50);
+  });
 
   // FAB toggle
-  readonly toggleChat = () => this.isChatOpen.update(v => !v);
+  readonly toggleChat = () => this.isChatOpen.update((v) => !v);
   readonly closeChat = () => this.isChatOpen.set(false);
 
-  // ESC key closes chat
-  @HostListener('document:keydown.escape')
-  onEscapeKey() {
-    if (this.isChatOpen()) this.closeChat();
-  }
+  /** Close on ESC key — replaces @HostListener, no constructor needed. */
+  readonly #escapeCleanup = (() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && this.isChatOpen()) this.closeChat();
+    };
+    document.addEventListener('keydown', handler);
+    this.destroyRef.onDestroy(() =>
+      document.removeEventListener('keydown', handler)
+    );
+  })();
 
   // 💬 Send message
   readonly sendMessage = (text?: string) => {

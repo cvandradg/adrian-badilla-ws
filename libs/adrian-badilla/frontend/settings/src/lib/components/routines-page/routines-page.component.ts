@@ -45,45 +45,34 @@ export class RoutinesPageComponent {
     initialValue: null,
   });
 
-  constructor() {
-    // Trigger load once, independent of which template branch is rendered.
-    // Using effect() instead of computed() avoids the skeleton → no-render → no-load deadlock.
-    effect(() => {
-      // TODO: Restore to: const authUser = this._authUser();
-      const authUser = { uid: 'T7eoekKP2YarbxJvIMbo' }; // Hardcoded for testing
-      if (
-        authUser?.uid &&
-        !this.store.routineDays().length &&
-        !this.store.loadingRoutine()
-      ) {
-        this.store.loadActiveRoutine();
-      }
-    });
-  }
-
-  // Pure computed — no side effects.
-  readonly ensureRoutineLoaded = computed(() =>
-    this.store.selectedDayRoutines()
-  );
+  /** Load active routine once when auth is available — no constructor needed. */
+  readonly #loadEffect = effect(() => {
+    // TODO: Restore to: const authUser = this._authUser();
+    const authUser = { uid: 'T7eoekKP2YarbxJvIMbo' }; // Hardcoded for testing
+    if (
+      authUser?.uid &&
+      !this.store.routineDays().length &&
+      !this.store.loadingRoutine()
+    ) {
+      this.store.loadActiveRoutine();
+    }
+  });
 
   // ─── Store signals (presentational bindings) ─────────────────────────────
+  // Direct references — no computed wrapper needed for plain pass-throughs.
 
-  readonly routineDayBases = computed(() => this.store.routineDayBases());
+  readonly routineDayBases = this.store.routineDayBases;
+  readonly selectedDayRoutines = this.store.selectedDayRoutines;
+  readonly isSelectedDayComplete = this.store.isSelectedDayComplete;
+  readonly completedRoutineDayIds = this.store.completedRoutineDayIds;
+
+  /** Normalises undefined → '' so the template always gets a string. */
   readonly selectedRoutineDayId = computed(
     () => this.store.selectedRoutineDayId() ?? ''
   );
-  readonly selectedDayRoutines = computed(() =>
-    this.store.selectedDayRoutines()
-  );
-  readonly isSelectedDayComplete = computed(() =>
-    this.store.isSelectedDayComplete()
-  );
-  readonly completedRoutineDayIds = computed(() =>
-    this.store.completedRoutineDayIds()
-  );
 
   /** True when the selected day has no exercises (rest day, e.g. Domingo). */
-  readonly isRestDay = computed(() => this.store.isSelectedDayRestDay());
+  readonly isRestDay = this.store.isSelectedDayRestDay;
 
   /** Label of the selected day (e.g. "Domingo") — used in the rest-day card. */
   readonly selectedDayLabel = computed(() => {

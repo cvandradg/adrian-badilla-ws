@@ -42,10 +42,8 @@ export class ExerciseDropdownComponent {
   /** Tracks which exercise has an open popover. */
   readonly activeExercise = signal<string | null>(null);
 
-  constructor() {
-    // Dispose overlay when dropdown is destroyed (e.g. card collapses)
-    this.#destroyRef.onDestroy(() => this.#overlay.close());
-  }
+  /** Dispose overlay when dropdown is destroyed — no constructor needed. */
+  readonly #onDestroy = this.#destroyRef.onDestroy(() => this.#overlay.close());
 
   togglePreview(event: MouseEvent, exerciseName: string): void {
     event.stopPropagation();
@@ -59,7 +57,7 @@ export class ExerciseDropdownComponent {
     if (!isSameExercise) {
       this.activeExercise.set(exerciseName);
       // Use the button row itself as origin anchor
-      const origin = (event.currentTarget as Element);
+      const origin = event.currentTarget as Element;
       // Look up exercise detail from store (sourced from Firestore)
       const exerciseDetail = this.#store.exerciseLookup()[exerciseName];
 
@@ -75,4 +73,3 @@ export class ExerciseDropdownComponent {
     return this.activeExercise() === exerciseName;
   }
 }
-

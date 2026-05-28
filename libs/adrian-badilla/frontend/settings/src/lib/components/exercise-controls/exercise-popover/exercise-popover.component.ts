@@ -8,13 +8,12 @@ import {
 } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
 import type { ExerciseMock } from '../../../mock/exercises.mock';
 
 @Component({
   selector: 'lib-exercise-popover',
   standalone: true,
-  imports: [CommonModule, DragDropModule],
+  imports: [DragDropModule],
   templateUrl: './exercise-popover.component.html',
   styleUrl: './exercise-popover.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

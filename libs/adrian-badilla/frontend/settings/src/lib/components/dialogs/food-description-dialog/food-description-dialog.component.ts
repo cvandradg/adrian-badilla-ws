@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
@@ -11,13 +10,7 @@ import type { FoodDescriptionDialogData } from '../../../types/food-description.
 @Component({
   selector: 'lib-food-description-dialog',
   standalone: true,
-  imports: [
-    CommonModule,
-    ButtonModule,
-    DividerModule,
-    SkeletonModule,
-    TagModule,
-  ],
+  imports: [ButtonModule, DividerModule, SkeletonModule, TagModule],
   templateUrl: './food-description-dialog.component.html',
   styleUrl: './food-description-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

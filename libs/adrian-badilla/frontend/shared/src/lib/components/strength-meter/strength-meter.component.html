@@ -1,9 +1,8 @@
 <div class="container">
-  @if (password.length > 0) {
-    <p [class]="result" @if (result === 'vulnerable')>
-      Debe contener al menos 5 caracteres
-    </p>
-    <p [class]="result + ' margin'">Su contraseña es {{ result }}</p>
-    <div class="strenyMeter" [class]="result"></div>
+  @if (password().length > 0) { @if (result() === 'vulnerable') {
+  <p [class]="result()">Debe contener al menos 5 caracteres</p>
+  }
+  <p [class]="result() + ' margin'">Su contraseña es {{ result() }}</p>
+  <div class="strenyMeter" [class]="result()"></div>
   }
 </div>

@@ -1,5 +1,4 @@
 import { Component, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Recommendation } from '../../models/home.model';
 
 interface NutritionTip {
@@ -32,7 +31,7 @@ function getRandomTips(count: number): NutritionTip[] {
 @Component({
   selector: 'lib-smart-recommendation',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './smart-recommendation.component.html',
   styleUrl: './smart-recommendation.component.scss',
 })

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 interface MotivationalQuote {
   text: string;
@@ -19,7 +18,7 @@ const QUOTES: MotivationalQuote[] = [
 @Component({
   selector: 'lib-welcome-banner',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './welcome-banner.component.html',
   styleUrl: './welcome-banner.component.scss',
 })

@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { News } from '../../models/news.model';
@@ -7,7 +7,7 @@ import { News } from '../../models/news.model';
 @Component({
   selector: 'lib-news-card',
   standalone: true,
-  imports: [CommonModule, CardModule, TagModule],
+  imports: [CardModule, TagModule, DatePipe],
   templateUrl: './news-card.component.html',
   styleUrl: './news-card.component.scss',
 })

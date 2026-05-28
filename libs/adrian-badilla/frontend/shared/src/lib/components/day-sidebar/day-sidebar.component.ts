@@ -54,15 +54,14 @@ export class DaySidebarComponent {
   readonly isAtStart = computed(() => !this.canScrollLeft());
   readonly isAtEnd = computed(() => !this.canScrollRight());
 
-  constructor() {
-    afterNextRender(() => {
-      this.syncScrollState();
+  /** Wire scroll sync after first render — no constructor needed. */
+  readonly #initScroll = afterNextRender(() => {
+    this.syncScrollState();
 
-      const ro = new ResizeObserver(() => this.syncScrollState());
-      ro.observe(this.scrollElRef().nativeElement);
-      this.destroyRef.onDestroy(() => ro.disconnect());
-    });
-  }
+    const ro = new ResizeObserver(() => this.syncScrollState());
+    ro.observe(this.scrollElRef().nativeElement);
+    this.destroyRef.onDestroy(() => ro.disconnect());
+  });
 
   isComplete(dayId: string): boolean {
     return this.completedDayIds().has(dayId);

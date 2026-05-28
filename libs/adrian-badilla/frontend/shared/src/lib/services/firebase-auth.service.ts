@@ -1,5 +1,6 @@
 import { from, Observable } from 'rxjs';
 import { Injectable, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Credentials } from '../types/general-types';
 import {
   UserCredential,
@@ -31,6 +32,12 @@ export class FirebaseAuthService {
 
   readonly user$ = user(this.auth);
   readonly authState$ = authState(this.auth);
+
+  /**
+   * Signal equivalent of `user$` — single shared subscription for the whole app.
+   * Components should prefer this over calling `toSignal(user(auth))` themselves.
+   */
+  readonly currentUser = toSignal(this.user$, { initialValue: null });
 
   getCurrentUser() {
     return this.user$;

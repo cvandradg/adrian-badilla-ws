@@ -1,13 +1,11 @@
 import {
   Component,
   computed,
+  effect,
   signal,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   inject,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Auth, user } from '@angular/fire/auth';
 import { ButtonModule } from 'primeng/button';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -21,7 +19,8 @@ import { SharedItemTimelineComponent } from '../shared-item-timeline/shared-item
 import type { DayBase } from '@adrian-badilla/ui/shared';
 import type { RouteNavItem } from '../../types/diets.types';
 import { MacroProgressTrackerComponent } from '../macro-progress-tracker/macro-progress-tracker.component';
-// Extract form state into a focused signal
+
+// Form state interface
 interface RouteFormState {
   readonly routeName: string;
   readonly routeDescription: string;
@@ -45,65 +44,45 @@ interface RouteFormState {
   ],
 })
 export class AdrianBadillaDietsComponent {
-  private readonly cdr = inject(ChangeDetectorRef);
   private readonly mealTranslationService = inject(MealTranslationService);
   private readonly store = inject(settingsStoreDev);
 
-  // ─── Auth signal to trigger diet auto-load ────────────────────────────────
-  private readonly _auth = inject(Auth);
-  private readonly _authUser = toSignal(user(this._auth), {
-    initialValue: null,
-  });
+  // --- Auth trigger ----------------------------------------------------------
+  // TODO: inject FirebaseAuthService and use its .currentUser signal here
 
-  /**
-   * Triggers diet auto-load when the user authenticates.
-   * Watches _authUser (not selectedRoute, which would be circular).
-   * Pure signal — no ngOnInit, effects, or constructor needed.
-   */
-  readonly ensureDietLoaded = computed(() => {
+  /** Load diet once when authenticated � side effect belongs in effect(), not computed(). */
+  readonly #loadDietEffect = effect(() => {
     // TODO: Restore to: const authUser = this._authUser();
     const authUser = { uid: 'T7eoekKP2YarbxJvIMbo' }; // Hardcoded for testing
     const lastLoadedId = (this.store as any)['_lastLoadedDietId']?.();
-
-    // Fire once when user is authenticated and no diet is loaded yet
     if (authUser?.uid && !lastLoadedId) {
       (this.store as any).loadActiveDiet();
     }
-
-    return this.selectedRouteSupercenters();
   });
 
-  // ─── Firestore diet state ────────────────────────────────────────────────────
-  readonly loadingDiet = computed(() => this.store.loadingDiet());
-  readonly errorDiet = computed(() => this.store.errorDiet());
+  // --- Store signals (direct references, no computed wrappers) ---------------
+  readonly loadingDiet = this.store.loadingDiet;
+  readonly errorDiet = this.store.errorDiet;
+  readonly routeSearchQuery = this.store.routeSearchQuery;
+  readonly filteredRoutes = this.store.filteredRoutes;
+  readonly sortedRoutes = this.store.routes;
+  readonly selectedRoute = this.store.selectedRoute;
+  readonly selectedRouteSupercenters = this.store.selectedRouteSupercenters;
+  readonly createRouteisLoading = this.store.createRouteisLoading;
+  readonly saveRouteisLoading = this.store.saveRouteisLoading;
+  readonly isSavingRoute = this.store.isSavingRoute;
 
-  // UI state
+  // --- UI state --------------------------------------------------------------
   readonly isEditing = signal<boolean>(false);
 
-  // Form state - single signal instead of separate signals
   private readonly routeFormState = signal<RouteFormState>({
     routeName: '',
     routeDescription: '',
   });
 
-  // Store-derived signals
-  readonly routeSearchQuery = computed(() => this.store.routeSearchQuery());
-  readonly filteredRoutes = computed(() => this.store.filteredRoutes());
-  readonly sortedRoutes = computed(() => this.store.routes());
-  readonly selectedRoute = computed(() => this.store.selectedRoute());
-  readonly selectedRouteSupercenters = computed(() =>
-    this.store.selectedRouteSupercenters()
-  );
-  readonly createRouteisLoading = computed(() =>
-    this.store.createRouteisLoading()
-  );
-  readonly saveRouteisLoading = computed(() => this.store.saveRouteisLoading());
-  readonly isSavingRoute = computed(() => this.store.isSavingRoute());
-
-  // Computed UI state
   readonly isReadonly = computed(() => !this.isEditing());
 
-  /** Routes mapped to DayBase for DayTimelineShellComponent. */
+  /** Routes mapped to DayBase for the timeline shell. */
   readonly routeDays = computed<DayBase[]>(() =>
     this.filteredRoutes().map((route) => ({
       id: route.id,
@@ -118,29 +97,22 @@ export class AdrianBadillaDietsComponent {
     return supercenters.every((meal: any) => meal.status === 'completed');
   });
 
-  /** Set of day IDs where every meal is completed — derived from real store data. */
   readonly completedDayIds = computed(() => new Set<string>());
 
-  // Extracted form accessors for cleaner template binding
   readonly routeForm = computed(() => this.routeFormState());
 
-  // Form management - immutable updates
+  // --- Form management -------------------------------------------------------
   private updateFormState(updates: Partial<RouteFormState>) {
-    this.routeFormState.update((current) => ({
-      ...current,
-      ...updates,
-    }));
+    this.routeFormState.update((current) => ({ ...current, ...updates }));
   }
 
-  readonly onRouteNameChange = (value: string) => {
+  readonly onRouteNameChange = (value: string) =>
     this.updateFormState({ routeName: value || '' });
-  };
 
-  readonly onRouteDescriptionChange = (value: string) => {
+  readonly onRouteDescriptionChange = (value: string) =>
     this.updateFormState({ routeDescription: value || '' });
-  };
 
-  // Edit mode actions
+  // --- Edit mode -------------------------------------------------------------
   readonly enableEditMode = () => this.isEditing.set(true);
   readonly discardEditMode = () => this.isEditing.set(false);
 
@@ -153,28 +125,33 @@ export class AdrianBadillaDietsComponent {
     this.isEditing.set(false);
   };
 
-  // Route management actions
+  // --- Route management ------------------------------------------------------
   readonly updateRouteSearchQuery = (query: string) =>
     this.store.updateRouteSearchQuery(query);
+
   readonly clearRouteSearchQuery = (input: HTMLInputElement) => {
     this.store.clearRouteSearchQuery();
     input.focus();
   };
+
   readonly selectRoute = (routeId: string) => this.store.selectRoute(routeId);
-  /** Selects a day using Firestore data; falls back to mock if data isn't loaded. */
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly selectDay = (dayId: string) => (this.store as any).selectDay(dayId);
+
   readonly openAddRouteDialog = () => {
     // TODO: Implement add route dialog
   };
+
   readonly openAddSupercenterDialog = () => {
     // TODO: Implement add supercenter dialog
   };
+
   readonly openDeleteRouteDialog = (_route: RouteNavItem) => {
     // TODO: Implement delete route dialog
   };
 
-  // Diet dialog management
+  // --- Diet dialog -----------------------------------------------------------
   readonly openDietDialog = (supercenter: any) =>
     this.store.openDietDialog(
       supercenter,
@@ -190,7 +167,7 @@ export class AdrianBadillaDietsComponent {
       FoodDescriptionDialogComponent
     );
 
-  // Chat integration
+  // --- Chat ------------------------------------------------------------------
   readonly openChatForMeal = (mealId: string) =>
     this.store.openChatForMeal(mealId);
 
@@ -204,6 +181,5 @@ export class AdrianBadillaDietsComponent {
       event.status,
       event.macros
     );
-    this.cdr.detectChanges();
   };
 }

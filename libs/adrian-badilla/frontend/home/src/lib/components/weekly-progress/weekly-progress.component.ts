@@ -1,11 +1,10 @@
 import { Component, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ChartModule } from 'primeng/chart';
 
 @Component({
   selector: 'lib-weekly-progress',
   standalone: true,
-  imports: [CommonModule, ChartModule],
+  imports: [ChartModule],
   templateUrl: './weekly-progress.component.html',
   styleUrl: './weekly-progress.component.scss',
 })

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { CarouselModule } from 'primeng/carousel';
 import { ButtonModule } from 'primeng/button';
 
@@ -55,7 +54,7 @@ const PROMO_SLIDES: PromoSlide[] = [
 @Component({
   selector: 'lib-promo-carousel',
   standalone: true,
-  imports: [CommonModule, CarouselModule, ButtonModule],
+  imports: [CarouselModule, ButtonModule],
   templateUrl: './promo-carousel.component.html',
   styleUrl: './promo-carousel.component.scss',
 })

@@ -24,18 +24,17 @@ export class FontScaleService {
 
   readonly scale = signal<number>(this.#readStored());
 
-  constructor() {
-    effect(() => {
-      const v = this.scale();
-      if (!this.isBrowser) return;
-      document.documentElement.style.setProperty(CSS_PROP, String(v));
-      try {
-        localStorage.setItem(STORAGE_KEY, String(v));
-      } catch {
-        /* noop */
-      }
-    });
-  }
+  /** Sync scale to DOM and localStorage whenever the signal changes — no constructor needed. */
+  readonly #syncEffect = effect(() => {
+    const v = this.scale();
+    if (!this.isBrowser) return;
+    document.documentElement.style.setProperty(CSS_PROP, String(v));
+    try {
+      localStorage.setItem(STORAGE_KEY, String(v));
+    } catch {
+      /* noop */
+    }
+  });
 
   setScale(value: number): void {
     this.scale.set(value);

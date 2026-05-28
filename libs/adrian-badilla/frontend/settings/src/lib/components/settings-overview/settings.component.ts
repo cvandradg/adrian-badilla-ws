@@ -1,14 +1,14 @@
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
-  ViewChild,
-  signal,
   computed,
-  inject,
   DestroyRef,
-  AfterViewInit,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
 } from '@angular/core';
 import { AdrianBadillaDietsComponent } from '../adrian-badilla-diets/adrian-badilla-diets.component';
 import { DietHistorySettingsComponent } from '../diet-history/diet-history.component';
@@ -35,7 +35,7 @@ import { SkeletonLoaderComponent } from '@adrian-badilla/ui/shared';
   styleUrl: './settings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsComponent implements AfterViewInit {
+export class SettingsComponent {
   private readonly store = inject(settingsStoreDev);
 
   readonly isMobile = signal(
@@ -46,7 +46,7 @@ export class SettingsComponent implements AfterViewInit {
 
   readonly isLoadingDiet = computed(() => this.store.loadingDiet());
 
-  constructor() {
+  readonly #mqlCleanup = (() => {
     if (globalThis.window === undefined) return;
     const mql = globalThis.window.matchMedia('(max-width: 767px)');
     const handler = (e: MediaQueryListEvent) => this.isMobile.set(e.matches);
@@ -54,7 +54,7 @@ export class SettingsComponent implements AfterViewInit {
     inject(DestroyRef).onDestroy(() =>
       mql.removeEventListener('change', handler)
     );
-  }
+  })();
 
   readonly tabs: SectionTab[] = [
     { value: 'diets', label: 'Dietas', icon: ['fas', 'salad'] },
@@ -69,11 +69,12 @@ export class SettingsComponent implements AfterViewInit {
   routes = Array.from({ length: 24 }, (_, i) => i + 1);
   activeRouteIndex = 0;
 
-  @ViewChild('routesScroll', { static: true })
-  routesScroll!: ElementRef<HTMLDivElement>;
+  /** Modern signal-based `@ViewChild` replacement. */
+  readonly routesScroll =
+    viewChild.required<ElementRef<HTMLDivElement>>('routesScroll');
 
-  canScrollUp = false;
-  canScrollDown = false;
+  readonly canScrollUp = signal(false);
+  readonly canScrollDown = signal(false);
 
   private readonly LOREM =
     'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua';
@@ -88,26 +89,25 @@ export class SettingsComponent implements AfterViewInit {
     this.activeRouteIndex = index;
   }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => this.updateScrollButtons());
-  }
+  /** Replaces `ngAfterViewInit` + `setTimeout` — runs once after first render. */
+  readonly #initScroll = afterNextRender(() => this.updateScrollButtons());
 
   onRoutesScroll(): void {
     this.updateScrollButtons();
   }
 
   scrollUp(): void {
-    const el = this.routesScroll?.nativeElement;
-    if (el) {
-      el.scrollBy({ top: -this.scrollStep, behavior: 'smooth' });
-    }
+    this.routesScroll().nativeElement.scrollBy({
+      top: -this.scrollStep,
+      behavior: 'smooth',
+    });
   }
 
   scrollDown(): void {
-    const el = this.routesScroll?.nativeElement;
-    if (el) {
-      el.scrollBy({ top: this.scrollStep, behavior: 'smooth' });
-    }
+    this.routesScroll().nativeElement.scrollBy({
+      top: this.scrollStep,
+      behavior: 'smooth',
+    });
   }
 
   private get scrollStep(): number {
@@ -115,11 +115,9 @@ export class SettingsComponent implements AfterViewInit {
   }
 
   private updateScrollButtons(): void {
-    const el = this.routesScroll?.nativeElement;
-    if (!el) return;
+    const el = this.routesScroll().nativeElement;
     const { scrollTop, scrollHeight, clientHeight } = el;
-
-    this.canScrollUp = scrollTop > 0;
-    this.canScrollDown = scrollTop + clientHeight < scrollHeight - 1;
+    this.canScrollUp.set(scrollTop > 0);
+    this.canScrollDown.set(scrollTop + clientHeight < scrollHeight - 1);
   }
 }

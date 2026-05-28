@@ -1,11 +1,10 @@
 import { Component, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { LeaderboardEntry } from '../../models/home.model';
 
 @Component({
   selector: 'lib-leaderboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './leaderboard.component.html',
   styleUrl: './leaderboard.component.scss',
 })

@@ -19,7 +19,7 @@
         [days]="routineDayBases()"
         [selectedDayId]="selectedRoutineDayId()"
         [completedDayIds]="completedRoutineDayIds()"
-        [items]="ensureRoutineLoaded()"
+        [items]="selectedDayRoutines()"
         [isTimelineComplete]="isSelectedDayComplete()"
         [restDayLabel]="isRestDay() ? selectedDayLabel() : null"
         (daySelected)="selectDay($event)"

@@ -6,13 +6,13 @@ import {
   Component,
   computed,
   inject,
-  Input,
+  input,
+  linkedSignal,
   output,
   signal,
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Auth, user } from '@angular/fire/auth';
+import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
 
 type MenuItem = {
   icon: [string, string];
@@ -29,17 +29,18 @@ type MenuItem = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SideMenuComponent {
-  private readonly _auth = inject(Auth);
-  private readonly _authUser = toSignal(user(this._auth), {
-    initialValue: null,
-  });
+  private readonly _authService = inject(FirebaseAuthService);
+  private readonly _authUser = this._authService.currentUser;
 
-  readonly sideNavCollapsed = signal(false);
+  /** Accepts the collapsed state from the parent dashboard shell. */
+  readonly collapsed = input(false);
+  /**
+   * `linkedSignal` keeps internal state in sync with the `collapsed` input,
+   * while still allowing internal mutations (e.g. mobile auto-close).
+   * Replaces the `@Input() set collapsed` + `signal` pattern.
+   */
+  readonly sideNavCollapsed = linkedSignal(() => this.collapsed());
   readonly menuItemSelected = output<void>();
-
-  @Input() set collapsed(value: boolean) {
-    this.sideNavCollapsed.set(value);
-  }
 
   /** Display name — falls back to email prefix or generic label. */
   readonly displayName = computed(() => {

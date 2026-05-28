@@ -1,5 +1,4 @@
 import { Component, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { CarouselModule } from 'primeng/carousel';
 import { TagModule } from 'primeng/tag';
 import { News } from '../../models/news.model';
@@ -7,7 +6,7 @@ import { News } from '../../models/news.model';
 @Component({
   selector: 'lib-news-highlight',
   standalone: true,
-  imports: [CommonModule, CarouselModule, TagModule],
+  imports: [CarouselModule, TagModule],
   templateUrl: './news-highlight.component.html',
   styleUrl: './news-highlight.component.scss',
 })

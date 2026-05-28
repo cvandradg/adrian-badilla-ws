@@ -1,11 +1,10 @@
 import { Component, input, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { DailySummary } from '../../models/home.model';
 
 @Component({
   selector: 'lib-daily-summary',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './daily-summary.component.html',
   styleUrl: './daily-summary.component.scss',
 })
