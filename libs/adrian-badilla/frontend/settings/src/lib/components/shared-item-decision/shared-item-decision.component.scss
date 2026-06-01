@@ -1,10 +1,16 @@
 // ── CARD NAME (card-name slot) ──────────────────────────────────────────────
 .decision-card-name {
-  display: block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
   font-weight: 600;
   font-size: 0.95rem;
   color: #ffffff;
   line-height: 1.4;
+  min-height: calc(
+    1.4em * 2
+  ); /* always reserve 2 lines so short names don't shrink the card */
   margin-bottom: 0.6rem;
 }
 
@@ -33,9 +39,15 @@
   white-space: nowrap;
   flex-shrink: 0;
 
-  &--protein { color: rgba(254, 202, 202, 0.85); }
-  &--carbs   { color: rgba(253, 224, 71,  0.85); }
-  &--fats    { color: rgba(134, 239, 172, 0.85); }
+  &--protein {
+    color: rgba(254, 202, 202, 0.85);
+  }
+  &--carbs {
+    color: rgba(253, 224, 71, 0.85);
+  }
+  &--fats {
+    color: rgba(134, 239, 172, 0.85);
+  }
 }
 
 // ── DROPDOWN CONTENT (dropdown-content slot) ─────────────────────────────────
@@ -95,12 +107,14 @@
 
   &--highlighted {
     color: rgba(255, 255, 255, 1);
-    text-shadow: 0 0 8px rgba(165, 180, 252, 0.6), 0 0 12px rgba(134, 239, 172, 0.4);
+    text-shadow: 0 0 8px rgba(165, 180, 252, 0.6),
+      0 0 12px rgba(134, 239, 172, 0.4);
 
     &::before {
       color: rgba(165, 180, 252, 1);
       font-size: 0.75rem;
-      text-shadow: 0 0 12px rgba(165, 180, 252, 0.8), 0 0 20px rgba(134, 239, 172, 0.5);
+      text-shadow: 0 0 12px rgba(165, 180, 252, 0.8),
+        0 0 20px rgba(134, 239, 172, 0.5);
       transform: scale(1.2);
     }
   }
@@ -121,6 +135,12 @@
 }
 
 @keyframes cardSparkle {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
-  50%       { box-shadow: 0 0 12px rgba(34, 211, 238, 0.4), 0 0 24px rgba(34, 211, 238, 0.2); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 211, 238, 0);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.4),
+      0 0 24px rgba(34, 211, 238, 0.2);
+  }
 }

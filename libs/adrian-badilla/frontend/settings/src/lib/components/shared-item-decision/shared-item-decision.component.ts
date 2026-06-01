@@ -34,6 +34,12 @@ export function isRoutineItem(item: SharedItem): item is Routine {
 })
 export class SharedItemDecisionComponent {
   readonly item = input.required<SharedItem>();
+  /** Passed through to DecisionCardComponent's ✓ button anchor. */
+  readonly checkAnchorId = input<string | null>(null);
+  /** Passed through to DecisionCardComponent's card body anchor. */
+  readonly cardBodyAnchorId = input<string | null>(null);
+  /** Passed through to DecisionCardComponent's expanded dropdown anchor. */
+  readonly dropdownAnchorId = input<string | null>(null);
 
   readonly statusChange = output<{
     id: string;

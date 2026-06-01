@@ -15,6 +15,7 @@ import { filter, startWith } from 'rxjs';
 import { DescriptionSidePanelComponent } from '../description-side-panel/description-side-panel.component';
 import { SideMenuComponent } from '../side-menu/side-menu.component';
 import { ProfilePageComponent } from '../pages/profile-page/profile-page.component';
+import { TourAnchorDirective } from '@adrian-badilla/ui/shared';
 
 const DASHBOARD_MOBILE_WIDTH = 'var(--dashboard-panel-mobile-inline-size)';
 const DASHBOARD_EXPANDED_WIDTH = 'var(--dashboard-panel-inline-size)';
@@ -37,6 +38,7 @@ const DASHBOARD_COMPACT_LANDSCAPE_QUERY =
     MatDialogModule,
     DescriptionSidePanelComponent,
     FontAwesomeModule,
+    TourAnchorDirective,
   ],
   templateUrl: './adrian-badilla-ui-dashboard.component.html',
   styleUrl: './adrian-badilla-ui-dashboard.component.scss',

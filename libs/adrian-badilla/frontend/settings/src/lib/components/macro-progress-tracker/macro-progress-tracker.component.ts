@@ -5,13 +5,13 @@ import {
   input,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { NgClass } from '@angular/common';
 import { settingsStoreDev } from '../../store/settings.store';
 import {
   calculateConsumedMacros,
   calculateAllMacroPercentages,
   generateMacroMessages,
 } from '../../store/with-macro-tracker.feature';
+import { ProgressTrackerShellComponent } from '../progress-tracker-shell/progress-tracker-shell.component';
 
 type MacroType = 'protein' | 'fats' | 'carbs';
 
@@ -22,7 +22,7 @@ type MacroType = 'protein' | 'fats' | 'carbs';
 @Component({
   selector: 'lib-macro-progress-tracker',
   standalone: true,
-  imports: [NgClass],
+  imports: [ProgressTrackerShellComponent],
   templateUrl: './macro-progress-tracker.component.html',
   styleUrl: './macro-progress-tracker.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,7 +37,7 @@ export class MacroProgressTrackerComponent {
   readonly showMessages = input<boolean>(true);
   readonly showCalories = input<boolean>(true);
   readonly compact = input<boolean>(false);
-  readonly meals = input<any[]>([]); // Input to receive meals from parent
+  readonly meals = input<any[]>([]);
 
   // 🧮 Core calculations based on meals input
   private readonly consumedMacros = computed(() =>
@@ -135,16 +135,7 @@ export class MacroProgressTrackerComponent {
     )
   );
 
-  readonly pctColorClass = computed<string>(() => {
-    if (this.hasCompletedAllMacros()) return 'pct--done';
-    if (this.macroSnapshot().percentages.average.percentage >= 50)
-      return 'pct--mid';
-    if (this.macroSnapshot().percentages.average.percentage > 0)
-      return 'pct--low';
-    return 'pct--zero';
-  });
-
-  // 🎯 ADHERENCE COACHING signals
+  // ─── Adherence coaching ───────────────────────────────────────────────────
   readonly adherenceStatus = computed<'on-track' | 'behind' | 'ahead'>(() => {
     const avg = this.macroSnapshot().percentages.average.percentage;
     if (avg > 110) return 'ahead';

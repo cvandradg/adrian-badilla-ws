@@ -1,14 +1,11 @@
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
-  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
-  ElementRef,
   inject,
   signal,
-  viewChild,
 } from '@angular/core';
 import { AdrianBadillaDietsComponent } from '../adrian-badilla-diets/adrian-badilla-diets.component';
 import { DietHistorySettingsComponent } from '../diet-history/diet-history.component';
@@ -64,60 +61,5 @@ export class SettingsComponent {
 
   setActiveTab(value: string): void {
     this.activeTab.set(value);
-  }
-
-  routes = Array.from({ length: 24 }, (_, i) => i + 1);
-  activeRouteIndex = 0;
-
-  /** Modern signal-based `@ViewChild` replacement. */
-  readonly routesScroll =
-    viewChild.required<ElementRef<HTMLDivElement>>('routesScroll');
-
-  readonly canScrollUp = signal(false);
-  readonly canScrollDown = signal(false);
-
-  private readonly LOREM =
-    'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua';
-
-  tabDescriptions = this.routes.map(() => {
-    const max = 'Lorem ipsum dolor ipsum dolor!'.length;
-    const len = 5 + Math.floor(Math.random() * (max - 5 + 1));
-    return this.LOREM.slice(0, len).trim() + '!';
-  });
-
-  setActiveRoute(index: number) {
-    this.activeRouteIndex = index;
-  }
-
-  /** Replaces `ngAfterViewInit` + `setTimeout` — runs once after first render. */
-  readonly #initScroll = afterNextRender(() => this.updateScrollButtons());
-
-  onRoutesScroll(): void {
-    this.updateScrollButtons();
-  }
-
-  scrollUp(): void {
-    this.routesScroll().nativeElement.scrollBy({
-      top: -this.scrollStep,
-      behavior: 'smooth',
-    });
-  }
-
-  scrollDown(): void {
-    this.routesScroll().nativeElement.scrollBy({
-      top: this.scrollStep,
-      behavior: 'smooth',
-    });
-  }
-
-  private get scrollStep(): number {
-    return 3 * 52;
-  }
-
-  private updateScrollButtons(): void {
-    const el = this.routesScroll().nativeElement;
-    const { scrollTop, scrollHeight, clientHeight } = el;
-    this.canScrollUp.set(scrollTop > 0);
-    this.canScrollDown.set(scrollTop + clientHeight < scrollHeight - 1);
   }
 }

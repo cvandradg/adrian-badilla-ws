@@ -6,11 +6,12 @@ import {
 } from '@angular/core';
 import { DaySidebarComponent } from '../day-sidebar/day-sidebar.component';
 import type { DayBase } from '../../types/day-base.types';
+import { TourAnchorDirective } from '../../directives/tour-anchor.directive';
 
 @Component({
   selector: 'lib-day-timeline-shell',
   standalone: true,
-  imports: [DaySidebarComponent],
+  imports: [DaySidebarComponent, TourAnchorDirective],
   templateUrl: './day-timeline-shell.component.html',
   styleUrl: './day-timeline-shell.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

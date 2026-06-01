@@ -5,6 +5,7 @@ import {
   output,
 } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { TourAnchorDirective } from '@adrian-badilla/ui/shared';
 
 export interface SectionTab {
   value: string;
@@ -15,7 +16,7 @@ export interface SectionTab {
 @Component({
   selector: 'lib-section-tabs',
   standalone: true,
-  imports: [FontAwesomeModule],
+  imports: [FontAwesomeModule, TourAnchorDirective],
   templateUrl: './section-tabs.component.html',
   styleUrl: './section-tabs.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

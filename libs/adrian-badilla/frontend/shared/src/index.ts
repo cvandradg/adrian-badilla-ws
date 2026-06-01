@@ -13,3 +13,7 @@ export {
   FONT_SCALE_OPTIONS,
 } from './lib/services/font-scale.service';
 export type { FontScaleOption } from './lib/services/font-scale.service';
+
+// ── Guided Tour infrastructure (shared across all libs) ───────────────────────
+export { TourAnchorRegistryService } from './lib/services/tour-anchor-registry.service';
+export { TourAnchorDirective } from './lib/directives/tour-anchor.directive';

@@ -1,0 +1,125 @@
+<!-- ─────────────────────────────────────────────────────────────────────────
+  Tour Overlay — rendered only when store.isOpen() is true.
+  Two visual layers:
+    1. .tour-backdrop — the spotlighted div whose massive box-shadow creates
+       the dark screen mask around it (no separate overlay element needed).
+    2. .tour-tooltip  — the coachmark card, positioned via computed styles.
+  ───────────────────────────────────────────────────────────────────────── -->
+
+@if (store.isOpen()) {
+
+<!-- ── 1. Spotlight backdrop ─────────────────────────────────────────────── -->
+<!--
+    The element is positioned where the anchor element is.
+    box-shadow: 0 0 0 9999px rgba(...) paints the dark mask outward from its
+    edges, effectively darkening everything EXCEPT the element's own area.
+    CSS transitions between top/left/width/height give the smooth slide
+    animation when moving between steps.
+  -->
+@if (spotlightBox(); as box) {
+<div
+  class="tour-backdrop"
+  aria-hidden="true"
+  [style.top.px]="box.top"
+  [style.left.px]="box.left"
+  [style.width.px]="box.width"
+  [style.height.px]="box.height"
+></div>
+@if (blockers(); as rects) { @for (r of rects; track $index) {
+<div
+  class="tour-blocker"
+  aria-hidden="true"
+  [style.top.px]="r.top"
+  [style.left.px]="r.left"
+  [style.width.px]="r.width"
+  [style.height.px]="r.height"
+></div>
+} } } @else {
+<!-- Waiting for first measurement — show a full-screen dim without cutout -->
+<div class="tour-backdrop tour-backdrop--init" aria-hidden="true"></div>
+}
+
+<!-- ── 2. Coachmark tooltip ───────────────────────────────────────────────── -->
+@if (store.currentStep(); as step) {
+<dialog
+  open
+  class="tour-tooltip"
+  aria-live="polite"
+  aria-atomic="true"
+  [attr.aria-label]="step.title"
+  [ngStyle]="tooltipStyle()"
+>
+  <!-- Header: step counter + skip -->
+  <div class="tour-tooltip__header">
+    <span class="tour-tooltip__step-label">
+      Paso {{ store.stepProgress().current }} de
+      {{ store.stepProgress().total }}
+    </span>
+    <button
+      type="button"
+      class="tour-tooltip__skip"
+      (click)="onSkip()"
+      aria-label="Cerrar tour"
+    >
+      <i class="pi pi-times"></i>
+    </button>
+  </div>
+
+  <!-- Progress dots -->
+  <progress
+    class="tour-tooltip__progress-sr"
+    [value]="store.stepProgress().current"
+    [max]="store.stepProgress().total"
+    [attr.aria-label]="
+      'Paso ' +
+      store.stepProgress().current +
+      ' de ' +
+      store.stepProgress().total
+    "
+  ></progress>
+  <div class="tour-tooltip__dots" aria-hidden="true">
+    @for (isActive of progressDots(); track $index) {
+    <span
+      class="tour-tooltip__dot"
+      [class.tour-tooltip__dot--active]="isActive"
+    ></span>
+    }
+  </div>
+
+  <!-- Content -->
+  <h3 class="tour-tooltip__title">{{ step.title }}</h3>
+  <p class="tour-tooltip__body">{{ step.content }}</p>
+
+  <!-- Navigation -->
+  <div class="tour-tooltip__actions">
+    @if (store.canGoBack()) {
+    <button
+      type="button"
+      class="tour-tooltip__btn tour-tooltip__btn--back"
+      (click)="onBack()"
+      aria-label="Paso anterior"
+    >
+      <i class="pi pi-arrow-left"></i>
+      Anterior
+    </button>
+    }
+
+    <div class="tour-tooltip__actions-spacer"></div>
+
+    <button
+      type="button"
+      class="tour-tooltip__btn tour-tooltip__btn--next"
+      (click)="onNext()"
+      [attr.aria-label]="
+        store.isLastStep() ? 'Finalizar tour' : 'Siguiente paso'
+      "
+    >
+      @if (store.isLastStep()) {
+      <i class="pi pi-check"></i>
+      ¡Listo! } @else { Siguiente
+      <i class="pi pi-arrow-right"></i>
+      }
+    </button>
+  </div>
+</dialog>
+} }

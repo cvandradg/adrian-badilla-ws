@@ -7,11 +7,11 @@
     />
   </div>
 
-  <button 
-    class="navbar-toggle" 
+  <button
+    class="navbar-toggle"
     aria-label="Abrir menú"
     (click)="toggleMenu()"
-    [attr.aria-expanded]="isMenuOpen"
+    [attr.aria-expanded]="isMenuOpen()"
   >
     <span aria-hidden="true">&#9776;</span>
   </button>
@@ -46,18 +46,30 @@
         alt="Adrián Badilla"
         class="drawer-logo"
       />
-      <button class="drawer-close" (click)="closeMenu()" aria-label="Cerrar menú">
+      <button
+        class="drawer-close"
+        (click)="closeMenu()"
+        aria-label="Cerrar menú"
+      >
         <span>&#x2715;</span>
       </button>
     </div>
   </ng-template>
 
   <nav class="drawer-nav" aria-label="Menú móvil">
-    <a href="#" class="drawer-link" (click)="closeMenu(); $event.preventDefault()">
+    <a
+      href="#"
+      class="drawer-link"
+      (click)="closeMenu(); $event.preventDefault()"
+    >
       <span class="drawer-link__icon">&#9993;</span>
       <span class="drawer-link__text">Contáctanos</span>
     </a>
-    <a href="#" class="drawer-link" (click)="closeMenu(); $event.preventDefault()">
+    <a
+      href="#"
+      class="drawer-link"
+      (click)="closeMenu(); $event.preventDefault()"
+    >
       <span class="drawer-link__icon">&#127882;</span>
       <span class="drawer-link__text">Eventos</span>
     </a>

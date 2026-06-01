@@ -48,7 +48,7 @@
   overflow-x: hidden;
   flex: 1 1 auto;
   min-width: 0;
-  padding: 0.2rem;
+  padding: 0;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.212) transparent;
   /* Mobile: prevent layout shift from scrollbars */
@@ -57,7 +57,7 @@
   @media (min-width: 768px) {
     min-height: 20rem;
     height: 100%;
-    padding: 0.2rem;
+    padding: 0;
     max-height: none;
   }
 }

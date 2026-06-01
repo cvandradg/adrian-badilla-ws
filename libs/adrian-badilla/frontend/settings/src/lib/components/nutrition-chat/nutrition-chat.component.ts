@@ -2,6 +2,7 @@ import {
   Component,
   ChangeDetectionStrategy,
   DestroyRef,
+  computed,
   inject,
   signal,
   viewChild,
@@ -13,18 +14,27 @@ import { DatePipe } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { settingsStoreDev } from '../../store/settings.store';
+import { FabLayoutStore } from '../../store/fab-layout.store';
 import type { ChatMessage } from '../../store/with-nutrition-chat.feature';
+import { TourFabComponent } from '../../guided-tour/components/tour-fab/tour-fab.component';
 
 @Component({
   selector: 'lib-nutrition-chat',
   standalone: true,
-  imports: [FormsModule, DatePipe, ButtonModule, InputTextModule],
+  imports: [
+    FormsModule,
+    DatePipe,
+    ButtonModule,
+    InputTextModule,
+    TourFabComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './nutrition-chat.component.html',
   styleUrl: './nutrition-chat.component.scss',
 })
 export class NutritionChatComponent {
   protected readonly store = inject(settingsStoreDev);
+  readonly #fabLayout = inject(FabLayoutStore);
   private readonly messagesEnd = viewChild<ElementRef>('messagesEnd');
   private readonly destroyRef = inject(DestroyRef);
 
@@ -38,6 +48,15 @@ export class NutritionChatComponent {
 
   // Local state
   readonly inputText = signal<string>('');
+
+  /**
+   * CSS custom property value passed to the chat FAB button via
+   * [style.--fab-bottom-base]. SCSS adds env(safe-area-inset-bottom) on top.
+   * This is the lowest FAB in the stack, so it sits directly above the tracker.
+   */
+  readonly chatFabBottomBase = computed(
+    () => `${this.#fabLayout.fabBaseBottom()}px`
+  );
 
   // Quick action options
   readonly quickActions = [

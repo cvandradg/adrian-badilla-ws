@@ -5,14 +5,16 @@
 // â”€â”€â”€ FAB â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 .chat-fab {
+  // bottom is driven by --fab-bottom-base (set via Angular binding from FabLayoutStore).
+  // CSS adds env(safe-area-inset-bottom) so the browser handles notch/home-bar offsets.
   position: fixed;
-  bottom: calc(16px + env(safe-area-inset-bottom, 0));
+  bottom: calc(var(--fab-bottom-base, 16px) + env(safe-area-inset-bottom, 0));
   right: 16px;
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background:
-    linear-gradient(rgba(10, 14, 26, 0.74), rgba(10, 14, 26, 0.74)) padding-box,
+  background: linear-gradient(rgba(10, 14, 26, 0.74), rgba(10, 14, 26, 0.74))
+      padding-box,
     linear-gradient(135deg, #3b82f6, #8b5cf6, #22d3ee) border-box;
   border: 1.5px solid transparent;
   backdrop-filter: blur(18px);
@@ -43,9 +45,12 @@
     transform: translateY(-2px) scale(1.08);
     opacity: 1;
     color: #e9d5ff;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 12px rgba(139, 92, 246, 0.28);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35),
+      0 0 12px rgba(139, 92, 246, 0.28);
     animation: none;
-    i { transform: rotate(10deg); }
+    i {
+      transform: rotate(10deg);
+    }
   }
 
   &:active {
@@ -54,7 +59,8 @@
   }
 
   @media (max-width: 600px) {
-    bottom: 16px;
+    // Keep using the reactive CSS variable; only override size/position tweaks.
+    bottom: calc(var(--fab-bottom-base, 16px) + env(safe-area-inset-bottom, 0));
     right: 14px;
     width: 40px;
     height: 40px;
@@ -63,8 +69,13 @@
 }
 
 @keyframes fabBreathIdle {
-  0%, 100% { box-shadow: 0 1px 10px rgba(0, 0, 0, 0.3), 0 0 4px rgba(139, 92, 246, 0.12); }
-  50% { box-shadow: 0 1px 10px rgba(0, 0, 0, 0.3), 0 0 8px rgba(139, 92, 246, 0.18); }
+  0%,
+  100% {
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.3), 0 0 4px rgba(139, 92, 246, 0.12);
+  }
+  50% {
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.3), 0 0 8px rgba(139, 92, 246, 0.18);
+  }
 }
 
 // â”€â”€â”€ Fullscreen Overlay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -75,17 +86,28 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background:
-    repeating-linear-gradient(
+  background: repeating-linear-gradient(
       45deg,
       rgba(34, 211, 238, 0.02),
       rgba(34, 211, 238, 0.02) 10px,
       rgba(59, 130, 246, 0.02) 10px,
       rgba(59, 130, 246, 0.02) 20px
     ),
-    radial-gradient(circle at 15% 40%, rgba(34, 211, 238, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 85% 70%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
-    linear-gradient(180deg, rgba(14, 27, 41, 0.99) 0%, rgba(4, 9, 15, 0.99) 100%);
+    radial-gradient(
+      circle at 15% 40%,
+      rgba(34, 211, 238, 0.08) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 85% 70%,
+      rgba(59, 130, 246, 0.08) 0%,
+      transparent 40%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(14, 27, 41, 0.99) 0%,
+      rgba(4, 9, 15, 0.99) 100%
+    );
   animation: fadeIn 0.25s ease;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -119,8 +141,12 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 // â”€â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -265,8 +291,12 @@
   gap: 8px;
   animation: fadeInUp 0.3s ease;
 
-  &.user      { justify-content: flex-end; }
-  &.assistant { justify-content: flex-start; }
+  &.user {
+    justify-content: flex-end;
+  }
+  &.assistant {
+    justify-content: flex-start;
+  }
 }
 
 .avatar {
@@ -280,8 +310,12 @@
   flex-shrink: 0;
 }
 
-.assistant-avatar { background: rgba(34, 211, 238, 0.15); }
-.user-avatar      { background: rgba(99, 102, 241, 0.15); }
+.assistant-avatar {
+  background: rgba(34, 211, 238, 0.15);
+}
+.user-avatar {
+  background: rgba(99, 102, 241, 0.15);
+}
 
 .bubble {
   max-width: 80%;
@@ -291,8 +325,15 @@
   line-height: 1.5;
   word-break: break-word;
 
-  .message-text  { white-space: pre-line; }
-  .message-time  { display: block; font-size: 0.65rem; margin-top: 4px; opacity: 0.5; }
+  .message-text {
+    white-space: pre-line;
+  }
+  .message-time {
+    display: block;
+    font-size: 0.65rem;
+    margin-top: 4px;
+    opacity: 0.5;
+  }
 }
 
 .user-bubble {
@@ -311,7 +352,9 @@
 
 // â”€â”€â”€ Typing Indicator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-.typing-bubble { padding: 12px 18px; }
+.typing-bubble {
+  padding: 12px 18px;
+}
 
 .typing-indicator {
   display: flex;
@@ -325,9 +368,15 @@
     background: rgba(255, 255, 255, 0.4);
     animation: typingBounce 1.4s infinite ease-in-out;
 
-    &:nth-child(1) { animation-delay: 0s; }
-    &:nth-child(2) { animation-delay: 0.2s; }
-    &:nth-child(3) { animation-delay: 0.4s; }
+    &:nth-child(1) {
+      animation-delay: 0s;
+    }
+    &:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    &:nth-child(3) {
+      animation-delay: 0.4s;
+    }
   }
 }
 
@@ -420,7 +469,9 @@
     color: rgba(255, 255, 255, 0.9) !important;
     font-size: 0.85rem !important;
 
-    &::placeholder { color: rgba(255, 255, 255, 0.35); }
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.35);
+    }
 
     &:focus {
       border-color: rgba(34, 211, 238, 0.4) !important;
@@ -434,7 +485,11 @@
     height: 44px !important;
     padding: 0 !important;
     border-radius: 50% !important;
-    background: linear-gradient(135deg, rgb(96, 165, 250), rgb(34, 211, 238)) !important;
+    background: linear-gradient(
+      135deg,
+      rgb(96, 165, 250),
+      rgb(34, 211, 238)
+    ) !important;
     border: none !important;
     color: #fff !important;
     display: flex !important;
@@ -445,7 +500,11 @@
     cursor: pointer !important;
 
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, rgb(124, 179, 251), rgb(52, 224, 232)) !important;
+      background: linear-gradient(
+        135deg,
+        rgb(124, 179, 251),
+        rgb(52, 224, 232)
+      ) !important;
       box-shadow: 0 4px 16px rgba(34, 211, 238, 0.35) !important;
       transform: scale(1.08) !important;
     }
@@ -472,16 +531,35 @@
 // â”€â”€â”€ Animations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-8px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 @keyframes typingBounce {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-  30%           { transform: translateY(-6px); opacity: 1; }
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
 }

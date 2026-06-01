@@ -20,6 +20,8 @@
         [selectedDayId]="selectedRoutineDayId()"
         [completedDayIds]="completedRoutineDayIds()"
         [items]="selectedDayRoutines()"
+        headingTitle="Plan de entrenamiento"
+        headingSubtitle="Organiza tus ejercicios día por día"
         [isTimelineComplete]="isSelectedDayComplete()"
         [restDayLabel]="isRestDay() ? selectedDayLabel() : null"
         (daySelected)="selectDay($event)"
