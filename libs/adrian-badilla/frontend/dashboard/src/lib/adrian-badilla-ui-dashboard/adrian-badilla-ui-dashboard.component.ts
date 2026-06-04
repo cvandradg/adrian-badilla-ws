@@ -16,6 +16,7 @@ import { DescriptionSidePanelComponent } from '../description-side-panel/descrip
 import { SideMenuComponent } from '../side-menu/side-menu.component';
 import { ProfilePageComponent } from '../pages/profile-page/profile-page.component';
 import { TourAnchorDirective } from '@adrian-badilla/ui/shared';
+import { firebaseAuthStore, ProfileSetupComponent } from '@adrian-badilla/auth';
 
 const DASHBOARD_MOBILE_WIDTH = 'var(--dashboard-panel-mobile-inline-size)';
 const DASHBOARD_EXPANDED_WIDTH = 'var(--dashboard-panel-inline-size)';
@@ -39,6 +40,7 @@ const DASHBOARD_COMPACT_LANDSCAPE_QUERY =
     DescriptionSidePanelComponent,
     FontAwesomeModule,
     TourAnchorDirective,
+    ProfileSetupComponent,
   ],
   templateUrl: './adrian-badilla-ui-dashboard.component.html',
   styleUrl: './adrian-badilla-ui-dashboard.component.scss',
@@ -47,6 +49,9 @@ const DASHBOARD_COMPACT_LANDSCAPE_QUERY =
 export class DashboardComponent {
   readonly #router = inject(Router);
   readonly #dialog = inject(MatDialog);
+  readonly #authStore = inject(firebaseAuthStore);
+
+  readonly needsOnboarding = this.#authStore.needsOnboarding;
 
   private readonly bpState = toSignal(
     inject(BreakpointObserver).observe([

@@ -21,13 +21,13 @@
         <div class="profile-page__avatar-ring">
           <img
             class="profile-page__avatar"
-            [src]="profile().avatarUrl"
-            [alt]="profile().name"
+            [src]="avatarUrl()"
+            [alt]="displayName()"
             loading="eager"
           />
         </div>
         <div class="profile-page__identity">
-          <h1 class="profile-page__name">{{ profile().name }}</h1>
+          <h1 class="profile-page__name">{{ displayName() }}</h1>
           <p class="profile-page__goal">🎯 {{ profile().fitnessGoal }}</p>
         </div>
       </div>
@@ -41,19 +41,19 @@
         <div class="stat-card" role="listitem">
           <span class="stat-card__label">Edad</span>
           <span class="stat-card__value"
-            >{{ profile().age }}<small>años</small></span
+            >{{ ageYears() }}<small>años</small></span
           >
         </div>
         <div class="stat-card" role="listitem">
           <span class="stat-card__label">Peso</span>
           <span class="stat-card__value"
-            >{{ profile().weightKg | number : '1.1-1' }}<small>kg</small></span
+            >{{ weightKg() | number : '1.1-1' }}<small>kg</small></span
           >
         </div>
         <div class="stat-card" role="listitem">
           <span class="stat-card__label">Altura</span>
           <span class="stat-card__value"
-            >{{ profile().heightCm }}<small>cm</small></span
+            >{{ heightCm() }}<small>cm</small></span
           >
         </div>
         <div class="stat-card" role="listitem">
@@ -63,8 +63,7 @@
         <div class="stat-card" role="listitem">
           <span class="stat-card__label">Grasa</span>
           <span class="stat-card__value"
-            >{{ profile().bodyFatPercent | number : '1.1-1'
-            }}<small>%</small></span
+            >{{ bodyFatPercent() | number : '1.1-1' }}<small>%</small></span
           >
         </div>
       </div>
@@ -197,9 +196,7 @@
         <div class="chart-card chart-card--half">
           <div class="chart-card__header">
             <span class="chart-card__title">🍩 Composición Corporal</span>
-            <span class="chart-card__badge"
-              >{{ profile().weightKg }} kg total</span
-            >
+            <span class="chart-card__badge">{{ weightKg() }} kg total</span>
           </div>
           <div class="chart-card__body">
             <p-chart

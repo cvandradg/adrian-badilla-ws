@@ -17,6 +17,7 @@ import { providePrimeNG } from 'primeng/config';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { DialogService } from 'primeng/dynamicdialog';
 import { provideHttpClient } from '@angular/common/http';
+import { firebaseAuthStore } from '@adrian-badilla/auth';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -36,6 +37,9 @@ export const appConfig: ApplicationConfig = {
     provideAuth(() => getAuth()),
     provideAppInitializer(() => {
       inject(FaIconLibrary).addIcons(...FontAwesomeicons);
+      // Start the global auth-state listener as soon as the app boots.
+      // This populates firebaseUser / authInitialized for the entire app.
+      inject(firebaseAuthStore).initAuthListener();
     }),
   ],
 };

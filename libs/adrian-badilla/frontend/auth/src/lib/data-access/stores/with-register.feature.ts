@@ -6,7 +6,7 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { tapResponse } from '@ngrx/operators';
 import { exhaustMap, pipe, tap } from 'rxjs';
-import { User, UserCredential } from 'firebase/auth';
+import { UserCredential } from 'firebase/auth';
 
 import { Credentials } from '@adrian-badilla/ui/shared';
 import { FirebaseAuthOut } from '../utils/firebase-auth';
@@ -14,11 +14,7 @@ import { withCustomCallState } from './with-custom-call-state.feature';
 import { mapFirebaseAuthErrorToMessage } from '../errors';
 
 type RegisterDeps = WritableStateSource<FirebaseAuthOut['state']> &
-  Pick<
-    FirebaseAuthOut['methods'],
-    '_createAccount' | '_sendEmailVerification'
-  > &
-  Pick<FirebaseAuthOut['props'], '_getUserSession$'>;
+  Pick<FirebaseAuthOut['methods'], '_createAccount' | '_sendEmailVerification'>;
 
 export function withRegisterResources<T extends RegisterDeps>(store: T) {
   return signalStoreFeature(
@@ -32,7 +28,7 @@ export function withRegisterResources<T extends RegisterDeps>(store: T) {
           exhaustMap((creds) =>
             store._createAccount(creds).pipe(
               exhaustMap((cred: UserCredential) =>
-                store._sendEmailVerification(cred.user as User)
+                store._sendEmailVerification(cred.user)
               ),
               tapResponse({
                 next: () => innerStore.registerSetSuccess(),

@@ -1,0 +1,40 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── users/{uid} ──────────────────────────────────────────────────────
+    // Each user can only read and write their own profile document.
+    // No user can read or modify another user's profile.
+    match /users/{uid} {
+
+      // Allow read only if the authenticated user owns this document.
+      allow read: if request.auth != null && request.auth.uid == uid;
+
+      // Allow create only for the document owner.
+      // Enforce that required fields are present and `isActive` is true.
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasAll([
+             'uid', 'email', 'displayName', 'photoURL',
+             'provider', 'createdAt', 'updatedAt', 'lastLoginAt', 'isActive'
+           ])
+        && request.resource.data.isActive == true;
+
+      // Allow update only for the document owner.
+      // Prevent modifying uid or createdAt after creation.
+      allow update: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.createdAt == resource.data.createdAt;
+
+      // Deletes are not permitted through the client SDK.
+      allow delete: if false;
+    }
+
+    // Deny all other paths by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

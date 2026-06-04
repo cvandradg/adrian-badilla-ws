@@ -16,6 +16,7 @@ import {
   type ProgressPhoto,
   type MeasurementSnapshot,
 } from '../../mock/user-profile/user-profile.mock';
+import { firebaseAuthStore } from '@adrian-badilla/auth';
 
 type ProfileTab = 'resumen' | 'historial' | 'galeria';
 
@@ -33,6 +34,7 @@ export class ProfilePageComponent {
     MatDialogRef,
     { optional: true }
   );
+  readonly #auth = inject(firebaseAuthStore);
 
   readonly profile = signal<UserProfileMock>(USER_PROFILE_MOCK);
   readonly history = signal<MeasurementSnapshot[]>(MEASUREMENT_HISTORY_MOCK);
@@ -42,10 +44,34 @@ export class ProfilePageComponent {
     USER_PROFILE_MOCK.progressPhotos[0] ?? null
   );
 
+  /** Display name: uses Firebase user when available, falls back to mock. */
+  readonly displayName = computed(
+    () => this.#auth.userName() ?? this.profile().name
+  );
+
+  /** Avatar URL: uses Firebase photo when available, falls back to mock. */
+  readonly avatarUrl = computed(
+    () => this.#auth.userPhoto() ?? this.profile().avatarUrl
+  );
+
+  /** Physical stats: use real Firestore data when available, fall back to mock. */
+  readonly weightKg = computed(
+    () => this.#auth.userProfile()?.weightKg ?? this.profile().weightKg
+  );
+  readonly heightCm = computed(
+    () => this.#auth.userProfile()?.heightCm ?? this.profile().heightCm
+  );
+  readonly ageYears = computed(
+    () => this.#auth.userProfile()?.ageYears ?? this.profile().age
+  );
+  readonly bodyFatPercent = computed(
+    () =>
+      this.#auth.userProfile()?.bodyFatPercent ?? this.profile().bodyFatPercent
+  );
+
   readonly bmi = computed(() => {
-    const p = this.profile();
-    const heightM = p.heightCm / 100;
-    return +(p.weightKg / (heightM * heightM)).toFixed(1);
+    const h = this.heightCm() / 100;
+    return +(this.weightKg() / (h * h)).toFixed(1);
   });
 
   // ── Chart Data ─────────────────────────────────────────────────────────
@@ -154,11 +180,12 @@ export class ProfilePageComponent {
   });
 
   readonly doughnutChartData = computed(() => {
-    const p = this.profile();
-    const fat = +((p.weightKg * p.bodyFatPercent) / 100).toFixed(1);
-    const muscle = +(p.weightKg * 0.45).toFixed(1);
-    const water = +(p.weightKg * 0.35).toFixed(1);
-    const other = +Math.max(p.weightKg - fat - muscle - water, 0).toFixed(1);
+    const w = this.weightKg();
+    const bf = this.bodyFatPercent();
+    const fat = +((w * bf) / 100).toFixed(1);
+    const muscle = +(w * 0.45).toFixed(1);
+    const water = +(w * 0.35).toFixed(1);
+    const other = +Math.max(w - fat - muscle - water, 0).toFixed(1);
     return {
       labels: ['Grasa', 'Músculo', 'Agua', 'Otros'],
       datasets: [

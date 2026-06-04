@@ -1,0 +1,157 @@
+<div class="profile-setup">
+  <div class="profile-setup__card">
+    <!-- Header -->
+    <div class="profile-setup__header">
+      @if (userPhoto()) {
+      <img
+        class="profile-setup__avatar"
+        [src]="userPhoto()!"
+        [alt]="userName() ?? 'Avatar'"
+        referrerpolicy="no-referrer"
+      />
+      } @else {
+      <div class="profile-setup__icon-ring">
+        <i class="pi pi-user profile-setup__icon" aria-hidden="true"></i>
+      </div>
+      }
+      <p class="profile-setup__welcome">Bienvenido/a</p>
+      @if (userName()) {
+      <p class="profile-setup__name">{{ userName() }}</p>
+      }
+      <h2 class="profile-setup__title">
+        Antes de continuar,<br />completa tu información
+      </h2>
+      <p class="profile-setup__subtitle">
+        Necesitamos unos datos para personalizar tu experiencia con Adrián
+        Badilla.
+      </p>
+    </div>
+
+    <!-- Form -->
+    <div class="profile-setup__form">
+      <!-- Weight -->
+      <div class="profile-setup__field">
+        <label class="profile-setup__label" for="ps-weight">
+          Peso
+          <span class="profile-setup__unit">kg</span>
+        </label>
+        <input
+          id="ps-weight"
+          class="profile-setup__input"
+          type="number"
+          min="20"
+          max="300"
+          step="0.1"
+          placeholder="82.5"
+          [value]="form().weightKg ?? ''"
+          (input)="update('weightKg', $any($event.target).value)"
+        />
+      </div>
+
+      <!-- Height -->
+      <div class="profile-setup__field">
+        <label class="profile-setup__label" for="ps-height">
+          Altura
+          <span class="profile-setup__unit">cm</span>
+        </label>
+        <input
+          id="ps-height"
+          class="profile-setup__input"
+          type="number"
+          min="100"
+          max="250"
+          step="1"
+          placeholder="178"
+          [value]="form().heightCm ?? ''"
+          (input)="update('heightCm', $any($event.target).value)"
+        />
+      </div>
+
+      <!-- Age -->
+      <div class="profile-setup__field">
+        <label class="profile-setup__label" for="ps-age">
+          Edad
+          <span class="profile-setup__unit">años</span>
+        </label>
+        <input
+          id="ps-age"
+          class="profile-setup__input"
+          type="number"
+          min="10"
+          max="100"
+          step="1"
+          placeholder="27"
+          [value]="form().ageYears ?? ''"
+          (input)="update('ageYears', $any($event.target).value)"
+        />
+      </div>
+
+      <!-- Body fat -->
+      <div class="profile-setup__field profile-setup__field--full">
+        <label class="profile-setup__label" for="ps-fat">
+          Grasa corporal
+          <span class="profile-setup__unit">%</span>
+          <span class="profile-setup__optional">opcional</span>
+        </label>
+        <div class="profile-setup__fat-row">
+          <input
+            id="ps-fat"
+            class="profile-setup__input"
+            type="number"
+            min="3"
+            max="60"
+            step="0.1"
+            placeholder="14.2"
+            [disabled]="skipBodyFat()"
+            [value]="form().bodyFatPercent ?? ''"
+            (input)="update('bodyFatPercent', $any($event.target).value)"
+          />
+          <button
+            type="button"
+            class="profile-setup__skip-btn"
+            [class.profile-setup__skip-btn--active]="skipBodyFat()"
+            (click)="toggleSkipBodyFat()"
+            [attr.aria-pressed]="skipBodyFat()"
+          >
+            @if (skipBodyFat()) {
+            <i class="pi pi-check" aria-hidden="true"></i> No la sé } @else { No
+            la sé }
+          </button>
+        </div>
+        @if (skipBodyFat()) {
+        <p class="profile-setup__fat-hint">
+          Podrás agregarla más adelante desde tu perfil.
+        </p>
+        }
+      </div>
+    </div>
+
+    <!-- IMC preview -->
+    @if (bmiPreview(); as bmi) {
+    <div class="profile-setup__bmi">
+      <span class="profile-setup__bmi-label">IMC calculado</span>
+      <span class="profile-setup__bmi-value">{{ bmi }}</span>
+    </div>
+    }
+
+    <!-- Error -->
+    @if (error()) {
+    <p class="profile-setup__error">
+      <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+      {{ error() }}
+    </p>
+    }
+
+    <!-- Submit -->
+    <button
+      class="profile-setup__submit"
+      type="button"
+      [disabled]="!isValid() || saving()"
+      (click)="submit()"
+    >
+      @if (saving()) {
+      <i class="pi pi-spinner pi-spin" aria-hidden="true"></i>
+      Guardando… } @else { Guardar y continuar }
+    </button>
+  </div>
+</div>

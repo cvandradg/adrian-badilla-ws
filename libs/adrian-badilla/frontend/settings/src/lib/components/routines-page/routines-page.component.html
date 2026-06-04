@@ -8,6 +8,58 @@
   <!-- ── Skeleton while first load ────────────────────────────────────── -->
   @if (isLoadingRoutine()) {
   <lib-skeleton-loader variant="page" [rows]="4" />
+  } @else if (hasNoRoutine()) {
+  <div class="no-plan-wrapper">
+    <div class="premium-card">
+      <!-- Badge -->
+      <div class="premium-card__badge">✦ PLAN PERSONALIZADO</div>
+
+      <!-- Icon -->
+      <div class="premium-card__icon-ring">
+        <i class="pi pi-bolt premium-card__icon" aria-hidden="true"></i>
+      </div>
+
+      <!-- Text -->
+      <h2 class="premium-card__title">
+        Lleva tu entrenamiento al siguiente nivel
+      </h2>
+      <p class="premium-card__message">
+        Obtén un plan de entrenamiento 100&nbsp;% adaptado a tus objetivos,
+        diseñado personalmente por Adrián Badilla.
+      </p>
+
+      <!-- Features -->
+      <ul class="premium-card__features">
+        <li>
+          <i class="pi pi-check-circle" aria-hidden="true"></i> Rutina
+          personalizada según tu cuerpo
+        </li>
+        <li>
+          <i class="pi pi-check-circle" aria-hidden="true"></i> Seguimiento de
+          progreso en tiempo real
+        </li>
+        <li>
+          <i class="pi pi-check-circle" aria-hidden="true"></i> Ajustes
+          continuos con tu avance
+        </li>
+      </ul>
+
+      <!-- CTA button -->
+      <a
+        class="premium-card__cta"
+        href="https://wa.me/50689090909"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <i class="pi pi-star-fill" aria-hidden="true"></i>
+        Adquirir paquete premium
+      </a>
+
+      <p class="premium-card__note">
+        Contacta a tu entrenador para más información
+      </p>
+    </div>
+  </div>
   } @else {
   <!-- ── Scrollable timeline area ─────────────────────────────────────── -->
   <!-- lib-shared-item-timeline is ALWAYS rendered so the day sidebar stays

@@ -47,16 +47,16 @@ import {
 // ─── State ────────────────────────────────────────────────────────────────────
 
 interface RoutineQueriesState {
-  /** All routine days with their exercises, already mapped to UI shape. */
   routineDays: RoutineDay[];
-  /** Name-keyed lookup for the exercise popover (description, video, targetReps). */
   exerciseLookup: Record<string, ExerciseMock>;
   loadingRoutine: boolean;
   errorRoutine: string | null;
-  /** ID (day.toLowerCase()) of the currently visible day. */
   selectedRoutineDayId: string | null;
-  /** Last loaded routine Firestore document ID — prevents duplicate fetches. */
   _lastLoadedRoutineId: string | null;
+  /** True once loadActiveRoutine() has finished, even if no routine was found. */
+  routineFetchDone: boolean;
+  /** True when loadActiveRoutine() found no routine document for this user. */
+  noActiveRoutine: boolean;
 }
 
 // ─── Pure helpers (extracted to keep computed/methods ≤ 4 nesting levels) ───────
@@ -103,6 +103,8 @@ export function withRoutineQueries() {
       errorRoutine: null,
       selectedRoutineDayId: null,
       _lastLoadedRoutineId: null,
+      routineFetchDone: false,
+      noActiveRoutine: false,
     }),
 
     withComputed((store) => {
@@ -158,8 +160,7 @@ export function withRoutineQueries() {
     // ─── Primary data-fetch method ──────────────────────────────────────────
     withMethods((store) => ({
       async loadRoutineExercises(routineId: string): Promise<void> {
-        // TODO: Restore to: const userId = store['_routineUserId']();
-        const userId = 'T7eoekKP2YarbxJvIMbo'; // Hardcoded for testing
+        const userId = store['_routineUserId']();
 
         if (!userId) {
           patchState(store, {
@@ -199,12 +200,14 @@ export function withRoutineQueries() {
             routineDays,
             exerciseLookup,
             loadingRoutine: false,
+            routineFetchDone: true,
             _lastLoadedRoutineId: routineId,
             selectedRoutineDayId: firstDayId,
           });
         } catch (error) {
           patchState(store, {
             loadingRoutine: false,
+            routineFetchDone: true,
             errorRoutine:
               error instanceof Error
                 ? error.message
@@ -217,9 +220,7 @@ export function withRoutineQueries() {
     // ─── Auto-discover the first available routine ──────────────────────────
     withMethods((store) => ({
       async loadActiveRoutine(): Promise<void> {
-        // TODO: Restore to: const userId = store['_routineUserId']();
-        const userId = 'T7eoekKP2YarbxJvIMbo'; // Hardcoded for testing
-
+        const userId = store['_routineUserId']();
         if (!userId) return;
 
         // Already loaded — skip
@@ -233,9 +234,15 @@ export function withRoutineQueries() {
           const firstRoutine = snap.docs[0];
           if (firstRoutine) {
             await store.loadRoutineExercises(firstRoutine.id);
+          } else {
+            patchState(store, {
+              noActiveRoutine: true,
+              routineFetchDone: true,
+            });
           }
         } catch {
-          /* empty state shown by component */
+          patchState(store, { routineFetchDone: true, noActiveRoutine: true });
+          /* error shown as empty state */
         }
       },
 

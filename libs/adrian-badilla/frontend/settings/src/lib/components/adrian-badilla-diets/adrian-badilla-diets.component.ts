@@ -6,6 +6,8 @@ import {
   ChangeDetectionStrategy,
   inject,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Auth, user } from '@angular/fire/auth';
 import { ButtonModule } from 'primeng/button';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -19,6 +21,7 @@ import { SharedItemTimelineComponent } from '../shared-item-timeline/shared-item
 import type { DayBase } from '@adrian-badilla/ui/shared';
 import type { RouteNavItem } from '../../types/diets.types';
 import { MacroProgressTrackerComponent } from '../macro-progress-tracker/macro-progress-tracker.component';
+import { SkeletonLoaderComponent } from '@adrian-badilla/ui/shared';
 
 // Form state interface
 interface RouteFormState {
@@ -41,6 +44,7 @@ interface RouteFormState {
     FloatLabelModule,
     FontAwesomeModule,
     MacroProgressTrackerComponent,
+    SkeletonLoaderComponent,
   ],
 })
 export class AdrianBadillaDietsComponent {
@@ -48,14 +52,17 @@ export class AdrianBadillaDietsComponent {
   private readonly store = inject(settingsStoreDev);
 
   // --- Auth trigger ----------------------------------------------------------
-  // TODO: inject FirebaseAuthService and use its .currentUser signal here
+  private readonly _auth = inject(Auth);
+  private readonly _authUser = toSignal(user(this._auth), {
+    initialValue: null,
+  });
 
-  /** Load diet once when authenticated � side effect belongs in effect(), not computed(). */
+  /** Load diet once when authenticated — side effect belongs in effect(), not computed(). */
   readonly #loadDietEffect = effect(() => {
-    // TODO: Restore to: const authUser = this._authUser();
-    const authUser = { uid: 'T7eoekKP2YarbxJvIMbo' }; // Hardcoded for testing
+    const authUser = this._authUser();
     const lastLoadedId = (this.store as any)['_lastLoadedDietId']?.();
-    if (authUser?.uid && !lastLoadedId) {
+    const noActiveDiet = this.store.noActiveDiet();
+    if (authUser?.uid && !lastLoadedId && !noActiveDiet) {
       (this.store as any).loadActiveDiet();
     }
   });
@@ -63,6 +70,7 @@ export class AdrianBadillaDietsComponent {
   // --- Store signals (direct references, no computed wrappers) ---------------
   readonly loadingDiet = this.store.loadingDiet;
   readonly errorDiet = this.store.errorDiet;
+  readonly noActiveDiet = this.store.noActiveDiet;
   readonly routeSearchQuery = this.store.routeSearchQuery;
   readonly filteredRoutes = this.store.filteredRoutes;
   readonly sortedRoutes = this.store.routes;

@@ -1,0 +1,279 @@
+/* ── Full-screen overlay ─────────────────────────────────────────────────── */
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(8, 10, 18, 0.88);
+  backdrop-filter: blur(12px);
+}
+
+/* ── Card ───────────────────────────────────────────────────────────────── */
+.profile-setup__card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 440px;
+  padding: 2.5rem 2rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(
+    160deg,
+    rgba(30, 28, 50, 0.95),
+    rgba(18, 16, 36, 0.98)
+  );
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.profile-setup__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+}
+
+.profile-setup__icon-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  border: 2px solid rgba(167, 139, 250, 0.35);
+  background: rgba(167, 139, 250, 0.1);
+}
+
+.profile-setup__avatar {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2.5px solid rgba(167, 139, 250, 0.5);
+  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.1);
+}
+
+.profile-setup__welcome {
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(167, 139, 250, 0.7);
+  margin: 0;
+}
+
+.profile-setup__name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.profile-setup__icon {
+  font-size: 1.75rem;
+  color: #a78bfa;
+}
+
+.profile-setup__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.profile-setup__subtitle {
+  font-size: 0.83rem;
+  color: rgba(241, 245, 249, 0.55);
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* ── Form grid ──────────────────────────────────────────────────────────── */
+.profile-setup__form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.profile-setup__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  &--full {
+    grid-column: 1 / -1;
+  }
+}
+
+.profile-setup__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(167, 139, 250, 0.85);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.profile-setup__unit {
+  font-weight: 400;
+  color: rgba(241, 245, 249, 0.35);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.profile-setup__optional {
+  font-weight: 400;
+  font-size: 0.65rem;
+  color: rgba(167, 139, 250, 0.45);
+  text-transform: none;
+  letter-spacing: 0;
+  border: 1px solid rgba(167, 139, 250, 0.25);
+  border-radius: 4px;
+  padding: 0 0.3rem;
+  margin-left: auto;
+}
+
+/* ── Fat row (input + skip button side by side) ─────────────────────────── */
+.profile-setup__fat-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.profile-setup__skip-btn {
+  flex-shrink: 0;
+  padding: 0 0.85rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(241, 245, 249, 0.5);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  &--active {
+    background: rgba(167, 139, 250, 0.12);
+    border-color: rgba(167, 139, 250, 0.4);
+    color: #a78bfa;
+  }
+
+  &:hover:not(&--active) {
+    background: rgba(255, 255, 255, 0.07);
+    color: rgba(241, 245, 249, 0.75);
+  }
+}
+
+.profile-setup__fat-hint {
+  font-size: 0.73rem;
+  color: rgba(167, 139, 250, 0.55);
+  margin: 0;
+}
+
+.profile-setup__input {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #f1f5f9;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.18s;
+  -moz-appearance: textfield;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+
+  &:focus {
+    border-color: rgba(167, 139, 250, 0.55);
+    background: rgba(167, 139, 250, 0.06);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  &::placeholder {
+    color: rgba(241, 245, 249, 0.2);
+  }
+}
+
+/* ── BMI preview ────────────────────────────────────────────────────────── */
+.profile-setup__bmi {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  background: rgba(167, 139, 250, 0.07);
+  border: 1px solid rgba(167, 139, 250, 0.15);
+}
+
+.profile-setup__bmi-label {
+  font-size: 0.78rem;
+  color: rgba(241, 245, 249, 0.5);
+}
+
+.profile-setup__bmi-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #a78bfa;
+}
+
+/* ── Error ──────────────────────────────────────────────────────────────── */
+.profile-setup__error {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: #f87171;
+  margin: 0;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+}
+
+/* ── Submit button ──────────────────────────────────────────────────────── */
+.profile-setup__submit {
+  width: 100%;
+  padding: 0.85rem;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.18s, transform 0.12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}

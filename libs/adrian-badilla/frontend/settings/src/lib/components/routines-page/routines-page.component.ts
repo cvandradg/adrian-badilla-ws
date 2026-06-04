@@ -45,15 +45,11 @@ export class RoutinesPageComponent {
     initialValue: null,
   });
 
-  /** Load active routine once when auth is available — no constructor needed. */
+  /** Load active routine once when auth is available and fetch hasn’t run yet. */
   readonly #loadEffect = effect(() => {
-    // TODO: Restore to: const authUser = this._authUser();
-    const authUser = { uid: 'T7eoekKP2YarbxJvIMbo' }; // Hardcoded for testing
-    if (
-      authUser?.uid &&
-      !this.store.routineDays().length &&
-      !this.store.loadingRoutine()
-    ) {
+    const userId = (this.store as any)['_routineUserId']?.();
+    const fetchDone = this.store.routineFetchDone();
+    if (userId && !fetchDone) {
       this.store.loadActiveRoutine();
     }
   });
@@ -108,12 +104,15 @@ export class RoutinesPageComponent {
 
   // Show skeleton while actively loading OR while days haven't arrived yet
   // (covers the first tick before loadActiveRoutine() sets loadingRoutine=true).
-  // Stop showing it once an error is set (so error state can surface instead).
+  // Stop showing once fetch is done (covers users with no routine).
   readonly isLoadingRoutine = computed(
     () =>
       this.store.loadingRoutine() ||
-      (!this.store.errorRoutine() && this.routineDayBases().length === 0)
+      (!this.store.routineFetchDone() && !this.store.errorRoutine())
   );
+
+  /** True when the fetch completed but no routine document exists for this user. */
+  readonly hasNoRoutine = computed(() => this.store.noActiveRoutine());
 
   setActiveTab(value: string): void {
     this.activeTab.set(value);

@@ -26,12 +26,12 @@ import { userPaths } from '@adrian-badilla/ui/shared';
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 interface DietQueriesState {
-  /** Meals already mapped to UI shape, keyed by day ID. Transform happens once on load. */
   mealsByDay: Record<string, RouteSupercenterItem[]>;
   loadingDiet: boolean;
   errorDiet: string | null;
-  /** Last loaded diet ID to prevent unnecessary re-fetches */
   _lastLoadedDietId: string | null;
+  /** True when loadActiveDiet() found no diet document for this user. */
+  noActiveDiet: boolean;
 }
 
 // ─── Feature ─────────────────────────────────────────────────────────────────
@@ -64,6 +64,7 @@ export function withDietQueries() {
       loadingDiet: false,
       errorDiet: null,
       _lastLoadedDietId: null,
+      noActiveDiet: false,
     }),
 
     withProps(() => ({
@@ -83,8 +84,7 @@ export function withDietQueries() {
 
     withMethods((store) => ({
       async loadWeeklyDiet(dietId: string): Promise<void> {
-        // TODO: Restore to: const userId = store['_userId']();
-        const userId = 'T7eoekKP2YarbxJvIMbo'; // Hardcoded for testing
+        const userId = store['_userId']();
 
         if (!userId) {
           patchState(store, {
@@ -155,8 +155,7 @@ export function withDietQueries() {
 
     withMethods((store) => ({
       async loadActiveDiet(): Promise<void> {
-        // TODO: Restore to: const userId = store['_userId']();
-        const userId = 'T7eoekKP2YarbxJvIMbo'; // Hardcoded for testing
+        const userId = store['_userId']();
         if (!userId) {
           return;
         }
@@ -164,6 +163,12 @@ export function withDietQueries() {
         if (store['_lastLoadedDietId']()) {
           return;
         }
+
+        if (store['noActiveDiet']()) {
+          return;
+        }
+
+        patchState(store, { loadingDiet: true, errorDiet: null });
 
         try {
           const dietsPath = userPaths.diets(userId);
@@ -174,12 +179,20 @@ export function withDietQueries() {
 
           const firstDiet = dietsSnap.docs[0];
           if (!firstDiet) {
+            patchState(store, { noActiveDiet: true, loadingDiet: false });
             return;
           }
 
           await store.loadWeeklyDiet(firstDiet.id);
         } catch (error) {
-          // Silently handle errors
+          patchState(store, {
+            loadingDiet: false,
+            noActiveDiet: true,
+            errorDiet:
+              error instanceof Error
+                ? error.message
+                : 'Error al verificar la dieta activa.',
+          });
         }
       },
 
