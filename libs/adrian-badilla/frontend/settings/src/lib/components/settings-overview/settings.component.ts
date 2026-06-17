@@ -16,6 +16,7 @@ import {
 } from '../section-tabs/section-tabs.component';
 import { settingsStoreDev } from '../../store/settings.store';
 import { SkeletonLoaderComponent } from '@adrian-badilla/ui/shared';
+import { billingStore } from '@adrian-badilla/billing';
 
 @Component({
   selector: 'lib-settings',
@@ -34,6 +35,7 @@ import { SkeletonLoaderComponent } from '@adrian-badilla/ui/shared';
 })
 export class SettingsComponent {
   private readonly store = inject(settingsStoreDev);
+  private readonly billing = inject(billingStore);
 
   readonly isMobile = signal(
     globalThis.window?.matchMedia('(max-width: 767px)').matches ?? false
@@ -41,7 +43,11 @@ export class SettingsComponent {
 
   readonly activeTab = signal('diets');
 
-  readonly isLoadingDiet = computed(() => this.store.loadingDiet());
+  // True while EITHER the diet fetch OR the subscription state is unresolved.
+  // Prevents a premature skeleton dismissal before isPremium() is known.
+  readonly isLoadingDiet = computed(
+    () => this.store.loadingDiet() || this.billing.isSubscriptionLoading()
+  );
 
   readonly #mqlCleanup = (() => {
     if (globalThis.window === undefined) return;

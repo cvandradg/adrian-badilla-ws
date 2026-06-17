@@ -480,8 +480,17 @@ async function handleRenewalFailed(
  *
  * Resolution order:
  *  1. metadata.uid  — zero Firestore reads; set at subscription creation time.
- *  2. customers/{customerId} — written by createSubscription Cloud Function;
- *     used as fallback when metadata is absent (e.g. renewal.failed payloads).
+ *     NOTE: only present in subscription events where metadata was forwarded;
+ *     payment-intent events do NOT carry subscription metadata.
+ *  2. customers/{customerId} — the authoritative reverse-mapping document.
+ *     Written by getOrCreateOnvoCustomer() at customer-creation time and
+ *     also written by persistSubscriptionState() for defence-in-depth.
+ *  3. users.where(subscription.onvoCustomerId == customerId) — recovery path.
+ *     Used when the customers/{customerId} document is missing (e.g. the
+ *     mapping was never written because an earlier ONVO call failed before
+ *     persistSubscriptionState() ran). On success, automatically repairs
+ *     the missing customers/{customerId} document so subsequent webhooks
+ *     hit the faster path-2 lookup.
  *
  * Returns null if resolution fails; all callers treat null as "skip processing".
  */
@@ -495,7 +504,7 @@ async function resolveUid(
     return metadata.uid;
   }
 
-  // 2. Fallback: lookup the mapping document written by createSubscription
+  // 2. Authoritative mapping: customers/{customerId} written at customer-creation time
   try {
     const snap = await db.collection('customers').doc(customerId).get();
     if (snap.exists) {
@@ -505,6 +514,42 @@ async function resolveUid(
   } catch (err) {
     console.error(
       `[billing] customers/{customerId} lookup failed for customerId=${customerId}`,
+      err
+    );
+  }
+
+  // 3. Recovery path: reverse-lookup via users/{uid}.subscription.onvoCustomerId.
+  //    This field is guaranteed to exist — written by getOrCreateOnvoCustomer()
+  //    before any ONVO subscription call is attempted.
+  //    On success, repairs the missing customers/{customerId} mapping so future
+  //    webhook events resolve via the faster path-2 document read.
+  try {
+    const usersSnap = await db
+      .collection('users')
+      .where('subscription.onvoCustomerId', '==', customerId)
+      .limit(1)
+      .get();
+
+    if (!usersSnap.empty) {
+      const uid = usersSnap.docs[0].id;
+
+      // Repair the missing mapping document.
+      await db
+        .collection('customers')
+        .doc(customerId)
+        .set(
+          { uid, createdAt: admin.firestore.FieldValue.serverTimestamp() },
+          { merge: true }
+        );
+
+      console.info(
+        `[billing] Repaired customer mapping for customerId=${customerId}, uid=${uid}`
+      );
+      return uid;
+    }
+  } catch (err) {
+    console.error(
+      `[billing] users reverse-lookup failed for customerId=${customerId}`,
       err
     );
   }

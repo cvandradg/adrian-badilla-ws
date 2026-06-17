@@ -9,6 +9,7 @@ import {
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { Router } from '@angular/router';
 import {
   PrimaryAnimatedButtonComponent,
   StatusMessageComponent,
@@ -57,7 +58,7 @@ import { billingStore } from '../../store/billing.store';
 })
 export class PaymentFormComponent implements OnInit {
   readonly store = inject(billingStore);
-
+  private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
 
   readonly cardForm = this.fb.group({
@@ -166,6 +167,10 @@ export class PaymentFormComponent implements OnInit {
   /** True when the full subscription flow completed successfully. */
   get isComplete(): boolean {
     return this.store.subscribeSuccess();
+  }
+
+  goHome(): void {
+    this.router.navigate(['/dashboard/inicio']);
   }
 
   /** The most recent user-facing error across all three steps. */

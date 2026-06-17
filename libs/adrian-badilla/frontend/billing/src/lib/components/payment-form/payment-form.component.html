@@ -13,9 +13,18 @@
   </div>
   } @else if (isComplete) {
   <div class="payment-form__success">
+    <div class="payment-form__success-ring">
+      <i class="pi pi-check payment-form__success-icon"></i>
+    </div>
+    <h3 class="payment-form__success-title">¡Suscripción completada!</h3>
     <p class="payment-form__success-text">
-      ¡Suscripción completada! Tu cuenta Premium se activará en unos momentos.
+      Tu cuenta Premium se activará en unos momentos. Ya puedes disfrutar de
+      todas las funciones avanzadas.
     </p>
+    <button class="payment-form__success-btn" type="button" (click)="goHome()">
+      <i class="pi pi-home"></i>
+      Ir al inicio
+    </button>
   </div>
   } @else {
   <form

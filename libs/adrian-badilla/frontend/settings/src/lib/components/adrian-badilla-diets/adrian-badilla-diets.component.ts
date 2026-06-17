@@ -22,7 +22,8 @@ import type { DayBase } from '@adrian-badilla/ui/shared';
 import type { RouteNavItem } from '../../types/diets.types';
 import { MacroProgressTrackerComponent } from '../macro-progress-tracker/macro-progress-tracker.component';
 import { SkeletonLoaderComponent } from '@adrian-badilla/ui/shared';
-import { PremiumBannerComponent } from '@adrian-badilla/billing';
+import { PremiumBannerComponent, billingStore } from '@adrian-badilla/billing';
+import { PendingPlanComponent } from '../pending-plan/pending-plan.component';
 
 // Form state interface
 interface RouteFormState {
@@ -47,11 +48,13 @@ interface RouteFormState {
     MacroProgressTrackerComponent,
     SkeletonLoaderComponent,
     PremiumBannerComponent,
+    PendingPlanComponent,
   ],
 })
 export class AdrianBadillaDietsComponent {
   private readonly mealTranslationService = inject(MealTranslationService);
   private readonly store = inject(settingsStoreDev);
+  private readonly billing = inject(billingStore);
 
   // --- Auth trigger ----------------------------------------------------------
   private readonly _auth = inject(Auth);
@@ -70,9 +73,35 @@ export class AdrianBadillaDietsComponent {
   });
 
   // --- Store signals (direct references, no computed wrappers) ---------------
-  readonly loadingDiet = this.store.loadingDiet;
-  readonly errorDiet = this.store.errorDiet;
-  readonly noActiveDiet = this.store.noActiveDiet;
+  // NOTE: loadingDiet and noActiveDiet are intentionally NOT exposed as public
+  // class members. The template uses the computed showPaywall / showPendingPlan /
+  // showContent / isLoading signals exclusively.
+
+  // ─── Display rules ────────────────────────────────────────────────────────
+
+  /**
+   * Combined loading: diet fetch in progress OR subscription state not yet resolved.
+   * Prevents a flash of the paywall before isPremium() is known.
+   */
+  readonly isLoading = computed(
+    () => this.store.loadingDiet() || this.billing.isSubscriptionLoading()
+  );
+
+  /** Regla 1: usuario no-premium → mostrar paywall. */
+  readonly showPaywall = computed(() => !this.billing.isPremium());
+
+  /**
+   * Regla 3: usuario premium pero sin dieta generada todavía.
+   * Solo evalúa después de que el fetch ha terminado.
+   */
+  readonly showPendingPlan = computed(
+    () => this.billing.isPremium() && this.store.noActiveDiet()
+  );
+
+  /** Regla 2: usuario premium con dieta disponible. */
+  readonly showContent = computed(
+    () => this.billing.isPremium() && !this.store.noActiveDiet()
+  );
   readonly routeSearchQuery = this.store.routeSearchQuery;
   readonly filteredRoutes = this.store.filteredRoutes;
   readonly sortedRoutes = this.store.routes;

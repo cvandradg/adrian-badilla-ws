@@ -2,11 +2,15 @@
 
 <div class="diets-page">
   <div class="diets-page__timeline">
-    @if (loadingDiet()) {
+    @if (isLoading()) {
     <lib-skeleton-loader variant="page" [rows]="4" />
-    } @else if (noActiveDiet()) {
+    } @else if (showPaywall()) {
+    <!-- Regla 1: no premium -->
     <lib-premium-banner />
-    } @else if (filteredRoutes().length) {
+    } @else if (showPendingPlan()) {
+    <!-- Regla 3: premium sin contenido -->
+    <lib-pending-plan />
+    } @else if (showContent() && filteredRoutes().length) {
     <lib-shared-item-timeline
       [days]="routeDays()"
       [selectedDayId]="selectedRoute()?.id ?? ''"
@@ -27,7 +31,7 @@
     />
     }
   </div>
-  @if (!loadingDiet() && !noActiveDiet() && filteredRoutes().length) {
+  @if (showContent() && filteredRoutes().length) {
   <lib-macro-progress-tracker class="diets-page__tracker" [meals]="items" />
   }
 </div>

@@ -21,7 +21,8 @@ import type { MealStatus } from '../../types/diet-decision.types';
 import { ROUTINE_HISTORY_MOCK } from '../../mock/routine-history.mock';
 import type { HistoryEntry } from '../../types/section-history.types';
 import { SkeletonLoaderComponent } from '@adrian-badilla/ui/shared';
-import { PremiumBannerComponent } from '@adrian-badilla/billing';
+import { PremiumBannerComponent, billingStore } from '@adrian-badilla/billing';
+import { PendingPlanComponent } from '../pending-plan/pending-plan.component';
 
 @Component({
   selector: 'lib-routines-page',
@@ -33,6 +34,7 @@ import { PremiumBannerComponent } from '@adrian-badilla/billing';
     SectionHistoryComponent,
     SkeletonLoaderComponent,
     PremiumBannerComponent,
+    PendingPlanComponent,
   ],
   templateUrl: './routines-page.component.html',
   styleUrl: './routines-page.component.scss',
@@ -40,6 +42,7 @@ import { PremiumBannerComponent } from '@adrian-badilla/billing';
 })
 export class RoutinesPageComponent {
   private readonly store = inject(settingsStoreDev);
+  private readonly billing = inject(billingStore);
 
   // ─── Auth trigger ────────────────────────────────────────────────────────
   private readonly _auth = inject(Auth);
@@ -104,17 +107,35 @@ export class RoutinesPageComponent {
 
   readonly routineHistoryEntries: HistoryEntry[] = ROUTINE_HISTORY_MOCK;
 
-  // Show skeleton while actively loading OR while days haven't arrived yet
-  // (covers the first tick before loadActiveRoutine() sets loadingRoutine=true).
-  // Stop showing once fetch is done (covers users with no routine).
+  // Show skeleton while actively loading, while days haven't arrived yet,
+  // or while subscription state is still being resolved.
   readonly isLoadingRoutine = computed(
     () =>
       this.store.loadingRoutine() ||
-      (!this.store.routineFetchDone() && !this.store.errorRoutine())
+      (!this.store.routineFetchDone() && !this.store.errorRoutine()) ||
+      this.billing.isSubscriptionLoading()
   );
 
   /** True when the fetch completed but no routine document exists for this user. */
   readonly hasNoRoutine = computed(() => this.store.noActiveRoutine());
+
+  // ─── Display rules ────────────────────────────────────────────────────────
+
+  /** Regla 1: usuario no-premium → mostrar paywall. */
+  readonly showPaywall = computed(() => !this.billing.isPremium());
+
+  /**
+   * Regla 3: usuario premium pero sin rutina generada todavía.
+   * Solo evalúa después de que el fetch ha terminado.
+   */
+  readonly showPendingPlan = computed(
+    () => this.billing.isPremium() && this.hasNoRoutine()
+  );
+
+  /** Regla 2: usuario premium con rutina disponible. */
+  readonly showContent = computed(
+    () => this.billing.isPremium() && !this.hasNoRoutine()
+  );
 
   setActiveTab(value: string): void {
     this.activeTab.set(value);

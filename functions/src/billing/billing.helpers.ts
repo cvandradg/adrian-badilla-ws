@@ -18,11 +18,20 @@ interface OnvoCustomerCreateResponse {
  * customerId would poison customers/{customerId} → uid, causing future webhooks
  * for that customer to activate the wrong Firebase account.
  *
+ * Persistence model:
+ *  - customers/{customerId}               ← authoritative reverse-mapping used
+ *                                            by webhooks (written here immediately
+ *                                            when a new ONVO customer is created).
+ *  - users/{uid}.subscription.onvoCustomerId ← forward-mapping / recovery path;
+ *                                            used by resolveUid() when the
+ *                                            customers document is absent.
+ *
  * Resolution order:
  *  1. Read users/{uid}.subscription.onvoCustomerId — reuses the existing
  *     customer without calling ONVO again (idempotent across retries).
  *  2. If absent: fetch the Firebase Auth user record, call POST /v1/customers,
- *     persist the returned ID to Firestore, and return it.
+ *     persist customers/{customerId} AND users/{uid}.subscription.onvoCustomerId
+ *     atomically so the reverse mapping is immediately available for webhooks.
  */
 export async function getOrCreateOnvoCustomer(
   uid: string,
@@ -71,12 +80,23 @@ export async function getOrCreateOnvoCustomer(
 
   const customer = (await createResponse.json()) as OnvoCustomerCreateResponse;
   const customerId = customer.id;
+  const now = admin.firestore.FieldValue.serverTimestamp();
 
-  // 4. Persist the new customerId so future calls reuse it without an ONVO round-trip.
-  await db
-    .collection('users')
-    .doc(uid)
-    .set({ subscription: { onvoCustomerId: customerId } }, { merge: true });
+  // 4. Persist both mappings concurrently:
+  //    a) users/{uid}.subscription.onvoCustomerId — forward mapping / recovery path.
+  //    b) customers/{customerId} — authoritative reverse mapping used by webhooks.
+  //    Writing both here ensures the webhook can always resolve uid even if
+  //    createSubscription() fails before persistSubscriptionState() runs.
+  await Promise.all([
+    db
+      .collection('users')
+      .doc(uid)
+      .set({ subscription: { onvoCustomerId: customerId } }, { merge: true }),
+    db
+      .collection('customers')
+      .doc(customerId)
+      .set({ uid, createdAt: now }, { merge: true }),
+  ]);
 
   console.info(
     `[billing] getOrCreateOnvoCustomer: created customerId=${customerId} for uid=${uid}`
