@@ -22,6 +22,7 @@ import type { DayBase } from '@adrian-badilla/ui/shared';
 import type { RouteNavItem } from '../../types/diets.types';
 import { MacroProgressTrackerComponent } from '../macro-progress-tracker/macro-progress-tracker.component';
 import { SkeletonLoaderComponent } from '@adrian-badilla/ui/shared';
+import { PremiumBannerComponent } from '@adrian-badilla/billing';
 
 // Form state interface
 interface RouteFormState {
@@ -45,6 +46,7 @@ interface RouteFormState {
     FontAwesomeModule,
     MacroProgressTrackerComponent,
     SkeletonLoaderComponent,
+    PremiumBannerComponent,
   ],
 })
 export class AdrianBadillaDietsComponent {

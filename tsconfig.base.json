@@ -59,6 +59,12 @@
       ],
       "@adrian-badilla/home/routes": [
         "./libs/adrian-badilla/frontend/home/src/lib/home.routes.ts"
+      ],
+      "@adrian-badilla/billing": [
+        "./libs/adrian-badilla/frontend/billing/src/index.ts"
+      ],
+      "@adrian-badilla/billing/routes": [
+        "./libs/adrian-badilla/frontend/billing/src/lib/billing.routes.ts"
       ]
     }
   },

@@ -23,13 +23,26 @@ service cloud.firestore {
 
       // Allow update only for the document owner.
       // Prevent modifying uid or createdAt after creation.
+      // Prevent clients from writing the `subscription` field directly —
+      // it is managed exclusively by Firebase Functions (admin SDK).
       allow update: if request.auth != null
         && request.auth.uid == uid
         && request.resource.data.uid == resource.data.uid
-        && request.resource.data.createdAt == resource.data.createdAt;
+        && request.resource.data.createdAt == resource.data.createdAt
+        && !request.resource.data.diff(resource.data)
+              .affectedKeys()
+              .hasAny(['subscription']);
 
       // Deletes are not permitted through the client SDK.
       allow delete: if false;
+    }
+
+    // ── users/{uid}/payments ─────────────────────────────────────────────────
+    // Payment records are written exclusively by Firebase Functions.
+    // Users can only read their own payment history.
+    match /users/{uid}/payments/{paymentId} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
     }
 
     // Deny all other paths by default.

@@ -1,0 +1,136 @@
+<div class="payment-form">
+  <header class="payment-form__header">
+    <h2 class="payment-form__title">Datos de pago</h2>
+    <p class="payment-form__subtitle">
+      Tu información es procesada de forma segura por ONVO Pay.
+    </p>
+  </header>
+
+  @if (store.prepareLoading()) {
+  <div class="payment-form__preparing">
+    <span class="payment-form__spinner"></span>
+    <p>Preparando sesión de pago...</p>
+  </div>
+  } @else if (isComplete) {
+  <div class="payment-form__success">
+    <p class="payment-form__success-text">
+      ¡Suscripción completada! Tu cuenta Premium se activará en unos momentos.
+    </p>
+  </div>
+  } @else {
+  <form
+    class="payment-form__form"
+    [formGroup]="cardForm"
+    (ngSubmit)="onSubmit()"
+    novalidate
+  >
+    <!-- Holder Name -->
+    <mat-form-field appearance="outline" class="payment-form__field">
+      <mat-label>Nombre en la tarjeta</mat-label>
+      <input
+        matInput
+        formControlName="holderName"
+        type="text"
+        placeholder="Nombre Apellido"
+        autocomplete="cc-name"
+      />
+      @if (cardForm.get('holderName')?.invalid &&
+      cardForm.get('holderName')?.touched) {
+      <mat-error>Ingresa el nombre tal como aparece en la tarjeta.</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Card Number -->
+    <mat-form-field appearance="outline" class="payment-form__field">
+      <mat-label>Número de tarjeta</mat-label>
+      <input
+        matInput
+        formControlName="cardNumber"
+        type="tel"
+        inputmode="numeric"
+        maxlength="19"
+        placeholder="1234 5678 9012 3456"
+        autocomplete="cc-number"
+      />
+      @if (cardForm.get('cardNumber')?.invalid &&
+      cardForm.get('cardNumber')?.touched) {
+      <mat-error
+        >Ingresa un número de tarjeta válido (13–19 dígitos).</mat-error
+      >
+      }
+    </mat-form-field>
+
+    <!-- Expiry row -->
+    <div class="payment-form__row">
+      <mat-form-field appearance="outline" class="payment-form__field--half">
+        <mat-label>Mes de vencimiento</mat-label>
+        <input
+          matInput
+          formControlName="expMonth"
+          type="number"
+          min="1"
+          max="12"
+          placeholder="MM"
+          autocomplete="cc-exp-month"
+        />
+        @if (cardForm.get('expMonth')?.invalid &&
+        cardForm.get('expMonth')?.touched) {
+        <mat-error>Mes inválido (1–12).</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="payment-form__field--half">
+        <mat-label>Año de vencimiento</mat-label>
+        <input
+          matInput
+          formControlName="expYear"
+          type="number"
+          placeholder="AAAA"
+          autocomplete="cc-exp-year"
+        />
+        @if (cardForm.get('expYear')?.invalid &&
+        cardForm.get('expYear')?.touched) {
+        <mat-error>Año inválido.</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- CVC -->
+    <mat-form-field
+      appearance="outline"
+      class="payment-form__field payment-form__field--cvc"
+    >
+      <mat-label>CVC / CVV</mat-label>
+      <input
+        matInput
+        formControlName="cvc"
+        type="tel"
+        inputmode="numeric"
+        maxlength="4"
+        placeholder="123"
+        autocomplete="cc-csc"
+      />
+      @if (cardForm.get('cvc')?.invalid && cardForm.get('cvc')?.touched) {
+      <mat-error>CVC inválido (3–4 dígitos).</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Error messages -->
+    <adrian-badilla-status-message
+      [display]="!!currentError"
+      [type]="'error'"
+      [icon]="['fas', 'xmark']"
+      [message]="currentError"
+    />
+
+    <!-- Submit button -->
+    <adrian-badilla-primary-animated-button
+      [enable]="cardForm.valid && store.hasCustomerId() && !isProcessing"
+      [loading]="isProcessing"
+      [success]="isComplete"
+      [buttonText]="'Suscribirse a Premium'"
+      (submitEvent)="onSubmit()"
+    />
+  </form>
+  }
+</div>

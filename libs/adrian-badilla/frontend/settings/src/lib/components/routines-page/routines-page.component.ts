@@ -21,6 +21,7 @@ import type { MealStatus } from '../../types/diet-decision.types';
 import { ROUTINE_HISTORY_MOCK } from '../../mock/routine-history.mock';
 import type { HistoryEntry } from '../../types/section-history.types';
 import { SkeletonLoaderComponent } from '@adrian-badilla/ui/shared';
+import { PremiumBannerComponent } from '@adrian-badilla/billing';
 
 @Component({
   selector: 'lib-routines-page',
@@ -31,6 +32,7 @@ import { SkeletonLoaderComponent } from '@adrian-badilla/ui/shared';
     SectionTabsComponent,
     SectionHistoryComponent,
     SkeletonLoaderComponent,
+    PremiumBannerComponent,
   ],
   templateUrl: './routines-page.component.html',
   styleUrl: './routines-page.component.scss',

@@ -1,0 +1,51 @@
+<div class="subscription-card">
+  <div class="subscription-card__header">
+    <span class="subscription-card__plan-label">Plan actual</span>
+    <span class="subscription-card__plan-name">
+      {{ store.currentPlan() === 'premium' ? 'Premium' : 'Gratis' }}
+    </span>
+  </div>
+
+  @if (store.subscription(); as sub) {
+  <div class="subscription-card__body">
+    <div class="subscription-card__row">
+      <span class="subscription-card__label">Estado</span>
+      <lib-subscription-status-chip [status]="sub.status" />
+    </div>
+
+    @if (sub.status === 'active') {
+    <div class="subscription-card__row">
+      <span class="subscription-card__label">Vence el</span>
+      <span class="subscription-card__value">
+        {{ sub.expiresAt?.toDate() | date : 'dd/MM/yyyy' }}
+      </span>
+    </div>
+
+    <div class="subscription-card__row">
+      <span class="subscription-card__label">Días restantes</span>
+      <span
+        class="subscription-card__value"
+        [class.subscription-card__value--warning]="store.daysRemaining() <= 5"
+      >
+        {{ store.daysRemaining() }}
+      </span>
+    </div>
+    } @if (sub.status === 'past_due') {
+    <p class="subscription-card__notice subscription-card__notice--warning">
+      Tu pago está pendiente. Por favor actualiza tu método de pago.
+    </p>
+    } @if (sub.status === 'cancelled') {
+    <p class="subscription-card__notice">
+      Tu suscripción fue cancelada y vence el
+      {{ sub.expiresAt?.toDate() | date : 'dd/MM/yyyy' }}.
+    </p>
+    }
+  </div>
+  } @else if (store.isSubscriptionLoading()) {
+  <div class="subscription-card__skeleton"></div>
+  } @else {
+  <p class="subscription-card__free-notice">
+    Actualmente estás en el plan gratuito.
+  </p>
+  }
+</div>

@@ -1,0 +1,83 @@
+.payment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+
+  &__header {
+    text-align: center;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+  }
+
+  &__subtitle {
+    font-size: 0.875rem;
+    color: var(--mat-sys-on-surface-variant, #666);
+    margin: 0;
+  }
+
+  &__preparing {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    justify-content: center;
+    padding: 1.5rem 0;
+    color: var(--mat-sys-on-surface-variant, #666);
+  }
+
+  &__spinner {
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__field {
+    width: 100%;
+  }
+
+  &__field--cvc {
+    max-width: 160px;
+  }
+
+  &__row {
+    display: flex;
+    gap: 1rem;
+  }
+
+  &__field--half {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__success {
+    text-align: center;
+    padding: 2rem 0;
+  }
+
+  &__success-text {
+    color: var(--mat-sys-primary, #1976d2);
+    font-weight: 600;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,12 @@
+<button
+  class="checkout-btn"
+  [disabled]="store.checkoutLoading()"
+  (click)="onCheckout()"
+  type="button"
+>
+  @if (store.checkoutLoading()) {
+  <span class="checkout-btn__spinner"></span>
+  Procesando... } @else {
+  {{ label() }}
+  }
+</button>

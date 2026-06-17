@@ -1,0 +1,11 @@
+@if (store.isPremium()) {
+<ng-content />
+} @else {
+<div class="paywall">
+  <div class="paywall__lock">🔒</div>
+  <p class="paywall__message">
+    Esta función está disponible en el plan Premium.
+  </p>
+  <lib-premium-banner />
+</div>
+}

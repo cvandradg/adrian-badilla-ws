@@ -22,5 +22,10 @@ export const appRoutes: Route[] = [
       ),
   },
 
+  {
+    path: 'billing',
+    loadChildren: () =>
+      import('@adrian-badilla/billing/routes').then((m) => m.billingRoutes),
+  },
   { path: '**', redirectTo: '' },
 ];
