@@ -222,6 +222,35 @@ export class AdrianBadillaUiLandingPageComponent
 
     // ---- drawer ----
     let drawerOpen = false;
+    // Scroll-lock state. We CANNOT use `body { overflow: hidden }` here: the
+    // global `html, body { height: 100% }` makes that clip everything below the
+    // fold, collapsing the scrollable height to 0 and snapping the page to the
+    // top (hero). Instead we pin the body with `position: fixed` at the current
+    // offset and restore it on close, so the scroll position is preserved.
+    let lockedScrollY = 0;
+    const lockScroll = () => {
+      lockedScrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${lockedScrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+    };
+    const unlockScroll = () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      // Restore the offset INSTANTLY. The global `scroll-behavior: smooth` would
+      // otherwise animate this restore from the top (the page sits at 0 while the
+      // body is pinned) down to where the user was — an ugly hero→section glide.
+      const root = document.documentElement;
+      const prevBehavior = root.style.scrollBehavior;
+      root.style.scrollBehavior = 'auto';
+      window.scrollTo(0, lockedScrollY);
+      root.style.scrollBehavior = prevBehavior;
+    };
     const setLinksHidden = () =>
       drawerLinks.forEach((l) => {
         l.style.transitionDelay = '0ms';
@@ -234,7 +263,7 @@ export class AdrianBadillaUiLandingPageComponent
       if (drawer) drawer.style.transform = 'translateX(0)';
       if (backdrop) { backdrop.style.opacity = '1'; backdrop.style.pointerEvents = 'auto'; }
       if (burger) burger.style.opacity = '0';
-      document.body.style.overflow = 'hidden';
+      lockScroll();
       drawerLinks.forEach((l, i) => {
         l.style.transitionDelay = 130 + i * 55 + 'ms';
         l.style.opacity = '1';
@@ -245,7 +274,7 @@ export class AdrianBadillaUiLandingPageComponent
       drawerOpen = false;
       if (drawer) drawer.style.transform = 'translateX(105%)';
       if (backdrop) { backdrop.style.opacity = '0'; backdrop.style.pointerEvents = 'none'; }
-      document.body.style.overflow = '';
+      unlockScroll();
       setLinksHidden();
       this.syncChromeFn?.();
     };
@@ -558,6 +587,13 @@ export class AdrianBadillaUiLandingPageComponent
   ngOnDestroy(): void {
     if (this.hRaf) cancelAnimationFrame(this.hRaf);
     this.cleanup.forEach((fn) => fn());
-    document.body.style.overflow = '';
+    // Clear any scroll-lock left behind if destroyed while the drawer is open.
+    const body = document.body.style;
+    body.overflow = '';
+    body.position = '';
+    body.top = '';
+    body.left = '';
+    body.right = '';
+    body.width = '';
   }
 }
