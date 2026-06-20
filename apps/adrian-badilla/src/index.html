@@ -14,6 +14,14 @@
       type="image/x-icon"
       href="/global/assets/img/ab-logo-circle.svg"
     />
+    <!-- Preload the hero image (LCP) so it starts downloading before the lazy
+         landing chunk is parsed. -->
+    <link
+      rel="preload"
+      as="image"
+      href="/global/assets/img/image.webp"
+      fetchpriority="high"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

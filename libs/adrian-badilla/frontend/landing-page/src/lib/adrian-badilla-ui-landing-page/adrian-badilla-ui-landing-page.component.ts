@@ -89,7 +89,7 @@ export class AdrianBadillaUiLandingPageComponent
 
   services: Service[] = [
     {
-      num: '01', img: '/global/assets/img/adelgazar.jpg', imgPos: 'center 22%',
+      num: '01', img: '/global/assets/img/adelgazar.webp', imgPos: 'center 22%',
       title: 'Nutrición y Estilo de Vida', price: '₡20.000', cta: 'Iniciar',
       items: [
         'Planes personalizados: pérdida de grasa, masa o mantenimiento.',
@@ -99,7 +99,7 @@ export class AdrianBadillaUiLandingPageComponent
       ],
     },
     {
-      num: '02', img: '/global/assets/img/musculo.jpg', imgPos: '42% 42%',
+      num: '02', img: '/global/assets/img/musculo.webp', imgPos: '42% 42%',
       title: 'Fuerza y Musculación', price: '₡25.000', cta: 'Iniciar',
       items: [
         'Programas de hipertrofia y fuerza máxima.',
@@ -109,7 +109,7 @@ export class AdrianBadillaUiLandingPageComponent
       ],
     },
     {
-      num: '03', img: '/global/assets/img/tonificar.jpg', imgPos: 'center 18%',
+      num: '03', img: '/global/assets/img/tonificar.webp', imgPos: 'center 18%',
       title: 'Definición y Estética', price: '₡30.000', cta: 'Iniciar',
       items: [
         'Entrenamiento de tonificación y modelado corporal.',
@@ -119,7 +119,7 @@ export class AdrianBadillaUiLandingPageComponent
       ],
     },
     {
-      num: '04', img: '/global/assets/img/muchoMas.jpg', imgPos: 'center 25%',
+      num: '04', img: '/global/assets/img/muchoMas.webp', imgPos: 'center 25%',
       title: 'Coaching para Competidores', price: '₡40.000', cta: 'Solicitar',
       items: [
         'Preparación completa para torneos de culturismo y fitness.',
@@ -156,7 +156,7 @@ export class AdrianBadillaUiLandingPageComponent
 
   private buildGallery(): GalleryItem[] {
     const resultados = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16']
-      .map((n) => `/global/assets/img/resultados/${n}.png`);
+      .map((n) => `/global/assets/img/resultados/${n}.webp`);
     const gLabels = ['Definición','Fuerza','Escenario','Posing','Disciplina','Volumen','Simetría','Preparación','Constancia','Resultado','Physique','Detalle','Potencia','Forma','Enfoque','Victoria'];
     // [height vh, aspect w/h, vertical offset vh, parallax depth]
     const gRhythm: number[][] = [
