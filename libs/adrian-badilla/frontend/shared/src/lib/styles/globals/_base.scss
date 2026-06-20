@@ -13,14 +13,37 @@ body {
   // Establishes the default app chrome so feature styles can assume a dark base surface.
   width: 100%;
   height: 100%;
-  overflow-x: hidden;
+  // `clip` (not `hidden`) prevents horizontal scrollbars without turning the
+  // document into a scroll container — required so `position: sticky` pinned
+  // scenes (hero, about, gallery) anchor against the viewport scroll.
+  overflow-x: clip;
   font-family: tokens.$font-primary;
   color: tokens.$color-neutral-100;
+  // Dark by default so the first paint (before Angular boots the landing) is a
+  // neutral dark surface that blends into the landing's loader — no flash of the
+  // purple "AB" chrome image on refresh. The chrome image is opt-in per route.
   background-color: tokens.$app-background-color;
   background-position: center center;
   background-repeat: repeat;
   background-size: tokens.$app-background-size;
+}
+
+// The purple "AB" backdrop is the chrome for the in-app routes (auth, dashboard).
+// AppComponent toggles `app-chrome` on <body> when those routes are active, so the
+// public landing keeps a pure dark surface and never flashes the image on load.
+body.app-chrome {
   background-image: tokens.$app-background-image;
+}
+
+// Smooth in-page navigation for anchor links (landing nav/footer).
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* Scrollbar: global by design because browser pseudo-elements cannot be scoped usefully. */
