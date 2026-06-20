@@ -502,6 +502,10 @@ export class AdrianBadillaUiLandingPageComponent
       const t = ease(clamp01((p - 0.46) / 0.26));
       sContent.style.opacity = t.toFixed(3);
       sContent.style.transform = `scale(${(0.9 + 0.1 * t).toFixed(3)})`;
+      // Only enable card hover once the scene is fully positioned, otherwise a
+      // card under the resting cursor would enter already-expanded while the
+      // section is still scaling/fading in. `svc-ready` flips pointer-events on.
+      sContent.classList.toggle('svc-ready', t > 0.999);
     };
 
     const tick = () => {

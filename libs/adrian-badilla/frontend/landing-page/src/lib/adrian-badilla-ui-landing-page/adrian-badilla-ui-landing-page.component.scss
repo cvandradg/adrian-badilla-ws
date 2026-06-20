@@ -227,7 +227,19 @@ nav.ab-nav { transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3
 }
 
 /* ---------- services cards ---------- */
-.svc-cards { display: flex; gap: 10px; height: clamp(380px, 54vh, 460px); }
+.svc-cards {
+  display: flex;
+  gap: 10px;
+  height: clamp(380px, 54vh, 460px);
+  // Disabled until the services scene finishes entering (JS adds `.svc-ready`
+  // on the container once it's fully positioned). Prevents a card from opening
+  // on hover while the section is still scaling/fading in.
+  pointer-events: none;
+}
+
+.svc-ready .svc-cards {
+  pointer-events: auto;
+}
 
 .svc-card {
   position: relative;
