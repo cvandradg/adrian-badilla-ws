@@ -19,6 +19,9 @@ type GalleryItem = {
   vy: number;
   w: string;
   h: string;
+  // Mobile-only vertical layout: big shots stay centered; runs of 2+ small
+  // shots zig-zag left/right; a lone small shot between big ones stays centered.
+  align: 'left' | 'right' | 'center';
 };
 
 @Component({
@@ -114,15 +117,35 @@ export class AdrianBadillaUiLandingPageComponent
       [24, 0.80, -17, 0.06], [40, 1.28, 3, -0.04], [27, 0.82, 17, 0.03],
       [34, 1.15, -12, -0.05], [24, 0.80, 7, 0.05], [28, 0.84, 16, -0.03], [36, 1.20, -6, 0.04],
     ];
-    return resultados.map((src, i) => {
-      const [h, ar, vy, depth] = gRhythm[i % gRhythm.length];
+    // A shot is "big" when it's tall or wide; everything else is "small".
+    const isBig = (i: number) => {
+      const [h, ar] = gRhythm[i % gRhythm.length];
+      return h >= 36 || ar >= 1.2;
+    };
+    // Walk the list assigning mobile alignment: consecutive runs of 2+ small
+    // shots alternate left/right; lone smalls and all big shots stay centered.
+    const N = resultados.length;
+    const aligns: Array<'left' | 'right' | 'center'> = new Array(N).fill('center');
+    let i = 0;
+    while (i < N) {
+      if (isBig(i)) { i++; continue; }
+      let j = i;
+      while (j < N && !isBig(j)) j++;
+      if (j - i >= 2) {
+        for (let k = i; k < j; k++) aligns[k] = (k - i) % 2 === 0 ? 'left' : 'right';
+      }
+      i = j;
+    }
+    return resultados.map((src, idx) => {
+      const [h, ar, vy, depth] = gRhythm[idx % gRhythm.length];
       return {
         src,
-        label: gLabels[i % gLabels.length],
+        label: gLabels[idx % gLabels.length],
         depth,
         vy,
         w: `max(150px, ${(h * ar).toFixed(1)}vh)`,
         h: `${h}vh`,
+        align: aligns[idx],
       };
     });
   }
@@ -261,6 +284,9 @@ export class AdrianBadillaUiLandingPageComponent
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const ease = (t: number) => 1 - Math.pow(1 - t, 3);
     const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+    // Phones get a different choreography (vertical galleries, proportional hero
+    // image, un-pinned scenes). Desktop keeps the pinned scrollytelling intact.
+    const isMobile = () => window.innerWidth <= 820;
 
     type ScrubItem = {
       el: HTMLElement;
@@ -340,24 +366,40 @@ export class AdrianBadillaUiLandingPageComponent
     let hMax = 0;
     const measureH = () => {
       if (!hSection || !hTrack) return;
-      if (reduced) {
+      if (reduced || isMobile()) {
+        // Un-pin the horizontal scene. Phones show the gallery as a vertical
+        // stacked story (CSS), so clear the pin + any per-figure transforms left
+        // over from a desktop->mobile resize.
         hSection.style.height = 'auto';
         if (hSticky) { hSticky.style.position = 'static'; hSticky.style.height = 'auto'; }
-        if (hTrack.parentElement) (hTrack.parentElement as HTMLElement).style.overflowX = 'auto';
+        hTrack.style.transform = 'none';
+        const kids = hTrack.children;
+        for (let i = 0; i < kids.length; i++) {
+          const f = kids[i] as HTMLElement;
+          f.style.transform = 'none'; f.style.opacity = '1';
+          const im = f.querySelector('img') as HTMLElement | null;
+          if (im) im.style.filter = 'none';
+        }
+        // Non-mobile reduced-motion users keep a horizontal scroll fallback.
+        if (reduced && !isMobile() && hTrack.parentElement) {
+          (hTrack.parentElement as HTMLElement).style.overflowX = 'auto';
+        }
+        hMax = 0;
         return;
       }
+      if (hSticky) { hSticky.style.position = 'sticky'; hSticky.style.height = '100vh'; }
       hMax = Math.max(0, hTrack.scrollWidth - window.innerWidth + window.innerWidth * 0.12);
       hSection.style.height = Math.max(170, (hMax / window.innerHeight) * 62 + 95) + 'vh';
     };
     let hCur = 0; let hTarget = 0;
     const applyH = () => {
-      if (reduced || !hSection || !hTrack) return;
+      if (reduced || isMobile() || !hSection || !hTrack) return;
       const total = hSection.offsetHeight - window.innerHeight;
       const prog = total > 0 ? clamp01(-hSection.getBoundingClientRect().top / total) : 0;
       hTarget = hMax * prog;
     };
     const renderH = (pos: number) => {
-      if (reduced || !hSection || !hTrack) return;
+      if (reduced || isMobile() || !hSection || !hTrack) return;
       const prog = hMax > 0 ? pos / hMax : 0;
       hTrack.style.transform = `translate3d(${(-pos).toFixed(1)}px,0,0)`;
       const vw = window.innerWidth, cx = vw / 2, kids = hTrack.children;
@@ -406,9 +448,14 @@ export class AdrianBadillaUiLandingPageComponent
       }
       if (heroCue) heroCue.style.opacity = clamp01(1 - p / 0.12).toFixed(3);
       const sT = ease(clamp01((p - 0.05) / 0.6));
-      frame.style.width = lerp(vw, Math.min(vw * 0.42, 600), sT).toFixed(1) + 'px';
-      frame.style.height = lerp(vh, vh * 0.5, sT).toFixed(1) + 'px';
-      frame.style.borderRadius = (sT * 16).toFixed(1) + 'px';
+      // On phones the shrunk frame must stay well-proportioned (a portrait card,
+      // ~4:5) instead of the thin desktop sliver, and centered. On desktop it
+      // shrinks to a side panel as before.
+      const targetW = isMobile() ? Math.min(vw * 0.82, 360) : Math.min(vw * 0.42, 600);
+      const targetH = isMobile() ? targetW * 1.25 : vh * 0.5;
+      frame.style.width = lerp(vw, targetW, sT).toFixed(1) + 'px';
+      frame.style.height = lerp(vh, targetH, sT).toFixed(1) + 'px';
+      frame.style.borderRadius = (sT * (isMobile() ? 22 : 16)).toFixed(1) + 'px';
       if (ribbons) ribbons.style.opacity = clamp01((p - 0.2) / 0.35).toFixed(3);
       if (heroStats) {
         heroStats.style.opacity = clamp01((p - 0.46) / 0.08).toFixed(3);
@@ -505,9 +552,53 @@ export class AdrianBadillaUiLandingPageComponent
       sContent.classList.toggle('svc-ready', t > 0.999);
     };
 
+    // ---- mobile-only "Tu preparador" cinematic ----
+    // Photo reveals (back-to-front) -> infinite zoom into the black shirt (which
+    // blends into the black bg) -> the text emerges from the black and the two
+    // groups (info / credentials) converge in. Desktop: element is display:none
+    // and this no-ops.
+    const cine = q('[data-about-cine]');
+    const cPhoto = cine?.querySelector('.abc-photo') as HTMLElement | null;
+    const cName = cine?.querySelector('.abc-name') as HTMLElement | null;
+    const cContent = cine?.querySelector('.abc-content') as HTMLElement | null;
+    const cInfo = cine?.querySelector('.abc-col--info') as HTMLElement | null;
+    const cCreds = cine?.querySelector('.abc-col--creds') as HTMLElement | null;
+    const applyAboutCine = () => {
+      if (!cine || !cPhoto || !isMobile()) return;
+      const total = cine.offsetHeight - window.innerHeight;
+      const p = total > 0 ? clamp01(-cine.getBoundingClientRect().top / total) : 0;
+
+      // A (0 -> .20): full image grows from small, "Adrián" name behind it.
+      // B (.20 -> .42): infinite zoom into the shirt; image dissolves to black.
+      const a = ease(clamp01(p / 0.2));
+      const b = ease(clamp01((p - 0.2) / 0.22));
+      const photoFade = clamp01((p - 0.32) / 0.1);
+      cPhoto.style.transform = `scale(${(0.45 + a * 0.55 + b * 3.1).toFixed(3)})`;
+      cPhoto.style.opacity = (a * (1 - photoFade)).toFixed(3);
+
+      if (cName) {
+        const nameFade = clamp01((p - 0.3) / 0.1);
+        cName.style.transform = `translate(-50%,-50%) scale(${(0.85 + a * 0.15 + b * 0.45).toFixed(3)})`;
+        cName.style.opacity = (a * 0.5 * (1 - nameFade)).toFixed(3);
+      }
+
+      // C (.40 -> .60): text + checkboxes emerge from the black WITH the same
+      //   zoom feel (scale up + fade in), already assembled.
+      // D (.74 -> 1): on further scroll the two blocks split — info exits left,
+      //   credentials exit right — clearing the way for the plans below.
+      const c = ease(clamp01((p - 0.4) / 0.2));
+      const d = ease(clamp01((p - 0.74) / 0.26));
+      if (cContent) {
+        cContent.style.opacity = (c * (1 - d)).toFixed(3);
+        cContent.style.transform = `scale(${(0.7 + c * 0.3).toFixed(3)})`;
+      }
+      if (cInfo) cInfo.style.transform = `translateX(${(-d * 92).toFixed(1)}%)`;
+      if (cCreds) cCreds.style.transform = `translateX(${(d * 92).toFixed(1)}%)`;
+    };
+
     const tick = () => {
       applyScrub(); applyParallax(); applyHeroScene();
-      applyAboutScene(); applyServicesScene(); applyH();
+      applyAboutScene(); applyServicesScene(); applyAboutCine(); applyH();
     };
     const hLoop = () => {
       hCur += (hTarget - hCur) * 0.09;
