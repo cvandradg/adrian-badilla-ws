@@ -686,6 +686,9 @@ nav.ab-nav { transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3
   /* show the cinematic intro, hide the desktop about grid */
   .ab-root [data-about-cine] { display: block; position: relative; height: 260vh; }
   .ab-root [data-about-reveal] { display: none !important; }
+  /* the #services anchor is calibrated for the desktop pinned scene (104vh);
+     on mobile the plans live after the 260vh cinematic, so move it onto them */
+  .ab-root #services { top: 228vh !important; }
 
   /* ---- about + plans scene un-pins; the cinematic above handles the intro ---- */
   .ab-root [data-about-scene] { height: auto !important; }

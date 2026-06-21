@@ -9,6 +9,7 @@ import {
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 type Stat = { value: string; label: string };
 type Review = { quote: string; name: string; role: string; initials: string };
@@ -27,7 +28,7 @@ type GalleryItem = {
 @Component({
   selector: 'adrian-badilla-ui-landing-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './adrian-badilla-ui-landing-page.component.html',
   styleUrls: ['./adrian-badilla-ui-landing-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
