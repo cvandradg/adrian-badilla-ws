@@ -528,9 +528,14 @@ export class AdrianBadillaUiLandingPageComponent
       if (!aScene || !sContent) return;
       const total = aScene.offsetHeight - window.innerHeight;
       const p = total > 0 ? clamp01(-aScene.getBoundingClientRect().top / total) : 0;
-      const t = ease(clamp01((p - 0.46) / 0.26));
+      // Complementary cross-fade with the "about" scene: services fades IN on
+      // exactly the same window/curve the about block fades OUT (easeIO over
+      // 0.28..0.50). That guarantees about_opacity + services_opacity === 1 at
+      // every scroll position, so the two never sit at ~0 simultaneously and the
+      // viewport is never left fully black between the two segments.
+      const t = easeIO(clamp01((p - 0.28) / 0.22));
       sContent.style.opacity = t.toFixed(3);
-      sContent.style.transform = `scale(${(0.9 + 0.1 * t).toFixed(3)})`;
+      sContent.style.transform = `scale(${(0.94 + 0.06 * t).toFixed(3)})`;
       // Only enable card hover once the scene is fully positioned, otherwise a
       // card under the resting cursor would enter already-expanded while the
       // section is still scaling/fading in. `svc-ready` flips pointer-events on.
