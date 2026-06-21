@@ -1,13 +1,24 @@
-/* ============================================================
-   Adrián Badilla — Landing page
-   Fonts: añade en index.html o styles globales:
-   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-   ============================================================ */
+// Adrián Badilla — landing page styles.
+// ViewEncapsulation is None, so every selector is namespaced under `.ab-root`;
+// the @keyframes stay global because the template animates via inline styles.
 
-// ViewEncapsulation.None: every rule below lives in the global scope, so all
-// selectors are namespaced under `.ab-root` (the component's root element) to
-// avoid leaking into the rest of the app. `@keyframes` stay global on purpose —
-// that's what lets the inline `style="animation:…"` references resolve.
+// Sweeping gloss highlight shared by the premium CTAs.
+@mixin gloss-sweep($opacity, $start: 30%, $end: 70%) {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    115deg,
+    transparent $start,
+    rgba(255, 255, 255, $opacity) 50%,
+    transparent $end
+  );
+  transform: translateX(-130%);
+  transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
 .ab-root {
   display: block;
   background: #070707;
@@ -84,21 +95,8 @@ nav.ab-nav { transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3
     box-shadow 0.32s cubic-bezier(0.2, 0.7, 0.2, 1),
     filter 0.2s ease !important;
 
-  // sweeping gloss — sits above the gradient but below the label
   &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: linear-gradient(
-      115deg,
-      transparent 30%,
-      rgba(255, 255, 255, 0.5) 50%,
-      transparent 70%
-    );
-    transform: translateX(-130%);
-    transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
+    @include gloss-sweep(0.5);
   }
 
   &:hover {
@@ -148,19 +146,7 @@ nav.ab-nav { transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3
     box-shadow 0.32s ease !important;
 
   &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: linear-gradient(
-      115deg,
-      transparent 32%,
-      rgba(255, 255, 255, 0.18) 50%,
-      transparent 68%
-    );
-    transform: translateX(-130%);
-    transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
+    @include gloss-sweep(0.18, 32%, 68%);
   }
 
   &:hover {

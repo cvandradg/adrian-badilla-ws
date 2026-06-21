@@ -1,7 +1,7 @@
 <div
   class="ab-root"
-  [style.--accent]="accent"
-  [style.--accent-dark]="accentDark"
+  [style.--accent]="accent()"
+  [style.--accent-dark]="accentDark()"
   style="position:relative; width:100%; background:#070707;"
 >
   <!-- GRAIN OVERLAY -->
@@ -457,7 +457,7 @@
   </section>
 
   <!-- ============ APP ============ -->
-  @if (showApp) {
+  @if (showApp()) {
     <section class="ab-app" data-scrub data-ss="0.92,1" data-so="0,1" style="max-width:1500px; margin:0 auto clamp(56px,8vh,120px); padding:clamp(68px,9vw,150px) clamp(32px,6vw,120px); border-radius:26px; background:linear-gradient(160deg, rgba(255,255,255,.055), rgba(255,255,255,.015)); border:1px solid rgba(255,255,255,.1); position:relative; overflow:hidden; box-shadow:0 60px 130px -50px rgba(0,0,0,.85);">
       <div style="position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, hsl(142 90% 61% / .55), transparent);"></div>
       <div style="position:absolute; top:-30%; right:-8%; width:460px; height:460px; border-radius:50%; background:radial-gradient(circle, hsl(142 90% 61% / .16), transparent 65%); pointer-events:none;"></div>

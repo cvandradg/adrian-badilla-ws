@@ -3,14 +3,15 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  Input,
   OnDestroy,
   ViewEncapsulation,
+  computed,
   inject,
+  input,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
+type Accent = 'Verde' | 'Azul' | 'Naranja';
 type Stat = { value: string; label: string };
 type Review = { quote: string; name: string; role: string; initials: string };
 type GalleryItem = {
@@ -20,69 +21,54 @@ type GalleryItem = {
   vy: number;
   w: string;
   h: string;
-  // Mobile-only vertical layout: big shots stay centered; runs of 2+ small
-  // shots zig-zag left/right; a lone small shot between big ones stays centered.
   align: 'left' | 'right' | 'center';
 };
 
 @Component({
   selector: 'adrian-badilla-ui-landing-page',
-  standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink],
   templateUrl: './adrian-badilla-ui-landing-page.component.html',
-  styleUrls: ['./adrian-badilla-ui-landing-page.component.scss'],
+  styleUrl: './adrian-badilla-ui-landing-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  // The template declares its CSS animations through inline `style="animation:…"`
-  // attributes (spinner, hero ribbons marquee, reviews carousel). Emulated
-  // encapsulation renames `@keyframes` (e.g. `ab-spin` -> `_ngcontent-…_ab-spin`)
-  // but does NOT rewrite inline styles, so those references break and nothing
-  // animates. `None` keeps the keyframes global so the inline animations resolve.
-  // All selectors in the stylesheet are namespaced under `.ab-root` (or `ab-`/
-  // `svc-`/`rev-`/`g-` prefixes) to avoid leaking into the rest of the app.
+  // Encapsulation is off so the template's inline `style="animation:…"` rules
+  // resolve their global @keyframes; every selector is namespaced under `.ab-root`.
   encapsulation: ViewEncapsulation.None,
 })
 export class AdrianBadillaUiLandingPageComponent
   implements AfterViewInit, OnDestroy
 {
-  /** 'Verde' | 'Azul' | 'Naranja' */
-  @Input() accentColor: 'Verde' | 'Azul' | 'Naranja' = 'Verde';
-  @Input() showApp = true;
+  readonly accentColor = input<Accent>('Verde');
+  readonly showApp = input(true);
 
-  private host = inject(ElementRef<HTMLElement>);
-  private cleanup: Array<() => void> = [];
+  private readonly host = inject(ElementRef<HTMLElement>);
+  private readonly cleanup: Array<() => void> = [];
   private hRaf = 0;
   private runStatsCount: (() => void) | null = null;
   private syncChromeFn: (() => void) | null = null;
 
-  // ---- accent ----
-  private accentMap: Record<string, [string, string]> = {
+  private readonly accentMap: Record<Accent, readonly [string, string]> = {
     Verde: ['hsl(142 90% 61%)', 'hsl(142 70% 45%)'],
     Azul: ['hsl(217 91% 62%)', 'hsl(217 80% 48%)'],
     Naranja: ['hsl(20 95% 57%)', 'hsl(20 90% 46%)'],
   };
-  get accent(): string {
-    return (this.accentMap[this.accentColor] || this.accentMap['Verde'])[0];
-  }
-  get accentDark(): string {
-    return (this.accentMap[this.accentColor] || this.accentMap['Verde'])[1];
-  }
+  readonly accent = computed(() => this.accentMap[this.accentColor()][0]);
+  readonly accentDark = computed(() => this.accentMap[this.accentColor()][1]);
 
-  // ---- data ----
-  stats: Stat[] = [
+  protected readonly stats: readonly Stat[] = [
     { value: '30+', label: 'Campeones nacionales formados' },
     { value: '25+', label: 'Años de experiencia' },
     { value: 'Juez', label: 'Federación Nacional de Fisicoculturismo' },
     { value: '5.0★', label: 'Valoración de sus clientes' },
   ];
 
-  credentials: string[] = [
+  protected readonly credentials: readonly string[] = [
     'Excompetidor de culturismo de alto nivel',
     'Juez principal de la Federación Nacional (CR)',
     '+30 campeones nacionales preparados',
     'Coaching presencial en San José y online',
   ];
 
-  reviews: Review[] = [
+  protected readonly reviews: readonly Review[] = [
     { quote: 'Adrián me preparó para mi primer Nacional y subí al podio. Su nivel de detalle en dieta y posing es de otro mundo.', name: 'Kevin Mora', role: 'Competidor Men’s Physique', initials: 'KM' },
     { quote: 'Bajé 18 kg en 6 meses sin perder músculo. Por primera vez entendí cómo comer de verdad. Me cambió la vida.', name: 'Daniela Rojas', role: 'Clienta online', initials: 'DR' },
     { quote: 'Más que un entrenador, un mentor. Su experiencia como juez se nota en cada corrección que te da.', name: 'José Castro', role: 'Campeón Nacional', initials: 'JC' },
@@ -93,7 +79,7 @@ export class AdrianBadillaUiLandingPageComponent
     { quote: 'Como competidor, su preparación para tarima es de élite: dieta, posing y mentalidad. Confianza total el día del show.', name: 'Diego Herrera', role: 'Culturismo', initials: 'DH' },
   ];
 
-  reviewsB: Review[] = [
+  protected readonly reviewsB: readonly Review[] = [
     { quote: 'El plan online es impecable: rutinas claras, ajustes cada semana y respuesta a todas mis dudas. Resultados reales.', name: 'Andrea Solís', role: 'Clienta online', initials: 'AS' },
     { quote: 'Como competidor, su preparación para tarima es de élite: dieta, posing y mentalidad. Confianza total el día del show.', name: 'Diego Herrera', role: 'Culturismo', initials: 'DH' },
     { quote: 'Gané 9 kg de masa limpia en una temporada. La progresión de cargas y la técnica que me enseñó marcaron la diferencia.', name: 'Esteban Quirós', role: 'Fuerza y volumen', initials: 'EQ' },
@@ -104,7 +90,7 @@ export class AdrianBadillaUiLandingPageComponent
     { quote: 'Bajé 18 kg en 6 meses sin perder músculo. Por primera vez entendí cómo comer de verdad. Me cambió la vida.', name: 'Daniela Rojas', role: 'Clienta online', initials: 'DR' },
   ];
 
-  galleryItems: GalleryItem[] = this.buildGallery();
+  protected readonly galleryItems: readonly GalleryItem[] = this.buildGallery();
 
   private buildGallery(): GalleryItem[] {
     const resultados = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16']
@@ -151,16 +137,14 @@ export class AdrianBadillaUiLandingPageComponent
     });
   }
 
-  // ======================================================================
-  //  Scroll engine (ported 1:1 from the prototype)
-  // ======================================================================
+  // Scroll-driven animation engine: pinned scrollytelling on desktop, simpler
+  // un-pinned scenes on phones. All listeners are tracked in `cleanup`.
   ngAfterViewInit(): void {
     const root: HTMLElement = this.host.nativeElement;
     const q = (sel: string) => root.querySelector(sel) as HTMLElement | null;
     const qa = (sel: string) =>
       Array.from(root.querySelectorAll(sel)) as HTMLElement[];
 
-    // ---- loader hide ----
     const hide = () => {
       const el = q('[data-ab-loader]');
       if (!el) return;
@@ -192,7 +176,6 @@ export class AdrianBadillaUiLandingPageComponent
       ? (Array.from(drawer.querySelectorAll('.ab-drawer-link')) as HTMLElement[])
       : [];
 
-    // ---- drawer ----
     let drawerOpen = false;
     // Scroll-lock state. We CANNOT use `body { overflow: hidden }` here: the
     // global `html, body { height: 100% }` makes that clip everything below the
@@ -258,7 +241,6 @@ export class AdrianBadillaUiLandingPageComponent
       if ((e as KeyboardEvent).key === 'Escape' && drawerOpen) closeDrawer();
     });
 
-    // ---- nav hide / burger show ----
     const syncChrome = () => {
       const y = window.scrollY;
       const compact = y > 90 || window.innerWidth < 900;
@@ -281,7 +263,6 @@ export class AdrianBadillaUiLandingPageComponent
     on(window, 'resize', syncChrome);
     syncChrome();
 
-    // ---- narrative scroll engine ----
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const ease = (t: number) => 1 - Math.pow(1 - t, 3);
     const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
@@ -296,23 +277,27 @@ export class AdrianBadillaUiLandingPageComponent
     };
     const scrubEls: ScrubItem[] = [];
     if (!reduced) {
-      const pair = (s: string) => s.split(',').map(parseFloat);
       const build = (el: HTMLElement): Omit<ScrubItem, 'el'> => {
-        const r: any = {};
-        if (el.hasAttribute('data-sy')) r.y = pair(el.getAttribute('data-sy')!);
-        if (el.hasAttribute('data-sx')) r.x = pair(el.getAttribute('data-sx')!);
-        if (el.hasAttribute('data-ss')) r.s = pair(el.getAttribute('data-ss')!);
-        if (el.hasAttribute('data-so')) r.o = pair(el.getAttribute('data-so')!);
-        if (el.hasAttribute('data-sr')) r.rot = pair(el.getAttribute('data-sr')!);
-        if (el.hasAttribute('data-sblur')) r.blur = pair(el.getAttribute('data-sblur')!);
-        if (el.hasAttribute('data-mask')) r.mask = el.getAttribute('data-mask') || 'up';
-        r.range = el.hasAttribute('data-srange') ? pair(el.getAttribute('data-srange')!) : [0, 0.55];
-        if (!r.y && !r.x && !r.s && !r.o && !r.rot && !r.mask && !r.blur) {
-          r.y = [120, 0]; r.o = [0, 1]; r.s = [0.94, 1];
-        }
-        return r;
+        const nums = (name: string): number[] | undefined => {
+          const value = el.getAttribute(name);
+          return value === null ? undefined : value.split(',').map(parseFloat);
+        };
+        const maskAttr = el.getAttribute('data-mask');
+        const item: Omit<ScrubItem, 'el'> = {
+          x: nums('data-sx'),
+          y: nums('data-sy'),
+          s: nums('data-ss'),
+          o: nums('data-so'),
+          rot: nums('data-sr'),
+          blur: nums('data-sblur'),
+          mask: maskAttr === null ? undefined : maskAttr || 'up',
+          range: nums('data-srange') ?? [0, 0.55],
+        };
+        const hasMotion =
+          item.x || item.y || item.s || item.o || item.rot || item.blur || item.mask;
+        return hasMotion ? item : { y: [120, 0], o: [0, 1], s: [0.94, 1], range: item.range };
       };
-      qa('[data-scrub]').forEach((el) => scrubEls.push(Object.assign({ el }, build(el))));
+      qa('[data-scrub]').forEach((el) => scrubEls.push({ el, ...build(el) }));
       qa('[data-scrub-group]').forEach((c) => {
         Array.from(c.children).forEach((child) =>
           scrubEls.push({ el: child as HTMLElement, y: [160, 0], o: [0, 1], s: [0.85, 1], range: [0, 0.72] })
@@ -342,12 +327,11 @@ export class AdrianBadillaUiLandingPageComponent
           else if (it.mask === 'circle') cp = `circle(${(t * 80 + 12).toFixed(2)}% at 50% 50%)`;
           else cp = `inset(${hidden}% 0 0 0)`;
           it.el.style.clipPath = cp;
-          (it.el.style as any).webkitClipPath = cp;
+          it.el.style.setProperty('-webkit-clip-path', cp);
         }
       }
     };
 
-    // parallax
     const plx = qa('[data-parallax]');
     const applyParallax = () => {
       if (reduced) return;
@@ -614,24 +598,28 @@ export class AdrianBadillaUiLandingPageComponent
     on(window, 'load', () => { measureH(); tick(); });
     tick();
 
-    // stats count-up
+    // count-up animation for the hero stats once the scene is in view
     const statSection = q('[data-ab-stats]');
     if (statSection && !reduced) {
-      const parsed = Array.from(statSection.children)
-        .map((c) => c.firstElementChild as HTMLElement | null)
-        .filter(Boolean)
-        .map((el) => {
-          const raw = (el!.textContent || '').trim();
-          const m = raw.match(/^([\d]+(?:[.,][\d]+)?)(.*)$/);
-          if (!m) return null;
-          const dec = (m[1].split(/[.,]/)[1] || '').length;
-          return { el: el!, num: parseFloat(m[1].replace(',', '.')), suffix: m[2], dec };
-        });
-      parsed.forEach((p) => { if (p) p.el.textContent = (p.dec ? (0).toFixed(p.dec) : '0') + p.suffix; });
+      type StatCounter = { el: HTMLElement; num: number; suffix: string; dec: number };
+      const parsed: StatCounter[] = Array.from(statSection.children)
+        .map((c) => c.firstElementChild)
+        .filter((el): el is HTMLElement => el instanceof HTMLElement)
+        .map((el): StatCounter | null => {
+          const match = (el.textContent ?? '').trim().match(/^(\d+(?:[.,]\d+)?)(.*)$/);
+          if (!match) return null;
+          const dec = (match[1].split(/[.,]/)[1] ?? '').length;
+          return { el, num: parseFloat(match[1].replace(',', '.')), suffix: match[2], dec };
+        })
+        .filter((counter): counter is StatCounter => counter !== null);
+
+      parsed.forEach((p) => {
+        p.el.textContent = (p.dec ? (0).toFixed(p.dec) : '0') + p.suffix;
+      });
       this.runStatsCount = () => {
         parsed.forEach((p) => {
-          if (!p) return;
-          const start = performance.now(), dur = 1500;
+          const start = performance.now();
+          const dur = 1500;
           const step = (now: number) => {
             const t = Math.min(1, (now - start) / dur);
             const v = p.num * (1 - Math.pow(1 - t, 3));
