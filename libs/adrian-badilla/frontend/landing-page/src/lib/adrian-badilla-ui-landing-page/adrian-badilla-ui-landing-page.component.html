@@ -228,39 +228,76 @@
       </div>
 
       <div data-services-content style="position:absolute; inset:0; z-index:3; display:flex; align-items:center; opacity:0; will-change:opacity, transform;">
-        <div style="width:100%; max-width:1320px; margin:0 auto; padding:0 clamp(20px,5vw,48px);">
-          <div style="display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:24px; margin-bottom:clamp(28px,4vw,48px);">
+        <div style="width:100%; max-width:1200px; margin:0 auto; padding:0 clamp(20px,5vw,48px);">
+          <div style="display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:24px; margin-bottom:clamp(24px,3vw,40px);">
             <div>
-              <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:16px;">
+              <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:14px;">
                 <span style="font-family:'Anton',sans-serif; font-size:1.4rem; color:rgba(226,6,19,.9);">02</span>
                 <span style="font-size:13px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--accent, hsl(142 90% 61%));">Físico y nutrición</span>
               </div>
-              <h2 style="font-family:'Anton',sans-serif; font-weight:400; font-size:clamp(2.4rem,5.5vw,4.6rem); line-height:.92; letter-spacing:-.01em; text-transform:uppercase; margin:0; max-width:14ch;">Planes para tu objetivo</h2>
+              <h2 style="font-family:'Anton',sans-serif; font-weight:400; font-size:clamp(2.2rem,4.6vw,3.8rem); line-height:.92; letter-spacing:-.01em; text-transform:uppercase; margin:0; max-width:14ch;">Planes para tu objetivo</h2>
             </div>
-            <p style="font-size:1.05rem; line-height:1.6; color:rgba(255,255,255,.62); max-width:380px; margin:0;">Programas 100% personalizados según tu nivel, metas y estilo de vida. Presencial en San José u online en cualquier parte del mundo.</p>
+            <p style="font-size:1.02rem; line-height:1.55; color:rgba(255,255,255,.62); max-width:400px; margin:0;">Acompañamiento 100% personalizado según tu nivel y tus metas. Presencial en San José u online en todo el mundo — elegí el plan que se ajusta a vos.</p>
           </div>
 
-          <div class="svc-cards">
-            @for (svc of services; track svc.num) {
-              <article class="svc-card">
-                <img class="svc-card__img" [src]="svc.img" [alt]="svc.title" loading="lazy" [style.object-position]="svc.imgPos">
-                <div class="svc-card__grad"></div>
-                <div class="svc-card__deploy"></div>
-                <div class="svc-card__num">{{ svc.num }}</div>
-                <div class="svc-card__content">
-                  <h3 class="svc-card__title">{{ svc.title }}</h3>
-                  <ul class="svc-card__list">
-                    @for (item of svc.items; track $index) {
-                      <li>{{ item }}</li>
-                    }
-                  </ul>
-                  <div class="svc-card__footer">
-                    <div class="svc-card__price"><span class="from">Desde</span> <span class="val">{{ svc.price }}</span><span class="unit"> /mes</span></div>
-                    <a class="svc-card__cta" href="#contact">{{ svc.cta }}</a>
-                  </div>
-                </div>
-              </article>
-            }
+          <div class="ab-plans">
+
+            <!-- Plan 1 — Esencial (básico) -->
+            <div class="ab-plan ab-plan--basic">
+              <div class="ab-plan__sweep" aria-hidden="true"></div>
+              <div class="ab-plan__top">
+                <span class="ab-plan__type">Esencial</span>
+              </div>
+              <div class="ab-plan__price"><span class="ab-plan__amount">₡20.000</span><span class="ab-plan__per">/mes</span></div>
+              <p class="ab-plan__desc">Para arrancar tu cambio con guía profesional.</p>
+              <a href="#contact" class="ab-plan__btn ab-plan__btn--ghost">Elegir plan</a>
+              <ul class="ab-plan__list">
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Rutina de entrenamiento personalizada</li>
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Plan de alimentación base</li>
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Guía de suplementación esencial</li>
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Ajustes mensuales según tu progreso</li>
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Soporte por WhatsApp</li>
+              </ul>
+            </div>
+
+            <!-- Plan 2 — Pro (recomendado) -->
+            <div class="ab-plan ab-plan--pro">
+              <div class="ab-plan__sweep" aria-hidden="true"></div>
+              <div class="ab-plan__top">
+                <span class="ab-plan__type">Pro</span>
+                <span class="ab-plan__tag"><span class="ab-plan__tag-mark" aria-hidden="true">✦</span>Más popular</span>
+              </div>
+              <div class="ab-plan__price"><span class="ab-plan__amount">₡35.000</span><span class="ab-plan__per">/mes</span></div>
+              <p class="ab-plan__desc">El acompañamiento completo para resultados constantes.</p>
+              <a href="#contact" class="ab-btn-primary ab-plan__btn">Elegir plan</a>
+              <ul class="ab-plan__list">
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Todo lo del plan Esencial</li>
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Rutina y dieta 100% personalizadas</li>
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Ajustes y revisión cada semana</li>
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Seguimiento de cargas y técnica</li>
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Videollamada mensual de control</li>
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Soporte prioritario por WhatsApp</li>
+              </ul>
+            </div>
+
+            <!-- Plan 3 — Élite (premium) -->
+            <div class="ab-plan ab-plan--elite">
+              <div class="ab-plan__sweep" aria-hidden="true"></div>
+              <div class="ab-plan__top">
+                <span class="ab-plan__type">Élite</span>
+              </div>
+              <div class="ab-plan__price"><span class="ab-plan__amount">₡60.000</span><span class="ab-plan__per">/mes</span></div>
+              <p class="ab-plan__desc">Preparación de nivel competitivo para tarima.</p>
+              <a href="#contact" class="ab-plan__btn ab-plan__btn--accent">Elegir plan</a>
+              <ul class="ab-plan__list">
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Todo lo del plan Pro</li>
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Preparación completa para competencia</li>
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Clínica de poses y presentación escénica</li>
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Estrategia física, nutricional y mental</li>
+                <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Acompañamiento el día del torneo</li>
+              </ul>
+            </div>
+
           </div>
         </div>
       </div>

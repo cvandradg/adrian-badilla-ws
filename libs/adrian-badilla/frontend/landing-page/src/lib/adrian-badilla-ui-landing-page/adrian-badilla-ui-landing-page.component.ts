@@ -11,15 +11,6 @@ import {
 import { CommonModule } from '@angular/common';
 
 type Stat = { value: string; label: string };
-type Service = {
-  num: string;
-  img: string;
-  imgPos: string;
-  title: string;
-  price: string;
-  cta: string;
-  items: string[];
-};
 type Review = { quote: string; name: string; role: string; initials: string };
 type GalleryItem = {
   src: string;
@@ -85,49 +76,6 @@ export class AdrianBadillaUiLandingPageComponent
     'Juez principal de la Federación Nacional (CR)',
     '+30 campeones nacionales preparados',
     'Coaching presencial en San José y online',
-  ];
-
-  services: Service[] = [
-    {
-      num: '01', img: '/global/assets/img/adelgazar.webp', imgPos: 'center 22%',
-      title: 'Nutrición y Estilo de Vida', price: '₡20.000', cta: 'Iniciar',
-      items: [
-        'Planes personalizados: pérdida de grasa, masa o mantenimiento.',
-        'Asesoría en suplementación: qué usar, cómo y para qué.',
-        'Educación alimentaria sostenible y a largo plazo.',
-        'Ajustes según tu progreso y resultados.',
-      ],
-    },
-    {
-      num: '02', img: '/global/assets/img/musculo.webp', imgPos: '42% 42%',
-      title: 'Fuerza y Musculación', price: '₡25.000', cta: 'Iniciar',
-      items: [
-        'Programas de hipertrofia y fuerza máxima.',
-        'Rutinas progresivas según tu nivel y objetivos.',
-        'Guía de suplementación para potenciar resultados.',
-        'Seguimiento de cargas y técnica de cada ejercicio.',
-      ],
-    },
-    {
-      num: '03', img: '/global/assets/img/tonificar.webp', imgPos: 'center 18%',
-      title: 'Definición y Estética', price: '₡30.000', cta: 'Iniciar',
-      items: [
-        'Entrenamiento de tonificación y modelado corporal.',
-        'Mejora de postura, resistencia y composición física.',
-        'Enfoque integral en estética y rendimiento.',
-        'Plan de cardio y recomposición corporal.',
-      ],
-    },
-    {
-      num: '04', img: '/global/assets/img/muchoMas.webp', imgPos: 'center 25%',
-      title: 'Coaching para Competidores', price: '₡40.000', cta: 'Solicitar',
-      items: [
-        'Preparación completa para torneos de culturismo y fitness.',
-        'Clínica de poses y presentación escénica.',
-        'Estrategias físicas, nutricionales y mentales de élite.',
-        'Acompañamiento completo el día de la competencia.',
-      ],
-    },
   ];
 
   reviews: Review[] = [
@@ -511,6 +459,13 @@ export class AdrianBadillaUiLandingPageComponent
     const easeIO = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
     const applyAboutScene = () => {
       if (!aScene || !aPhoto || !aText) return;
+      // On small screens the scene un-pins (CSS), so the about block flows
+      // normally — neutralize the scroll-driven slide/fade and let CSS own it.
+      if (window.innerWidth <= 820) {
+        aPhoto.style.transform = 'none'; aPhoto.style.opacity = '1';
+        aText.style.transform = 'none'; aText.style.opacity = '1';
+        return;
+      }
       const vw = window.innerWidth;
       const total = aScene.offsetHeight - window.innerHeight;
       const p = total > 0 ? clamp01(-aScene.getBoundingClientRect().top / total) : 0;
@@ -526,6 +481,14 @@ export class AdrianBadillaUiLandingPageComponent
     const sContent = aScene ? (aScene.querySelector('[data-services-content]') as HTMLElement | null) : null;
     const applyServicesScene = () => {
       if (!aScene || !sContent) return;
+      // On small screens the scene un-pins (CSS): show the plans at rest and
+      // mark them ready so the CTAs are clickable, without scroll-driven fading.
+      if (window.innerWidth <= 820) {
+        sContent.style.opacity = '1';
+        sContent.style.transform = 'none';
+        sContent.classList.add('svc-ready');
+        return;
+      }
       const total = aScene.offsetHeight - window.innerHeight;
       const p = total > 0 ? clamp01(-aScene.getBoundingClientRect().top / total) : 0;
       // Complementary cross-fade with the "about" scene: services fades IN on
