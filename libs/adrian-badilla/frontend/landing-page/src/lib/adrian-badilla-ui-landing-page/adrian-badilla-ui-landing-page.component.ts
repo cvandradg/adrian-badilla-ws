@@ -516,7 +516,7 @@ export class AdrianBadillaUiLandingPageComponent
       const vw = window.innerWidth;
       const total = aScene.offsetHeight - window.innerHeight;
       const p = total > 0 ? clamp01(-aScene.getBoundingClientRect().top / total) : 0;
-      const t = easeIO(clamp01((p - 0.28) / 0.22));
+      const t = easeIO(clamp01((p - 0.2) / 0.52));
       const off = vw * 0.55;
       aPhoto.style.transform = `translateX(${(-t * off).toFixed(1)}px)`;
       aPhoto.style.opacity = (1 - t).toFixed(3);
@@ -540,10 +540,10 @@ export class AdrianBadillaUiLandingPageComponent
       const p = total > 0 ? clamp01(-aScene.getBoundingClientRect().top / total) : 0;
       // Complementary cross-fade with the "about" scene: services fades IN on
       // exactly the same window/curve the about block fades OUT (easeIO over
-      // 0.28..0.50). That guarantees about_opacity + services_opacity === 1 at
+      // 0.20..0.72). That guarantees about_opacity + services_opacity === 1 at
       // every scroll position, so the two never sit at ~0 simultaneously and the
       // viewport is never left fully black between the two segments.
-      const t = easeIO(clamp01((p - 0.28) / 0.22));
+      const t = easeIO(clamp01((p - 0.2) / 0.52));
       sContent.style.opacity = t.toFixed(3);
       sContent.style.transform = `scale(${(0.94 + 0.06 * t).toFixed(3)})`;
       // Only enable card hover once the scene is fully positioned, otherwise a
