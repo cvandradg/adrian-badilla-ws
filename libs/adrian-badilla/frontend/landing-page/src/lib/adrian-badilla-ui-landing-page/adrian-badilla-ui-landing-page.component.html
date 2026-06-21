@@ -392,20 +392,35 @@
 
   <!-- ============ APP ============ -->
   @if (showApp) {
-    <section data-scrub data-ss="0.9,1" data-so="0,1" style="max-width:1140px; margin:0 auto clamp(40px,6vh,80px); padding:clamp(36px,5vw,64px) clamp(24px,5vw,72px); border-radius:8px; background:linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.1); position:relative; overflow:hidden;">
-      <div style="position:absolute; top:-30%; right:-8%; width:440px; height:440px; border-radius:50%; background:radial-gradient(circle, hsl(142 90% 61% / .16), transparent 65%);"></div>
-      <div style="position:relative; display:grid; grid-template-columns:1.2fr .8fr; gap:clamp(28px,4vw,56px); align-items:center;">
+    <section data-scrub data-ss="0.92,1" data-so="0,1" style="max-width:1500px; margin:0 auto clamp(56px,8vh,120px); padding:clamp(68px,9vw,150px) clamp(32px,6vw,120px); border-radius:26px; background:linear-gradient(160deg, rgba(255,255,255,.055), rgba(255,255,255,.015)); border:1px solid rgba(255,255,255,.1); position:relative; overflow:hidden; box-shadow:0 60px 130px -50px rgba(0,0,0,.85);">
+      <div style="position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, hsl(142 90% 61% / .55), transparent);"></div>
+      <div style="position:absolute; top:-30%; right:-8%; width:460px; height:460px; border-radius:50%; background:radial-gradient(circle, hsl(142 90% 61% / .16), transparent 65%); pointer-events:none;"></div>
+      <div style="position:absolute; bottom:-42%; left:-10%; width:420px; height:420px; border-radius:50%; background:radial-gradient(circle, hsl(142 90% 61% / .08), transparent 68%); pointer-events:none;"></div>
+      <div style="position:relative; display:grid; grid-template-columns:1fr 1fr; gap:clamp(40px,5.5vw,96px); align-items:center;">
         <div>
-          <div style="display:inline-block; font-size:12px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--accent, hsl(142 90% 61%)); margin-bottom:16px;">Próximamente</div>
-          <h2 style="font-family:'Anton',sans-serif; font-weight:400; font-size:clamp(1.9rem,4vw,3.2rem); line-height:.95; text-transform:uppercase; letter-spacing:-.01em; margin:0 0 16px;">Toda tu rutina, en una app</h2>
-          <p style="font-size:1.05rem; line-height:1.6; color:rgba(255,255,255,.72); max-width:440px; margin:0 0 26px;">Calendario de entrenos, rutinas personalizadas, control de calorías y notificaciones para mantenerte al día. Disponible muy pronto.</p>
+          <div style="display:flex; align-items:center; gap:16px; margin-bottom:22px;">
+            <span style="font-family:'Anton',sans-serif; font-size:1.4rem; color:hsl(142 90% 61% / .5);">05</span>
+            <span style="display:inline-flex; align-items:center; gap:9px;">
+              <span style="width:7px; height:7px; border-radius:50%; background:var(--accent, hsl(142 90% 61%)); box-shadow:0 0 10px hsl(142 90% 61% / .8); animation:ab-pulse 2s ease-in-out infinite;"></span>
+              <span style="font-size:13px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--accent, hsl(142 90% 61%));">Próximamente</span>
+            </span>
+          </div>
+          <h2 style="font-family:'Anton',sans-serif; font-weight:400; font-size:clamp(3rem,6.4vw,5.4rem); line-height:.92; text-transform:uppercase; letter-spacing:-.01em; margin:0 0 24px;">Toda tu rutina,<br><span style="color:transparent; -webkit-text-stroke:clamp(1.2px,.16vw,2.4px) var(--accent, hsl(142 90% 61%));">en una app</span></h2>
+          <p style="font-size:1.28rem; line-height:1.6; color:rgba(255,255,255,.74); max-width:580px; margin:0 0 40px;">Calendario de entrenos, rutinas personalizadas, control de calorías y notificaciones para mantenerte al día. Disponible muy pronto.</p>
           <div style="display:flex; gap:14px; flex-wrap:wrap;">
-            <a href="#" aria-label="Google Play" style="display:flex; align-items:center; height:52px; padding:0 8px; border-radius:8px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);"><img src="/global/assets/img/google-play-store.webp" alt="Google Play" style="height:30px; width:auto; object-fit:contain;"></a>
-            <a href="#" aria-label="App Store" style="display:flex; align-items:center; height:52px; padding:0 8px; border-radius:8px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);"><img src="/global/assets/img/apple-store.webp" alt="App Store" style="height:30px; width:auto; object-fit:contain;"></a>
+            <div class="ab-store" aria-label="Próximamente en App Store">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.74c-.02-2.18 1.78-3.23 1.86-3.28-1.01-1.48-2.59-1.69-3.15-1.71-1.34-.13-2.62.79-3.3.79-.68 0-1.73-.77-2.84-.75-1.46.02-2.81.85-3.56 2.16-1.52 2.64-.39 6.55 1.09 8.69.72 1.05 1.58 2.22 2.71 2.18 1.09-.04 1.5-.7 2.82-.7 1.31 0 1.68.7 2.83.68 1.17-.02 1.91-1.06 2.62-2.12.83-1.22 1.17-2.4 1.19-2.46-.03-.01-2.28-.87-2.31-3.47zM14.93 5.86c.6-.74 1.01-1.76.9-2.78-.87.04-1.93.58-2.56 1.31-.56.65-1.05 1.7-.92 2.7.97.08 1.97-.5 2.58-1.23z"/></svg>
+              <span><small>Próximamente en</small><strong>App Store</strong></span>
+            </div>
+            <div class="ab-store" aria-label="Próximamente en Google Play">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 2.3c-.25.25-.4.63-.4 1.12v17.16c0 .49.15.87.4 1.12l.06.05 9.6-9.6v-.23l-9.6-9.6-.06.04zM16.7 15.38l-3.2-3.2v-.23l3.2-3.21.07.04 3.79 2.16c1.08.61 1.08 1.62 0 2.24l-3.79 2.16-.07.04zM16.77 15.34 13.5 12.07 3.6 21.97c.36.38.95.43 1.61.05l11.56-6.68M16.77 8.66 5.21 2.04c-.66-.39-1.25-.34-1.61.04l9.9 9.9 3.27-3.32z"/></svg>
+              <span><small>Próximamente en</small><strong>Google Play</strong></span>
+            </div>
           </div>
         </div>
-        <div style="display:flex; justify-content:center;">
-          <img src="/global/assets/img/celphone-Image.webp" alt="App Adrián Badilla" style="width:100%; max-width:300px; height:auto; object-fit:contain; filter:drop-shadow(0 24px 40px rgba(0,0,0,.5));">
+        <div style="position:relative; display:flex; justify-content:center;">
+          <div style="position:absolute; inset:0; background:radial-gradient(circle at 50% 45%, hsl(142 90% 61% / .15), transparent 60%); filter:blur(6px); pointer-events:none;"></div>
+          <img src="/global/assets/img/celphone-Image.webp" alt="App Adrián Badilla" loading="lazy" style="position:relative; width:100%; max-width:500px; height:auto; object-fit:contain; filter:drop-shadow(0 36px 64px rgba(0,0,0,.62));">
         </div>
       </div>
     </section>
