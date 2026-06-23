@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AdrianBadillaUiLandingPageComponent } from './adrian-badilla-ui-landing-page.component';
+import { LandingShellComponent } from './landing-shell.component';
 import { provideRouter } from '@angular/router';
 
-describe('AdrianBadillaUiLandingPageComponent', () => {
-  let component: AdrianBadillaUiLandingPageComponent;
-  let fixture: ComponentFixture<AdrianBadillaUiLandingPageComponent>;
+describe('LandingShellComponent', () => {
+  let component: LandingShellComponent;
+  let fixture: ComponentFixture<LandingShellComponent>;
 
   beforeEach(async () => {
     // The scroll engine runs in `ngAfterViewInit` and uses a few browser APIs
@@ -50,11 +50,11 @@ describe('AdrianBadillaUiLandingPageComponent', () => {
     }
 
     await TestBed.configureTestingModule({
-      imports: [AdrianBadillaUiLandingPageComponent],
+      imports: [LandingShellComponent],
       providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AdrianBadillaUiLandingPageComponent);
+    fixture = TestBed.createComponent(LandingShellComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

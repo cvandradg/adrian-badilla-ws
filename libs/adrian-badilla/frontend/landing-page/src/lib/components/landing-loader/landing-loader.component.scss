@@ -1,0 +1,6 @@
+// The loader is a single `position:fixed` overlay, so the host introduces no
+// layout box; styling lives in the global brand system (`.ab-shimmer` + the
+// `ab-*` @keyframes referenced by inline animations).
+:host {
+  display: block;
+}

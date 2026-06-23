@@ -9,21 +9,23 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { ContactSectionComponent } from '../components/contact-section/contact-section.component';
-import { LandingFooterComponent } from '../components/landing-footer/landing-footer.component';
-import { AboutSectionComponent } from '../components/about-section/about-section.component';
-import { AppSectionComponent } from '../components/app-section/app-section.component';
-import { GallerySectionComponent } from '../components/gallery-section/gallery-section.component';
-import { HeroSectionComponent } from '../components/hero-section/hero-section.component';
-import { ReviewsSectionComponent } from '../components/reviews-section/reviews-section.component';
+import { ContactSectionComponent } from '../contact-section/contact-section.component';
+import { LandingFooterComponent } from '../landing-footer/landing-footer.component';
+import { LandingLoaderComponent } from '../landing-loader/landing-loader.component';
+import { LandingNavComponent } from '../landing-nav/landing-nav.component';
+import { AboutSectionComponent } from '../about-section/about-section.component';
+import { AppSectionComponent } from '../app-section/app-section.component';
+import { GallerySectionComponent } from '../gallery-section/gallery-section.component';
+import { HeroSectionComponent } from '../hero-section/hero-section.component';
+import { ReviewsSectionComponent } from '../reviews-section/reviews-section.component';
 
 type Accent = 'Rojo' | 'Oxblood' | 'Acero';
 
 @Component({
-  selector: 'adrian-badilla-ui-landing-page',
+  selector: 'ab-landing-shell',
   imports: [
-    RouterLink,
+    LandingLoaderComponent,
+    LandingNavComponent,
     HeroSectionComponent,
     AboutSectionComponent,
     GallerySectionComponent,
@@ -32,7 +34,7 @@ type Accent = 'Rojo' | 'Oxblood' | 'Acero';
     ContactSectionComponent,
     LandingFooterComponent,
   ],
-  templateUrl: './adrian-badilla-ui-landing-page.component.html',
+  templateUrl: './landing-shell.component.html',
   // No component stylesheet: the landing's styles are global by nature (the
   // template animates via inline `style="animation:…"` referencing global
   // @keyframes, and `.ab-root` utilities are shared across sections), so they
@@ -42,9 +44,7 @@ type Accent = 'Rojo' | 'Oxblood' | 'Acero';
   // resolve their global @keyframes; every selector is namespaced under `.ab-root`.
   encapsulation: ViewEncapsulation.None,
 })
-export class AdrianBadillaUiLandingPageComponent
-  implements AfterViewInit, OnDestroy
-{
+export class LandingShellComponent implements AfterViewInit, OnDestroy {
   readonly accentColor = input<Accent>('Rojo');
   readonly showApp = input(true);
 
