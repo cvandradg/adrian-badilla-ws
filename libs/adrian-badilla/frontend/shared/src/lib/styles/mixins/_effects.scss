@@ -39,6 +39,112 @@
   background-position: left;
 }
 
+// --------------------------------------------------------------------------
+// Landing "supplement-label" effects.
+// Reusable visual treatments shared across the landing sections. The global
+// utility classes (`.ab-chrome/.ab-foil/...` in globals/_landing.scss) consume
+// these, and section components can @include them directly on bespoke elements.
+// They reference the `.ab-root` custom properties (--metal*, --accent, --red)
+// so they stay theme-driven; `foil-text` depends on the global `ab-foil`
+// keyframes (also emitted in globals/_landing.scss).
+// --------------------------------------------------------------------------
+
+// Sweeping gloss highlight for premium CTAs (used on a `::after` pseudo).
+@mixin gloss-sweep($opacity, $start: 30%, $end: 70%) {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    115deg,
+    transparent $start,
+    rgba(255, 255, 255, $opacity) 50%,
+    transparent $end
+  );
+  transform: translateX(-130%);
+  transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+// Brushed-chrome text fill for big Anton headlines.
+@mixin chrome-text {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    var(--metal-hi) 18%,
+    var(--metal) 48%,
+    var(--metal-lo) 62%,
+    var(--metal) 80%,
+    #ffffff 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.55));
+}
+
+// Moving foil sheen crossing a chrome headline (light raking across a tub).
+@mixin foil-text {
+  background-image: linear-gradient(
+    100deg,
+    var(--metal) 0%,
+    var(--metal-hi) 30%,
+    #ffffff 42%,
+    var(--metal-hi) 54%,
+    var(--metal) 70%,
+    var(--metal-lo) 100%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: ab-foil 6.5s linear infinite;
+  filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.5));
+}
+
+// Brushed carbon-fibre + metal sheen background for "tub" segments.
+@mixin carbon-surface {
+  background-color: #090a0b;
+  background-image:
+    radial-gradient(120% 80% at 50% -10%, hsl(356 78% 30% / 0.22), transparent 60%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.022) 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.5) 0 2px, transparent 2px 4px),
+    linear-gradient(180deg, #0c0d0f, #080808);
+}
+
+// Diagonal red "speed stripe" + metallic hairline (absolutely positioned).
+@mixin energy-slash {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: -30%;
+    height: 160%;
+    transform: rotate(14deg);
+    transform-origin: center;
+  }
+  &::before {
+    left: -6%;
+    width: 7px;
+    background: linear-gradient(180deg, transparent, var(--accent, var(--red)), transparent);
+    box-shadow: 0 0 26px 2px hsl(356 88% 50% / 0.45);
+    opacity: 0.55;
+  }
+  &::after {
+    left: 1.5%;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, var(--metal-hi), transparent);
+    opacity: 0.5;
+  }
+}
+
 @mixin signup-animation {
   // Creates the animated gradient border shell used by auth/signup controls.
   // The pseudo-elements inherit the host radius so consumers only style one element.

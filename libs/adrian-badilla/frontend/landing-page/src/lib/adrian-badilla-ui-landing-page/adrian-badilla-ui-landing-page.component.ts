@@ -28,7 +28,10 @@ type GalleryItem = {
   selector: 'adrian-badilla-ui-landing-page',
   imports: [RouterLink],
   templateUrl: './adrian-badilla-ui-landing-page.component.html',
-  styleUrl: './adrian-badilla-ui-landing-page.component.scss',
+  // No component stylesheet: the landing's styles are global by nature (the
+  // template animates via inline `style="animation:…"` referencing global
+  // @keyframes, and `.ab-root` utilities are shared across sections), so they
+  // live in the shared design system at styles/globals/_landing.scss.
   changeDetection: ChangeDetectionStrategy.OnPush,
   // Encapsulation is off so the template's inline `style="animation:…"` rules
   // resolve their global @keyframes; every selector is namespaced under `.ab-root`.

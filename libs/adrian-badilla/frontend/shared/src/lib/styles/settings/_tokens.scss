@@ -21,13 +21,39 @@ $font-weight-bold: 800;
 /* ==========================================================================
    Base colors
    ========================================================================== */
-$color-accent-400: hsl(142 90% 61%);
+// Brand accent = the logo red (#e20613 ≈ hsl(356 88% 53%)). It used to be a
+// green (`hsl(142 90% 61%)`), which is off-brand: the product is sold on the
+// trust cues of premium supplement labels, where green reads as cheap. Keeping
+// a single accent token means buttons/dashboard accents follow the brand.
+$color-accent-400: hsl(356 88% 53%);
 $color-neutral-100: hsl(0 0% 100%);
 $color-neutral-900: hsl(0 0% 0%);
 $color-text-muted: #88898e;
 $color-status-error: rgb(235, 116, 116);
 $color-status-success: rgb(126, 207, 160);
 $color-status-warning: rgb(207, 199, 126);
+
+/* ==========================================================================
+   Brand palette — Adrián Badilla landing ("supplement-label" system)
+   --------------------------------------------------------------------------
+   Research-backed luxury 4-color system: dark anchor + metallic + red energy
+   + warm neutral. These mirror the CSS custom properties emitted on `.ab-root`
+   (see globals/_landing.scss) so SCSS and runtime share one source of truth.
+   ========================================================================== */
+$ab-red: #e20613; // logo red
+$ab-red-deep: hsl(356 78% 30%); // oxblood, for atmosphere/glows
+$ab-accent: hsl(356 88% 53%); // bright accent (action/energy)
+$ab-accent-dark: hsl(356 80% 36%);
+
+$ab-ink: #070707; // near-black page anchor
+$ab-char-1: #0e0f11; // charcoal ramp
+$ab-char-2: #16181c;
+
+$ab-metal-hi: #f1f2f5; // metallic silver / platinum ramp (the "craft" contrast)
+$ab-metal: #c4c8cf;
+$ab-metal-lo: #80858e;
+
+$ab-bone: #f4f2ee; // warm neutral text
 
 /* ==========================================================================
    Layout sizing

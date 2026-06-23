@@ -1,142 +1,63 @@
-// Adrián Badilla — landing page styles.
-// ViewEncapsulation is None, so every selector is namespaced under `.ab-root`;
-// the @keyframes stay global because the template animates via inline styles.
+@use '../settings/tokens' as tokens;
+@use '../mixins' as mx;
 
-// Sweeping gloss highlight shared by the premium CTAs.
-@mixin gloss-sweep($opacity, $start: 30%, $end: 70%) {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(
-    115deg,
-    transparent $start,
-    rgba(255, 255, 255, $opacity) 50%,
-    transparent $end
-  );
-  transform: translateX(-130%);
-  transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
-}
+// =============================================================================
+// Adrián Badilla — landing page global styles.
+//
+// The landing component renders with `ViewEncapsulation.None`, so every one of
+// these selectors is global by design (namespaced under `.ab-root`). They live
+// here, in the shared global layer, instead of inside the component stylesheet —
+// keeping the component within Angular's `anyComponentStyle` budget and giving
+// the design system a single home for the brand's "supplement-label" look.
+//
+// The @keyframes MUST stay global: the template animates via inline
+// `style="animation:ab-…"`, which only resolves keyframes from global scope.
+// The utility classes (`.ab-chrome/.ab-foil/...`) are shared across sections, so
+// they are global too; their declarations come from mixins in mixins/_effects.
+// =============================================================================
 
 .ab-root {
   display: block;
-  background: #070707;
-  color: #f4f2ee; // warm bone instead of cold pure white — premium, friendlier
+  background: tokens.$ab-ink;
+  color: tokens.$ab-bone; // warm bone instead of cold pure white — premium, friendlier
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
 
-  // ---- Brand design tokens (research-backed luxury 4-color system) ----
-  // dark anchor + metallic + red energy + warm neutral. `--accent` is wired
-  // from the TS signal; the rest are static brand constants.
-  --ink: #070707;
-  --char-1: #0e0f11;
-  --char-2: #16181c;
+  // ---- Brand design tokens (mirrors settings/_tokens.scss $ab-*) ----
+  // dark anchor + metallic + red energy + warm neutral. `--accent` is read with
+  // a fallback by consumers and is intentionally NOT defined here (the runtime
+  // accent signal is currently unused), so the bright-red fallback renders.
+  --ink: #{tokens.$ab-ink};
+  --char-1: #{tokens.$ab-char-1};
+  --char-2: #{tokens.$ab-char-2};
 
-  // logo red family (#e20613). Bright accent already comes via --accent.
-  --red: #e20613;
-  --red-deep: hsl(356 78% 30%); // oxblood, for premium atmosphere/glows
+  // logo red family (#e20613). Bright accent already comes via --accent fallback.
+  --red: #{tokens.$ab-red};
+  --red-deep: #{tokens.$ab-red-deep}; // oxblood, for premium atmosphere/glows
 
   // metallic silver / platinum — the premium "craft" contrast to red
-  --metal-hi: #f1f2f5;
-  --metal: #c4c8cf;
-  --metal-lo: #80858e;
+  --metal-hi: #{tokens.$ab-metal-hi};
+  --metal: #{tokens.$ab-metal};
+  --metal-lo: #{tokens.$ab-metal-lo};
 
   // warm neutral text ramp
-  --bone: #f4f2ee;
-
-  // Para que position:sticky funcione, el scroll debe ocurrir en el
-  // documento (no en un contenedor con overflow). En el body global:
-  //   html, body { overflow-x: clip; scroll-behavior: smooth; }
+  --bone: #{tokens.$ab-bone};
 }
 
 /* ============================================================
-   SUPPLEMENT-LABEL UTILITIES
    Recognizable "protein-tub" cues: chrome/foil headlines, brushed
    carbon backgrounds and diagonal energy slashes. Used selectively
-   per section (not flooded everywhere).
+   per section (not flooded everywhere). Declarations come from
+   mixins/_effects so section components can reuse them directly.
    ============================================================ */
+.ab-chrome { @include mx.chrome-text; }
 
-/* Chrome / brushed-metal text fill for big Anton headlines. Pair with a thin
-   red edge via `.ab-edge-red` where a hero accent line is wanted. */
-.ab-chrome {
-  background: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    var(--metal-hi) 18%,
-    var(--metal) 48%,
-    var(--metal-lo) 62%,
-    var(--metal) 80%,
-    #ffffff 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.55));
-}
-
-/* moving foil sheen that crosses a chrome headline (like light on a foil tub) */
 @keyframes ab-foil { 0% { background-position: 220% center; } 100% { background-position: -120% center; } }
-.ab-foil {
-  background-image: linear-gradient(
-    100deg,
-    var(--metal) 0%,
-    var(--metal-hi) 30%,
-    #ffffff 42%,
-    var(--metal-hi) 54%,
-    var(--metal) 70%,
-    var(--metal-lo) 100%
-  );
-  background-size: 220% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  animation: ab-foil 6.5s linear infinite;
-  filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.5));
-}
+.ab-foil { @include mx.foil-text; }
 
-/* brushed carbon-fibre + metal sheen background for "tub" segments only */
-.ab-carbon {
-  background-color: #090a0b;
-  background-image:
-    radial-gradient(120% 80% at 50% -10%, hsl(356 78% 30% / 0.22), transparent 60%),
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.022) 0 2px, transparent 2px 4px),
-    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.5) 0 2px, transparent 2px 4px),
-    linear-gradient(180deg, #0c0d0f, #080808);
-}
+.ab-carbon { @include mx.carbon-surface; }
 
-/* diagonal energy slashes (the supplement "speed stripe") */
-.ab-slash {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -30%;
-    height: 160%;
-    transform: rotate(14deg);
-    transform-origin: center;
-  }
-  &::before {
-    left: -6%;
-    width: 7px;
-    background: linear-gradient(180deg, transparent, var(--accent, var(--red)), transparent);
-    box-shadow: 0 0 26px 2px hsl(356 88% 50% / 0.45);
-    opacity: 0.55;
-  }
-  &::after {
-    left: 1.5%;
-    width: 2px;
-    background: linear-gradient(180deg, transparent, var(--metal-hi), transparent);
-    opacity: 0.5;
-  }
-}
+.ab-slash { @include mx.energy-slash; }
 
 @media (prefers-reduced-motion: reduce) {
   .ab-foil { animation: none; }
@@ -391,7 +312,7 @@ nav.ab-nav { transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3
     filter 0.2s ease !important;
 
   &::after {
-    @include gloss-sweep(0.5);
+    @include mx.gloss-sweep(0.5);
   }
 
   &:hover {
@@ -441,7 +362,7 @@ nav.ab-nav { transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3
     box-shadow 0.32s ease !important;
 
   &::after {
-    @include gloss-sweep(0.18, 32%, 68%);
+    @include mx.gloss-sweep(0.18, 32%, 68%);
   }
 
   &:hover {
