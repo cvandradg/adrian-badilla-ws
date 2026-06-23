@@ -10,6 +10,8 @@ import {
   input,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ContactSectionComponent } from '../components/contact-section/contact-section.component';
+import { LandingFooterComponent } from '../components/landing-footer/landing-footer.component';
 
 type Accent = 'Rojo' | 'Oxblood' | 'Acero';
 type Stat = { value: string; label: string };
@@ -26,7 +28,7 @@ type GalleryItem = {
 
 @Component({
   selector: 'adrian-badilla-ui-landing-page',
-  imports: [RouterLink],
+  imports: [RouterLink, ContactSectionComponent, LandingFooterComponent],
   templateUrl: './adrian-badilla-ui-landing-page.component.html',
   // No component stylesheet: the landing's styles are global by nature (the
   // template animates via inline `style="animation:…"` referencing global
