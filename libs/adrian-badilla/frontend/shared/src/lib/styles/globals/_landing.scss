@@ -812,9 +812,6 @@ nav.ab-nav { transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3
 
   /* Gallery mobile rules live with the `ab-gallery-section` component. */
 
-  /* ---- hero: stats sit comfortably under the proportional image ---- */
-  .ab-root [data-ab-stats] { gap: 14px clamp(18px, 6vw, 32px) !important; }
-
   /* ---- app section (segment 5): stack copy over the phone mockup ---- */
   .ab-root .ab-app {
     padding: clamp(40px, 9vw, 72px) clamp(20px, 6vw, 34px) !important;

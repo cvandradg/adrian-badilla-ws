@@ -1,0 +1,5 @@
+// The supplement-label visuals are brand utilities in the design system
+// (styles/globals/_landing.scss). The host just needs to flow as a block.
+:host {
+  display: block;
+}

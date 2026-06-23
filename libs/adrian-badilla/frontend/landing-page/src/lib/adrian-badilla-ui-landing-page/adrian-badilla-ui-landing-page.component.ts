@@ -12,18 +12,21 @@ import {
 import { RouterLink } from '@angular/router';
 import { ContactSectionComponent } from '../components/contact-section/contact-section.component';
 import { LandingFooterComponent } from '../components/landing-footer/landing-footer.component';
+import { AppSectionComponent } from '../components/app-section/app-section.component';
 import { GallerySectionComponent } from '../components/gallery-section/gallery-section.component';
+import { HeroSectionComponent } from '../components/hero-section/hero-section.component';
 import { ReviewsSectionComponent } from '../components/reviews-section/reviews-section.component';
 
 type Accent = 'Rojo' | 'Oxblood' | 'Acero';
-type Stat = { value: string; label: string };
 
 @Component({
   selector: 'adrian-badilla-ui-landing-page',
   imports: [
     RouterLink,
+    HeroSectionComponent,
     GallerySectionComponent,
     ReviewsSectionComponent,
+    AppSectionComponent,
     ContactSectionComponent,
     LandingFooterComponent,
   ],
@@ -59,13 +62,6 @@ export class AdrianBadillaUiLandingPageComponent
   };
   readonly accent = computed(() => this.accentMap[this.accentColor()][0]);
   readonly accentDark = computed(() => this.accentMap[this.accentColor()][1]);
-
-  protected readonly stats: readonly Stat[] = [
-    { value: '30+', label: 'Campeones nacionales formados' },
-    { value: '25+', label: 'Años de experiencia' },
-    { value: 'Juez', label: 'Federación Nacional de Fisicoculturismo' },
-    { value: '5.0★', label: 'Valoración de sus clientes' },
-  ];
 
   protected readonly credentials: readonly string[] = [
     'Excompetidor de culturismo de alto nivel',
