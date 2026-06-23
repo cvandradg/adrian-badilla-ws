@@ -12,6 +12,7 @@ import {
 import { RouterLink } from '@angular/router';
 import { ContactSectionComponent } from '../components/contact-section/contact-section.component';
 import { LandingFooterComponent } from '../components/landing-footer/landing-footer.component';
+import { AboutSectionComponent } from '../components/about-section/about-section.component';
 import { AppSectionComponent } from '../components/app-section/app-section.component';
 import { GallerySectionComponent } from '../components/gallery-section/gallery-section.component';
 import { HeroSectionComponent } from '../components/hero-section/hero-section.component';
@@ -24,6 +25,7 @@ type Accent = 'Rojo' | 'Oxblood' | 'Acero';
   imports: [
     RouterLink,
     HeroSectionComponent,
+    AboutSectionComponent,
     GallerySectionComponent,
     ReviewsSectionComponent,
     AppSectionComponent,
@@ -62,13 +64,6 @@ export class AdrianBadillaUiLandingPageComponent
   };
   readonly accent = computed(() => this.accentMap[this.accentColor()][0]);
   readonly accentDark = computed(() => this.accentMap[this.accentColor()][1]);
-
-  protected readonly credentials: readonly string[] = [
-    'Excompetidor de culturismo de alto nivel',
-    'Juez principal de la Federación Nacional (CR)',
-    '+30 campeones nacionales preparados',
-    'Coaching presencial en San José y online',
-  ];
 
   // Scroll-driven animation engine: pinned scrollytelling on desktop, simpler
   // un-pinned scenes on phones. All listeners are tracked in `cleanup`.

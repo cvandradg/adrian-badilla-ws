@@ -1,0 +1,7 @@
+// The about/cinematic/pricing visuals (.abc-*, .ab-plan*, .svc-*) are part of
+// the landing's global brand style system (styles/globals/_landing.scss) and the
+// scroll engine's responsive un-pin rules; keeping them there avoids duplicating
+// a large, engine-coupled rule set. The host just flows as a block.
+:host {
+  display: block;
+}
