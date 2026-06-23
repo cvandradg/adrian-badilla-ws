@@ -7,9 +7,6 @@ describe('LandingShellComponent', () => {
   let fixture: ComponentFixture<LandingShellComponent>;
 
   beforeEach(async () => {
-    // The scroll engine runs in `ngAfterViewInit` and uses a few browser APIs
-    // that jsdom doesn't implement. Provide minimal stubs so the component can
-    // boot end-to-end under jest.
     if (!window.matchMedia) {
       Object.defineProperty(window, 'matchMedia', {
         writable: true,
@@ -29,13 +26,13 @@ describe('LandingShellComponent', () => {
     if (!('IntersectionObserver' in window)) {
       class IntersectionObserverStub {
         observe(): void {
-          /* no-op */
+          return;
         }
         unobserve(): void {
-          /* no-op */
+          return;
         }
         disconnect(): void {
-          /* no-op */
+          return;
         }
         takeRecords(): [] {
           return [];

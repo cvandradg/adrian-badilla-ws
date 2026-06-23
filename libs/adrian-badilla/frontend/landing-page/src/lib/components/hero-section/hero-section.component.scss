@@ -1,11 +1,7 @@
-// Hero — local styles. The pin/shrink/reveal choreography is inline + engine
-// driven; only the mobile stat-row spacing needs a media rule. Brand utilities
-// (.ab-foil, .ab-stat-plate, buttons) and keyframes stay in the design system.
 :host {
   display: block;
 }
 
 @media (max-width: 820px) {
-  /* stats sit comfortably under the proportional image */
   [data-ab-stats] { gap: 14px clamp(18px, 6vw, 32px) !important; }
 }

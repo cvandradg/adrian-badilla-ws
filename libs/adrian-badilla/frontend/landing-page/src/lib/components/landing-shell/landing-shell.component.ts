@@ -22,7 +22,7 @@ import { ReviewsSectionComponent } from '../reviews-section/reviews-section.comp
 type Accent = 'Rojo' | 'Oxblood' | 'Acero';
 
 @Component({
-  selector: 'ab-landing-shell',
+  selector: 'adrian-badilla-landing-shell',
   imports: [
     LandingLoaderComponent,
     LandingNavComponent,
@@ -35,13 +35,7 @@ type Accent = 'Rojo' | 'Oxblood' | 'Acero';
     LandingFooterComponent,
   ],
   templateUrl: './landing-shell.component.html',
-  // No component stylesheet: the landing's styles are global by nature (the
-  // template animates via inline `style="animation:…"` referencing global
-  // @keyframes, and `.ab-root` utilities are shared across sections), so they
-  // live in the shared design system at styles/globals/_landing.scss.
   changeDetection: ChangeDetectionStrategy.OnPush,
-  // Encapsulation is off so the template's inline `style="animation:…"` rules
-  // resolve their global @keyframes; every selector is namespaced under `.ab-root`.
   encapsulation: ViewEncapsulation.None,
 })
 export class LandingShellComponent implements AfterViewInit, OnDestroy {
@@ -54,9 +48,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
   private runStatsCount: (() => void) | null = null;
   private syncChromeFn: (() => void) | null = null;
 
-  // Brand-derived palette: the logo red (#e20613 ≈ hsl(356 95% 45%)) is the
-  // protagonist, slightly brightened to read vividly on near-black. `Oxblood`
-  // is the deeper, premium variant; `Acero` (steel) is a metallic-leaning red.
   private readonly accentMap: Record<Accent, readonly [string, string]> = {
     Rojo: ['hsl(356 88% 53%)', 'hsl(356 80% 36%)'],
     Oxblood: ['hsl(356 78% 44%)', 'hsl(356 72% 30%)'],
@@ -65,8 +56,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
   readonly accent = computed(() => this.accentMap[this.accentColor()][0]);
   readonly accentDark = computed(() => this.accentMap[this.accentColor()][1]);
 
-  // Scroll-driven animation engine: pinned scrollytelling on desktop, simpler
-  // un-pinned scenes on phones. All listeners are tracked in `cleanup`.
   ngAfterViewInit(): void {
     const root: HTMLElement = this.host.nativeElement;
     const q = (sel: string) => root.querySelector(sel) as HTMLElement | null;
@@ -105,11 +94,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
       : [];
 
     let drawerOpen = false;
-    // Scroll-lock state. We CANNOT use `body { overflow: hidden }` here: the
-    // global `html, body { height: 100% }` makes that clip everything below the
-    // fold, collapsing the scrollable height to 0 and snapping the page to the
-    // top (hero). Instead we pin the body with `position: fixed` at the current
-    // offset and restore it on close, so the scroll position is preserved.
     let lockedScrollY = 0;
     const lockScroll = () => {
       lockedScrollY = window.scrollY;
@@ -125,9 +109,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
       document.body.style.left = '';
       document.body.style.right = '';
       document.body.style.width = '';
-      // Restore the offset INSTANTLY. The global `scroll-behavior: smooth` would
-      // otherwise animate this restore from the top (the page sits at 0 while the
-      // body is pinned) down to where the user was — an ugly hero→section glide.
       const root = document.documentElement;
       const prevBehavior = root.style.scrollBehavior;
       root.style.scrollBehavior = 'auto';
@@ -194,8 +175,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const ease = (t: number) => 1 - Math.pow(1 - t, 3);
     const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
-    // Phones get a different choreography (vertical galleries, proportional hero
-    // image, un-pinned scenes). Desktop keeps the pinned scrollytelling intact.
     const isMobile = () => window.innerWidth <= 820;
 
     type ScrubItem = {
@@ -272,7 +251,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
       }
     };
 
-    // pinned horizontal gallery
     const hSection = q('[data-h-gallery]');
     const hSticky = hSection ? (hSection.querySelector('[data-h-sticky]') as HTMLElement | null) : null;
     const hTrack = hSection ? (hSection.querySelector('[data-h-track]') as HTMLElement | null) : null;
@@ -280,9 +258,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
     const measureH = () => {
       if (!hSection || !hTrack) return;
       if (reduced || isMobile()) {
-        // Un-pin the horizontal scene. Phones show the gallery as a vertical
-        // stacked story (CSS), so clear the pin + any per-figure transforms left
-        // over from a desktop->mobile resize.
         hSection.style.height = 'auto';
         if (hSticky) { hSticky.style.position = 'static'; hSticky.style.height = 'auto'; }
         hTrack.style.transform = 'none';
@@ -293,7 +268,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
           const im = f.querySelector('img') as HTMLElement | null;
           if (im) im.style.filter = 'none';
         }
-        // Non-mobile reduced-motion users keep a horizontal scroll fallback.
         if (reduced && !isMobile() && hTrack.parentElement) {
           (hTrack.parentElement as HTMLElement).style.overflowX = 'auto';
         }
@@ -339,7 +313,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
       }
     };
 
-    // hero pinned scrollytelling
     const scene = q('[data-hero-scene]');
     const frame = scene ? (scene.querySelector('[data-hero-frame]') as HTMLElement | null) : null;
     const heroContent = scene ? (scene.querySelector('[data-hero-content]') as HTMLElement | null) : null;
@@ -361,9 +334,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
       }
       if (heroCue) heroCue.style.opacity = clamp01(1 - p / 0.12).toFixed(3);
       const sT = ease(clamp01((p - 0.05) / 0.6));
-      // On phones the shrunk frame must stay well-proportioned (a portrait card,
-      // ~4:5) instead of the thin desktop sliver, and centered. On desktop it
-      // shrinks to a side panel as before.
       const targetW = isMobile() ? Math.min(vw * 0.82, 360) : Math.min(vw * 0.42, 600);
       const targetH = isMobile() ? targetW * 1.25 : vh * 0.5;
       frame.style.width = lerp(vw, targetW, sT).toFixed(1) + 'px';
@@ -394,7 +364,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
       }
     };
 
-    // about open scene
     const aScene = q('[data-about-scene]');
     const aPhoto = aScene ? (aScene.querySelector('[data-about-photo]') as HTMLElement | null) : null;
     const aText = aScene ? (aScene.querySelector('[data-about-text]') as HTMLElement | null) : null;
@@ -419,8 +388,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
     const easeIO = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
     const applyAboutScene = () => {
       if (!aScene || !aPhoto || !aText) return;
-      // On small screens the scene un-pins (CSS), so the about block flows
-      // normally — neutralize the scroll-driven slide/fade and let CSS own it.
       if (window.innerWidth <= 820) {
         aPhoto.style.transform = 'none'; aPhoto.style.opacity = '1';
         aText.style.transform = 'none'; aText.style.opacity = '1';
@@ -437,12 +404,9 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
       aText.style.opacity = (1 - t).toFixed(3);
     };
 
-    // services appears within about scene
     const sContent = aScene ? (aScene.querySelector('[data-services-content]') as HTMLElement | null) : null;
     const applyServicesScene = () => {
       if (!aScene || !sContent) return;
-      // On small screens the scene un-pins (CSS): show the plans at rest and
-      // mark them ready so the CTAs are clickable, without scroll-driven fading.
       if (window.innerWidth <= 820) {
         sContent.style.opacity = '1';
         sContent.style.transform = 'none';
@@ -451,25 +415,12 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
       }
       const total = aScene.offsetHeight - window.innerHeight;
       const p = total > 0 ? clamp01(-aScene.getBoundingClientRect().top / total) : 0;
-      // Complementary cross-fade with the "about" scene: services fades IN on
-      // exactly the same window/curve the about block fades OUT (easeIO over
-      // 0.20..0.72). That guarantees about_opacity + services_opacity === 1 at
-      // every scroll position, so the two never sit at ~0 simultaneously and the
-      // viewport is never left fully black between the two segments.
       const t = easeIO(clamp01((p - 0.2) / 0.52));
       sContent.style.opacity = t.toFixed(3);
       sContent.style.transform = `scale(${(0.94 + 0.06 * t).toFixed(3)})`;
-      // Only enable card hover once the scene is fully positioned, otherwise a
-      // card under the resting cursor would enter already-expanded while the
-      // section is still scaling/fading in. `svc-ready` flips pointer-events on.
       sContent.classList.toggle('svc-ready', t > 0.999);
     };
 
-    // ---- mobile-only "Tu preparador" cinematic ----
-    // Photo reveals (back-to-front) -> infinite zoom into the black shirt (which
-    // blends into the black bg) -> the text emerges from the black and the two
-    // groups (info / credentials) converge in. Desktop: element is display:none
-    // and this no-ops.
     const cine = q('[data-about-cine]');
     const cPhoto = cine?.querySelector('.abc-photo') as HTMLElement | null;
     const cName = cine?.querySelector('.abc-name') as HTMLElement | null;
@@ -481,8 +432,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
       const total = cine.offsetHeight - window.innerHeight;
       const p = total > 0 ? clamp01(-cine.getBoundingClientRect().top / total) : 0;
 
-      // A (0 -> .20): full image grows from small, "Adrián" name behind it.
-      // B (.20 -> .42): infinite zoom into the shirt; image dissolves to black.
       const a = ease(clamp01(p / 0.2));
       const b = ease(clamp01((p - 0.2) / 0.22));
       const photoFade = clamp01((p - 0.32) / 0.1);
@@ -495,10 +444,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
         cName.style.opacity = (a * 0.5 * (1 - nameFade)).toFixed(3);
       }
 
-      // C (.40 -> .60): text + checkboxes emerge from the black WITH the same
-      //   zoom feel (scale up + fade in), already assembled.
-      // D (.74 -> 1): on further scroll the two blocks split — info exits left,
-      //   credentials exit right — clearing the way for the plans below.
       const c = ease(clamp01((p - 0.4) / 0.2));
       const d = ease(clamp01((p - 0.74) / 0.26));
       if (cContent) {
@@ -526,7 +471,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
     on(window, 'load', () => { measureH(); tick(); });
     tick();
 
-    // count-up animation for the hero stats once the scene is in view
     const statSection = q('[data-ab-stats]');
     if (statSection && !reduced) {
       type StatCounter = { el: HTMLElement; num: number; suffix: string; dec: number };
@@ -563,7 +507,6 @@ export class LandingShellComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.hRaf) cancelAnimationFrame(this.hRaf);
     this.cleanup.forEach((fn) => fn());
-    // Clear any scroll-lock left behind if destroyed while the drawer is open.
     const body = document.body.style;
     body.overflow = '';
     body.position = '';

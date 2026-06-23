@@ -1,6 +1,3 @@
-// Every node here is `position:fixed` (navbar, burger, backdrop, drawer), so the
-// host introduces no layout box; styling lives in the global brand system
-// (`.ab-nav`, `.ab-navlink`, `.ab-burger`, `.ab-close`, `.ab-drawer-*`).
 :host {
   display: block;
 }

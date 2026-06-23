@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { SideMenuComponent } from './side-menu.component';
-import { FontAwesomeicons } from '../../../../shared/src/lib/assets/icons/fontawesome';
+import { FontAwesomeicons } from '@adrian-badilla/ui/shared/assets/icons/fontawesome';
 
 describe('SideMenuComponent', () => {
   let component: SideMenuComponent;

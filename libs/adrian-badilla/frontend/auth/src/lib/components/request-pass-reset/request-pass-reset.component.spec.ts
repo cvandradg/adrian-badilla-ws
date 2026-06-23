@@ -7,7 +7,7 @@ import { inject, provideAppInitializer } from '@angular/core';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { firebaseAuthStore } from '../../data-access/stores/auth.store';
-import { FontAwesomeicons } from '../../../../../shared/src/lib/assets/icons/fontawesome';
+import { FontAwesomeicons } from '@adrian-badilla/ui/shared/assets/icons/fontawesome';
 import { RequestPassResetComponent } from './request-pass-reset.component';
 import { ActivatedRoute } from '@angular/router';
 

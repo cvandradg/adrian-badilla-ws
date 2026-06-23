@@ -2,13 +2,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 type Review = { quote: string; name: string; role: string; initials: string };
 
-/**
- * Testimonials: two infinite marquee rows of Google-style review cards. Owns its
- * own content. The marquee uses the global `ab-marqueeR` keyframes and the
- * `data-scrub` heading hook is driven by the shell's scroll engine.
- */
 @Component({
-  selector: 'ab-reviews-section',
+  selector: 'adrian-badilla-reviews-section',
   templateUrl: './reviews-section.component.html',
   styleUrl: './reviews-section.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

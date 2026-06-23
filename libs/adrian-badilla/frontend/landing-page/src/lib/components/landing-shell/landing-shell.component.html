@@ -4,17 +4,13 @@
   [style.--accent-dark]="accentDark()"
   style="position:relative; width:100%; background:#070707;"
 >
-  <!-- GRAIN OVERLAY -->
   <div style="position:fixed; inset:0; z-index:8000; pointer-events:none; opacity:.05; mix-blend-mode:overlay; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);"></div>
 
-  <!-- ============ LOADER ============ -->
-  <ab-landing-loader />
+  <adrian-badilla-landing-loader />
 
-  <!-- ============ NAV / DRAWER / BURGER ============ -->
-  <ab-landing-nav />
+  <adrian-badilla-landing-nav />
 
-  <!-- ============ HERO ============ -->
-  <ab-hero-section />
+  <adrian-badilla-hero-section />
 
   <div data-scrub data-mask="left" data-srange="0,0.4" style="display:flex; align-items:center; gap:18px; max-width:1280px; margin:clamp(12px,5vh,48px) auto 0; padding:0 clamp(20px,5vw,48px);">
     <div style="flex:1; height:1px; background:linear-gradient(90deg, transparent, hsl(356 88% 53% / .4));"></div>
@@ -22,8 +18,7 @@
     <div style="flex:1; height:1px; background:linear-gradient(90deg, hsl(356 88% 53% / .4), transparent);"></div>
   </div>
 
-  <!-- ============ ABOUT + SERVICES (pinned scene) ============ -->
-  <ab-about-section />
+  <adrian-badilla-about-section />
 
   <div data-scrub data-mask="left" data-srange="0,0.4" style="display:flex; align-items:center; gap:18px; max-width:1280px; margin:clamp(12px,5vh,48px) auto 0; padding:0 clamp(20px,5vw,48px);">
     <div style="flex:1; height:1px; background:linear-gradient(90deg, transparent, hsl(356 88% 53% / .4));"></div>
@@ -31,8 +26,7 @@
     <div style="flex:1; height:1px; background:linear-gradient(90deg, hsl(356 88% 53% / .4), transparent);"></div>
   </div>
 
-  <!-- ============ GALLERY (pinned horizontal scene) ============ -->
-  <ab-gallery-section />
+  <adrian-badilla-gallery-section />
 
   <div data-scrub data-mask="left" data-srange="0,0.4" style="display:flex; align-items:center; gap:18px; max-width:1280px; margin:clamp(12px,5vh,48px) auto 0; padding:0 clamp(20px,5vw,48px);">
     <div style="flex:1; height:1px; background:linear-gradient(90deg, transparent, hsl(356 88% 53% / .4));"></div>
@@ -40,12 +34,10 @@
     <div style="flex:1; height:1px; background:linear-gradient(90deg, hsl(356 88% 53% / .4), transparent);"></div>
   </div>
 
-  <!-- ============ REVIEWS ============ -->
-  <ab-reviews-section />
+  <adrian-badilla-reviews-section />
 
-  <!-- ============ APP ============ -->
   @if (showApp()) {
-    <ab-app-section />
+    <adrian-badilla-app-section />
   }
 
   <div data-scrub data-mask="left" data-srange="0,0.4" style="display:flex; align-items:center; gap:18px; max-width:1280px; margin:clamp(12px,5vh,48px) auto 0; padding:0 clamp(20px,5vw,48px);">
@@ -54,10 +46,8 @@
     <div style="flex:1; height:1px; background:linear-gradient(90deg, hsl(356 88% 53% / .4), transparent);"></div>
   </div>
 
-  <!-- ============ FINAL CTA ============ -->
-  <ab-contact-section />
+  <adrian-badilla-contact-section />
 
-  <!-- ============ FOOTER ============ -->
-  <ab-landing-footer />
+  <adrian-badilla-landing-footer />
 
 </div>
