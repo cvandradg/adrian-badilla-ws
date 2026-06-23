@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-type Accent = 'Verde' | 'Azul' | 'Naranja';
+type Accent = 'Rojo' | 'Oxblood' | 'Acero';
 type Stat = { value: string; label: string };
 type Review = { quote: string; name: string; role: string; initials: string };
 type GalleryItem = {
@@ -37,7 +37,7 @@ type GalleryItem = {
 export class AdrianBadillaUiLandingPageComponent
   implements AfterViewInit, OnDestroy
 {
-  readonly accentColor = input<Accent>('Verde');
+  readonly accentColor = input<Accent>('Rojo');
   readonly showApp = input(true);
 
   private readonly host = inject(ElementRef<HTMLElement>);
@@ -46,10 +46,13 @@ export class AdrianBadillaUiLandingPageComponent
   private runStatsCount: (() => void) | null = null;
   private syncChromeFn: (() => void) | null = null;
 
+  // Brand-derived palette: the logo red (#e20613 ≈ hsl(356 95% 45%)) is the
+  // protagonist, slightly brightened to read vividly on near-black. `Oxblood`
+  // is the deeper, premium variant; `Acero` (steel) is a metallic-leaning red.
   private readonly accentMap: Record<Accent, readonly [string, string]> = {
-    Verde: ['hsl(142 90% 61%)', 'hsl(142 70% 45%)'],
-    Azul: ['hsl(217 91% 62%)', 'hsl(217 80% 48%)'],
-    Naranja: ['hsl(20 95% 57%)', 'hsl(20 90% 46%)'],
+    Rojo: ['hsl(356 88% 53%)', 'hsl(356 80% 36%)'],
+    Oxblood: ['hsl(356 78% 44%)', 'hsl(356 72% 30%)'],
+    Acero: ['hsl(356 70% 56%)', 'hsl(356 60% 38%)'],
   };
   readonly accent = computed(() => this.accentMap[this.accentColor()][0]);
   readonly accentDark = computed(() => this.accentMap[this.accentColor()][1]);
@@ -407,7 +410,7 @@ export class AdrianBadillaUiLandingPageComponent
         const img = fig.querySelector('img') as HTMLElement | null;
         if (img) img.style.filter = `grayscale(${(0.65 * d).toFixed(2)}) brightness(${(1 - 0.22 * d).toFixed(2)})`;
         const cap = fig.querySelector('.g-cap') as HTMLElement | null;
-        if (cap) cap.style.color = `rgba(${d < 0.45 ? '198,255,120' : '255,255,255'},${(0.35 + 0.5 * (1 - d)).toFixed(2)})`;
+        if (cap) cap.style.color = `rgba(${d < 0.45 ? '236,238,242' : '255,255,255'},${(0.35 + 0.5 * (1 - d)).toFixed(2)})`;
       }
     };
 
