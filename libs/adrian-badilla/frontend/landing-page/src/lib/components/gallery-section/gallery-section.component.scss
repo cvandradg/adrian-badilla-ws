@@ -1,0 +1,47 @@
+// Results gallery — local styles. The desktop layout is fully inline + driven
+// by the shell's scroll engine; only the mobile fallback (un-pin the horizontal
+// scrub into a vertical stacked story) needs CSS, and it lives here.
+:host {
+  display: block;
+}
+
+@media (max-width: 820px) {
+  [data-h-gallery] { height: auto !important; }
+  [data-h-sticky] {
+    position: static !important;
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+    padding-block: clamp(48px, 12vw, 90px);
+  }
+  /* the masked band wrapper -> let it grow vertically, drop the side fade mask */
+  [data-h-sticky] > div:last-child {
+    height: auto !important;
+    overflow: visible !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+  }
+  [data-h-track] {
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+    transform: none !important;
+    gap: clamp(30px, 8vw, 52px) !important;
+    padding: clamp(30px, 8vw, 52px) clamp(14px, 5vw, 28px) 0 !important;
+  }
+  /* keep the varied sizes (some smaller than others) but never overflow */
+  [data-h-track] .g-item {
+    max-width: 86vw !important;
+    transform: none !important;
+    opacity: 1 !important;
+    margin: 0 !important;
+  }
+  /* alignment rhythm: big shots centered, runs of small shots zig-zag L/R */
+  [data-h-track] .g-item[data-align='center'] { align-self: center; }
+  [data-h-track] .g-item[data-align='left'] { align-self: flex-start; max-width: 66vw !important; }
+  [data-h-track] .g-item[data-align='right'] { align-self: flex-end; max-width: 66vw !important; }
+  [data-h-track] .g-item[data-align='left'] .g-cap { text-align: left; }
+  [data-h-track] .g-item[data-align='right'] .g-cap { text-align: right; }
+  [data-h-track] .g-item[data-align='center'] .g-cap { text-align: center; }
+  [data-h-track] .g-item img { filter: none !important; }
+}

@@ -12,23 +12,21 @@ import {
 import { RouterLink } from '@angular/router';
 import { ContactSectionComponent } from '../components/contact-section/contact-section.component';
 import { LandingFooterComponent } from '../components/landing-footer/landing-footer.component';
+import { GallerySectionComponent } from '../components/gallery-section/gallery-section.component';
+import { ReviewsSectionComponent } from '../components/reviews-section/reviews-section.component';
 
 type Accent = 'Rojo' | 'Oxblood' | 'Acero';
 type Stat = { value: string; label: string };
-type Review = { quote: string; name: string; role: string; initials: string };
-type GalleryItem = {
-  src: string;
-  label: string;
-  depth: number;
-  vy: number;
-  w: string;
-  h: string;
-  align: 'left' | 'right' | 'center';
-};
 
 @Component({
   selector: 'adrian-badilla-ui-landing-page',
-  imports: [RouterLink, ContactSectionComponent, LandingFooterComponent],
+  imports: [
+    RouterLink,
+    GallerySectionComponent,
+    ReviewsSectionComponent,
+    ContactSectionComponent,
+    LandingFooterComponent,
+  ],
   templateUrl: './adrian-badilla-ui-landing-page.component.html',
   // No component stylesheet: the landing's styles are global by nature (the
   // template animates via inline `style="animation:…"` referencing global
@@ -75,75 +73,6 @@ export class AdrianBadillaUiLandingPageComponent
     '+30 campeones nacionales preparados',
     'Coaching presencial en San José y online',
   ];
-
-  protected readonly reviews: readonly Review[] = [
-    { quote: 'Adrián me preparó para mi primer Nacional y subí al podio. Su nivel de detalle en dieta y posing es de otro mundo.', name: 'Kevin Mora', role: 'Competidor Men’s Physique', initials: 'KM' },
-    { quote: 'Bajé 18 kg en 6 meses sin perder músculo. Por primera vez entendí cómo comer de verdad. Me cambió la vida.', name: 'Daniela Rojas', role: 'Clienta online', initials: 'DR' },
-    { quote: 'Más que un entrenador, un mentor. Su experiencia como juez se nota en cada corrección que te da.', name: 'José Castro', role: 'Campeón Nacional', initials: 'JC' },
-    { quote: 'Empecé desde cero a los 45 y hoy compito. Adrián cree en vos más de lo que vos crees en vos mismo.', name: 'Marvin Vargas', role: 'Classic Physique', initials: 'MV' },
-    { quote: 'El plan online es impecable: rutinas claras, ajustes cada semana y respuesta a todas mis dudas. Resultados reales.', name: 'Andrea Solís', role: 'Clienta online', initials: 'AS' },
-    { quote: 'Gané 9 kg de masa limpia en una temporada. La progresión de cargas y la técnica que me enseñó marcaron la diferencia.', name: 'Esteban Quirós', role: 'Fuerza y volumen', initials: 'EQ' },
-    { quote: 'Llegué a mi boda en la mejor forma de mi vida. Profesional, exigente y siempre pendiente de cada detalle.', name: 'Laura Méndez', role: 'Recomposición', initials: 'LM' },
-    { quote: 'Como competidor, su preparación para tarima es de élite: dieta, posing y mentalidad. Confianza total el día del show.', name: 'Diego Herrera', role: 'Culturismo', initials: 'DH' },
-  ];
-
-  protected readonly reviewsB: readonly Review[] = [
-    { quote: 'El plan online es impecable: rutinas claras, ajustes cada semana y respuesta a todas mis dudas. Resultados reales.', name: 'Andrea Solís', role: 'Clienta online', initials: 'AS' },
-    { quote: 'Como competidor, su preparación para tarima es de élite: dieta, posing y mentalidad. Confianza total el día del show.', name: 'Diego Herrera', role: 'Culturismo', initials: 'DH' },
-    { quote: 'Gané 9 kg de masa limpia en una temporada. La progresión de cargas y la técnica que me enseñó marcaron la diferencia.', name: 'Esteban Quirós', role: 'Fuerza y volumen', initials: 'EQ' },
-    { quote: 'Adrián me preparó para mi primer Nacional y subí al podio. Su nivel de detalle en dieta y posing es de otro mundo.', name: 'Kevin Mora', role: 'Competidor Men’s Physique', initials: 'KM' },
-    { quote: 'Llegué a mi boda en la mejor forma de mi vida. Profesional, exigente y siempre pendiente de cada detalle.', name: 'Laura Méndez', role: 'Recomposición', initials: 'LM' },
-    { quote: 'Más que un entrenador, un mentor. Su experiencia como juez se nota en cada corrección que te da.', name: 'José Castro', role: 'Campeón Nacional', initials: 'JC' },
-    { quote: 'Empecé desde cero a los 45 y hoy compito. Adrián cree en vos más de lo que vos crees en vos mismo.', name: 'Marvin Vargas', role: 'Classic Physique', initials: 'MV' },
-    { quote: 'Bajé 18 kg en 6 meses sin perder músculo. Por primera vez entendí cómo comer de verdad. Me cambió la vida.', name: 'Daniela Rojas', role: 'Clienta online', initials: 'DR' },
-  ];
-
-  protected readonly galleryItems: readonly GalleryItem[] = this.buildGallery();
-
-  private buildGallery(): GalleryItem[] {
-    const resultados = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16']
-      .map((n) => `/global/assets/img/resultados/${n}.webp`);
-    const gLabels = ['Definición','Fuerza','Escenario','Posing','Disciplina','Volumen','Simetría','Preparación','Constancia','Resultado','Physique','Detalle','Potencia','Forma','Enfoque','Victoria'];
-    // [height vh, aspect w/h, vertical offset vh, parallax depth]
-    const gRhythm: number[][] = [
-      [28, 0.82, -12, 0.04], [38, 1.30, 8, -0.03], [24, 0.80, 18, 0.05],
-      [40, 1.12, -3, 0.0], [26, 0.82, 15, 0.04], [32, 1.25, -16, -0.04],
-      [24, 0.78, 9, 0.05], [38, 1.10, -8, -0.03], [28, 0.85, 14, 0.04],
-      [24, 0.80, -17, 0.06], [40, 1.28, 3, -0.04], [27, 0.82, 17, 0.03],
-      [34, 1.15, -12, -0.05], [24, 0.80, 7, 0.05], [28, 0.84, 16, -0.03], [36, 1.20, -6, 0.04],
-    ];
-    // A shot is "big" when it's tall or wide; everything else is "small".
-    const isBig = (i: number) => {
-      const [h, ar] = gRhythm[i % gRhythm.length];
-      return h >= 36 || ar >= 1.2;
-    };
-    // Walk the list assigning mobile alignment: consecutive runs of 2+ small
-    // shots alternate left/right; lone smalls and all big shots stay centered.
-    const N = resultados.length;
-    const aligns: Array<'left' | 'right' | 'center'> = new Array(N).fill('center');
-    let i = 0;
-    while (i < N) {
-      if (isBig(i)) { i++; continue; }
-      let j = i;
-      while (j < N && !isBig(j)) j++;
-      if (j - i >= 2) {
-        for (let k = i; k < j; k++) aligns[k] = (k - i) % 2 === 0 ? 'left' : 'right';
-      }
-      i = j;
-    }
-    return resultados.map((src, idx) => {
-      const [h, ar, vy, depth] = gRhythm[idx % gRhythm.length];
-      return {
-        src,
-        label: gLabels[idx % gLabels.length],
-        depth,
-        vy,
-        w: `max(150px, ${(h * ar).toFixed(1)}vh)`,
-        h: `${h}vh`,
-        align: aligns[idx],
-      };
-    });
-  }
 
   // Scroll-driven animation engine: pinned scrollytelling on desktop, simpler
   // un-pinned scenes on phones. All listeners are tracked in `cleanup`.

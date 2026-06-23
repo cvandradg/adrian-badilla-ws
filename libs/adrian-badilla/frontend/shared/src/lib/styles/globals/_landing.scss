@@ -483,68 +483,7 @@ nav.ab-nav { transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3
 
 /* Footer styles live with the `ab-landing-footer` component (scoped). */
 
-/* ---------- reviews carousel ---------- */
-.rev-row:hover .rev-track { animation-play-state: paused; }
-
-.rev-card {
-  flex: none;
-  width: 370px;
-  display: flex;
-  flex-direction: column;
-  padding: 30px 30px 26px;
-  border-radius: 12px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 24px 50px -28px rgba(0, 0, 0, 0.8);
-  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
-  &:hover {
-    transform: translateY(-6px);
-    border-color: hsl(356 88% 53% / 0.45);
-    box-shadow: 0 30px 60px -28px rgba(0, 0, 0, 0.9), 0 0 0 1px hsl(356 88% 53% / 0.25);
-  }
-  &__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-}
-
-.rev-g {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: #fff;
-  color: #1a1a1a;
-  font-family: 'Anton', sans-serif;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.rev-quote {
-  font-size: 1.05rem;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
-  margin: 0 0 26px;
-  flex: 1;
-  white-space: normal;
-  overflow-wrap: break-word;
-  &::before { content: '\201C'; color: hsl(356 88% 53% / 0.5); }
-  &::after { content: '\201D'; color: hsl(356 88% 53% / 0.5); }
-}
-
-.rev-foot { display: flex; align-items: center; gap: 14px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
-
-.rev-avatar {
-  flex: none;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: hsl(356 88% 53% / 0.16);
-  color: var(--accent, hsl(356 88% 53%));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Anton', sans-serif;
-  font-size: 16px;
-}
+/* Reviews carousel styles live with the `ab-reviews-section` component. */
 
 /* ---------- pricing plans (migrated from the tariff template, themed) ---------- */
 .ab-plans {
@@ -871,49 +810,7 @@ nav.ab-nav { transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3
   .ab-plan { max-width: 460px; width: 100%; margin: 0 auto; }
   .ab-plan--pro { transform: none; }
 
-  /* ---- gallery (segment 3): vertical story instead of horizontal scrub ---- */
-  .ab-root [data-h-gallery] { height: auto !important; }
-  .ab-root [data-h-sticky] {
-    position: static !important;
-    height: auto !important;
-    overflow: visible !important;
-    display: block !important;
-    padding-block: clamp(48px, 12vw, 90px);
-  }
-  /* the masked band wrapper -> let it grow vertically, drop the side fade mask */
-  .ab-root [data-h-sticky] > div:last-child {
-    height: auto !important;
-    overflow: visible !important;
-    -webkit-mask-image: none !important;
-    mask-image: none !important;
-  }
-  .ab-root [data-h-track] {
-    flex-direction: column !important;
-    align-items: center !important;
-    width: 100% !important;
-    transform: none !important;
-    gap: clamp(30px, 8vw, 52px) !important;
-    padding: clamp(30px, 8vw, 52px) clamp(14px, 5vw, 28px) 0 !important;
-  }
-  /* keep the varied sizes (some smaller than others) but never overflow */
-  .ab-root [data-h-track] .g-item {
-    max-width: 86vw !important;
-    transform: none !important;
-    opacity: 1 !important;
-    margin: 0 !important;
-  }
-  /* alignment rhythm: big shots centered, runs of small shots zig-zag L/R */
-  .ab-root [data-h-track] .g-item[data-align='center'] { align-self: center; }
-  .ab-root [data-h-track] .g-item[data-align='left'] { align-self: flex-start; max-width: 66vw !important; }
-  .ab-root [data-h-track] .g-item[data-align='right'] { align-self: flex-end; max-width: 66vw !important; }
-  .ab-root [data-h-track] .g-item[data-align='left'] .g-cap { text-align: left; }
-  .ab-root [data-h-track] .g-item[data-align='right'] .g-cap { text-align: right; }
-  .ab-root [data-h-track] .g-item[data-align='center'] .g-cap { text-align: center; }
-  .ab-root [data-h-track] .g-item img { filter: none !important; }
-
-  /* ---- reviews (segment 4): a single tidy carousel ---- */
-  .ab-root .rev-row + .rev-row { display: none !important; }
-  .ab-root .rev-card { width: min(82vw, 340px); }
+  /* Gallery mobile rules live with the `ab-gallery-section` component. */
 
   /* ---- hero: stats sit comfortably under the proportional image ---- */
   .ab-root [data-ab-stats] { gap: 14px clamp(18px, 6vw, 32px) !important; }
