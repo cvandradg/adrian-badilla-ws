@@ -30,6 +30,20 @@
 .ab-foot-cta:hover { transform: translateY(-2px); filter: brightness(1.05); }
 .ab-backtop:hover { color: #fff; }
 
+.ab-cas-credit {
+  opacity: 1;
+  transition: opacity 0.25s ease;
+  img {
+    filter: drop-shadow(0 0 6px hsl(212 100% 65% / 0.26));
+    transition: filter 0.25s ease, transform 0.25s ease;
+  }
+  .ab-cas-credit__name { transition: color 0.25s ease; }
+  &:hover {
+    img { filter: drop-shadow(0 0 12px hsl(212 100% 65% / 0.7)); transform: translateY(-1px); }
+    .ab-cas-credit__name { color: #fff; }
+  }
+}
+
 .ab-social {
   position: relative;
   width: 48px;
