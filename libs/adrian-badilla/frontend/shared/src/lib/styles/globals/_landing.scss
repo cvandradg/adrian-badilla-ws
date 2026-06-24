@@ -749,18 +749,56 @@ nav.ab-nav { transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3
     grid-template-areas: 'head' 'visual' 'cta' !important;
     row-gap: clamp(32px, 8vw, 48px) !important;
   }
+  .ab-root .ab-app__stores {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .ab-root .ab-store {
+    padding: 9px 12px;
+    gap: 9px;
+  }
+  .ab-root .ab-store svg {
+    width: 22px;
+    height: 22px;
+  }
+  .ab-root .ab-store strong {
+    font-size: 1.05rem;
+  }
+  .ab-root .ab-store small {
+    font-size: 0.58rem;
+  }
+
   .ab-root .ab-label__band {
-    flex-direction: column;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+    gap: clamp(14px, 4vw, 20px) 14px;
     margin: clamp(36px, 8vw, 56px) calc(-1 * clamp(20px, 6vw, 34px))
       calc(-1 * clamp(40px, 9vw, 72px)) !important;
     padding: clamp(18px, 6vw, 26px) clamp(20px, 6vw, 34px) !important;
     border-radius: 0 0 20px 20px;
   }
+  .ab-root .ab-label__benefit {
+    grid-column: 1 / -1;
+    max-width: none;
+  }
   .ab-root .ab-label__cells {
-    width: 100%;
+    display: contents;
+  }
+  .ab-root .ab-label__cell + .ab-label__cell {
+    border-left: none;
   }
   .ab-root .ab-label__tested {
     margin-left: 0;
+    justify-self: stretch;
+    justify-content: center;
+  }
+
+  .ab-root [data-ab-stats] {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
   }
 }
