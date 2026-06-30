@@ -50,11 +50,12 @@ export class RoutinesPageComponent {
     initialValue: null,
   });
 
-  /** Load active routine once when auth is available and fetch hasn’t run yet. */
+  /** Load active routine once when subscription is active and fetch hasn't run yet. */
   readonly #loadEffect = effect(() => {
     const userId = (this.store as any)['_routineUserId']?.();
+    const isSubscriptionActive = this.billing.isSubscriptionActive();
     const fetchDone = this.store.routineFetchDone();
-    if (userId && !fetchDone) {
+    if (userId && isSubscriptionActive && !fetchDone) {
       this.store.loadActiveRoutine();
     }
   });
@@ -107,34 +108,57 @@ export class RoutinesPageComponent {
 
   readonly routineHistoryEntries: HistoryEntry[] = ROUTINE_HISTORY_MOCK;
 
-  // Show skeleton while actively loading, while days haven't arrived yet,
-  // or while subscription state is still being resolved.
-  readonly isLoadingRoutine = computed(
-    () =>
-      this.store.loadingRoutine() ||
-      (!this.store.routineFetchDone() && !this.store.errorRoutine()) ||
-      this.billing.isSubscriptionLoading()
-  );
-
   /** True when the fetch completed but no routine document exists for this user. */
   readonly hasNoRoutine = computed(() => this.store.noActiveRoutine());
 
   // ─── Display rules ────────────────────────────────────────────────────────
 
-  /** Regla 1: usuario no-premium → mostrar paywall. */
-  readonly showPaywall = computed(() => !this.billing.isPremium());
-
   /**
-   * Regla 3: usuario premium pero sin rutina generada todavía.
-   * Solo evalúa después de que el fetch ha terminado.
+   * True when the subscription is fully active and the billing period is valid.
+   * Source of truth for gating premium content in this component.
    */
-  readonly showPendingPlan = computed(
-    () => this.billing.isPremium() && this.hasNoRoutine()
+  readonly isSubscriptionActive = computed(() =>
+    this.billing.isSubscriptionActive()
   );
 
-  /** Regla 2: usuario premium con rutina disponible. */
+  /**
+   * Show skeleton while:
+   * - subscription state is being resolved, OR
+   * - subscription is active but routine fetch hasn't completed yet.
+   * For non-premium users the inner condition short-circuits to false immediately,
+   * so the paywall is shown without any residual skeleton.
+   */
+  readonly isLoadingRoutine = computed(
+    () =>
+      this.billing.isSubscriptionLoading() ||
+      (this.isSubscriptionActive() &&
+        (this.store.loadingRoutine() || !this.store.routineFetchDone()))
+  );
+
+  /** Regla 1: usuario no-premium → mostrar paywall. */
+  readonly showPaywall = computed(() => !this.isSubscriptionActive());
+
+  /**
+   * Regla 3: usuario premium pero sin contenido todavía.
+   * Cubre dos casos:
+   *   a) Firestore no encontró ningún documento de rutina (noActiveRoutine = true).
+   *   b) El documento de rutina existe pero no tiene ejercicios (routineDays vacíos).
+   * Requiere routineFetchDone para no dispararse mientras se está cargando.
+   */
+  readonly showPendingPlan = computed(
+    () =>
+      this.isSubscriptionActive() &&
+      this.store.routineFetchDone() &&
+      (this.hasNoRoutine() || this.store.routineDays().length === 0)
+  );
+
+  /** Regla 2: usuario premium con rutina y ejercicios disponibles. */
   readonly showContent = computed(
-    () => this.billing.isPremium() && !this.hasNoRoutine()
+    () =>
+      this.isSubscriptionActive() &&
+      this.store.routineFetchDone() &&
+      !this.hasNoRoutine() &&
+      this.store.routineDays().length > 0
   );
 
   setActiveTab(value: string): void {

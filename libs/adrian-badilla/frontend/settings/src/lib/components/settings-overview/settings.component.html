@@ -8,11 +8,9 @@
   (tabChange)="setActiveTab($event)"
   [panelsFillHeight]="activeTab() === 'diets'"
 >
-  @switch (activeTab()) { @case ('diets') { @if (isLoadingDiet()) {
-  <lib-skeleton-loader variant="page" [rows]="4" />
-  } @else {
+  @switch (activeTab()) { @case ('diets') {
   <lib-adrian-badilla-diets />
-  } } @case ('historial') {
+  } @case ('historial') {
   <lib-diet-history-settings />
   } @case ('config') {
   <div class="diets-config-placeholder">

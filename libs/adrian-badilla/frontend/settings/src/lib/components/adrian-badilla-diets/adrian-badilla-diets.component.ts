@@ -6,8 +6,6 @@ import {
   ChangeDetectionStrategy,
   inject,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Auth, user } from '@angular/fire/auth';
 import { ButtonModule } from 'primeng/button';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -56,18 +54,22 @@ export class AdrianBadillaDietsComponent {
   private readonly store = inject(settingsStoreDev);
   private readonly billing = inject(billingStore);
 
-  // --- Auth trigger ----------------------------------------------------------
-  private readonly _auth = inject(Auth);
-  private readonly _authUser = toSignal(user(this._auth), {
-    initialValue: null,
-  });
-
-  /** Load diet once when authenticated — side effect belongs in effect(), not computed(). */
+  /**
+   * Load diet once when BOTH the store's userId and subscription are confirmed
+   * active.  Reads store['_userId'] — the same signal that loadActiveDiet()
+   * reads internally — so the effect re-runs when that signal transitions from
+   * null to a value, preventing the silent early-return that left dietFetchDone
+   * permanently false.
+   */
   readonly #loadDietEffect = effect(() => {
-    const authUser = this._authUser();
+    const userId = (this.store as any)['_userId']?.();
+    const isSubscriptionActive = this.billing.isSubscriptionActive();
     const lastLoadedId = (this.store as any)['_lastLoadedDietId']?.();
     const noActiveDiet = this.store.noActiveDiet();
-    if (authUser?.uid && !lastLoadedId && !noActiveDiet) {
+
+    if (!isSubscriptionActive) return;
+
+    if (userId && !lastLoadedId && !noActiveDiet) {
       (this.store as any).loadActiveDiet();
     }
   });
@@ -80,27 +82,50 @@ export class AdrianBadillaDietsComponent {
   // ─── Display rules ────────────────────────────────────────────────────────
 
   /**
+   * True when the subscription is fully active and the billing period is valid.
+   * Source of truth for gating premium content in this component.
+   */
+  readonly isSubscriptionActive = computed(() =>
+    this.billing.isSubscriptionActive()
+  );
+
+  /**
    * Combined loading: diet fetch in progress OR subscription state not yet resolved.
-   * Prevents a flash of the paywall before isPremium() is known.
+   * Also covers the window between subscription resolving and the effect firing
+   * (dietFetchDone = false) to avoid any blank-state flash.
+   * For non-premium users the inner condition short-circuits to false immediately.
    */
   readonly isLoading = computed(
-    () => this.store.loadingDiet() || this.billing.isSubscriptionLoading()
+    () =>
+      this.billing.isSubscriptionLoading() ||
+      (this.isSubscriptionActive() &&
+        (this.store.loadingDiet() || !this.store.dietFetchDone()))
   );
 
   /** Regla 1: usuario no-premium → mostrar paywall. */
-  readonly showPaywall = computed(() => !this.billing.isPremium());
+  readonly showPaywall = computed(() => !this.isSubscriptionActive());
 
   /**
-   * Regla 3: usuario premium pero sin dieta generada todavía.
-   * Solo evalúa después de que el fetch ha terminado.
+   * Regla 3: usuario premium pero sin contenido todavía.
+   * Cubre dos casos:
+   *   a) Firestore no encontró ningún documento de dieta (noActiveDiet = true).
+   *   b) El documento de dieta existe pero no tiene meals (routes vacías).
+   * Requiere dietFetchDone para no dispararse mientras se está cargando.
    */
   readonly showPendingPlan = computed(
-    () => this.billing.isPremium() && this.store.noActiveDiet()
+    () =>
+      this.isSubscriptionActive() &&
+      this.store.dietFetchDone() &&
+      (this.store.noActiveDiet() || this.sortedRoutes().length === 0)
   );
 
-  /** Regla 2: usuario premium con dieta disponible. */
+  /** Regla 2: usuario premium con dieta y meals disponibles. */
   readonly showContent = computed(
-    () => this.billing.isPremium() && !this.store.noActiveDiet()
+    () =>
+      this.isSubscriptionActive() &&
+      this.store.dietFetchDone() &&
+      !this.store.noActiveDiet() &&
+      this.sortedRoutes().length > 0
   );
   readonly routeSearchQuery = this.store.routeSearchQuery;
   readonly filteredRoutes = this.store.filteredRoutes;

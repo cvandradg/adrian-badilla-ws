@@ -14,7 +14,7 @@
   } @else if (showPendingPlan()) {
   <!-- Regla 3: premium sin contenido -->
   <lib-pending-plan />
-  } @else {
+  } @else if (showContent()) {
   <!-- ── Scrollable timeline area ─────────────────────────────────────── -->
   <!-- lib-shared-item-timeline is ALWAYS rendered so the day sidebar stays
            visible. When the selected day has no exercises, restDayLabel causes

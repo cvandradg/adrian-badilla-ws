@@ -10,7 +10,7 @@
     } @else if (showPendingPlan()) {
     <!-- Regla 3: premium sin contenido -->
     <lib-pending-plan />
-    } @else if (showContent() && filteredRoutes().length) {
+    } @else if (showContent()) {
     <lib-shared-item-timeline
       [days]="routeDays()"
       [selectedDayId]="selectedRoute()?.id ?? ''"
@@ -31,7 +31,7 @@
     />
     }
   </div>
-  @if (showContent() && filteredRoutes().length) {
+  @if (showContent()) {
   <lib-macro-progress-tracker class="diets-page__tracker" [meals]="items" />
   }
 </div>

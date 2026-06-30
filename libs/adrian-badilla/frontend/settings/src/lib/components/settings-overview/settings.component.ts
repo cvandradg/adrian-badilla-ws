@@ -2,7 +2,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   DestroyRef,
   inject,
   signal,
@@ -14,9 +13,6 @@ import {
   SectionTabsComponent,
   type SectionTab,
 } from '../section-tabs/section-tabs.component';
-import { settingsStoreDev } from '../../store/settings.store';
-import { SkeletonLoaderComponent } from '@adrian-badilla/ui/shared';
-import { billingStore } from '@adrian-badilla/billing';
 
 @Component({
   selector: 'lib-settings',
@@ -26,7 +22,6 @@ import { billingStore } from '@adrian-badilla/billing';
     AdrianBadillaDietsComponent,
     DietHistorySettingsComponent,
     SectionTabsComponent,
-    SkeletonLoaderComponent,
   ],
   providers: [DialogService],
   templateUrl: './settings.component.html',
@@ -34,20 +29,11 @@ import { billingStore } from '@adrian-badilla/billing';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsComponent {
-  private readonly store = inject(settingsStoreDev);
-  private readonly billing = inject(billingStore);
-
   readonly isMobile = signal(
     globalThis.window?.matchMedia('(max-width: 767px)').matches ?? false
   );
 
   readonly activeTab = signal('diets');
-
-  // True while EITHER the diet fetch OR the subscription state is unresolved.
-  // Prevents a premature skeleton dismissal before isPremium() is known.
-  readonly isLoadingDiet = computed(
-    () => this.store.loadingDiet() || this.billing.isSubscriptionLoading()
-  );
 
   readonly #mqlCleanup = (() => {
     if (globalThis.window === undefined) return;

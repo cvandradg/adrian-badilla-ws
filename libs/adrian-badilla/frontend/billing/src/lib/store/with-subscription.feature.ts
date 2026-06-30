@@ -123,6 +123,37 @@ export function withSubscriptionFeature() {
 
       /** True while subscription state is being resolved (initial load). */
       isSubscriptionLoading: computed(() => s.subscription() === undefined),
+
+      /**
+       * True only when the subscription is fully active and the billing period
+       * has not yet expired.
+       *
+       * Stricter than `isPremium`: also validates `currentPeriodEnd > now`.
+       * When `currentPeriodEnd` is absent (legacy docs), the period is assumed
+       * active — the server-side `syncSubscriptionStatus` function is the
+       * authoritative expiry enforcer.
+       *
+       * Use this signal to gate premium content loading and display rules.
+       * Flow gates:
+       *   subscription === undefined  → isSubscriptionLoading() = true  (skeleton)
+       *   subscription === null       → isSubscriptionActive() = false  (paywall)
+       *   plan !== 'premium'          → isSubscriptionActive() = false  (paywall)
+       *   status !== 'active'         → isSubscriptionActive() = false  (paywall)
+       *   currentPeriodEnd < now      → isSubscriptionActive() = false  (paywall)
+       *   all checks pass             → isSubscriptionActive() = true   (load content)
+       */
+      isSubscriptionActive: computed(() => {
+        const sub = s.subscription();
+        if (sub?.plan !== 'premium' || sub?.status !== 'active') return false;
+        const periodEnd = sub.currentPeriodEnd ?? null;
+        if (!periodEnd) return true; // no expiry date → trust server-side enforcement
+        // Guard: Firestore SDK returns Timestamp objects; plain Date can appear in
+        // test/mock environments.  Never compare a Timestamp directly with > or <
+        // against a Date/number — that compares object references, always false.
+        const endDate =
+          periodEnd instanceof Date ? periodEnd : periodEnd.toDate();
+        return endDate.getTime() > Date.now();
+      }),
     })),
 
     withMethods((store) => {

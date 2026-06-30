@@ -11,8 +11,8 @@ import {
 import {
   Firestore,
   collection,
+  collectionGroup,
   getDocs,
-  orderBy,
   query,
   limit,
 } from '@angular/fire/firestore';
@@ -32,6 +32,8 @@ interface DietQueriesState {
   _lastLoadedDietId: string | null;
   /** True when loadActiveDiet() found no diet document for this user. */
   noActiveDiet: boolean;
+  /** True once loadActiveDiet() has finished, even if no diet was found. */
+  dietFetchDone: boolean;
 }
 
 // ─── Feature ─────────────────────────────────────────────────────────────────
@@ -54,8 +56,6 @@ interface DietQueriesState {
  * - Automatic UI updates via signals
  * - Simple cache to prevent re-fetching same diet
  * - Centralized Firestore path management
- *
- * Migration path: getDocs → collectionData for realtime sync when needed.
  */
 export function withDietQueries() {
   return signalStoreFeature(
@@ -65,6 +65,7 @@ export function withDietQueries() {
       errorDiet: null,
       _lastLoadedDietId: null,
       noActiveDiet: false,
+      dietFetchDone: false,
     }),
 
     withProps(() => ({
@@ -107,11 +108,7 @@ export function withDietQueries() {
           const mealsPath = userPaths.meals(userId, dietId);
 
           const snap = await getDocs(
-            query(
-              collection(store['_firestore'], mealsPath),
-              orderBy('dayOrder'),
-              orderBy('order')
-            )
+            query(collection(store['_firestore'], mealsPath))
           );
 
           const allMeals: FirestoreMeal[] = snap.docs.map((doc) => ({
@@ -156,38 +153,65 @@ export function withDietQueries() {
     withMethods((store) => ({
       async loadActiveDiet(): Promise<void> {
         const userId = store['_userId']();
-        if (!userId) {
-          return;
-        }
 
-        if (store['_lastLoadedDietId']()) {
-          return;
-        }
+        if (!userId) return;
 
-        if (store['noActiveDiet']()) {
-          return;
-        }
+        if (store['_lastLoadedDietId']()) return;
 
+        if (store['noActiveDiet']()) return;
+
+        const dietsPath = userPaths.diets(userId);
         patchState(store, { loadingDiet: true, errorDiet: null });
 
         try {
-          const dietsPath = userPaths.diets(userId);
-
           const dietsSnap = await getDocs(
             query(collection(store['_firestore'], dietsPath), limit(1))
           );
 
           const firstDiet = dietsSnap.docs[0];
-          if (!firstDiet) {
-            patchState(store, { noActiveDiet: true, loadingDiet: false });
+
+          if (firstDiet) {
+            await store.loadWeeklyDiet(firstDiet.id);
+            patchState(store, { dietFetchDone: true });
             return;
           }
 
-          await store.loadWeeklyDiet(firstDiet.id);
+          // Fallback: hollow document — diet doc was never explicitly created,
+          // only its meals subcollection exists. Discover dietId via collectionGroup.
+          let fallbackDietId: string | null = null;
+
+          try {
+            const mealsGroupSnap = await getDocs(
+              query(collectionGroup(store['_firestore'], 'meals'), limit(1))
+            );
+
+            for (const mealDoc of mealsGroupSnap.docs) {
+              const expectedPrefix = `users/${userId}/diets/`;
+              if (mealDoc.ref.path.startsWith(expectedPrefix)) {
+                fallbackDietId = mealDoc.ref.parent.parent?.id ?? null;
+                break;
+              }
+            }
+          } catch {
+            /* fallback failed — treat as no active diet */
+          }
+
+          if (fallbackDietId) {
+            await store.loadWeeklyDiet(fallbackDietId);
+            patchState(store, { dietFetchDone: true });
+            return;
+          }
+
+          patchState(store, {
+            noActiveDiet: true,
+            loadingDiet: false,
+            dietFetchDone: true,
+          });
         } catch (error) {
           patchState(store, {
             loadingDiet: false,
             noActiveDiet: true,
+            dietFetchDone: true,
             errorDiet:
               error instanceof Error
                 ? error.message

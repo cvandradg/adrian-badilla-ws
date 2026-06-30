@@ -223,7 +223,6 @@ export function withRoutineQueries() {
         const userId = store['_routineUserId']();
         if (!userId) return;
 
-        // Already loaded — skip
         if (store['_lastLoadedRoutineId']()) return;
 
         try {
@@ -242,7 +241,6 @@ export function withRoutineQueries() {
           }
         } catch {
           patchState(store, { routineFetchDone: true, noActiveRoutine: true });
-          /* error shown as empty state */
         }
       },
 
