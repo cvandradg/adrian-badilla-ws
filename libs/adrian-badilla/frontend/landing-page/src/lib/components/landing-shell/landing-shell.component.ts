@@ -9,35 +9,37 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ContactSectionComponent } from '../contact-section/contact-section.component';
+import { LandingFooterComponent } from '../landing-footer/landing-footer.component';
+import { LandingLoaderComponent } from '../landing-loader/landing-loader.component';
+import { LandingNavComponent } from '../landing-nav/landing-nav.component';
+import { AboutSectionComponent } from '../about-section/about-section.component';
+import { AppSectionComponent } from '../app-section/app-section.component';
+import { GallerySectionComponent } from '../gallery-section/gallery-section.component';
+import { HeroSectionComponent } from '../hero-section/hero-section.component';
+import { ReviewsSectionComponent } from '../reviews-section/reviews-section.component';
 
-type Accent = 'Verde' | 'Azul' | 'Naranja';
-type Stat = { value: string; label: string };
-type Review = { quote: string; name: string; role: string; initials: string };
-type GalleryItem = {
-  src: string;
-  label: string;
-  depth: number;
-  vy: number;
-  w: string;
-  h: string;
-  align: 'left' | 'right' | 'center';
-};
+type Accent = 'Rojo' | 'Oxblood' | 'Acero';
 
 @Component({
-  selector: 'adrian-badilla-ui-landing-page',
-  imports: [RouterLink],
-  templateUrl: './adrian-badilla-ui-landing-page.component.html',
-  styleUrl: './adrian-badilla-ui-landing-page.component.scss',
+  selector: 'adrian-badilla-landing-shell',
+  imports: [
+    LandingLoaderComponent,
+    LandingNavComponent,
+    HeroSectionComponent,
+    AboutSectionComponent,
+    GallerySectionComponent,
+    ReviewsSectionComponent,
+    AppSectionComponent,
+    ContactSectionComponent,
+    LandingFooterComponent,
+  ],
+  templateUrl: './landing-shell.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  // Encapsulation is off so the template's inline `style="animation:…"` rules
-  // resolve their global @keyframes; every selector is namespaced under `.ab-root`.
   encapsulation: ViewEncapsulation.None,
 })
-export class AdrianBadillaUiLandingPageComponent
-  implements AfterViewInit, OnDestroy
-{
-  readonly accentColor = input<Accent>('Verde');
+export class LandingShellComponent implements AfterViewInit, OnDestroy {
+  readonly accentColor = input<Accent>('Rojo');
   readonly showApp = input(true);
 
   private readonly host = inject(ElementRef<HTMLElement>);
@@ -47,98 +49,13 @@ export class AdrianBadillaUiLandingPageComponent
   private syncChromeFn: (() => void) | null = null;
 
   private readonly accentMap: Record<Accent, readonly [string, string]> = {
-    Verde: ['hsl(142 90% 61%)', 'hsl(142 70% 45%)'],
-    Azul: ['hsl(217 91% 62%)', 'hsl(217 80% 48%)'],
-    Naranja: ['hsl(20 95% 57%)', 'hsl(20 90% 46%)'],
+    Rojo: ['hsl(356 88% 53%)', 'hsl(356 80% 36%)'],
+    Oxblood: ['hsl(356 78% 44%)', 'hsl(356 72% 30%)'],
+    Acero: ['hsl(356 70% 56%)', 'hsl(356 60% 38%)'],
   };
   readonly accent = computed(() => this.accentMap[this.accentColor()][0]);
   readonly accentDark = computed(() => this.accentMap[this.accentColor()][1]);
 
-  protected readonly stats: readonly Stat[] = [
-    { value: '30+', label: 'Campeones nacionales formados' },
-    { value: '25+', label: 'Años de experiencia' },
-    { value: 'Juez', label: 'Federación Nacional de Fisicoculturismo' },
-    { value: '5.0★', label: 'Valoración de sus clientes' },
-  ];
-
-  protected readonly credentials: readonly string[] = [
-    'Excompetidor de culturismo de alto nivel',
-    'Juez principal de la Federación Nacional (CR)',
-    '+30 campeones nacionales preparados',
-    'Coaching presencial en San José y online',
-  ];
-
-  protected readonly reviews: readonly Review[] = [
-    { quote: 'Adrián me preparó para mi primer Nacional y subí al podio. Su nivel de detalle en dieta y posing es de otro mundo.', name: 'Kevin Mora', role: 'Competidor Men’s Physique', initials: 'KM' },
-    { quote: 'Bajé 18 kg en 6 meses sin perder músculo. Por primera vez entendí cómo comer de verdad. Me cambió la vida.', name: 'Daniela Rojas', role: 'Clienta online', initials: 'DR' },
-    { quote: 'Más que un entrenador, un mentor. Su experiencia como juez se nota en cada corrección que te da.', name: 'José Castro', role: 'Campeón Nacional', initials: 'JC' },
-    { quote: 'Empecé desde cero a los 45 y hoy compito. Adrián cree en vos más de lo que vos crees en vos mismo.', name: 'Marvin Vargas', role: 'Classic Physique', initials: 'MV' },
-    { quote: 'El plan online es impecable: rutinas claras, ajustes cada semana y respuesta a todas mis dudas. Resultados reales.', name: 'Andrea Solís', role: 'Clienta online', initials: 'AS' },
-    { quote: 'Gané 9 kg de masa limpia en una temporada. La progresión de cargas y la técnica que me enseñó marcaron la diferencia.', name: 'Esteban Quirós', role: 'Fuerza y volumen', initials: 'EQ' },
-    { quote: 'Llegué a mi boda en la mejor forma de mi vida. Profesional, exigente y siempre pendiente de cada detalle.', name: 'Laura Méndez', role: 'Recomposición', initials: 'LM' },
-    { quote: 'Como competidor, su preparación para tarima es de élite: dieta, posing y mentalidad. Confianza total el día del show.', name: 'Diego Herrera', role: 'Culturismo', initials: 'DH' },
-  ];
-
-  protected readonly reviewsB: readonly Review[] = [
-    { quote: 'El plan online es impecable: rutinas claras, ajustes cada semana y respuesta a todas mis dudas. Resultados reales.', name: 'Andrea Solís', role: 'Clienta online', initials: 'AS' },
-    { quote: 'Como competidor, su preparación para tarima es de élite: dieta, posing y mentalidad. Confianza total el día del show.', name: 'Diego Herrera', role: 'Culturismo', initials: 'DH' },
-    { quote: 'Gané 9 kg de masa limpia en una temporada. La progresión de cargas y la técnica que me enseñó marcaron la diferencia.', name: 'Esteban Quirós', role: 'Fuerza y volumen', initials: 'EQ' },
-    { quote: 'Adrián me preparó para mi primer Nacional y subí al podio. Su nivel de detalle en dieta y posing es de otro mundo.', name: 'Kevin Mora', role: 'Competidor Men’s Physique', initials: 'KM' },
-    { quote: 'Llegué a mi boda en la mejor forma de mi vida. Profesional, exigente y siempre pendiente de cada detalle.', name: 'Laura Méndez', role: 'Recomposición', initials: 'LM' },
-    { quote: 'Más que un entrenador, un mentor. Su experiencia como juez se nota en cada corrección que te da.', name: 'José Castro', role: 'Campeón Nacional', initials: 'JC' },
-    { quote: 'Empecé desde cero a los 45 y hoy compito. Adrián cree en vos más de lo que vos crees en vos mismo.', name: 'Marvin Vargas', role: 'Classic Physique', initials: 'MV' },
-    { quote: 'Bajé 18 kg en 6 meses sin perder músculo. Por primera vez entendí cómo comer de verdad. Me cambió la vida.', name: 'Daniela Rojas', role: 'Clienta online', initials: 'DR' },
-  ];
-
-  protected readonly galleryItems: readonly GalleryItem[] = this.buildGallery();
-
-  private buildGallery(): GalleryItem[] {
-    const resultados = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16']
-      .map((n) => `/global/assets/img/resultados/${n}.webp`);
-    const gLabels = ['Definición','Fuerza','Escenario','Posing','Disciplina','Volumen','Simetría','Preparación','Constancia','Resultado','Physique','Detalle','Potencia','Forma','Enfoque','Victoria'];
-    // [height vh, aspect w/h, vertical offset vh, parallax depth]
-    const gRhythm: number[][] = [
-      [28, 0.82, -12, 0.04], [38, 1.30, 8, -0.03], [24, 0.80, 18, 0.05],
-      [40, 1.12, -3, 0.0], [26, 0.82, 15, 0.04], [32, 1.25, -16, -0.04],
-      [24, 0.78, 9, 0.05], [38, 1.10, -8, -0.03], [28, 0.85, 14, 0.04],
-      [24, 0.80, -17, 0.06], [40, 1.28, 3, -0.04], [27, 0.82, 17, 0.03],
-      [34, 1.15, -12, -0.05], [24, 0.80, 7, 0.05], [28, 0.84, 16, -0.03], [36, 1.20, -6, 0.04],
-    ];
-    // A shot is "big" when it's tall or wide; everything else is "small".
-    const isBig = (i: number) => {
-      const [h, ar] = gRhythm[i % gRhythm.length];
-      return h >= 36 || ar >= 1.2;
-    };
-    // Walk the list assigning mobile alignment: consecutive runs of 2+ small
-    // shots alternate left/right; lone smalls and all big shots stay centered.
-    const N = resultados.length;
-    const aligns: Array<'left' | 'right' | 'center'> = new Array(N).fill('center');
-    let i = 0;
-    while (i < N) {
-      if (isBig(i)) { i++; continue; }
-      let j = i;
-      while (j < N && !isBig(j)) j++;
-      if (j - i >= 2) {
-        for (let k = i; k < j; k++) aligns[k] = (k - i) % 2 === 0 ? 'left' : 'right';
-      }
-      i = j;
-    }
-    return resultados.map((src, idx) => {
-      const [h, ar, vy, depth] = gRhythm[idx % gRhythm.length];
-      return {
-        src,
-        label: gLabels[idx % gLabels.length],
-        depth,
-        vy,
-        w: `max(150px, ${(h * ar).toFixed(1)}vh)`,
-        h: `${h}vh`,
-        align: aligns[idx],
-      };
-    });
-  }
-
-  // Scroll-driven animation engine: pinned scrollytelling on desktop, simpler
-  // un-pinned scenes on phones. All listeners are tracked in `cleanup`.
   ngAfterViewInit(): void {
     const root: HTMLElement = this.host.nativeElement;
     const q = (sel: string) => root.querySelector(sel) as HTMLElement | null;
@@ -177,11 +94,6 @@ export class AdrianBadillaUiLandingPageComponent
       : [];
 
     let drawerOpen = false;
-    // Scroll-lock state. We CANNOT use `body { overflow: hidden }` here: the
-    // global `html, body { height: 100% }` makes that clip everything below the
-    // fold, collapsing the scrollable height to 0 and snapping the page to the
-    // top (hero). Instead we pin the body with `position: fixed` at the current
-    // offset and restore it on close, so the scroll position is preserved.
     let lockedScrollY = 0;
     const lockScroll = () => {
       lockedScrollY = window.scrollY;
@@ -197,9 +109,6 @@ export class AdrianBadillaUiLandingPageComponent
       document.body.style.left = '';
       document.body.style.right = '';
       document.body.style.width = '';
-      // Restore the offset INSTANTLY. The global `scroll-behavior: smooth` would
-      // otherwise animate this restore from the top (the page sits at 0 while the
-      // body is pinned) down to where the user was — an ugly hero→section glide.
       const root = document.documentElement;
       const prevBehavior = root.style.scrollBehavior;
       root.style.scrollBehavior = 'auto';
@@ -266,8 +175,6 @@ export class AdrianBadillaUiLandingPageComponent
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const ease = (t: number) => 1 - Math.pow(1 - t, 3);
     const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
-    // Phones get a different choreography (vertical galleries, proportional hero
-    // image, un-pinned scenes). Desktop keeps the pinned scrollytelling intact.
     const isMobile = () => window.innerWidth <= 820;
 
     type ScrubItem = {
@@ -344,7 +251,6 @@ export class AdrianBadillaUiLandingPageComponent
       }
     };
 
-    // pinned horizontal gallery
     const hSection = q('[data-h-gallery]');
     const hSticky = hSection ? (hSection.querySelector('[data-h-sticky]') as HTMLElement | null) : null;
     const hTrack = hSection ? (hSection.querySelector('[data-h-track]') as HTMLElement | null) : null;
@@ -352,9 +258,6 @@ export class AdrianBadillaUiLandingPageComponent
     const measureH = () => {
       if (!hSection || !hTrack) return;
       if (reduced || isMobile()) {
-        // Un-pin the horizontal scene. Phones show the gallery as a vertical
-        // stacked story (CSS), so clear the pin + any per-figure transforms left
-        // over from a desktop->mobile resize.
         hSection.style.height = 'auto';
         if (hSticky) { hSticky.style.position = 'static'; hSticky.style.height = 'auto'; }
         hTrack.style.transform = 'none';
@@ -365,7 +268,6 @@ export class AdrianBadillaUiLandingPageComponent
           const im = f.querySelector('img') as HTMLElement | null;
           if (im) im.style.filter = 'none';
         }
-        // Non-mobile reduced-motion users keep a horizontal scroll fallback.
         if (reduced && !isMobile() && hTrack.parentElement) {
           (hTrack.parentElement as HTMLElement).style.overflowX = 'auto';
         }
@@ -407,11 +309,10 @@ export class AdrianBadillaUiLandingPageComponent
         const img = fig.querySelector('img') as HTMLElement | null;
         if (img) img.style.filter = `grayscale(${(0.65 * d).toFixed(2)}) brightness(${(1 - 0.22 * d).toFixed(2)})`;
         const cap = fig.querySelector('.g-cap') as HTMLElement | null;
-        if (cap) cap.style.color = `rgba(${d < 0.45 ? '198,255,120' : '255,255,255'},${(0.35 + 0.5 * (1 - d)).toFixed(2)})`;
+        if (cap) cap.style.color = `rgba(${d < 0.45 ? '236,238,242' : '255,255,255'},${(0.35 + 0.5 * (1 - d)).toFixed(2)})`;
       }
     };
 
-    // hero pinned scrollytelling
     const scene = q('[data-hero-scene]');
     const frame = scene ? (scene.querySelector('[data-hero-frame]') as HTMLElement | null) : null;
     const heroContent = scene ? (scene.querySelector('[data-hero-content]') as HTMLElement | null) : null;
@@ -433,9 +334,6 @@ export class AdrianBadillaUiLandingPageComponent
       }
       if (heroCue) heroCue.style.opacity = clamp01(1 - p / 0.12).toFixed(3);
       const sT = ease(clamp01((p - 0.05) / 0.6));
-      // On phones the shrunk frame must stay well-proportioned (a portrait card,
-      // ~4:5) instead of the thin desktop sliver, and centered. On desktop it
-      // shrinks to a side panel as before.
       const targetW = isMobile() ? Math.min(vw * 0.82, 360) : Math.min(vw * 0.42, 600);
       const targetH = isMobile() ? targetW * 1.25 : vh * 0.5;
       frame.style.width = lerp(vw, targetW, sT).toFixed(1) + 'px';
@@ -466,7 +364,6 @@ export class AdrianBadillaUiLandingPageComponent
       }
     };
 
-    // about open scene
     const aScene = q('[data-about-scene]');
     const aPhoto = aScene ? (aScene.querySelector('[data-about-photo]') as HTMLElement | null) : null;
     const aText = aScene ? (aScene.querySelector('[data-about-text]') as HTMLElement | null) : null;
@@ -491,8 +388,6 @@ export class AdrianBadillaUiLandingPageComponent
     const easeIO = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
     const applyAboutScene = () => {
       if (!aScene || !aPhoto || !aText) return;
-      // On small screens the scene un-pins (CSS), so the about block flows
-      // normally — neutralize the scroll-driven slide/fade and let CSS own it.
       if (window.innerWidth <= 820) {
         aPhoto.style.transform = 'none'; aPhoto.style.opacity = '1';
         aText.style.transform = 'none'; aText.style.opacity = '1';
@@ -509,12 +404,9 @@ export class AdrianBadillaUiLandingPageComponent
       aText.style.opacity = (1 - t).toFixed(3);
     };
 
-    // services appears within about scene
     const sContent = aScene ? (aScene.querySelector('[data-services-content]') as HTMLElement | null) : null;
     const applyServicesScene = () => {
       if (!aScene || !sContent) return;
-      // On small screens the scene un-pins (CSS): show the plans at rest and
-      // mark them ready so the CTAs are clickable, without scroll-driven fading.
       if (window.innerWidth <= 820) {
         sContent.style.opacity = '1';
         sContent.style.transform = 'none';
@@ -523,25 +415,12 @@ export class AdrianBadillaUiLandingPageComponent
       }
       const total = aScene.offsetHeight - window.innerHeight;
       const p = total > 0 ? clamp01(-aScene.getBoundingClientRect().top / total) : 0;
-      // Complementary cross-fade with the "about" scene: services fades IN on
-      // exactly the same window/curve the about block fades OUT (easeIO over
-      // 0.20..0.72). That guarantees about_opacity + services_opacity === 1 at
-      // every scroll position, so the two never sit at ~0 simultaneously and the
-      // viewport is never left fully black between the two segments.
       const t = easeIO(clamp01((p - 0.2) / 0.52));
       sContent.style.opacity = t.toFixed(3);
       sContent.style.transform = `scale(${(0.94 + 0.06 * t).toFixed(3)})`;
-      // Only enable card hover once the scene is fully positioned, otherwise a
-      // card under the resting cursor would enter already-expanded while the
-      // section is still scaling/fading in. `svc-ready` flips pointer-events on.
       sContent.classList.toggle('svc-ready', t > 0.999);
     };
 
-    // ---- mobile-only "Tu preparador" cinematic ----
-    // Photo reveals (back-to-front) -> infinite zoom into the black shirt (which
-    // blends into the black bg) -> the text emerges from the black and the two
-    // groups (info / credentials) converge in. Desktop: element is display:none
-    // and this no-ops.
     const cine = q('[data-about-cine]');
     const cPhoto = cine?.querySelector('.abc-photo') as HTMLElement | null;
     const cName = cine?.querySelector('.abc-name') as HTMLElement | null;
@@ -553,8 +432,6 @@ export class AdrianBadillaUiLandingPageComponent
       const total = cine.offsetHeight - window.innerHeight;
       const p = total > 0 ? clamp01(-cine.getBoundingClientRect().top / total) : 0;
 
-      // A (0 -> .20): full image grows from small, "Adrián" name behind it.
-      // B (.20 -> .42): infinite zoom into the shirt; image dissolves to black.
       const a = ease(clamp01(p / 0.2));
       const b = ease(clamp01((p - 0.2) / 0.22));
       const photoFade = clamp01((p - 0.32) / 0.1);
@@ -567,10 +444,6 @@ export class AdrianBadillaUiLandingPageComponent
         cName.style.opacity = (a * 0.5 * (1 - nameFade)).toFixed(3);
       }
 
-      // C (.40 -> .60): text + checkboxes emerge from the black WITH the same
-      //   zoom feel (scale up + fade in), already assembled.
-      // D (.74 -> 1): on further scroll the two blocks split — info exits left,
-      //   credentials exit right — clearing the way for the plans below.
       const c = ease(clamp01((p - 0.4) / 0.2));
       const d = ease(clamp01((p - 0.74) / 0.26));
       if (cContent) {
@@ -598,7 +471,6 @@ export class AdrianBadillaUiLandingPageComponent
     on(window, 'load', () => { measureH(); tick(); });
     tick();
 
-    // count-up animation for the hero stats once the scene is in view
     const statSection = q('[data-ab-stats]');
     if (statSection && !reduced) {
       type StatCounter = { el: HTMLElement; num: number; suffix: string; dec: number };
@@ -635,7 +507,6 @@ export class AdrianBadillaUiLandingPageComponent
   ngOnDestroy(): void {
     if (this.hRaf) cancelAnimationFrame(this.hRaf);
     this.cleanup.forEach((fn) => fn());
-    // Clear any scroll-lock left behind if destroyed while the drawer is open.
     const body = document.body.style;
     body.overflow = '';
     body.position = '';

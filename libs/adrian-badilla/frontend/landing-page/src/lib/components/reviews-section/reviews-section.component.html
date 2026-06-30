@@ -1,0 +1,83 @@
+<section id="reviews" style="margin:0 auto; padding:clamp(56px,9vh,120px) 0;">
+  <div data-scrub style="max-width:1280px; margin:0 auto clamp(40px,6vw,60px); padding:0 clamp(20px,5vw,48px);">
+    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:16px;">
+      <span class="ab-chrome" style="font-family:'Anton',sans-serif; font-size:1.4rem;">04</span>
+      <span style="font-size:13px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--accent, hsl(356 88% 53%));">5.0 ★ en Google</span>
+    </div>
+    <h2 data-scrub data-mask="up" style="font-family:'Anton',sans-serif; font-weight:400; font-size:clamp(2.4rem,5.5vw,4.6rem); line-height:.92; letter-spacing:-.01em; text-transform:uppercase; margin:0; max-width:18ch;">Historias que hablan solas</h2>
+  </div>
+
+  <div class="rev-row" style="overflow:hidden; -webkit-mask-image:linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); mask-image:linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);">
+    <div class="rev-track" style="display:flex; gap:20px; width:max-content; padding:14px 10px; animation:ab-marqueeR 56s linear infinite;">
+      @for (rev of reviews; track $index) {
+        <article class="rev-card">
+          <div class="rev-card__top">
+            <span style="color:var(--accent, hsl(356 88% 53%)); font-size:15px; letter-spacing:.14em;">★★★★★</span>
+            <span class="rev-g">G</span>
+          </div>
+          <p class="rev-quote">{{ rev.quote }}</p>
+          <div class="rev-foot">
+            <div class="rev-avatar">{{ rev.initials }}</div>
+            <div>
+              <div style="font-weight:700; font-size:.96rem; color:#fff;">{{ rev.name }}</div>
+              <div style="font-size:.82rem; color:rgba(255,255,255,.5);">{{ rev.role }}</div>
+            </div>
+          </div>
+        </article>
+      }
+      @for (rev of reviews; track $index) {
+        <article class="rev-card" aria-hidden="true">
+          <div class="rev-card__top">
+            <span style="color:var(--accent, hsl(356 88% 53%)); font-size:15px; letter-spacing:.14em;">★★★★★</span>
+            <span class="rev-g">G</span>
+          </div>
+          <p class="rev-quote">{{ rev.quote }}</p>
+          <div class="rev-foot">
+            <div class="rev-avatar">{{ rev.initials }}</div>
+            <div>
+              <div style="font-weight:700; font-size:.96rem; color:#fff;">{{ rev.name }}</div>
+              <div style="font-size:.82rem; color:rgba(255,255,255,.5);">{{ rev.role }}</div>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+
+  <div class="rev-row" style="overflow:hidden; margin-top:20px; -webkit-mask-image:linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); mask-image:linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);">
+    <div class="rev-track" style="display:flex; gap:20px; width:max-content; padding:14px 10px; animation:ab-marqueeR 72s linear infinite;">
+      @for (rev of reviewsB; track $index) {
+        <article class="rev-card">
+          <div class="rev-card__top">
+            <span style="color:var(--accent, hsl(356 88% 53%)); font-size:15px; letter-spacing:.14em;">★★★★★</span>
+            <span class="rev-g">G</span>
+          </div>
+          <p class="rev-quote">{{ rev.quote }}</p>
+          <div class="rev-foot">
+            <div class="rev-avatar">{{ rev.initials }}</div>
+            <div>
+              <div style="font-weight:700; font-size:.96rem; color:#fff;">{{ rev.name }}</div>
+              <div style="font-size:.82rem; color:rgba(255,255,255,.5);">{{ rev.role }}</div>
+            </div>
+          </div>
+        </article>
+      }
+      @for (rev of reviewsB; track $index) {
+        <article class="rev-card" aria-hidden="true">
+          <div class="rev-card__top">
+            <span style="color:var(--accent, hsl(356 88% 53%)); font-size:15px; letter-spacing:.14em;">★★★★★</span>
+            <span class="rev-g">G</span>
+          </div>
+          <p class="rev-quote">{{ rev.quote }}</p>
+          <div class="rev-foot">
+            <div class="rev-avatar">{{ rev.initials }}</div>
+            <div>
+              <div style="font-weight:700; font-size:.96rem; color:#fff;">{{ rev.name }}</div>
+              <div style="font-size:.82rem; color:rgba(255,255,255,.5);">{{ rev.role }}</div>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>

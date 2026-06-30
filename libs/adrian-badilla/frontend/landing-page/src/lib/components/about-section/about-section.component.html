@@ -1,0 +1,130 @@
+<section id="about" data-about-scene style="position:relative; height:220vh;">
+  <span id="services" aria-hidden="true" style="position:absolute; top:104vh; left:0; width:1px; height:1px;"></span>
+
+  <div data-about-cine>
+    <div class="abc-stage">
+      <div class="abc-name" aria-hidden="true">Adrián</div>
+      <div class="abc-photo">
+        <img src="/global/assets/img/biografia.webp" alt="Adrián Badilla" loading="lazy">
+      </div>
+      <div class="abc-content">
+        <div class="abc-col abc-col--info">
+          <div class="abc-eyebrow">
+            <span class="abc-num">01</span>
+            <span class="abc-kicker">Tu preparador</span>
+          </div>
+          <h2 class="abc-title">Adrián Badilla</h2>
+          <div class="abc-handle">&#64;adrianbadilla74 · San José, Costa Rica</div>
+          <p class="abc-copy">Reconocido entrenador de culturismo y excompetidor. He formado a <strong>más de 30 campeones nacionales</strong> y fui juez principal de la Federación Nacional. Más que un entrenador, un mentor.</p>
+        </div>
+        <div class="abc-col abc-col--creds">
+          @for (cred of credentials; track $index) {
+            <div class="abc-cred"><span class="abc-check">✓</span><span>{{ cred }}</span></div>
+          }
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div data-about-pin style="position:sticky; top:0; height:100vh; display:flex; align-items:center; overflow:hidden;">
+    <div data-about-reveal style="max-width:1280px; margin:0 auto; padding:0 clamp(20px,5vw,48px); display:grid; grid-template-columns:1fr 1.05fr; gap:clamp(28px,5vw,72px); align-items:center; width:100%; will-change:opacity, transform;">
+      <div data-about-photo style="position:relative; min-height:320px; display:flex; align-items:flex-end; justify-content:center; will-change:transform, opacity;">
+        <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); font-family:'Anton',sans-serif; font-size:clamp(5rem,13vw,12rem); line-height:.8; color:transparent; -webkit-text-stroke:1px rgba(255,255,255,.08); text-transform:uppercase; white-space:nowrap; pointer-events:none; z-index:0;">Adrián</div>
+        <div style="position:absolute; inset:0; background:radial-gradient(circle at 50% 65%, hsl(356 88% 53% / .16) 0%, transparent 58%); filter:blur(8px); z-index:0;"></div>
+        <img src="/global/assets/img/biografia.webp" alt="Adrián Badilla" style="position:relative; z-index:1; width:100%; max-width:540px; height:auto; object-fit:contain; filter:drop-shadow(0 30px 50px rgba(0,0,0,.6)); will-change:transform;">
+      </div>
+      <div data-about-text style="will-change:transform, opacity;">
+        <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:18px;">
+          <span class="ab-chrome" style="font-family:'Anton',sans-serif; font-size:1.4rem;">01</span>
+          <span style="font-size:13px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--accent, hsl(356 88% 53%));">Tu preparador</span>
+        </div>
+        <h2 style="font-family:'Anton',sans-serif; font-weight:400; font-size:clamp(2.6rem,5.5vw,4.6rem); line-height:.92; letter-spacing:-.01em; text-transform:uppercase; margin:0 0 12px;">Adrián Badilla</h2>
+        <div style="font-size:1.05rem; color:rgba(255,255,255,.5); margin-bottom:26px;">&#64;adrianbadilla74 · San José, Costa Rica</div>
+        <p style="font-size:1.1rem; line-height:1.72; color:rgba(255,255,255,.82); margin:0 0 30px;">
+          Reconocido entrenador de culturismo y excompetidor, he formado a <strong style="color:#fff;">más de 30 campeones nacionales</strong>. Como figura destacada de la Federación Nacional de Fisicoculturismo de Costa Rica, fui juez principal asegurando competencias justas. Más que un entrenador, un mentor — mi pasión es llevarte a tu máximo potencial.
+        </p>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          @for (cred of credentials; track $index) {
+            <div style="display:flex; align-items:center; gap:14px;">
+              <span style="flex:none; width:28px; height:28px; border-radius:2px; background:hsl(356 88% 53% / .14); color:var(--accent, hsl(356 88% 53%)); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700;">✓</span>
+              <span style="font-size:1rem; color:rgba(255,255,255,.85);">{{ cred }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div data-services-content style="position:absolute; inset:0; z-index:3; display:flex; align-items:center; opacity:0; will-change:opacity, transform;">
+      <div style="width:100%; max-width:1200px; margin:0 auto; padding:0 clamp(20px,5vw,48px);">
+        <div class="svc-head" style="display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:24px; margin-bottom:clamp(24px,3vw,40px);">
+          <div>
+            <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:14px;">
+              <span class="ab-chrome" style="font-family:'Anton',sans-serif; font-size:1.4rem;">02</span>
+              <span style="font-size:13px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--accent, hsl(356 88% 53%));">Físico y nutrición</span>
+            </div>
+            <h2 style="font-family:'Anton',sans-serif; font-weight:400; font-size:clamp(2.2rem,4.6vw,3.8rem); line-height:.92; letter-spacing:-.01em; text-transform:uppercase; margin:0; max-width:14ch;">Planes para tu objetivo</h2>
+          </div>
+          <p style="font-size:1.02rem; line-height:1.55; color:rgba(255,255,255,.62); max-width:400px; margin:0;">Acompañamiento 100% personalizado según tu nivel y tus metas. Presencial en San José u online en todo el mundo — elegí el plan que se ajusta a vos.</p>
+        </div>
+
+        <div class="ab-plans">
+
+          <div class="ab-plan ab-plan--basic">
+            <div class="ab-plan__sweep" aria-hidden="true"></div>
+            <div class="ab-plan__top">
+              <span class="ab-plan__type">Esencial</span>
+            </div>
+            <div class="ab-plan__price"><span class="ab-plan__amount">₡20.000</span><span class="ab-plan__per">/mes</span></div>
+            <p class="ab-plan__desc">Para arrancar tu cambio con guía profesional.</p>
+            <a href="#contact" class="ab-plan__btn ab-plan__btn--ghost">Elegir plan</a>
+            <ul class="ab-plan__list">
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Rutina de entrenamiento personalizada</li>
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Plan de alimentación base</li>
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Guía de suplementación esencial</li>
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Ajustes mensuales según tu progreso</li>
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Soporte por WhatsApp</li>
+            </ul>
+          </div>
+
+          <div class="ab-plan ab-plan--pro">
+            <div class="ab-plan__sweep" aria-hidden="true"></div>
+            <div class="ab-plan__top">
+              <span class="ab-plan__type">Pro</span>
+              <span class="ab-plan__tag"><span class="ab-plan__tag-mark" aria-hidden="true">✦</span>Más popular</span>
+            </div>
+            <div class="ab-plan__price"><span class="ab-plan__amount">₡35.000</span><span class="ab-plan__per">/mes</span></div>
+            <p class="ab-plan__desc">El acompañamiento completo para resultados constantes.</p>
+            <a href="#contact" class="ab-btn-primary ab-plan__btn">Elegir plan</a>
+            <ul class="ab-plan__list">
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Todo lo del plan Esencial</li>
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Rutina y dieta 100% personalizadas</li>
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Ajustes y revisión cada semana</li>
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Seguimiento de cargas y técnica</li>
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Videollamada mensual de control</li>
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Soporte prioritario por WhatsApp</li>
+            </ul>
+          </div>
+
+          <div class="ab-plan ab-plan--elite">
+            <div class="ab-plan__sweep" aria-hidden="true"></div>
+            <div class="ab-plan__top">
+              <span class="ab-plan__type">Élite</span>
+            </div>
+            <div class="ab-plan__price"><span class="ab-plan__amount">₡60.000</span><span class="ab-plan__per">/mes</span></div>
+            <p class="ab-plan__desc">Preparación de nivel competitivo para tarima.</p>
+            <a href="#contact" class="ab-plan__btn ab-plan__btn--accent">Elegir plan</a>
+            <ul class="ab-plan__list">
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Todo lo del plan Pro</li>
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Preparación completa para competencia</li>
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Clínica de poses y presentación escénica</li>
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Estrategia física, nutricional y mental</li>
+              <li class="ab-plan__item"><span class="ab-plan__check"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.40009 10.7996L7.60009 13.9996L15.6001 5.99963" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Acompañamiento el día del torneo</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
