@@ -1,13 +1,14 @@
-<!-- ─── Tour FAB (above AI Chat FAB) ───────────────────────────────────────────── -->
+<!-- ─── Tour FAB (stacked above AI Coach FAB) ───────────────────────────────── -->
 @if (!isChatOpen()) {
 <lib-tour-fab />
 }
+
 <!-- ─── FAB ──────────────────────────────────────────────────────────────────── -->
 @if (!isChatOpen()) {
 <button
   class="chat-fab"
   [style.--fab-bottom-base]="chatFabBottomBase()"
-  [attr.aria-label]="'Abrir chat de nutrición'"
+  [attr.aria-label]="'Abrir Coach IA'"
   (click)="toggleChat()"
 >
   <i class="pi pi-sparkles"></i>
@@ -16,11 +17,11 @@
 
 <!-- ─── FULLSCREEN OVERLAY ──────────────────────────────────────────────────── -->
 @if (isChatOpen()) {
-<dialog open class="chat-overlay" aria-label="Chat panel">
+<dialog open class="chat-overlay" aria-label="Coach IA panel">
   <!-- Header -->
   <div class="chat-header">
     <div class="header-content">
-      <h2 class="chat-title">🤖 Asistente Nutricional</h2>
+      <h2 class="chat-title">🤖 Coach IA</h2>
     </div>
     <button
       pButton
@@ -38,7 +39,7 @@
     @if (messages().length === 0) {
     <div class="welcome-state">
       <div class="welcome-icon">🤖</div>
-      <h3>¡Hola! Soy tu asistente nutricional</h3>
+      <h3>¡Hola! Soy tu Coach IA</h3>
       <p>
         Puedo ayudarte con sugerencias de comida, información de alimentos y
         explicaciones sobre macronutrientes.
@@ -51,7 +52,8 @@
         }
       </div>
     </div>
-    } @else { @for (msg of messages(); track trackByTimestamp($index, msg)) {
+    } @else {
+    @for (msg of messages(); track trackByTimestamp($index, msg)) {
     <div
       class="message"
       [class.user]="msg.role === 'user'"
@@ -72,7 +74,9 @@
       <div class="avatar user-avatar">👤</div>
       }
     </div>
-    } @if (isLoading()) {
+    }
+
+    @if (isLoading()) {
     <div class="message assistant">
       <div class="avatar assistant-avatar">🤖</div>
       <div class="bubble assistant-bubble typing-bubble">
@@ -83,7 +87,9 @@
         </div>
       </div>
     </div>
-    } @if (store.hasPendingAISuggestion()) {
+    }
+
+    @if (hasPendingMealSuggestion()) {
     <div class="ai-suggestion-actions">
       <div class="suggestion-prompt">¿Te parece bien esta recomendación?</div>
       <div class="suggestion-buttons">
@@ -91,14 +97,14 @@
           pButton
           type="button"
           label="✅ Aplicar"
-          (click)="applyAISuggestion()"
+          (click)="applyMealSuggestion()"
           class="p-button-success"
         ></button>
         <button
           pButton
           type="button"
           label="❌ Rechazar"
-          (click)="rejectAISuggestion()"
+          (click)="rejectMealSuggestion()"
           class="p-button-text p-button-secondary"
         ></button>
       </div>
@@ -121,7 +127,9 @@
   <div class="chat-footer">
     <div class="chat-input-area">
       <div class="input-wrapper">
+        <label for="ai-coach-chat-input" class="visually-hidden">Mensaje al Coach IA</label>
         <input
+          id="ai-coach-chat-input"
           type="text"
           [(ngModel)]="inputText"
           (keydown)="onKeydown($event)"

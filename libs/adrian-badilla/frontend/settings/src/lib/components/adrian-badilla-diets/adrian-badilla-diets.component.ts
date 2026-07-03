@@ -22,6 +22,7 @@ import { MacroProgressTrackerComponent } from '../macro-progress-tracker/macro-p
 import { SkeletonLoaderComponent } from '@adrian-badilla/ui/shared';
 import { PremiumBannerComponent, billingStore } from '@adrian-badilla/billing';
 import { PendingPlanComponent } from '../pending-plan/pending-plan.component';
+import { aiStore } from '@adrian-badilla/ai';
 
 // Form state interface
 interface RouteFormState {
@@ -53,6 +54,7 @@ export class AdrianBadillaDietsComponent {
   private readonly mealTranslationService = inject(MealTranslationService);
   private readonly store = inject(settingsStoreDev);
   private readonly billing = inject(billingStore);
+  private readonly ai = inject(aiStore);
 
   /**
    * Load diet once when BOTH the store's userId and subscription are confirmed
@@ -233,7 +235,7 @@ export class AdrianBadillaDietsComponent {
 
   // --- Chat ------------------------------------------------------------------
   readonly openChatForMeal = (mealId: string) =>
-    this.store.openChatForMeal(mealId);
+    this.ai.openChatForMeal(mealId);
 
   readonly handleStatusChange = (event: {
     id: string;
