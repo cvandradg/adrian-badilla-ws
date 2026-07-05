@@ -1,37 +1,84 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import * as admin from 'firebase-admin';
 
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+/**
+ * Maximum documents processed per WriteBatch.
+ * Firestore hard-limits a WriteBatch to 500 operations.
+ * 100 keeps memory pressure low and gives headroom if field count grows.
+ */
+const BATCH_SIZE = 100;
+
 /**
  * expireSubscriptionsScheduler
  *
- * Scheduled Cloud Function that runs every 15 minutes and expires subscriptions
- * whose billing period has ended after a user-requested cancellation.
+ * ── Role: reconciliation safety-net, NOT the primary source of truth ──────────
+ *
+ * The ONVO webhook (handleOnvoWebhook) is the primary mechanism for updating
+ * subscription state. When a subscription ends, ONVO fires a webhook that
+ * immediately sets status = 'cancelled' in Firestore. That path is always
+ * preferred and continues to function exactly as designed.
+ *
+ * This scheduler activates ONLY when the webhook path fails:
+ *   - ONVO did not deliver the webhook (outage, transient error)
+ *   - The Firebase Function crashed before writing to Firestore
+ *   - A temporary network partition prevented the write
+ *
+ * Flow:
+ *
+ *   ONVO webhook (primary)
+ *   └─ handleOnvoWebhook → Firestore: status = 'cancelled'  (immediate)
+ *
+ *   expireSubscriptionsScheduler (safety-net)
+ *   └─ runs every 15 min → queries docs still 'active' past currentPeriodEnd
+ *      └─ writes status = 'cancelled' only for those that slipped through
  *
  * ── Trigger condition ─────────────────────────────────────────────────────────
  * A document is eligible when ALL three conditions are true simultaneously:
- *   subscription.cancelAtPeriodEnd == true   (user requested end-of-period cancel)
- *   subscription.status           == 'active' (still showing as active)
- *   subscription.currentPeriodEnd <= now()    (billing period has elapsed)
+ *   subscription.cancelAtPeriodEnd == true    (user requested end-of-period cancel)
+ *   subscription.status            == 'active' (still 'active' — webhook hasn't fired)
+ *   subscription.currentPeriodEnd  <= now()    (billing period has elapsed)
+ *
+ * ── Batch-loop strategy ───────────────────────────────────────────────────────
+ * Processes ALL eligible documents in a single execution using a while loop.
+ * Each iteration: query(limit(100)) → WriteBatch → commit.
+ * After each commit the updated documents are no longer 'active', so the next
+ * query naturally returns the following page without any cursor bookkeeping.
+ * Loop exits when the query returns an empty snapshot.
+ *
+ *   Example — 250 pending expirations:
+ *     Iteration 1: query → 100 docs → commit  (totalExpired = 100)
+ *     Iteration 2: query → 100 docs → commit  (totalExpired = 200)
+ *     Iteration 3: query →  50 docs → commit  (totalExpired = 250)
+ *     Iteration 4: query →   0 docs → break
  *
  * ── What it writes ────────────────────────────────────────────────────────────
- * Per eligible document (merged — all other fields are left untouched):
+ * Per eligible document — only these three fields change:
  *   subscription.status        = 'cancelled'
  *   subscription.accessEndedAt = serverTimestamp()
  *   subscription.updatedAt     = serverTimestamp()
  *
- * Fields never modified: onvoSubscriptionId, currentPeriodEnd, onvoCustomerId,
- *   plan, billingCycle, cancelAtPeriodEnd, canceledAt.
+ * Fields NEVER modified:
+ *   plan, onvoSubscriptionId, onvoCustomerId, currentPeriodEnd,
+ *   billingCycle, cancelAtPeriodEnd, canceledAt, cancelRequestedAt.
  *
  * ── Idempotency ───────────────────────────────────────────────────────────────
- * The query filters on status == 'active'. Once a document is written with
- * status = 'cancelled', it no longer satisfies the query and is never touched
- * by subsequent executions — naturally idempotent.
+ * The query filters on status == 'active'. A document set to 'cancelled' in any
+ * previous execution — by this scheduler, a webhook, or any other path — will
+ * never match the query again. Running this scheduler N times always produces
+ * the same final state.
  *
  * ── Cost profile ──────────────────────────────────────────────────────────────
- * Reads  : 0 when no documents qualify (Firestore charges 0 reads on empty results).
- *          Up to 100 reads when documents are found.
- * Writes : 0–100 per execution (one batch.update per eligible doc).
- * The limit(100) cap ensures cost is bounded per execution.
+ * The query uses a fully defined composite index on three fields
+ * (cancelAtPeriodEnd, status, currentPeriodEnd — see firestore.indexes.json).
+ * Firestore only scans documents that satisfy all three filter conditions;
+ * no full-collection scan occurs regardless of user count.
+ *
+ * In the common case (no subscriptions expired since last tick) the query
+ * returns immediately after reading the minimal index entries. Cost is kept
+ * to a minimum: only genuinely eligible documents are read, and only those
+ * are written.
  *
  * ── Composite index required ─────────────────────────────────────────────────
  * Collection : users
@@ -41,79 +88,115 @@ import * as admin from 'firebase-admin';
  * Defined in : firestore.indexes.json
  *
  * ── Relationship with syncSubscriptionStatus ─────────────────────────────────
- * syncSubscriptionStatus is a daily safety-net that handles both cancelled and
- * past_due cases. This scheduler is the fast path: it fires every 15 minutes
- * and handles only the cancelled case, ensuring users lose access within
- * ≤ 15 minutes of currentPeriodEnd regardless of ONVO webhook delivery.
+ * syncSubscriptionStatus (daily, 03:00 UTC) handles both 'cancelled' and
+ * 'past_due' cases as a broader safety-net. This scheduler is a narrower,
+ * faster path limited to user-requested cancellations, ensuring access ends
+ * within ≤ 15 minutes of currentPeriodEnd.
  *
  * ── External calls ────────────────────────────────────────────────────────────
  * None. No ONVO calls, no HTTP requests. Firestore-only.
  *
- * Schedule: every 15 minutes (cron: "* /15 * * * *" — space added to avoid comment termination)
- * TimeZone: UTC
+ * Schedule : every 15 minutes
+ * TimeZone : UTC
  */
 export const expireSubscriptionsScheduler = onSchedule(
   { schedule: '*/15 * * * *', timeZone: 'UTC' },
   async () => {
     const db = admin.firestore();
-    const now = admin.firestore.Timestamp.now();
-
-    // ── Query ─────────────────────────────────────────────────────────────────
-    // Three-field composite query — fully indexed (see firestore.indexes.json).
-    // limit(100) bounds cost per execution and prevents memory pressure.
-    let snapshot: admin.firestore.QuerySnapshot;
-    try {
-      snapshot = await db
-        .collection('users')
-        .where('subscription.cancelAtPeriodEnd', '==', true)
-        .where('subscription.status', '==', 'active')
-        .where('subscription.currentPeriodEnd', '<=', now)
-        .limit(100)
-        .get();
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      console.error(
-        `[expireSubscriptionsScheduler] Firestore query failed error="${msg}"`
-      );
-      throw err;
-    }
-
-    // ── Fast exit when nothing to do ──────────────────────────────────────────
-    // No log: keeping Cloud Logging costs zero on the common (idle) path.
-    if (snapshot.empty) {
-      return;
-    }
-
-    // ── Build batch ───────────────────────────────────────────────────────────
-    // WriteBatch is correct here: max 500 ops per batch, we cap at 100 docs.
-    // Each document requires exactly 1 update → max 100 ops, well within limit.
-    const batch = db.batch();
     const serverTimestamp = admin.firestore.FieldValue.serverTimestamp();
 
-    for (const docSnap of snapshot.docs) {
-      batch.update(docSnap.ref, {
-        'subscription.status': 'cancelled',
-        'subscription.accessEndedAt': serverTimestamp,
-        'subscription.updatedAt': serverTimestamp,
-      });
+    // Capture `now` once so every batch in this execution uses the same
+    // reference point. Documents that expire mid-execution are picked up
+    // on the next tick, which is correct and avoids unbounded loop growth.
+    const now = admin.firestore.Timestamp.now();
+
+    let totalExpired = 0;
+    let startedAt = 0; // set on first non-empty batch to avoid useless Date.now() calls
+
+    // ── Batch loop ────────────────────────────────────────────────────────────
+    // Each iteration processes one page of BATCH_SIZE documents.
+    // The loop exits when the query returns an empty snapshot, which happens
+    // once every eligible document has been updated and the index no longer
+    // returns any 'active' + 'cancelAtPeriodEnd' + expired documents.
+    while (true) {
+      let snapshot: admin.firestore.QuerySnapshot;
+
+      try {
+        snapshot = await db
+          .collection('users')
+          .where('subscription.cancelAtPeriodEnd', '==', true)
+          .where('subscription.status', '==', 'active')
+          .where('subscription.currentPeriodEnd', '<=', now)
+          .limit(BATCH_SIZE)
+          .get();
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.error(
+          '[expireSubscriptionsScheduler] Firestore query failed ' +
+            `totalExpiredSoFar=${totalExpired} error="${msg}"`
+        );
+        throw err;
+      }
+
+      // ── Exit condition ──────────────────────────────────────────────────────
+      // No documents left to process — either none were ever pending or all
+      // previous batches already handled them.
+      if (snapshot.empty) {
+        break;
+      }
+
+      // ── Mark start time on first non-empty batch ────────────────────────────
+      // This avoids generating any timestamps (or logs) on fully idle ticks.
+      if (totalExpired === 0) {
+        startedAt = Date.now();
+        console.info(
+          '[expireSubscriptionsScheduler] processing started — ' +
+            'found documents to expire'
+        );
+      }
+
+      // ── Build and commit WriteBatch ─────────────────────────────────────────
+      // One batch per page: max BATCH_SIZE updates per commit call (1 RPC).
+      // WriteBatch is correct here because BATCH_SIZE (100) is well within
+      // Firestore's 500-operation batch limit.
+      const batch = db.batch();
+
+      for (const docSnap of snapshot.docs) {
+        batch.update(docSnap.ref, {
+          'subscription.status': 'cancelled',
+          'subscription.accessEndedAt': serverTimestamp,
+          'subscription.updatedAt': serverTimestamp,
+        });
+      }
+
+      try {
+        await batch.commit();
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.error(
+          '[expireSubscriptionsScheduler] batch.commit failed ' +
+            `batchSize=${snapshot.size} totalExpiredSoFar=${totalExpired} error="${msg}"`
+        );
+        throw err;
+      }
+
+      totalExpired += snapshot.size;
+
+      // ── Early exit optimisation ─────────────────────────────────────────────
+      // If this page had fewer docs than the limit, there are no more pages.
+      // Skip the final empty-query round-trip.
+      if (snapshot.size < BATCH_SIZE) {
+        break;
+      }
     }
 
-    // ── Commit ────────────────────────────────────────────────────────────────
-    try {
-      await batch.commit();
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      console.error(
-        `[expireSubscriptionsScheduler] batch.commit failed ` +
-          `docs=${snapshot.size} error="${msg}"`
+    // ── Final log — only when work was done ───────────────────────────────────
+    if (totalExpired > 0) {
+      const elapsedMs = Date.now() - startedAt;
+      console.info(
+        '[expireSubscriptionsScheduler] complete — ' +
+          `expired=${totalExpired} elapsed=${elapsedMs}ms`
       );
-      throw err;
     }
-
-    // ── Log only when work was done ───────────────────────────────────────────
-    const uids = snapshot.docs.map((d) => d.id).join(', ');
-    console.info(
-      `[expireSubscriptionsScheduler] expired ${snapshot.size} subscription(s) uid=[${uids}]`
-    );
   }
 );

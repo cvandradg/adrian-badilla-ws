@@ -561,6 +561,11 @@ async function persistSubscriptionState(params: PersistParams): Promise<void> {
 
             renewalFailCount: 0,
 
+            // Remove the lock timestamp written by acquireSubscriptionLock.
+            // Leaving it would pollute the document indefinitely since
+            // persistSubscriptionState uses { merge: true }.
+            pendingLockedAt: admin.firestore.FieldValue.delete(),
+
             updatedAt: now,
           },
         },

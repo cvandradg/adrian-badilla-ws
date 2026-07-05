@@ -62,41 +62,24 @@
     <div class="smc-card__row">
       <span class="smc-card__label">Estado</span>
       <span class="smc-card__badge smc-card__badge--expiring"
-        >Cancelación programada</span
+        >Suscripción cancelada</span
       >
     </div>
     @if (store.expirationDate(); as expDate) {
     <p class="smc-card__notice">
-      Tu acceso continuará hasta:
+      Tu suscripción ha sido cancelada. Puedes disfrutar del acceso Premium
+      hasta:
       <strong>{{ expDate | date : 'dd/MM/yyyy' }}</strong>
     </p>
     }
 
-    <p class="smc-card__features-label">Seguirás teniendo acceso a:</p>
+    <p class="smc-card__features-label">Hasta esa fecha mantendrás acceso a:</p>
     <ul class="smc-card__features" aria-label="Características incluidas">
       <li>Dietas</li>
       <li>Rutinas</li>
       <li>IA</li>
       <li>Seguimiento</li>
     </ul>
-  </div>
-
-  <div class="smc-card__actions">
-    <button
-      type="button"
-      class="smc-card__btn smc-card__btn--primary"
-      [disabled]="store.reactivateLoading()"
-      (click)="store.reactivateSubscription()"
-    >
-      @if (store.reactivateLoading()) {
-      <span class="smc-card__spinner" aria-hidden="true"></span>
-      Reactivando...
-      } @else { Reactivar suscripción }
-    </button>
-
-    @if (store.reactivateError()) {
-    <p class="smc-card__error" role="alert">{{ store.reactivateError() }}</p>
-    }
   </div>
 </div>
 

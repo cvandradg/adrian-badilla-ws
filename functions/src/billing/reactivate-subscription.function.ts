@@ -60,22 +60,43 @@ export const reactivateSubscription = onCall(
     );
 
     // ── Update Firestore — only after ONVO confirms success ───────────────────
-    await admin
-      .firestore()
-      .collection('users')
-      .doc(uid)
-      .set(
-        {
-          subscription: {
-            cancelAtPeriodEnd: false,
-            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    // Wrapped in a transaction so that two concurrent reactivation calls cannot
+    // interleave and leave a partial write. The try/catch converts any Firestore
+    // error into a structured HttpsError so the caller always gets a legible
+    // message instead of a generic INTERNAL. A structured error log is emitted
+    // to flag the ONVO ↔ Firestore divergence for support and monitoring.
+    try {
+      await admin.firestore().runTransaction(async (tx) => {
+        const userRef = admin.firestore().collection('users').doc(uid);
+        tx.set(
+          userRef,
+          {
+            subscription: {
+              cancelAtPeriodEnd: false,
+              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            },
           },
-        },
-        { merge: true }
+          { merge: true }
+        );
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      // ONVO already confirmed the reactivation — Firestore is now out of sync.
+      // Log with enough context for support to manually reconcile if needed.
+      console.error(
+        `[reactivateSubscription] DIVERGENCE: ONVO reactivated subscriptionId=${subscriptionId}` +
+          ` but Firestore write failed for uid=${uid}.` +
+          ` cancelAtPeriodEnd is still true in Firestore. error="${msg}"`
       );
+      throw new HttpsError(
+        'internal',
+        'Subscription reactivated in payment provider but state could not be saved. ' +
+          `Please contact support. (${msg})`
+      );
+    }
 
     console.info(
-      `[billing] reactivateSubscription: uid=${uid}, subscriptionId=${subscriptionId}`
+      `[reactivateSubscription] success uid=${uid} subscriptionId=${subscriptionId}`
     );
 
     return { success: true };
@@ -91,7 +112,20 @@ export const reactivateSubscription = onCall(
 async function resolveReactivatableSubscriptionId(
   uid: string
 ): Promise<string> {
-  const userSnap = await admin.firestore().collection('users').doc(uid).get();
+  let userSnap: admin.firestore.DocumentSnapshot;
+  try {
+    userSnap = await admin.firestore().collection('users').doc(uid).get();
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(
+      `[reactivateSubscription] Firestore read failed uid=${uid} error="${msg}"`
+    );
+    throw new HttpsError(
+      'internal',
+      `Could not read subscription data: ${msg}`
+    );
+  }
+
   const sub = userSnap.data()?.['subscription'] as
     | {
         onvoSubscriptionId?: string;

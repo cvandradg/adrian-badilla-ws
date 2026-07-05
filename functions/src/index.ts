@@ -10,7 +10,6 @@ export { resolveCustomer } from './billing/resolve-customer.function';
 export { createSubscription } from './billing/create-subscription.function';
 export { getSubscriptionStatus } from './billing/get-subscription-status.function';
 export { cancelSubscription } from './billing/cancel-subscription.function';
-export { reactivateSubscription } from './billing/reactivate-subscription.function';
 export { handleOnvoWebhook } from './billing/handle-onvo-webhook.function';
 export { syncSubscriptionStatus } from './billing/sync-subscription-status.function';
 export { expireSubscriptionsScheduler } from './billing/expire-subscriptions-scheduler.function';

@@ -18,7 +18,7 @@ import { billingStore } from '../../store/billing.store';
  *     → plan + status + next renewal date + "Cancelar suscripción" button
  *
  *  2. Cancellation scheduled (willExpire = true)
- *     → expiration date + features list + "Reactivar suscripción" button
+ *     → informational message with access-until date, no action button
  *
  *  3. No active subscription
  *     → informational message + "Suscribirme" button (navigates to /billing/payment)
@@ -26,7 +26,7 @@ import { billingStore } from '../../store/billing.store';
  * ── Design invariants ──────────────────────────────────────────────────────
  *  - Zero business logic — all state from billingStore.
  *  - Cancel requires confirmation dialog before calling store.cancelSubscription().
- *  - Buttons are disabled while cancelLoading() or reactivateLoading() is true.
+ *  - Buttons are disabled while cancelLoading() is true.
  *  - Errors are shown inline below the action button.
  *  - "Suscribirme" only navigates; does NOT modify checkout state.
  */

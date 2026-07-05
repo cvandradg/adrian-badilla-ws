@@ -49,7 +49,20 @@ export const cancelSubscription = onCall(
 
     // ── Resolve subscription from Firestore (never from client input) ──────────
     // Security: the client cannot supply a different user's subscriptionId.
-    const subscriptionId = await resolveActiveSubscriptionId(uid);
+    const { subscriptionId, alreadyCancelled } =
+      await resolveActiveSubscriptionId(uid);
+
+    // ── Idempotency guard ─────────────────────────────────────────────────────
+    // If cancelAtPeriodEnd is already true, ONVO was already notified in a prior
+    // invocation (double-click, network retry). Return success immediately without
+    // calling ONVO again — a second DELETE would fail with a non-200 response.
+    if (alreadyCancelled) {
+      console.info(
+        `[cancelSubscription] already cancelled uid=${uid} subscriptionId=${subscriptionId} — returning success`
+      );
+      return { success: true };
+    }
+
     console.info(
       `[cancelSubscription] subscriptionId resolved uid=${uid} subscriptionId=${subscriptionId}`
     );
@@ -114,7 +127,15 @@ export const cancelSubscription = onCall(
  * Throws HttpsError if no active subscription is found.
  * The subscriptionId is NEVER accepted from the calling client.
  */
-async function resolveActiveSubscriptionId(uid: string): Promise<string> {
+interface ResolvedSubscription {
+  subscriptionId: string;
+  /** True when cancelAtPeriodEnd is already set — caller should skip ONVO DELETE. */
+  alreadyCancelled: boolean;
+}
+
+async function resolveActiveSubscriptionId(
+  uid: string
+): Promise<ResolvedSubscription> {
   console.info(`[cancelSubscription] reading Firestore users/${uid}`);
 
   let userSnap: admin.firestore.DocumentSnapshot;
@@ -136,13 +157,14 @@ async function resolveActiveSubscriptionId(uid: string): Promise<string> {
   );
 
   const sub = userSnap.data()?.['subscription'] as
-    | { onvoSubscriptionId?: string; status?: string }
+    | { onvoSubscriptionId?: string; status?: string; cancelAtPeriodEnd?: boolean }
     | undefined;
 
   console.info(
     `[cancelSubscription] subscription data uid=${uid} ` +
       `onvoSubscriptionId=${sub?.onvoSubscriptionId ?? 'undefined'} ` +
-      `status=${sub?.status ?? 'undefined'}`
+      `status=${sub?.status ?? 'undefined'} ` +
+      `cancelAtPeriodEnd=${sub?.cancelAtPeriodEnd ?? 'undefined'}`
   );
 
   if (!sub?.onvoSubscriptionId) {
@@ -159,7 +181,10 @@ async function resolveActiveSubscriptionId(uid: string): Promise<string> {
     );
   }
 
-  return sub.onvoSubscriptionId;
+  return {
+    subscriptionId: sub.onvoSubscriptionId,
+    alreadyCancelled: sub.cancelAtPeriodEnd === true,
+  };
 }
 
 // ─── ONVO API call ────────────────────────────────────────────────────────────

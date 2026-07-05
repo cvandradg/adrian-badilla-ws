@@ -61,10 +61,18 @@ export const syncSubscriptionStatus = onSchedule(
       const newStatus =
         sub?.cancelAtPeriodEnd === true ? 'cancelled' : 'past_due';
 
-      batch.update(docSnap.ref, {
+      const updateFields: Record<string, unknown> = {
         'subscription.status': newStatus,
         'subscription.updatedAt': serverTimestamp,
-      });
+      };
+
+      // Mirror the accessEndedAt field written by expireSubscriptionsScheduler
+      // so the audit trail is consistent regardless of which scheduler fires first.
+      if (newStatus === 'cancelled') {
+        updateFields['subscription.accessEndedAt'] = serverTimestamp;
+      }
+
+      batch.update(docSnap.ref, updateFields);
 
       if (newStatus === 'cancelled') {
         canceledCount++;

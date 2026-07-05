@@ -40,8 +40,4 @@ export class SubscriptionPageComponent {
   onCancelSubscription(): void {
     this.store.cancelSubscription();
   }
-
-  onReactivateSubscription(): void {
-    this.store.reactivateSubscription();
-  }
 }

@@ -185,22 +185,6 @@ export function withSubscriptionFeature() {
       }),
 
       /**
-       * True when the user can reactivate their subscription.
-       * Equivalent to `willExpire`: the period has not ended so ONVO still
-       * allows undoing the scheduled cancellation.
-       */
-      canReactivate: computed(() => {
-        const sub = s.subscription();
-        if (sub?.status !== 'active') return false;
-        if (sub?.cancelAtPeriodEnd !== true) return false;
-        const periodEnd = sub?.currentPeriodEnd ?? sub?.expiresAt ?? null;
-        if (!periodEnd) return false;
-        const endDate =
-          periodEnd instanceof Date ? periodEnd : periodEnd.toDate();
-        return endDate.getTime() > Date.now();
-      }),
-
-      /**
        * The date when Premium access will end due to a pending cancellation.
        * Returns null when there is no scheduled cancellation.
        * Use alongside `willExpire` to show "Tu suscripción finalizará el [date]".
@@ -251,10 +235,13 @@ export function withSubscriptionFeature() {
       function onSubscriptionNext(raw: Subscription | null): void {
         const subscription = normalizeSubscription(raw);
 
-        console.log('[BILLING] subscription update', {
+        // Debug-only log — excluded from production builds to avoid exposing
+        // payment error details (lastPaymentError) in the browser console.
+        // Use "Verbose" level in DevTools to see these messages during development.
+        // eslint-disable-next-line no-console
+        console.debug('[BILLING:dev] subscription update', {
           rawStatus: raw?.status ?? null,
           normalizedStatus: subscription?.status ?? null,
-          lastPaymentError: subscription?.lastPaymentError ?? null,
           plan: subscription?.plan ?? null,
         });
 
