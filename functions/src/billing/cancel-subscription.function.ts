@@ -27,7 +27,8 @@ const onvoApiUrl = defineString('ONVO_API_URL', {
  *
  * Security:
  *  - Requires authenticated user (request.auth).
- *  - Validates that the subscriptionId belongs to the caller before calling ONVO.
+ *  - The subscriptionId is NEVER accepted from the client — it is resolved
+ *    from Firestore using the authenticated uid, preventing IDOR attacks.
  *
  * Secrets: ONVO_SECRET_KEY
  * Config:  ONVO_API_URL
@@ -44,68 +45,121 @@ export const cancelSubscription = onCall(
     }
 
     const uid = request.auth.uid;
-    const { subscriptionId } = request.data as { subscriptionId: string };
+    console.info(`[cancelSubscription] start uid=${uid}`);
 
-    if (!subscriptionId || typeof subscriptionId !== 'string') {
-      throw new HttpsError('invalid-argument', 'subscriptionId is required.');
-    }
-
-    // ── Ownership validation ───────────────────────────────────────────────────
-    await assertSubscriptionOwnership(uid, subscriptionId);
+    // ── Resolve subscription from Firestore (never from client input) ──────────
+    // Security: the client cannot supply a different user's subscriptionId.
+    const subscriptionId = await resolveActiveSubscriptionId(uid);
+    console.info(
+      `[cancelSubscription] subscriptionId resolved uid=${uid} subscriptionId=${subscriptionId}`
+    );
 
     // ── Cancel in ONVO ─────────────────────────────────────────────────────────
+    console.info(
+      `[cancelSubscription] calling ONVO DELETE /v1/subscriptions/${subscriptionId}`
+    );
     await cancelOnvoSubscription(
       subscriptionId,
       onvoSecretKey.value(),
       onvoApiUrl.value()
     );
+    console.info(
+      `[cancelSubscription] ONVO confirmed cancellation subscriptionId=${subscriptionId}`
+    );
 
     // ── Update Firestore — only after ONVO confirms success ───────────────────
-    await admin
-      .firestore()
-      .collection('users')
-      .doc(uid)
-      .set(
-        {
-          subscription: {
-            cancelAtPeriodEnd: true,
-            // P6: record when the cancellation was requested for audit/support.
-            // Different from the moment access actually ends (currentPeriodEnd).
-            canceledAt: admin.firestore.FieldValue.serverTimestamp(),
-            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    console.info(
+      `[cancelSubscription] updating Firestore cancelAtPeriodEnd=true uid=${uid}`
+    );
+    try {
+      await admin
+        .firestore()
+        .collection('users')
+        .doc(uid)
+        .set(
+          {
+            subscription: {
+              cancelAtPeriodEnd: true,
+              // Records when the cancellation was requested for audit/support.
+              // Different from the moment access actually ends (currentPeriodEnd).
+              canceledAt: admin.firestore.FieldValue.serverTimestamp(),
+              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            },
           },
-        },
-        { merge: true }
+          { merge: true }
+        );
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error(
+        `[cancelSubscription] Firestore update failed uid=${uid} error="${msg}"`
       );
+      throw new HttpsError(
+        'internal',
+        `Failed to persist cancellation for uid=${uid}: ${msg}`
+      );
+    }
 
     console.info(
-      `[billing] cancelSubscription: uid=${uid}, subscriptionId=${subscriptionId}`
+      `[cancelSubscription] success uid=${uid} subscriptionId=${subscriptionId}`
     );
 
     return { success: true };
   }
 );
 
-// ─── Ownership validation ─────────────────────────────────────────────────────
+// ─── Firestore resolution ─────────────────────────────────────────────────────
 
-async function assertSubscriptionOwnership(
-  uid: string,
-  subscriptionId: string
-): Promise<void> {
-  const userSnap = await admin.firestore().collection('users').doc(uid).get();
-  const stored = userSnap.data()?.['subscription']?.['onvoSubscriptionId'] as
-    | string
-    | undefined;
+/**
+ * Reads the authenticated user's subscriptionId from Firestore.
+ * Throws HttpsError if no active subscription is found.
+ * The subscriptionId is NEVER accepted from the calling client.
+ */
+async function resolveActiveSubscriptionId(uid: string): Promise<string> {
+  console.info(`[cancelSubscription] reading Firestore users/${uid}`);
 
-  if (!stored || stored !== subscriptionId) {
-    console.warn(
-      `[billing] cancelSubscription: ownership check failed uid=${uid}, requested=${subscriptionId}, stored=${stored}`
+  let userSnap: admin.firestore.DocumentSnapshot;
+  try {
+    userSnap = await admin.firestore().collection('users').doc(uid).get();
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(
+      `[cancelSubscription] Firestore read failed uid=${uid} error="${msg}"`
     );
     throw new HttpsError(
-      'permission-denied',
-      'Subscription does not belong to this user.'
+      'internal',
+      `Could not read subscription data for uid=${uid}: ${msg}`
     );
   }
+
+  console.info(
+    `[cancelSubscription] Firestore doc found=${userSnap.exists} uid=${uid}`
+  );
+
+  const sub = userSnap.data()?.['subscription'] as
+    | { onvoSubscriptionId?: string; status?: string }
+    | undefined;
+
+  console.info(
+    `[cancelSubscription] subscription data uid=${uid} ` +
+      `onvoSubscriptionId=${sub?.onvoSubscriptionId ?? 'undefined'} ` +
+      `status=${sub?.status ?? 'undefined'}`
+  );
+
+  if (!sub?.onvoSubscriptionId) {
+    throw new HttpsError(
+      'not-found',
+      'No subscription found for this account.'
+    );
+  }
+
+  if (sub.status !== 'active') {
+    throw new HttpsError(
+      'failed-precondition',
+      `Only active subscriptions can be cancelled. Current status: ${sub.status}`
+    );
+  }
+
+  return sub.onvoSubscriptionId;
 }
 
 // ─── ONVO API call ────────────────────────────────────────────────────────────
@@ -127,18 +181,39 @@ async function cancelOnvoSubscription(
   apiKey: string,
   apiBase: string
 ): Promise<void> {
-  const response = await fetch(
-    `${apiBase}/v1/subscriptions/${subscriptionId}`,
-    {
+  const url = `${apiBase}/v1/subscriptions/${subscriptionId}`;
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${apiKey}` },
-    }
-  );
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(
+      `[cancelSubscription] fetch failed subscriptionId=${subscriptionId} error="${msg}"`
+    );
+    throw new HttpsError(
+      'internal',
+      `Network error while contacting payment provider: ${msg}`
+    );
+  }
 
   if (!response.ok) {
+    let body = '<unreadable>';
+    try {
+      body = await response.text();
+    } catch {
+      // ignore — best-effort
+    }
     console.error(
-      `[billing] ONVO DELETE /v1/subscriptions/${subscriptionId} failed: HTTP ${response.status}`
+      `[cancelSubscription] ONVO DELETE failed subscriptionId=${subscriptionId} ` +
+        `status=${response.status} body=${body}`
     );
-    throw new HttpsError('internal', 'Could not cancel subscription.');
+    throw new HttpsError(
+      'internal',
+      `Payment provider rejected cancellation (HTTP ${response.status}): ${body}`
+    );
   }
 }

@@ -59,14 +59,14 @@ export const syncSubscriptionStatus = onSchedule(
 
       // Distinguish between user-requested cancellations and unexpected lapses.
       const newStatus =
-        sub?.cancelAtPeriodEnd === true ? 'canceled' : 'past_due';
+        sub?.cancelAtPeriodEnd === true ? 'cancelled' : 'past_due';
 
       batch.update(docSnap.ref, {
         'subscription.status': newStatus,
         'subscription.updatedAt': serverTimestamp,
       });
 
-      if (newStatus === 'canceled') {
+      if (newStatus === 'cancelled') {
         canceledCount++;
       } else {
         pastDueCount++;
@@ -77,7 +77,7 @@ export const syncSubscriptionStatus = onSchedule(
 
     console.info(
       `[billing] syncSubscriptionStatus: processed ${snapshot.size} subscription(s) ` +
-        `(canceled=${canceledCount}, past_due=${pastDueCount}).`
+        `(cancelled=${canceledCount}, past_due=${pastDueCount}).`
     );
   }
 );

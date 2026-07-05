@@ -13,6 +13,7 @@ export { PremiumBannerComponent } from './lib/components/premium-banner/premium-
 export { SubscriptionCardComponent } from './lib/components/subscription-card/subscription-card.component';
 export { SubscriptionStatusChipComponent } from './lib/components/subscription-status-chip/subscription-status-chip.component';
 export { CheckoutButtonComponent } from './lib/components/checkout-button/checkout-button.component';
+export { SubscriptionManagementCardComponent } from './lib/components/subscription-management-card/subscription-management-card.component';
 
 // ── Models ────────────────────────────────────────────────────────────────────
 export type {

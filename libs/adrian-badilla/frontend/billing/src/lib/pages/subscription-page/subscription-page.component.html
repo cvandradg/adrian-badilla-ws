@@ -28,10 +28,32 @@
 
     @if (store.cancelError()) {
     <p class="subscription-page__error">{{ store.cancelError() }}</p>
-    } @if (store.cancelSuccess()) {
+    }
+  </section>
+  } @if (store.willExpire()) {
+  <section class="subscription-page__expiry-notice">
+    <p class="subscription-page__expiry-text">
+      Tu suscripción permanecerá activa hasta el
+      <strong>{{ store.expirationDate() | date : 'dd/MM/yyyy' }}</strong
+      >. A partir de esa fecha perderás el acceso Premium.
+    </p>
+
+    <button
+      class="subscription-page__reactivate-btn"
+      [disabled]="store.reactivateLoading()"
+      (click)="onReactivateSubscription()"
+      type="button"
+    >
+      @if (store.reactivateLoading()) { Reactivando... } @else { Reactivar
+      suscripción }
+    </button>
+
+    @if (store.reactivateError()) {
+    <p class="subscription-page__error">{{ store.reactivateError() }}</p>
+    } @if (store.reactivateSuccess()) {
     <p class="subscription-page__success">
-      Tu suscripción fue cancelada. Seguirás con acceso premium hasta la fecha
-      de vencimiento.
+      Tu suscripción ha sido reactivada. La renovación automática continúa
+      activa.
     </p>
     }
   </section>

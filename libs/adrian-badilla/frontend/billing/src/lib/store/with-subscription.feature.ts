@@ -166,6 +166,54 @@ export function withSubscriptionFeature() {
       isSubscriptionLoading: computed(() => s.subscription() === undefined),
 
       /**
+       * True when the subscription is active but renewal has been cancelled
+       * and the current paid period has not yet ended.
+       *
+       * This means the user still has full Premium access but it will end
+       * automatically when `currentPeriodEnd` is reached.
+       * Drives the "Tu suscripción finalizará el [date]" notice in the UI.
+       */
+      willExpire: computed(() => {
+        const sub = s.subscription();
+        if (sub?.status !== 'active') return false;
+        if (sub?.cancelAtPeriodEnd !== true) return false;
+        const periodEnd = sub?.currentPeriodEnd ?? sub?.expiresAt ?? null;
+        if (!periodEnd) return false;
+        const endDate =
+          periodEnd instanceof Date ? periodEnd : periodEnd.toDate();
+        return endDate.getTime() > Date.now();
+      }),
+
+      /**
+       * True when the user can reactivate their subscription.
+       * Equivalent to `willExpire`: the period has not ended so ONVO still
+       * allows undoing the scheduled cancellation.
+       */
+      canReactivate: computed(() => {
+        const sub = s.subscription();
+        if (sub?.status !== 'active') return false;
+        if (sub?.cancelAtPeriodEnd !== true) return false;
+        const periodEnd = sub?.currentPeriodEnd ?? sub?.expiresAt ?? null;
+        if (!periodEnd) return false;
+        const endDate =
+          periodEnd instanceof Date ? periodEnd : periodEnd.toDate();
+        return endDate.getTime() > Date.now();
+      }),
+
+      /**
+       * The date when Premium access will end due to a pending cancellation.
+       * Returns null when there is no scheduled cancellation.
+       * Use alongside `willExpire` to show "Tu suscripción finalizará el [date]".
+       */
+      expirationDate: computed((): Date | null => {
+        const sub = s.subscription();
+        if (!sub?.cancelAtPeriodEnd) return null;
+        const periodEnd = sub?.currentPeriodEnd ?? sub?.expiresAt ?? null;
+        if (!periodEnd) return null;
+        return periodEnd instanceof Date ? periodEnd : periodEnd.toDate();
+      }),
+
+      /**
        * True only when the subscription is fully active and the billing period
        * has not yet expired.
        *

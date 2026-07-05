@@ -15,12 +15,18 @@
 
     @if (sub.status === 'active') {
     <div class="subscription-card__row">
-      <span class="subscription-card__label">Vence el</span>
+      <span class="subscription-card__label">
+        {{ sub.cancelAtPeriodEnd ? 'Acceso hasta' : 'Próxima renovación' }}
+      </span>
       <span class="subscription-card__value">
-        {{ sub.expiresAt?.toDate() | date : 'dd/MM/yyyy' }}
+        {{
+          (sub.currentPeriodEnd ?? sub.expiresAt)?.toDate()
+            | date : 'dd/MM/yyyy'
+        }}
       </span>
     </div>
 
+    @if (!sub.cancelAtPeriodEnd) {
     <div class="subscription-card__row">
       <span class="subscription-card__label">Días restantes</span>
       <span
@@ -30,14 +36,17 @@
         {{ store.daysRemaining() }}
       </span>
     </div>
-    } @if (sub.status === 'past_due') {
+    } @if (sub.cancelAtPeriodEnd) {
+    <p class="subscription-card__notice subscription-card__notice--info">
+      Renovación cancelada. Sigues con acceso Premium hasta esa fecha.
+    </p>
+    } } @if (sub.status === 'past_due') {
     <p class="subscription-card__notice subscription-card__notice--warning">
       Tu pago está pendiente. Por favor actualiza tu método de pago.
     </p>
     } @if (sub.status === 'cancelled') {
     <p class="subscription-card__notice">
-      Tu suscripción fue cancelada y vence el
-      {{ sub.expiresAt?.toDate() | date : 'dd/MM/yyyy' }}.
+      Tu suscripción fue cancelada y el período de acceso ha finalizado.
     </p>
     }
   </div>

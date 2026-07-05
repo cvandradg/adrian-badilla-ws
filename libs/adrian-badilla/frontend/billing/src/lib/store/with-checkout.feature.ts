@@ -19,6 +19,7 @@ import type {
   CreateSubscriptionResult,
   OnvoCardInput,
   OnvoPaymentMethodResponse,
+  ReactivateSubscriptionResult,
   ResolveCustomerResult,
   SubscriptionPlan,
   VerifyPaymentPayload,
@@ -65,6 +66,7 @@ export function withCheckoutFeature() {
     withCallState('checkout'),
     withCallState('verify'),
     withCallState('cancel'),
+    withCallState('reactivate'),
 
     withState<CheckoutState>({
       checkoutUrl: null,
@@ -106,6 +108,10 @@ export function withCheckoutFeature() {
       const cancelCallable = httpsCallable<void, { success: boolean }>(
         functions,
         'cancelSubscription'
+      );
+      const reactivateCallable = httpsCallable<void, ReactivateSubscriptionResult>(
+        functions,
+        'reactivateSubscription'
       );
       const subscribeCallable = httpsCallable<
         CreateSubscriptionPayload,
@@ -314,6 +320,31 @@ export function withCheckoutFeature() {
                 })
               );
             })
+          )
+        ),
+
+        /**
+         * Calls the `reactivateSubscription` Firebase Callable Function.
+         * Undoes a scheduled end-of-period cancellation, restoring renewals.
+         * The store's subscription state updates automatically via onSnapshot
+         * once Firestore reflects cancelAtPeriodEnd = false.
+         */
+        reactivateSubscription: rxMethod<void>(
+          pipe(
+            tap(() => store.reactivateSetLoading()),
+            switchMap(() =>
+              from(reactivateCallable()).pipe(
+                tapResponse({
+                  next: () => store.reactivateSetSuccess(),
+                  error: (err: unknown) => {
+                    console.error('[billing] reactivateSubscription error', err);
+                    store.reactivateSetError(
+                      'No se pudo reactivar la suscripción. Inténtalo de nuevo.'
+                    );
+                  },
+                })
+              )
+            )
           )
         ),
 

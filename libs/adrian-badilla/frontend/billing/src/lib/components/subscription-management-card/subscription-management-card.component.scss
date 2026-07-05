@@ -1,0 +1,297 @@
+/* ── Host ─────────────────────────────────────────────────────────────────── */
+
+:host {
+  display: block;
+  position: relative;
+}
+
+/* ── Base card ─────────────────────────────────────────────────────────────── */
+
+.smc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid var(--app-border);
+  backdrop-filter: blur(12px);
+}
+
+/* ── State variants ─────────────────────────────────────────────────────────── */
+
+.smc-card--active {
+  background: linear-gradient(
+    135deg,
+    rgba(88, 28, 135, 0.3) 0%,
+    rgba(7, 14, 23, 0.85) 100%
+  );
+  border-color: rgba(167, 139, 250, 0.25);
+}
+
+.smc-card--expiring {
+  background: linear-gradient(
+    135deg,
+    rgba(120, 53, 15, 0.3) 0%,
+    rgba(7, 14, 23, 0.85) 100%
+  );
+  border-color: rgba(251, 191, 36, 0.25);
+}
+
+.smc-card--inactive {
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.6) 0%,
+    rgba(7, 14, 23, 0.85) 100%
+  );
+  border-color: rgba(148, 163, 184, 0.15);
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+
+.smc-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.smc-card__icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.smc-card__title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--app-text);
+}
+
+/* ── Body ───────────────────────────────────────────────────────────────────── */
+
+.smc-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.smc-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.smc-card__label {
+  font-size: 0.82rem;
+  color: var(--app-text-muted);
+}
+
+.smc-card__value {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--app-text);
+}
+
+/* ── Badges ─────────────────────────────────────────────────────────────────── */
+
+.smc-card__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &--active {
+    background: rgba(52, 211, 153, 0.12);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    color: #34d399;
+  }
+
+  &--expiring {
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    color: #fbbf24;
+  }
+}
+
+/* ── Notice & features ──────────────────────────────────────────────────────── */
+
+.smc-card__notice {
+  margin: 0;
+  font-size: 0.83rem;
+  color: var(--app-text-muted);
+  line-height: 1.5;
+}
+
+.smc-card__free-notice {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--app-text-muted);
+}
+
+.smc-card__features-label {
+  margin: 0.25rem 0 0;
+  font-size: 0.82rem;
+  color: var(--app-text-muted);
+}
+
+.smc-card__features {
+  margin: 0.25rem 0 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+
+  li {
+    font-size: 0.83rem;
+    color: var(--app-text-muted);
+  }
+}
+
+/* ── Actions ────────────────────────────────────────────────────────────────── */
+
+.smc-card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────────── */
+
+.smc-card__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 0.625rem;
+  border: 1px solid transparent;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease,
+    transform 120ms ease;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  &:not(:disabled):active {
+    transform: scale(0.97);
+  }
+
+  &--primary {
+    background: rgba(167, 139, 250, 0.18);
+    border-color: rgba(167, 139, 250, 0.4);
+    color: #c4b5fd;
+
+    &:not(:disabled):hover {
+      background: rgba(167, 139, 250, 0.28);
+      border-color: rgba(167, 139, 250, 0.6);
+    }
+  }
+
+  &--secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--app-border);
+    color: var(--app-text-muted);
+
+    &:not(:disabled):hover {
+      background: rgba(255, 255, 255, 0.09);
+      color: var(--app-text);
+    }
+  }
+
+  &--danger {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #f87171;
+
+    &:not(:disabled):hover {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+  }
+}
+
+/* ── Spinner ─────────────────────────────────────────────────────────────────── */
+
+.smc-card__spinner {
+  display: inline-block;
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: smc-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes smc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Error ───────────────────────────────────────────────────────────────────── */
+
+.smc-card__error {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #f87171;
+}
+
+/* ── Confirmation dialog ────────────────────────────────────────────────────── */
+
+.smc-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 100;
+}
+
+.smc-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 101;
+  background: #0f172a;
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  width: min(90vw, 22rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  /* Reset native dialog styles */
+  margin: 0;
+  max-width: none;
+  max-height: none;
+  color: var(--app-text);
+}
+
+.smc-dialog__title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--app-text);
+  line-height: 1.4;
+}
+
+.smc-dialog__desc {
+  margin: 0;
+  font-size: 0.83rem;
+  color: var(--app-text-muted);
+  line-height: 1.55;
+}
+
+.smc-dialog__actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+}

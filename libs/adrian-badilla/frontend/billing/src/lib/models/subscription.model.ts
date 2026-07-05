@@ -161,9 +161,18 @@ export interface SubscriptionStatusResult {
   cancelAtPeriodEnd: boolean;
 }
 
-/** Payload sent to the `cancelSubscription` Firebase Callable Function. */
+/**
+ * Payload sent to the `cancelSubscription` Firebase Callable Function.
+ * @deprecated subscriptionId is no longer accepted from the client.
+ * The backend resolves it from Firestore using the authenticated uid.
+ */
 export interface CancelSubscriptionPayload {
   subscriptionId: string;
+}
+
+/** Response from the `reactivateSubscription` Firebase Callable Function. */
+export interface ReactivateSubscriptionResult {
+  success: true;
 }
 
 /** Response from the `resolveCustomer` Firebase Callable Function. */

@@ -4,6 +4,7 @@ import {
   computed,
   inject,
 } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { billingStore } from '../../store/billing.store';
 import { SubscriptionCardComponent } from '../../components/subscription-card/subscription-card.component';
 import { PremiumBannerComponent } from '../../components/premium-banner/premium-banner.component';
@@ -19,7 +20,7 @@ import { PremiumBannerComponent } from '../../components/premium-banner/premium-
 @Component({
   selector: 'lib-subscription-page',
   standalone: true,
-  imports: [SubscriptionCardComponent, PremiumBannerComponent],
+  imports: [SubscriptionCardComponent, PremiumBannerComponent, DatePipe],
   templateUrl: './subscription-page.component.html',
   styleUrl: './subscription-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,17 +28,20 @@ import { PremiumBannerComponent } from '../../components/premium-banner/premium-
 export class SubscriptionPageComponent {
   readonly store = inject(billingStore);
 
+  /** Show cancel only when active AND no cancellation is already pending. */
   readonly showCancelOption = computed(
-    () =>
-      this.store.isActive() && this.store.subscription()?.status !== 'cancelled'
+    () => this.store.isActive() && !this.store.willExpire()
   );
 
   onCheckoutStarted(url: string): void {
-    // Redirect the user to the ONVO checkout page.
     globalThis.window?.location.assign(url);
   }
 
   onCancelSubscription(): void {
     this.store.cancelSubscription();
+  }
+
+  onReactivateSubscription(): void {
+    this.store.reactivateSubscription();
   }
 }

@@ -21,6 +21,7 @@ import { firebaseAuthStore } from '@adrian-badilla/auth';
 import { athleteProfileStore } from '../../store/athlete-profile.store';
 import { AthleteProfileCardComponent } from '../../components/athlete-profile-card/athlete-profile-card.component';
 import { AthleteProfileFormComponent } from '../../components/athlete-profile-form/athlete-profile-form.component';
+import { SubscriptionManagementCardComponent } from '@adrian-badilla/billing';
 
 type ProfileTab = 'resumen' | 'historial' | 'galeria';
 
@@ -33,6 +34,7 @@ type ProfileTab = 'resumen' | 'historial' | 'galeria';
     ChartModule,
     AthleteProfileCardComponent,
     AthleteProfileFormComponent,
+    SubscriptionManagementCardComponent,
   ],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.scss',
