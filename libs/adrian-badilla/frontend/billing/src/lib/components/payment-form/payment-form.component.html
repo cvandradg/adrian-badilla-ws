@@ -6,27 +6,141 @@
     </p>
   </header>
 
-  @if (store.prepareLoading()) {
-  <div class="payment-form__preparing">
-    <span class="payment-form__spinner"></span>
-    <p>Preparando sesión de pago...</p>
-  </div>
-  } @else if (isComplete) {
-  <div class="payment-form__success">
-    <div class="payment-form__success-ring">
-      <i class="pi pi-check payment-form__success-icon"></i>
+  @switch (store.paymentFlowState()) {
+
+  <!-- ── Procesando: resolveCustomer / createPM / callable / esperando webhook ── -->
+  @case ('processing') {
+  <div class="pf-state pf-state--processing">
+    <div class="pf-state__glow"></div>
+    <div class="pf-state__ring-wrap">
+      <div class="pf-state__ring-spin"></div>
+      <div class="pf-state__ring-base">
+        <i class="pi pi-lock pf-state__ring-icon"></i>
+      </div>
     </div>
-    <h3 class="payment-form__success-title">¡Suscripción completada!</h3>
-    <p class="payment-form__success-text">
-      Tu cuenta Premium se activará en unos momentos. Ya puedes disfrutar de
-      todas las funciones avanzadas.
-    </p>
-    <button class="payment-form__success-btn" type="button" (click)="goHome()">
-      <i class="pi pi-home"></i>
-      Ir al inicio
-    </button>
+    <div class="pf-state__body">
+      <h3 class="pf-state__title">Procesando tu pago</h3>
+      <p class="pf-state__desc">
+        Tu suscripción está siendo confirmada.<br />Por favor no cierres esta
+        página.
+      </p>
+      <div class="pf-state__dots"><span></span><span></span><span></span></div>
+    </div>
   </div>
-  } @else {
+  }
+
+  <!-- ── Éxito: status='active' confirmado por webhook → Firestore ─────────── -->
+  @case ('success') {
+  <div class="pf-state pf-state--success">
+    <div class="pf-state__glow"></div>
+    <div class="pf-state__ring-wrap">
+      <div class="pf-state__ring-ripple"></div>
+      <div class="pf-state__ring-base">
+        <i class="pi pi-check pf-state__ring-icon"></i>
+      </div>
+    </div>
+    <div class="pf-state__body">
+      <h3 class="pf-state__title">¡Suscripción Premium activada!</h3>
+      <p class="pf-state__desc">
+        Tu pago fue confirmado. Ya tienes acceso a todas las funciones premium.
+      </p>
+      <button class="pf-state__btn" type="button" (click)="goHome()">
+        <i class="pi pi-home"></i>
+        Ir al inicio
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- ── Pago fallido: status='failed' confirmado por webhook ──────────────── -->
+  @case ('failed') {
+  <div class="pf-state pf-state--failed">
+    <div class="pf-state__glow"></div>
+    <div class="pf-state__ring-wrap">
+      <div class="pf-state__ring-base">
+        <i class="pi pi-times pf-state__ring-icon"></i>
+      </div>
+    </div>
+    <div class="pf-state__body">
+      <h3 class="pf-state__title">El pago no pudo procesarse</h3>
+      @if (store.lastPaymentErrorMessage()) {
+      <div class="pf-state__error-box">
+        <i class="pi pi-info-circle"></i>
+        {{ store.lastPaymentErrorMessage() }}
+      </div>
+      } @else {
+      <p class="pf-state__desc">
+        Verifica los datos de tu tarjeta e intenta de nuevo.
+      </p>
+      }
+      <button
+        class="pf-state__btn"
+        type="button"
+        (click)="store.retryPayment()"
+      >
+        <i class="pi pi-refresh"></i>
+        Intentar nuevamente
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- ── Renovación rechazada: status='past_due' ───────────────────────────── -->
+  @case ('past_due') {
+  <div class="pf-state pf-state--warning">
+    <div class="pf-state__glow"></div>
+    <div class="pf-state__ring-wrap">
+      <div class="pf-state__ring-base">
+        <i class="pi pi-exclamation-triangle pf-state__ring-icon"></i>
+      </div>
+    </div>
+    <div class="pf-state__body">
+      <h3 class="pf-state__title">Renovación rechazada</h3>
+      <p class="pf-state__desc">
+        No se pudo renovar tu suscripción. Actualiza tu método de pago para
+        continuar.
+      </p>
+      <button
+        class="pf-state__btn"
+        type="button"
+        (click)="store.retryPayment()"
+      >
+        <i class="pi pi-credit-card"></i>
+        Actualizar método de pago
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- ── Cancelada: status='cancelled' ────────────────────────────────────── -->
+  @case ('cancelled') {
+  <div class="pf-state pf-state--muted">
+    <div class="pf-state__glow"></div>
+    <div class="pf-state__ring-wrap">
+      <div class="pf-state__ring-base">
+        <i class="pi pi-ban pf-state__ring-icon"></i>
+      </div>
+    </div>
+    <div class="pf-state__body">
+      <h3 class="pf-state__title">Suscripción cancelada</h3>
+      <p class="pf-state__desc">
+        Tu suscripción fue cancelada. Puedes suscribirte nuevamente cuando
+        quieras.
+      </p>
+      <button
+        class="pf-state__btn"
+        type="button"
+        (click)="store.retryPayment()"
+      >
+        <i class="pi pi-star"></i>
+        Suscribirme nuevamente
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- ── Formulario: primera vez, retry, o sin suscripción ────────────────── -->
+  @default {
   <form
     class="payment-form__form"
     [formGroup]="cardForm"
@@ -124,22 +238,22 @@
       }
     </mat-form-field>
 
-    <!-- Error messages -->
+    <!-- Backend error (startPaymentFlow errors: customer / PM / subscribe) -->
     <adrian-badilla-status-message
-      [display]="!!currentError"
+      [display]="!!store.checkoutError()"
       [type]="'error'"
       [icon]="['fas', 'xmark']"
-      [message]="currentError"
+      [message]="store.checkoutError()"
     />
 
     <!-- Submit button -->
     <adrian-badilla-primary-animated-button
-      [enable]="cardForm.valid && store.hasCustomerId() && !isProcessing"
-      [loading]="isProcessing"
-      [success]="isComplete"
+      [enable]="cardForm.valid"
+      [loading]="false"
+      [success]="false"
       [buttonText]="'Suscribirse a Premium'"
       (submitEvent)="onSubmit()"
     />
   </form>
-  }
+  } }
 </div>

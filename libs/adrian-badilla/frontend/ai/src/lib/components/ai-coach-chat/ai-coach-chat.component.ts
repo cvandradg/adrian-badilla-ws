@@ -1,14 +1,12 @@
 import {
   Component,
   ChangeDetectionStrategy,
-  DestroyRef,
   computed,
   inject,
   input,
   signal,
   viewChild,
   ElementRef,
-  effect,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -42,7 +40,13 @@ import type { PendingMealSuggestion } from '../../types/ai-chat.types';
 @Component({
   selector: 'lib-ai-coach-chat',
   standalone: true,
-  imports: [FormsModule, DatePipe, ButtonModule, InputTextModule, TourFabComponent],
+  imports: [
+    FormsModule,
+    DatePipe,
+    ButtonModule,
+    InputTextModule,
+    TourFabComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './ai-coach-chat.component.html',
   styleUrl: './ai-coach-chat.component.scss',
@@ -50,13 +54,15 @@ import type { PendingMealSuggestion } from '../../types/ai-chat.types';
 export class AiCoachChatComponent {
   protected readonly store = inject(aiStore);
   private readonly messagesEnd = viewChild<ElementRef>('messagesEnd');
-  private readonly destroyRef = inject(DestroyRef);
 
   // ─── Inputs from app shell ─────────────────────────────────────────────────
 
   /** Remaining macros for today (from settingsStoreDev.remainingMacros()). */
-  readonly remainingMacros =
-    input<{ protein: number; carbs: number; fats: number } | null>(null);
+  readonly remainingMacros = input<{
+    protein: number;
+    carbs: number;
+    fats: number;
+  } | null>(null);
 
   /**
    * FAB bottom offset in px (from FabLayoutStore.fabBaseBottom()).
@@ -88,43 +94,26 @@ export class AiCoachChatComponent {
     { label: '📊 Ver macros', message: '¿Qué son los macronutrientes?' },
   ] as const;
 
-  // ─── Effects ──────────────────────────────────────────────────────────────
-
-  /** Scrolls to bottom whenever messages or loading state changes. */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private readonly _scrollEffect = effect(() => {
-    this.messages();
-    this.isLoading();
-    setTimeout(() => this.#scrollToBottom(), 50);
-  });
-
-  /** Closes on ESC key. */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private readonly _escapeCleanup = (() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && this.isChatOpen()) this.closeChat();
-    };
-    document.addEventListener('keydown', handler);
-    this.destroyRef.onDestroy(() =>
-      document.removeEventListener('keydown', handler)
-    );
-  })();
-
   // ─── Actions ──────────────────────────────────────────────────────────────
 
   readonly toggleChat = () => this.isChatOpen.update((v) => !v);
   readonly closeChat = () => this.isChatOpen.set(false);
 
-  readonly sendMessage = (text?: string) => {
+  readonly sendMessage = async (text?: string): Promise<void> => {
     const content = text ?? this.inputText();
     if (!content.trim()) return;
 
-    this.store.sendMessage(content, {
+    this.inputText.set('');
+    // Scroll once the store synchronously appends the user message
+    setTimeout(() => this.#scrollToBottom(), 50);
+
+    await this.store.sendMessage(content, {
       remainingMacros: this.remainingMacros() ?? null,
       activeMealId: this.store.activeMealId(),
     });
 
-    this.inputText.set('');
+    // Scroll again after the AI response arrives
+    setTimeout(() => this.#scrollToBottom(), 50);
   };
 
   readonly onKeydown = (event: KeyboardEvent) => {

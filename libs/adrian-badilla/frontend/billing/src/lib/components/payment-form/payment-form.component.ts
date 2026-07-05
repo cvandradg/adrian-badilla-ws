@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  inject,
-  OnInit,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -21,26 +14,23 @@ import { billingStore } from '../../store/billing.store';
  *
  * Route: /billing/payment
  *
- * Implements the ONVO Loop card-capture flow using the existing billing store:
+ * Declarative, signal-driven component. All state is read from billingStore
+ * via the single `paymentFlowState()` computed. No constructor logic, no
+ * lifecycle hooks, no effects.
  *
- *   ngOnInit → prepareCheckout()               [resolves customerId + publishableKey]
+ * Flow:
+ *   User fills card form → onSubmit() → store.startPaymentFlow(cardInput)
  *       ↓
- *   User fills card form → onSubmit()
+ *   store handles: resolveCustomer (lazy) → createPaymentMethod → createSubscription
  *       ↓
- *   createPaymentMethod(cardInput)             [POST /v1/payment-methods via ONVO API]
+ *   checkoutPhase: 'processing' → Firestore webhook → 'active' | 'failed'
  *       ↓
- *   paymentMethodId arrives in store → effect
- *       ↓
- *   subscribeCheckout()                        [Firebase callable createSubscription]
- *       ↓
- *   Webhook → Firestore → onSnapshot → store.isPremium() = true
+ *   paymentFlowState() drives the template @switch
  *
  * Security:
- *  - customerId and publishableKey are read from store state, never from inputs.
- *  - Raw card data never reaches any backend — it goes directly to api.onvopay.com.
- *  - Premium activation occurs exclusively via webhook → Firestore → onSnapshot.
- *
- * Dependencies: billingStore, Angular Material, @angular/forms — no new services.
+ *  - customerId and publishableKey resolved server-side inside the store.
+ *  - Raw card data sent ONLY to api.onvopay.com via publishableKey.
+ *  - Premium activation exclusively via webhook → Firestore → onSnapshot.
  */
 @Component({
   selector: 'lib-payment-form',
@@ -56,7 +46,7 @@ import { billingStore } from '../../store/billing.store';
   styleUrl: './payment-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaymentFormComponent implements OnInit {
+export class PaymentFormComponent {
   readonly store = inject(billingStore);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
@@ -95,48 +85,8 @@ export class PaymentFormComponent implements OnInit {
     ],
   });
 
-  constructor() {
-    // When createPaymentMethod() resolves a paymentMethodId, automatically
-    // proceed to subscribeCheckout(). Uses untracked() so the effect only
-    // re-executes when paymentMethodId changes, not on every render.
-    //
-    // Guards against stale store state on component re-creation:
-    //  - subscribeLoading: a prior subscribeCheckout() is still in flight
-    //  - subscribeSuccess: subscribeCheckout() already completed successfully
-    // Without these guards, navigating back to this page after a successful
-    // payment would immediately re-trigger subscribeCheckout() with stale state.
-    effect(() => {
-      const pmId = this.store.paymentMethodId();
-      if (
-        pmId &&
-        untracked(
-          () =>
-            this.store.cardSuccess() &&
-            !this.store.subscribeLoading() &&
-            !this.store.subscribeSuccess()
-        )
-      ) {
-        this.store.subscribeCheckout();
-      }
-    });
-  }
-
-  ngOnInit(): void {
-    // Reset stale card/subscribe state from any previous payment attempt so
-    // this component always starts with a clean slate.
-    // customerId and publishableKey are also cleared inside prepareCheckout()'s
-    // tap(), but paymentMethodId, cardSuccess, and subscribeSuccess persist in
-    // the singleton store across navigations and must be explicitly reset here.
-    this.store.cardResetState();
-    this.store.subscribeResetState();
-    this.store.prepareResetState();
-    // Resolve (or create) the ONVO customer and retrieve the publishableKey.
-    // This must complete before createPaymentMethod() can run.
-    this.store.prepareCheckout();
-  }
-
   onSubmit(): void {
-    if (this.cardForm.invalid || !this.store.hasCustomerId()) {
+    if (this.cardForm.invalid) {
       this.cardForm.markAllAsTouched();
       return;
     }
@@ -144,7 +94,7 @@ export class PaymentFormComponent implements OnInit {
     const { holderName, cardNumber, expMonth, expYear, cvc } =
       this.cardForm.getRawValue();
 
-    this.store.createPaymentMethod({
+    this.store.startPaymentFlow({
       holderName: holderName!.trim(),
       number: cardNumber!.replace(/\s/g, ''),
       expMonth: expMonth!,
@@ -153,32 +103,7 @@ export class PaymentFormComponent implements OnInit {
     });
   }
 
-  // ─── Template helpers ───────────────────────────────────────────────────────
-
-  /** True while any async operation initiated by this component is in flight. */
-  get isProcessing(): boolean {
-    return (
-      this.store.prepareLoading() ||
-      this.store.cardLoading() ||
-      this.store.subscribeLoading()
-    );
-  }
-
-  /** True when the full subscription flow completed successfully. */
-  get isComplete(): boolean {
-    return this.store.subscribeSuccess();
-  }
-
   goHome(): void {
     this.router.navigate(['/dashboard/inicio']);
-  }
-
-  /** The most recent user-facing error across all three steps. */
-  get currentError(): string | null {
-    return (
-      this.store.prepareError() ||
-      this.store.cardError() ||
-      this.store.subscribeError()
-    );
   }
 }

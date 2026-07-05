@@ -4,13 +4,15 @@ import {
   withComputed,
   withMethods,
   withState,
+  WritableStateSource,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { tapResponse } from '@ngrx/operators';
-import { pipe, switchMap, tap, from, throwError } from 'rxjs';
+import { pipe, switchMap, tap, from, of, map } from 'rxjs';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { computed, inject } from '@angular/core';
 import type {
+  CheckoutPhase,
   CheckoutSessionResult,
   CreateCheckoutPayload,
   CreateSubscriptionPayload,
@@ -37,6 +39,8 @@ interface CheckoutState {
   customerId: string | null;
   publishableKey: string | null;
   paymentMethodId: string | null;
+  /** Consolidated error from startPaymentFlow (customer resolution, PM creation, subscribe). */
+  checkoutError: string | null;
 }
 
 // ─── Feature ──────────────────────────────────────────────────────────────────
@@ -58,9 +62,6 @@ interface CheckoutState {
  */
 export function withCheckoutFeature() {
   return signalStoreFeature(
-    withCallState('prepare'),
-    withCallState('card'),
-    withCallState('subscribe'),
     withCallState('checkout'),
     withCallState('verify'),
     withCallState('cancel'),
@@ -71,34 +72,21 @@ export function withCheckoutFeature() {
       customerId: null,
       publishableKey: null,
       paymentMethodId: null,
+      checkoutError: null,
     }),
 
     withComputed((store) => ({
       /**
        * True when resolveCustomer has returned a customerId.
-       * Use as a guard before calling the ONVO SDK or POST /v1/payment-methods.
+       * startPaymentFlow resolves the customer lazily, so this reflects the
+       * cached result after the first successful payment flow.
        */
       hasCustomerId: computed(() => store.customerId() !== null),
 
       /**
        * True when resolveCustomer has returned a publishableKey.
-       * Use as a guard before initialising any ONVO client-side API call.
        */
       hasPublishableKey: computed(() => store.publishableKey() !== null),
-
-      /**
-       * True when createPaymentMethod has successfully resolved a paymentMethodId.
-       * Use as a guard before calling createSubscription.
-       */
-      hasPaymentMethodId: computed(() => store.paymentMethodId() !== null),
-
-      /**
-       * True when the store is ready to call subscribeCheckout().
-       * Requires: paymentMethodId resolved AND no subscription request in flight.
-       */
-      canSubmitSubscription: computed(
-        () => store.paymentMethodId() !== null && !store.subscribeLoading()
-      ),
     })),
 
     withMethods((store) => {
@@ -126,133 +114,113 @@ export function withCheckoutFeature() {
 
       return {
         /**
-         * Creates an ONVO Payment Method by calling POST /v1/payment-methods
-         * directly from Angular using the publishableKey.
+         * Unified payment flow: resolves customer (lazy), creates ONVO Payment
+         * Method, and calls createSubscription — all in a single atomic action.
          *
-         * Prerequisites: prepareCheckout() must have succeeded so that
-         * customerId and publishableKey are present in the store.
+         * Security invariants preserved:
+         *  - Card data is sent ONLY to ONVO via publishableKey (client-safe).
+         *  - Firebase backend NEVER receives raw card data (PCI boundary).
+         *  - customerId is resolved server-side by resolveCustomer callable.
+         *  - subscriptionId, status — all written to Firestore by the backend.
          *
-         * Security:
-         *  - Uses publishableKey (client-safe by ONVO contract) as Bearer token.
-         *  - customerId is read from store state — never from component input.
-         *  - The Firebase backend never receives raw card data (PCI boundary).
-         *  - On success, only the opaque paymentMethodId is stored in state.
-         *
-         * On success: paymentMethodId is stored in state and cardSuccess = true.
-         * On error: cardError is set with a user-facing message.
-         *
-         * ONVO endpoint: POST /v1/payment-methods
-         * ONVO OpenAPI: CreatePaymentMethodRequest + PaymentMethod response schema.
+         * State transitions:
+         *   1. Sets checkoutPhase → 'processing' immediately (UI shows spinner).
+         *   2. If customerId is not yet cached: calls resolveCustomer callable.
+         *   3. Creates ONVO Payment Method (POST /v1/payment-methods).
+         *   4. Calls createSubscription callable with paymentMethodId.
+         *   5a. On callable success: stays 'processing'. Firestore webhook will
+         *       deliver the definitive result; onSubscriptionNext resets phase.
+         *   5b. On any error: sets checkoutPhase → 'filling', stores checkoutError.
          */
-        createPaymentMethod: rxMethod<OnvoCardInput>(
+        startPaymentFlow: rxMethod<OnvoCardInput>(
           pipe(
             tap(() => {
-              store.cardSetLoading();
-              patchState(store, { paymentMethodId: null });
+              patchState(
+                store as unknown as WritableStateSource<{
+                  checkoutPhase: CheckoutPhase;
+                }>,
+                { checkoutPhase: 'processing' }
+              );
+              patchState(store, { checkoutError: null, paymentMethodId: null });
             }),
             switchMap((cardInput) => {
-              const customerId = store.customerId();
-              const publishableKey = store.publishableKey();
-
-              if (!customerId || !publishableKey) {
-                return throwError(
-                  () =>
-                    new Error(
-                      'customerId and publishableKey are required. Call prepareCheckout() first.'
+              // Step 1: Resolve ONVO customer — skip if already cached from a
+              // prior session (avoids a redundant Firebase callable round-trip).
+              const customer$ = store.customerId()
+                ? of({
+                    customerId: store.customerId()!,
+                    publishableKey: store.publishableKey()!,
+                  })
+                : from(resolveCustomerCallable()).pipe(
+                    map(({ data }) => ({
+                      customerId: data.customerId,
+                      publishableKey: data.publishableKey,
+                    })),
+                    tap(({ customerId, publishableKey }) =>
+                      patchState(store, { customerId, publishableKey })
                     )
-                );
-              }
-
-              const fetchPm = fetch(`${ONVO_API_BASE}/v1/payment-methods`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${publishableKey}`,
-                },
-                body: JSON.stringify({
-                  type: 'card',
-                  card: {
-                    number: cardInput.number,
-                    expMonth: cardInput.expMonth,
-                    expYear: cardInput.expYear,
-                    cvv: cardInput.cvc,
-                    holderName: cardInput.holderName,
-                  },
-                  customerId,
-                }),
-              }).then(async (response): Promise<OnvoPaymentMethodResponse> => {
-                if (!response.ok) {
-                  const body = await response.text();
-                  throw new Error(
-                    `ONVO POST /v1/payment-methods failed: HTTP ${response.status} — ${body}`
                   );
-                }
-                return response.json() as Promise<OnvoPaymentMethodResponse>;
-              });
 
-              return from(fetchPm).pipe(
-                tapResponse({
-                  next: (pm) => {
-                    patchState(store, { paymentMethodId: pm.id });
-                    store.cardSetSuccess();
-                    // TODO(dev): remove before production
-                    console.debug(
-                      '[billing:dev] createPaymentMethod resolved',
-                      {
-                        paymentMethodId: pm.id,
-                        brand: pm.card.brand,
-                        last4: pm.card.last4,
+              return customer$.pipe(
+                switchMap(({ customerId, publishableKey }) =>
+                  // Step 2: Create ONVO Payment Method (client-side, publishableKey only).
+                  from(
+                    fetch(`${ONVO_API_BASE}/v1/payment-methods`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${publishableKey}`,
+                      },
+                      body: JSON.stringify({
+                        type: 'card',
+                        card: {
+                          number: cardInput.number,
+                          expMonth: cardInput.expMonth,
+                          expYear: cardInput.expYear,
+                          cvv: cardInput.cvc,
+                          holderName: cardInput.holderName,
+                        },
+                        customerId,
+                      }),
+                    }).then(async (res): Promise<OnvoPaymentMethodResponse> => {
+                      if (!res.ok) {
+                        const body = await res.text();
+                        throw new Error(
+                          `ONVO /v1/payment-methods: HTTP ${res.status} — ${body}`
+                        );
                       }
-                    );
-                  },
-                  error: (err: unknown) => {
-                    console.error('[billing] createPaymentMethod error', err);
-                    store.cardSetError(
-                      'No se pudo registrar el método de pago. Verifica los datos de tu tarjeta.'
-                    );
-                  },
-                })
-              );
-            })
-          )
-        ),
-
-        /**
-         * Calls the `resolveCustomer` Firebase Callable Function.
-         * Resolves (or provisions) the ONVO customerId for the authenticated user
-         * and stores the publishableKey needed for Payment Method creation.
-         * Must be called before launching the ONVO SDK or creating a Payment Method.
-         */
-        prepareCheckout: rxMethod<void>(
-          pipe(
-            tap(() => {
-              store.prepareSetLoading();
-              patchState(store, {
-                customerId: null,
-                publishableKey: null,
-                paymentMethodId: null,
-              });
-            }),
-            switchMap(() => {
-              return from(resolveCustomerCallable()).pipe(
+                      return res.json() as Promise<OnvoPaymentMethodResponse>;
+                    })
+                  ).pipe(
+                    tap((pm) => patchState(store, { paymentMethodId: pm.id })),
+                    // Step 3: Subscribe via Firebase callable.
+                    switchMap((pm) =>
+                      from(subscribeCallable({ paymentMethodId: pm.id }))
+                    )
+                  )
+                ),
                 tapResponse({
                   next: ({ data }) => {
-                    patchState(store, {
-                      customerId: data.customerId,
-                      publishableKey: data.publishableKey,
-                    });
-                    store.prepareSetSuccess();
-                    // TODO(dev): remove before production
-                    console.debug('[billing:dev] prepareCheckout resolved', {
-                      customerId: data.customerId,
-                      publishableKey: data.publishableKey,
+                    // Callable returned — checkoutPhase stays 'processing'.
+                    // onSubscriptionNext resets it to 'idle' once the ONVO webhook
+                    // fires and Firestore delivers a definitive status ('active' or 'failed').
+                    console.debug('[billing:dev] startPaymentFlow resolved', {
+                      subscriptionId: data.subscriptionId,
+                      status: data.status,
                     });
                   },
                   error: (err: unknown) => {
-                    console.error('[billing] prepareCheckout error', err);
-                    store.prepareSetError(
-                      'No se pudo preparar el proceso de pago. Inténtalo de nuevo.'
+                    console.error('[billing] startPaymentFlow error', err);
+                    patchState(
+                      store as unknown as WritableStateSource<{
+                        checkoutPhase: CheckoutPhase;
+                      }>,
+                      { checkoutPhase: 'filling' }
                     );
+                    patchState(store, {
+                      checkoutError:
+                        'No se pudo procesar el pago. Verifica los datos de tu tarjeta e inténtalo de nuevo.',
+                    });
                   },
                 })
               );
@@ -359,71 +327,25 @@ export function withCheckoutFeature() {
         },
 
         /**
-         * Calls the `createSubscription` Firebase Callable Function.
+         * Resets checkout state so the user can submit a new card after a failure.
          *
-         * Reads `paymentMethodId` from store state — never accepts it from
-         * component input — to preserve the security invariant established by
-         * CRIT-1: the backend is the only party that owns the customerId, and
-         * the paymentMethodId origin is the ONVO API call made in this same store.
+         * Sets checkoutPhase → 'filling' (paymentFlowState → 'form') and clears
+         * the previous error and paymentMethodId. Does not clear customerId or
+         * publishableKey — they remain valid for the next startPaymentFlow call.
          *
-         * ACTIVATION CHAIN (this function does NOT activate premium):
-         *
-         *   subscribeCheckout()
-         *       ↓
-         *   createSubscription callable (Firebase Function)
-         *       ↓
-         *   ONVO Loop — processes first payment
-         *       ↓
-         *   Webhook — handleOnvoWebhook (payment-intent.succeeded)
-         *       ↓
-         *   Firestore — users/{uid}.subscription.status = 'active'
-         *       ↓
-         *   onSnapshot listener — withSubscriptionFeature
-         *       ↓
-         *   store.isPremium() → true
-         *
-         * This function only places the subscription request. Premium reflects
-         * automatically once Firestore updates via the onSnapshot listener.
-         *
-         * Prerequisites: createPaymentMethod() must have succeeded so that
-         * paymentMethodId is non-null in the store.
+         * checkoutPhase lives in withSubscriptionFeature state; the cast through
+         * WritableStateSource is required here but is safe at runtime since
+         * withSubscriptionFeature is composed before withCheckoutFeature.
          */
-        subscribeCheckout: rxMethod<void>(
-          pipe(
-            tap(() => store.subscribeSetLoading()),
-            switchMap(() => {
-              const paymentMethodId = store.paymentMethodId();
-
-              if (!paymentMethodId) {
-                return throwError(
-                  () =>
-                    new Error(
-                      'paymentMethodId is required. Call createPaymentMethod() first.'
-                    )
-                );
-              }
-
-              return from(subscribeCallable({ paymentMethodId })).pipe(
-                tapResponse({
-                  next: ({ data }) => {
-                    store.subscribeSetSuccess();
-                    // TODO(dev): remove before production
-                    console.debug('[billing:dev] subscribeCheckout resolved', {
-                      subscriptionId: data.subscriptionId,
-                      status: data.status,
-                    });
-                  },
-                  error: (err: unknown) => {
-                    console.error('[billing] subscribeCheckout error', err);
-                    store.subscribeSetError(
-                      'No se pudo completar la suscripción. Verifica tu método de pago e inténtalo de nuevo.'
-                    );
-                  },
-                })
-              );
-            })
-          )
-        ),
+        retryPayment(): void {
+          patchState(
+            store as unknown as WritableStateSource<{
+              checkoutPhase: CheckoutPhase;
+            }>,
+            { checkoutPhase: 'filling' }
+          );
+          patchState(store, { paymentMethodId: null, checkoutError: null });
+        },
       };
     })
   );

@@ -111,6 +111,15 @@
       <!-- ══════════ RESUMEN TAB ══════════ -->
       @if (activeTab() === 'resumen') {
 
+      <!-- ── Athlete Profile Card / Form ────────────────────────────────── -->
+      @if (athleteStore.showAthleteProfileForm()) {
+      <lib-athlete-profile-form />
+      } @else {
+      <lib-athlete-profile-card
+        (openForm)="athleteStore.openAthleteProfileForm()"
+      />
+      }
+
       <!-- Body Measurements -->
       <div class="profile-page__section">
         <h3 class="profile-page__section-title">📐 Medidas Corporales</h3>

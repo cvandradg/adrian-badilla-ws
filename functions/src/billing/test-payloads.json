@@ -1,0 +1,136 @@
+{
+  "_readme": [
+    "Payloads de prueba para el endpoint testOnvoWebhook (emulador local).",
+    "",
+    "PREREQUISITOS:",
+    "  1. Arranca el emulador:  firebase emulators:start --only functions",
+    "  2. Reemplaza los valores marcados con <<...>> antes de usar.",
+    "     - <<FIREBASE_UID>>     : UID del usuario en Firebase Auth (Firestore users/{uid})",
+    "     - <<ONVO_CUSTOMER_ID>> : users/{uid}.subscription.onvoCustomerId en Firestore",
+    "     - <<ONVO_SUB_ID>>      : users/{uid}.subscription.onvoSubscriptionId en Firestore",
+    "",
+    "URL BASE (ajusta <PROJECT_ID>):",
+    "  http://127.0.0.1:5001/<PROJECT_ID>/us-central1/testOnvoWebhook",
+    "",
+    "NOTA sobre payment-intent.succeeded:",
+    "  Este evento llama verifyPaymentIntent() contra la API sandbox de ONVO.",
+    "  Si el paymentIntentId no existe en sandbox, la activación será omitida",
+    "  (verás 'Verification failed' en los logs). Para probar activación usa",
+    "  subscription.renewal.succeeded en su lugar — no requiere verificación externa."
+  ],
+
+  "payment-intent.succeeded": {
+    "_description": "Simula el primer pago exitoso de una nueva suscripción. Activa el estado 'active'.",
+    "_curl": "curl -X POST http://127.0.0.1:5001/<PROJECT_ID>/us-central1/testOnvoWebhook -H 'Content-Type: application/json' -d @payment-intent-succeeded.json",
+    "type": "payment-intent.succeeded",
+    "data": {
+      "id": "<<REAL_SANDBOX_PAYMENT_INTENT_ID>>",
+      "status": "succeeded",
+      "amount": 9999,
+      "currency": "CRC",
+      "customer": {
+        "id": "<<ONVO_CUSTOMER_ID>>",
+        "name": "Test User",
+        "email": "test@example.com"
+      },
+      "metadata": {
+        "uid": "<<FIREBASE_UID>>",
+        "plan": "premium"
+      },
+      "createdAt": "2026-07-04T00:00:00.000Z"
+    }
+  },
+
+  "payment-intent.failed": {
+    "_description": "Simula el primer pago fallido. Marca la suscripción como 'incomplete' + lastPaymentError.",
+    "_curl": "curl -X POST http://127.0.0.1:5001/<PROJECT_ID>/us-central1/testOnvoWebhook -H 'Content-Type: application/json' -d @payment-intent-failed.json",
+    "type": "payment-intent.failed",
+    "data": {
+      "id": "pi_test_failed_001",
+      "status": "failed",
+      "currency": "CRC",
+      "customer": {
+        "id": "<<ONVO_CUSTOMER_ID>>",
+        "name": "Test User",
+        "email": "test@example.com"
+      },
+      "error": {
+        "type": "card_error",
+        "code": "card_declined",
+        "message": "La tarjeta fue rechazada. Verifica los datos e intenta de nuevo."
+      },
+      "metadata": {
+        "uid": "<<FIREBASE_UID>>"
+      }
+    }
+  },
+
+  "subscription.renewal.succeeded": {
+    "_description": "Simula una renovación mensual exitosa. Actualiza currentPeriodEnd, resetea renewalFailCount.",
+    "_curl": "curl -X POST http://127.0.0.1:5001/<PROJECT_ID>/us-central1/testOnvoWebhook -H 'Content-Type: application/json' -d @renewal-succeeded.json",
+    "type": "subscription.renewal.succeeded",
+    "data": {
+      "id": "inv_test_renewal_001",
+      "status": "paid",
+      "subscriptionId": "<<ONVO_SUB_ID>>",
+      "customerId": "<<ONVO_CUSTOMER_ID>>",
+      "paymentIntentId": "pi_test_renewal_001",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-08-01T00:00:00.000Z",
+      "total": 9999,
+      "currency": "CRC",
+      "metadata": {
+        "uid": "<<FIREBASE_UID>>"
+      }
+    }
+  },
+
+  "subscription.renewal.failed": {
+    "_description": "Simula un fallo de renovación. Marca la suscripción como 'past_due' e incrementa renewalFailCount.",
+    "_curl": "curl -X POST http://127.0.0.1:5001/<PROJECT_ID>/us-central1/testOnvoWebhook -H 'Content-Type: application/json' -d @renewal-failed.json",
+    "type": "subscription.renewal.failed",
+    "data": {
+      "subscriptionId": "<<ONVO_SUB_ID>>",
+      "subscriptionStatus": "past_due",
+      "invoiceStatus": "open",
+      "attemptCount": 1,
+      "nextPaymentAttempt": "2026-07-11T00:00:00.000Z",
+      "lastPaymentAttempt": "2026-07-04T00:00:00.000Z",
+      "invoicePeriodStart": "2026-07-01T00:00:00.000Z",
+      "invoicePeriodEnd": "2026-08-01T00:00:00.000Z",
+      "customer": {
+        "id": "<<ONVO_CUSTOMER_ID>>",
+        "name": "Test User",
+        "email": "test@example.com"
+      },
+      "error": {
+        "type": "card_error",
+        "code": "insufficient_funds",
+        "message": "Fondos insuficientes en la tarjeta."
+      }
+    }
+  },
+
+  "subscription.renewal.failed_attempt2": {
+    "_description": "Segunda falla de renovación (attemptCount=2). ONVO reintenta automáticamente.",
+    "type": "subscription.renewal.failed",
+    "data": {
+      "subscriptionId": "<<ONVO_SUB_ID>>",
+      "subscriptionStatus": "past_due",
+      "invoiceStatus": "open",
+      "attemptCount": 2,
+      "nextPaymentAttempt": "2026-07-18T00:00:00.000Z",
+      "lastPaymentAttempt": "2026-07-11T00:00:00.000Z",
+      "customer": {
+        "id": "<<ONVO_CUSTOMER_ID>>",
+        "name": "Test User",
+        "email": "test@example.com"
+      },
+      "error": {
+        "type": "card_error",
+        "code": "card_declined",
+        "message": "La tarjeta fue rechazada."
+      }
+    }
+  }
+}

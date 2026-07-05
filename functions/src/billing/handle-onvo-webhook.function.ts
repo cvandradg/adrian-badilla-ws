@@ -1,6 +1,11 @@
 import { onRequest } from 'firebase-functions/v2/https';
 import { defineSecret, defineString } from 'firebase-functions/params';
-import * as admin from 'firebase-admin';
+import {
+  getFirestore,
+  FieldValue,
+  Timestamp,
+  Firestore,
+} from 'firebase-admin/firestore';
 import * as crypto from 'node:crypto';
 
 // ─── Secrets & Config ─────────────────────────────────────────────────────────
@@ -107,14 +112,17 @@ export const handleOnvoWebhook = onRequest(
  * Routes each incoming webhook event type to its dedicated handler.
  * Keeping this function as a thin dispatcher ensures cognitive complexity
  * stays within the project lint limit.
+ *
+ * Exported so that testOnvoWebhook (dev-only) can invoke the exact same
+ * processing pipeline without duplicating any business logic.
  */
-async function processWebhookEvent(
+export async function processWebhookEvent(
   event: OnvoWebhookEvent,
   apiKey: string,
   apiBaseUrl: string
 ): Promise<void> {
-  const db = admin.firestore();
-  const now = admin.firestore.FieldValue.serverTimestamp();
+  const db = getFirestore();
+  const now = FieldValue.serverTimestamp();
   const ctx: HandlerContext = { db, now, apiKey, apiBaseUrl };
 
   switch (event.type) {
@@ -271,17 +279,54 @@ async function handlePaymentIntentFailed(
     return;
   }
 
-  await ctx.db
-    .collection('users')
-    .doc(uid)
-    .set(
+  const userRef = ctx.db.collection('users').doc(uid);
+
+  // FIX-CRIT: Wrap in a transaction so we never downgrade a subscription that
+  // is no longer in the 'incomplete' first-payment-pending state.
+  //
+  // ONVO retries webhook delivery for up to 3 days. If the original delivery
+  // failed and ONVO retries after the user successfully paid (status='active'),
+  // writing 'incomplete' here would REVOKE the user's premium access.
+  //
+  // Skip conditions:
+  //  'active'    — payment-intent.succeeded already ran; this is a duplicate/late
+  //               delivery. Writing 'incomplete' here would revoke premium.
+  //  'inactive'  — cancelFailedSubscriptionIfNeeded already cleaned up the failed
+  //               subscription; a new attempt is in progress.
+  //  'pending'   — new createSubscription lock acquired; ONVO subscription not
+  //               yet created. Writing stale lastPaymentError here is misleading.
+  //  'past_due'  — renewal failure event, not a first-payment event. Stale.
+  //  'cancelled' — subscription was explicitly cancelled. Stale.
+  //
+  // Only write when status is 'incomplete' (expected first-payment-pending state)
+  // or undefined (document doesn't exist — edge case, write to create it).
+  let written = false;
+  await ctx.db.runTransaction(async (tx) => {
+    const snap = await tx.get(userRef);
+    const currentStatus = snap.data()?.['subscription']?.['status'] as
+      | string
+      | undefined;
+
+    if (
+      currentStatus === 'active' ||
+      currentStatus === 'inactive' ||
+      currentStatus === 'pending' ||
+      currentStatus === 'past_due' ||
+      currentStatus === 'cancelled'
+    ) {
+      console.warn(
+        `[billing] payment-intent.failed skipped — status=${currentStatus} uid=${uid}` +
+          ' (duplicate or stale webhook for a prior subscription)'
+      );
+      return;
+    }
+
+    tx.set(
+      userRef,
       {
         subscription: {
           status: 'incomplete',
           // P4: persist error details for support debugging.
-          // Written only when ONVO provides the error object; existing documents
-          // are not affected if no error is present (merge: true).
-          // Set to null explicitly to clear any prior error on subsequent writes.
           lastPaymentError: data.error
             ? {
                 code: data.error.code,
@@ -295,10 +340,14 @@ async function handlePaymentIntentFailed(
       },
       { merge: true }
     );
+    written = true;
+  });
 
-  console.info(
-    `[billing] First payment failed for uid=${uid}, customerId=${customerId}`
-  );
+  if (written) {
+    console.info(
+      `[billing] First payment failed for uid=${uid}, customerId=${customerId}`
+    );
+  }
 }
 
 /**
@@ -352,10 +401,10 @@ async function handleRenewalSucceeded(
   }
 
   const periodStartTs = periodStart
-    ? admin.firestore.Timestamp.fromDate(new Date(periodStart))
+    ? Timestamp.fromDate(new Date(periodStart))
     : null;
   const periodEndTs = periodEnd
-    ? admin.firestore.Timestamp.fromDate(new Date(periodEnd))
+    ? Timestamp.fromDate(new Date(periodEnd))
     : null;
 
   await ctx.db.runTransaction(async (tx) => {
@@ -447,7 +496,7 @@ async function handleRenewalFailed(
   }
 
   const nextAttemptTs = nextPaymentAttempt
-    ? admin.firestore.Timestamp.fromDate(new Date(nextPaymentAttempt))
+    ? Timestamp.fromDate(new Date(nextPaymentAttempt))
     : null;
 
   const subscriptionUpdate: Record<string, unknown> = {
@@ -456,9 +505,7 @@ async function handleRenewalFailed(
     // Fall back to increment only if attemptCount is absent (unexpected, but
     // safe — prevents stalling the counter if ONVO omits the field).
     renewalFailCount:
-      typeof attemptCount === 'number'
-        ? attemptCount
-        : admin.firestore.FieldValue.increment(1),
+      typeof attemptCount === 'number' ? attemptCount : FieldValue.increment(1),
     updatedAt: ctx.now,
   };
   if (nextAttemptTs) subscriptionUpdate['nextPaymentAttempt'] = nextAttemptTs;
@@ -497,7 +544,7 @@ async function handleRenewalFailed(
 async function resolveUid(
   customerId: string,
   metadata: Record<string, string> | undefined,
-  db: admin.firestore.Firestore
+  db: Firestore
 ): Promise<string | null> {
   // 1. Fast path: uid is embedded in the event metadata
   if (metadata?.uid) {
@@ -537,10 +584,7 @@ async function resolveUid(
       await db
         .collection('customers')
         .doc(customerId)
-        .set(
-          { uid, createdAt: admin.firestore.FieldValue.serverTimestamp() },
-          { merge: true }
-        );
+        .set({ uid, createdAt: FieldValue.serverTimestamp() }, { merge: true });
 
       console.info(
         `[billing] Repaired customer mapping for customerId=${customerId}, uid=${uid}`
@@ -604,16 +648,17 @@ async function verifyPaymentIntent(
 
 /** Shared context passed to every event handler to avoid re-creating instances. */
 interface HandlerContext {
-  db: admin.firestore.Firestore;
-  now: admin.firestore.FieldValue;
+  db: Firestore;
+  now: FieldValue;
   apiKey: string;
   apiBaseUrl: string;
 }
 
 /**
  * Generic webhook envelope — event-specific data is cast per handler.
+ * Exported so the test endpoint can share the same type without re-declaring it.
  */
-interface OnvoWebhookEvent {
+export interface OnvoWebhookEvent {
   type: string;
   data: Record<string, unknown>;
 }

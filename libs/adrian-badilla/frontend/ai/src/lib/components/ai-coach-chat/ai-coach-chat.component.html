@@ -17,7 +17,12 @@
 
 <!-- ─── FULLSCREEN OVERLAY ──────────────────────────────────────────────────── -->
 @if (isChatOpen()) {
-<dialog open class="chat-overlay" aria-label="Coach IA panel">
+<dialog
+  open
+  class="chat-overlay"
+  (cancel)="closeChat()"
+  aria-label="Coach IA panel"
+>
   <!-- Header -->
   <div class="chat-header">
     <div class="header-content">
@@ -52,8 +57,7 @@
         }
       </div>
     </div>
-    } @else {
-    @for (msg of messages(); track trackByTimestamp($index, msg)) {
+    } @else { @for (msg of messages(); track trackByTimestamp($index, msg)) {
     <div
       class="message"
       [class.user]="msg.role === 'user'"
@@ -74,9 +78,7 @@
       <div class="avatar user-avatar">👤</div>
       }
     </div>
-    }
-
-    @if (isLoading()) {
+    } @if (isLoading()) {
     <div class="message assistant">
       <div class="avatar assistant-avatar">🤖</div>
       <div class="bubble assistant-bubble typing-bubble">
@@ -87,9 +89,7 @@
         </div>
       </div>
     </div>
-    }
-
-    @if (hasPendingMealSuggestion()) {
+    } @if (hasPendingMealSuggestion()) {
     <div class="ai-suggestion-actions">
       <div class="suggestion-prompt">¿Te parece bien esta recomendación?</div>
       <div class="suggestion-buttons">
@@ -127,7 +127,9 @@
   <div class="chat-footer">
     <div class="chat-input-area">
       <div class="input-wrapper">
-        <label for="ai-coach-chat-input" class="visually-hidden">Mensaje al Coach IA</label>
+        <label for="ai-coach-chat-input" class="visually-hidden"
+          >Mensaje al Coach IA</label
+        >
         <input
           id="ai-coach-chat-input"
           type="text"

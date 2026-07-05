@@ -27,3 +27,18 @@ export { aiRecommendation } from './ai/recommendation.function';
 export { aiMemory } from './ai/memory.function';
 export { aiNutrition } from './ai/nutrition.function';
 export { aiRoutine } from './ai/routine.function';
+
+// ─── Development-only utilities (never deployed to production) ────────────────
+// testOnvoWebhook is conditionally added to exports ONLY when
+// FUNCTIONS_EMULATOR=true, which is set automatically by `firebase emulators:start`
+// and is never present in Cloud Run / production deployments.
+// This means Firebase CLI will never see — and therefore never deploy — this
+// function during a normal `firebase deploy` run.
+if (process.env.FUNCTIONS_EMULATOR === 'true') {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const testModule = require('./billing/test-webhook.function') as {
+    testOnvoWebhook: unknown;
+  };
+  (exports as Record<string, unknown>)['testOnvoWebhook'] =
+    testModule.testOnvoWebhook;
+}

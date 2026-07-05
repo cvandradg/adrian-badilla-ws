@@ -7,10 +7,50 @@ export type SubscriptionPlan = 'free' | 'premium';
 export type SubscriptionStatus =
   | 'inactive'
   | 'active'
+  /**
+   * Payment confirmed rejected by ONVO webhook (payment-intent.failed).
+   * Normalized from 'incomplete' + lastPaymentError by withSubscriptionFeature.
+   * This status is NEVER written directly to Firestore — it is a frontend-only
+   * normalization of the ambiguous 'incomplete' Firestore status.
+   */
+  | 'failed'
   | 'past_due'
   | 'cancelled'
-  | 'incomplete'
-  | 'trialing';
+  | 'incomplete' // Raw Firestore value — normalized to 'pending' or 'failed' by onSubscriptionNext
+  | 'trialing'
+  /** Written by acquireSubscriptionLock during createSubscription. Transitional only. */
+  | 'pending';
+
+/**
+ * Single authoritative state for the payment form UI.
+ * Computed by paymentFlowState() in billingStore.
+ * Components read ONLY this signal — never individual flags.
+ *
+ * State machine:
+ *   form       → user fills card, submits
+ *   processing → startPaymentFlow() in flight OR callable completed, awaiting webhook
+ *   success    → Firestore: status='active' (payment-intent.succeeded webhook)
+ *   failed     → Firestore: status='failed' (payment-intent.failed webhook)
+ *   past_due   → Firestore: status='past_due' (renewal rejected)
+ *   cancelled  → Firestore: status='cancelled'
+ */
+export type PaymentFlowState =
+  | 'form'
+  | 'processing'
+  | 'success'
+  | 'failed'
+  | 'past_due'
+  | 'cancelled';
+
+/**
+ * Phase of the active checkout session.
+ * Stored in withSubscriptionFeature state, written by withCheckoutFeature.
+ *
+ *   idle      → no active session (Firestore drives paymentFlowState)
+ *   filling   → user explicitly chose to fill/retry the form
+ *   processing → startPaymentFlow() is in flight (ONVO + callable + awaiting webhook)
+ */
+export type CheckoutPhase = 'idle' | 'filling' | 'processing';
 
 // ─── Firestore Shape ──────────────────────────────────────────────────────────
 
@@ -43,6 +83,19 @@ export interface Subscription {
   renewalFailCount?: number;
   nextPaymentAttempt?: Timestamp | null;
   startedAt?: Timestamp;
+
+  /**
+   * Error details from the last failed payment attempt.
+   * Written by handleOnvoWebhook on payment-intent.failed.
+   * Null when the last payment succeeded.
+   * Used by firstPaymentFailed computed in billingStore.
+   */
+  lastPaymentError?: {
+    code: string;
+    type: string;
+    message: string;
+    occurredAt: Timestamp;
+  } | null;
 
   // ── Legacy fields (checkout flow) — kept for transition period ─────────────
   /** @deprecated Use onvoSubscriptionId */

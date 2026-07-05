@@ -11,7 +11,7 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { tapResponse } from '@ngrx/operators';
 import { Auth, authState } from '@angular/fire/auth';
 import { pipe, switchMap, distinctUntilChanged, map } from 'rxjs';
-import type { Subscription } from '../models/subscription.model';
+import type { CheckoutPhase, Subscription } from '../models/subscription.model';
 import type { PaymentRecord } from '../models/payment.model';
 import {
   PLAN_FEATURE_MAP,
@@ -25,6 +25,46 @@ interface SubscriptionState {
   subscription: Subscription | null | undefined;
   paymentHistory: PaymentRecord[];
   subscriptionError: string | null;
+  /**
+   * Phase of the checkout session, owned by this feature so that onSubscriptionNext
+   * can reset it when Firestore delivers a definitive result.
+   *
+   * Transitions:
+   *   idle       → no active session; paymentFlowState reflects Firestore directly
+   *   filling    → user explicitly chose to fill / retry the form
+   *   processing → startPaymentFlow() is in flight (ONVO + callable + awaiting webhook)
+   *
+   * Written by:
+   *   withCheckoutFeature.startPaymentFlow()  idle/filling → processing
+   *   withCheckoutFeature.retryPayment()      idle         → filling
+   *   onSubscriptionNext                      processing   → idle (on definitive result)
+   */
+  checkoutPhase: CheckoutPhase;
+}
+
+// ─── Normalization ────────────────────────────────────────────────────────────
+
+/**
+ * Normalizes the raw Firestore subscription document to an unambiguous status.
+ *
+ * Firestore (via persistSubscriptionState) writes `status: 'incomplete'` as a
+ * transitional value. The webhook handlers then update it to a definitive status,
+ * but the intermediate 'incomplete' document is ambiguous:
+ *   - incomplete + lastPaymentError   → payment was rejected  (normalized: 'failed')
+ *   - incomplete + no lastPaymentError → waiting for webhook  (normalized: 'pending')
+ *
+ * This function is the single source of that mapping. Once normalized, the store
+ * never sees 'incomplete' and paymentFlowState() can use status directly.
+ */
+function normalizeSubscription(raw: Subscription | null): Subscription | null {
+  if (!raw) return null;
+  if (raw.status === 'incomplete') {
+    return {
+      ...raw,
+      status: raw.lastPaymentError != null ? 'failed' : 'pending',
+    };
+  }
+  return raw;
 }
 
 // ─── Feature ──────────────────────────────────────────────────────────────────
@@ -54,6 +94,7 @@ export function withSubscriptionFeature() {
       subscription: undefined, // undefined = not yet loaded
       paymentHistory: [],
       subscriptionError: null,
+      checkoutPhase: 'idle',
     }),
 
     withComputed((s) => ({
@@ -159,8 +200,32 @@ export function withSubscriptionFeature() {
     withMethods((store) => {
       // ── Extracted handlers to stay within nesting-depth lint rules ──────────
 
-      function onSubscriptionNext(subscription: Subscription | null): void {
-        patchState(store, { subscription, subscriptionError: null });
+      function onSubscriptionNext(raw: Subscription | null): void {
+        const subscription = normalizeSubscription(raw);
+
+        console.log('[BILLING] subscription update', {
+          rawStatus: raw?.status ?? null,
+          normalizedStatus: subscription?.status ?? null,
+          lastPaymentError: subscription?.lastPaymentError ?? null,
+          plan: subscription?.plan ?? null,
+        });
+
+        // Reset checkoutPhase to 'idle' when Firestore delivers a definitive result:
+        //   'active'  → payment-intent.succeeded webhook confirmed the payment
+        //   'failed'  → payment-intent.failed webhook rejected the payment
+        //             (normalized from 'incomplete' + lastPaymentError above)
+        // Transitional states ('pending', 'incomplete' without error) keep the
+        // current checkoutPhase so 'processing' UI state is maintained.
+        const isDefinitive =
+          subscription?.status === 'active' ||
+          subscription?.status === 'failed';
+        const checkoutPhase = isDefinitive ? 'idle' : store.checkoutPhase();
+
+        patchState(store, {
+          subscription,
+          subscriptionError: null,
+          checkoutPhase,
+        });
       }
 
       function onSubscriptionError(err: unknown): void {
@@ -251,6 +316,18 @@ export function withSubscriptionFeature() {
             )
           )
         ),
+
+        /**
+         * Sets the checkout phase. Called by withCheckoutFeature methods
+         * (startPaymentFlow, retryPayment) via WritableStateSource cast since
+         * checkoutPhase lives in this feature's state.
+         *
+         * Also used internally by onSubscriptionNext to reset to 'idle' when
+         * a definitive Firestore result arrives.
+         */
+        setCheckoutPhase(phase: CheckoutPhase): void {
+          patchState(store, { checkoutPhase: phase });
+        },
       };
     })
   );

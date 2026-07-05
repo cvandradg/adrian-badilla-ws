@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  OnInit,
   computed,
   inject,
   signal,
@@ -17,24 +18,34 @@ import {
   type MeasurementSnapshot,
 } from '../../mock/user-profile/user-profile.mock';
 import { firebaseAuthStore } from '@adrian-badilla/auth';
+import { athleteProfileStore } from '../../store/athlete-profile.store';
+import { AthleteProfileCardComponent } from '../../components/athlete-profile-card/athlete-profile-card.component';
+import { AthleteProfileFormComponent } from '../../components/athlete-profile-form/athlete-profile-form.component';
 
 type ProfileTab = 'resumen' | 'historial' | 'galeria';
 
 @Component({
   selector: 'lib-profile-page',
   standalone: true,
-  imports: [DecimalPipe, DatePipe, ChartModule],
+  imports: [
+    DecimalPipe,
+    DatePipe,
+    ChartModule,
+    AthleteProfileCardComponent,
+    AthleteProfileFormComponent,
+  ],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfilePageComponent {
+export class ProfilePageComponent implements OnInit {
   readonly #router = inject(Router);
   readonly #dialogRef = inject<MatDialogRef<ProfilePageComponent>>(
     MatDialogRef,
     { optional: true }
   );
   readonly #auth = inject(firebaseAuthStore);
+  readonly athleteStore = inject(athleteProfileStore);
 
   readonly profile = signal<UserProfileMock>(USER_PROFILE_MOCK);
   readonly history = signal<MeasurementSnapshot[]>(MEASUREMENT_HISTORY_MOCK);
@@ -310,6 +321,12 @@ export class ProfilePageComponent {
       },
     },
   };
+
+  // ── Lifecycle ──────────────────────────────────────────────────────────
+
+  ngOnInit(): void {
+    this.athleteStore.loadAthleteProfile();
+  }
 
   // ── Actions ────────────────────────────────────────────────────────────
 

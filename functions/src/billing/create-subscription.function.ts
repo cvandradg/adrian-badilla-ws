@@ -81,7 +81,18 @@ export const createSubscription = onCall(
     // use optimistic concurrency, two simultaneous requests targeting the same
     // uid will conflict: Firestore retries the second transaction which will
     // then see the 'pending' status written by the first and abort.
+
+    // ── Cancel failed subscription if a prior attempt failed (BUG-FIX) ──────
+    // When payment-intent.failed fires, Firestore is left with:
+    //   { status: 'incomplete', onvoSubscriptionId: 'sub_xxx', lastPaymentError: {...} }
+    // acquireSubscriptionLock treats incomplete+onvoSubscriptionId as a hard block,
+    // so without this step any retry gets 'A subscription is already in progress'.
+    // We cancel the dead ONVO subscription and clear the stale Firestore fields
+    // BEFORE acquiring the lock so the guard sees a clean state.
+    await cancelFailedSubscriptionIfNeeded(uid, apiKey, apiBase);
+
     await acquireSubscriptionLock(uid);
+    console.info(`[billing] createSubscription: lock acquired uid=${uid}`);
 
     // ── Create subscription in ONVO ─────────────────────────────────────────
     // If the ONVO call fails we must clean up the 'pending' lock so the user
@@ -98,21 +109,58 @@ export const createSubscription = onCall(
         apiBase,
       });
     } catch (err) {
-      // ONVO call failed — release the lock so the user can retry later.
+      // ONVO call failed (network / 4xx / 5xx) — no subscription was created.
+      // Release the pending lock so the user can retry immediately.
+      console.error(
+        `[billing] createSubscription: ONVO createSubscription failed uid=${uid}`,
+        err
+      );
       await releaseSubscriptionLock(uid);
       throw err;
     }
 
     // ── Persist state in Firestore (two writes, independent) ────────────────
-    await persistSubscriptionState({
-      uid,
-      customerId,
-      paymentMethodId,
-      subscription,
-    });
+    // BUG-FIX: If the Firestore write fails AFTER ONVO already created the
+    // subscription, the next retry would create a duplicate ONVO subscription
+    // (the stale lock would eventually expire, and createOnvoSubscription would
+    // run again with no knowledge of the orphaned sub_xxx).
+    // Fix: cancel the ONVO subscription on persist failure so the state is clean.
+    try {
+      await persistSubscriptionState({
+        uid,
+        customerId,
+        paymentMethodId,
+        subscription,
+      });
+    } catch (persistErr) {
+      console.error(
+        `[billing] createSubscription: Firestore persist failed uid=${uid} sub=${subscription.id} — rolling back ONVO subscription`,
+        persistErr
+      );
+      // Best-effort ONVO rollback — cancel the subscription we just created.
+      try {
+        const rollbackRes = await fetch(
+          `${apiBase}/v1/subscriptions/${subscription.id}`,
+          { method: 'DELETE', headers: { Authorization: `Bearer ${apiKey}` } }
+        );
+        console.info(
+          `[billing] createSubscription: ONVO rollback ${
+            rollbackRes.ok ? 'succeeded' : `failed HTTP ${rollbackRes.status}`
+          } sub=${subscription.id}`
+        );
+      } catch (rollbackErr) {
+        console.error(
+          `[billing] createSubscription: ONVO rollback threw sub=${subscription.id}`,
+          rollbackErr
+        );
+      }
+      // Release the lock so the next attempt can proceed after we retry.
+      await releaseSubscriptionLock(uid);
+      throw persistErr;
+    }
 
     console.info(
-      `[billing] createSubscription: uid=${uid}, subscriptionId=${subscription.id}, status=${subscription.status}`
+      `[billing] createSubscription: completed uid=${uid} sub=${subscription.id} status=${subscription.status}`
     );
 
     return {
@@ -142,7 +190,132 @@ function validateInput(input: CreateSubscriptionInput): void {
   }
 }
 
-// ─── Subscription lock (race condition guard) ───────────────────────────────
+// ─── Retry cleanup (BUG-FIX: incomplete + lastPaymentError) ──────────────────
+
+/**
+ * Cancels the existing ONVO subscription and clears the stale Firestore fields
+ * when a prior subscription attempt's first payment was definitively rejected.
+ *
+ * The problem:
+ *   After payment-intent.failed fires, Firestore holds:
+ *     { status: 'incomplete', onvoSubscriptionId: 'sub_xxx', lastPaymentError: {...} }
+ *   acquireSubscriptionLock blocks any new attempt because it sees
+ *   incomplete + onvoSubscriptionId regardless of lastPaymentError.
+ *
+ * This function is a pre-step to acquireSubscriptionLock. It acts ONLY when
+ * ALL three conditions are true:
+ *   1. status === 'incomplete'          — payment never confirmed
+ *   2. onvoSubscriptionId is set        — subscription exists in ONVO
+ *   3. lastPaymentError is set          — webhook confirmed the failure
+ *
+ * The ONVO cancellation is best-effort: if ONVO already cleaned up the
+ * subscription (expired, auto-voided) the DELETE is a no-op. Regardless of
+ * the ONVO response, the Firestore fields are always cleared so the lock can
+ * be acquired normally on the next call.
+ */
+async function cancelFailedSubscriptionIfNeeded(
+  uid: string,
+  apiKey: string,
+  apiBase: string
+): Promise<void> {
+  const db = admin.firestore();
+  const userSnap = await db.collection('users').doc(uid).get();
+  const sub = userSnap.data()?.['subscription'] as
+    | {
+        status?: string;
+        onvoSubscriptionId?: string;
+        lastPaymentError?: object | null;
+      }
+    | undefined;
+
+  // Only act when ALL three signals confirm a definitively-failed prior attempt.
+  if (
+    sub?.status !== 'incomplete' ||
+    !sub?.onvoSubscriptionId ||
+    !sub?.lastPaymentError
+  ) {
+    return;
+  }
+
+  const staleSubscriptionId = sub.onvoSubscriptionId;
+
+  // Cancel the dead ONVO subscription (best-effort).
+  try {
+    const response = await fetch(
+      `${apiBase}/v1/subscriptions/${staleSubscriptionId}`,
+      {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${apiKey}` },
+      }
+    );
+    if (response.ok) {
+      console.info(
+        `[billing] cancelFailedSubscriptionIfNeeded: cancelled ONVO sub ${staleSubscriptionId} for uid=${uid}`
+      );
+    } else {
+      // Non-2xx from ONVO — subscription may already be gone; proceed anyway.
+      console.warn(
+        `[billing] cancelFailedSubscriptionIfNeeded: ONVO DELETE returned HTTP ${response.status} for sub ${staleSubscriptionId} — proceeding with Firestore cleanup`
+      );
+    }
+  } catch (err) {
+    // Network / timeout error — proceed with Firestore cleanup regardless.
+    console.warn(
+      `[billing] cancelFailedSubscriptionIfNeeded: ONVO DELETE failed for sub ${staleSubscriptionId}`,
+      err
+    );
+  }
+
+  // FIX-HIGH: Use a transaction for the cleanup write to guard against the
+  // narrow race window where payment-intent.succeeded fires between our initial
+  // read above and this write (e.g. an ONVO automatic retry collecting payment
+  // for the failed subscription while we were cancelling it).
+  //
+  // If the subscription was activated in that window, the ONVO DELETE we just
+  // issued may have cancelled an active subscription. We log a critical alert
+  // and abort so the caller (createSubscription) surfaces an error instead of
+  // silently leaving the user without premium.
+  await db.runTransaction(async (tx) => {
+    const currentSnap = await tx.get(db.collection('users').doc(uid));
+    const currentStatus = currentSnap.data()?.['subscription']?.['status'] as
+      | string
+      | undefined;
+
+    if (currentStatus === 'active') {
+      console.error(
+        '[billing] cancelFailedSubscriptionIfNeeded: RACE CONDITION DETECTED —' +
+          ` subscription ${staleSubscriptionId} was activated between the stale-check read` +
+          ` and the ONVO DELETE for uid=${uid}.` +
+          ' ONVO subscription may need manual restoration via dashboard.'
+      );
+      // Throw so createSubscription fails visibly rather than silently
+      // clearing an active subscription from Firestore.
+      throw new HttpsError(
+        'aborted',
+        'Subscription state conflict. Please contact support.'
+      );
+    }
+
+    tx.set(
+      db.collection('users').doc(uid),
+      {
+        subscription: {
+          status: 'inactive',
+          onvoSubscriptionId: admin.firestore.FieldValue.delete(),
+          lastPaymentError: admin.firestore.FieldValue.delete(),
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        },
+      },
+      { merge: true }
+    );
+  });
+
+  console.info(
+    `[billing] cancelFailedSubscriptionIfNeeded: cleared stale state uid=${uid} sub=${staleSubscriptionId}`
+  );
+}
+
+// ─── Subscription lock (race condition guard) ─────────────────────────────────
 
 /**
  * Atomically checks for an existing subscription and writes a 'pending' lock
@@ -217,7 +390,7 @@ async function acquireSubscriptionLock(uid: string): Promise<void> {
       }
       // Stale lock — fall through and overwrite below.
       console.warn(
-        `[billing] acquireSubscriptionLock: overwriting stale pending lock for uid=${uid}`
+        `[billing] acquireSubscriptionLock: stale lock detected uid=${uid} lockedAt=${sub?.pendingLockedAt?.toMillis()} — overwriting`
       );
     }
 
@@ -244,6 +417,11 @@ async function acquireSubscriptionLock(uid: string): Promise<void> {
  */
 async function releaseSubscriptionLock(uid: string): Promise<void> {
   try {
+    // Reset to 'inactive' — not 'incomplete'.
+    // 'incomplete' implies a subscription exists in ONVO; here it does not
+    // (this path is reached only when createOnvoSubscription failed or
+    // persistSubscriptionState failed after an ONVO rollback).
+    // Clearing pendingLockedAt avoids a stale-lock window on the next read.
     await admin
       .firestore()
       .collection('users')
@@ -251,16 +429,19 @@ async function releaseSubscriptionLock(uid: string): Promise<void> {
       .set(
         {
           subscription: {
-            status: 'incomplete',
+            status: 'inactive',
+            pendingLockedAt: admin.firestore.FieldValue.delete(),
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
           },
         },
         { merge: true }
       );
+    console.info(`[billing] releaseSubscriptionLock: released uid=${uid}`);
   } catch (releaseErr) {
     // Best-effort: log but don't mask the original error.
+    // The pending lock will expire naturally after LOCK_TTL_MS (5 min).
     console.error(
-      `[billing] Failed to release subscription lock for uid=${uid}`,
+      `[billing] releaseSubscriptionLock: FAILED uid=${uid} — lock will expire after TTL`,
       releaseErr
     );
   }
