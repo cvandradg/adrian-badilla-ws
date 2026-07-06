@@ -4,6 +4,8 @@ import { Firestore } from '@angular/fire/firestore';
 import { DialogService } from 'primeng/dynamicdialog';
 import { provideHttpClient } from '@angular/common/http';
 import { settingsStoreDev } from '../../store/settings.store';
+import { billingStore } from '@adrian-badilla/billing';
+import { aiStore } from '@adrian-badilla/ai';
 
 describe('AdrianBadillaDietsComponent', () => {
   let component: AdrianBadillaDietsComponent;
@@ -25,13 +27,25 @@ describe('AdrianBadillaDietsComponent', () => {
           saveRouteisLoading: () => false,
           isSavingRoute: () => false,
           foodDescriptionVm: () => null,
-          chatMessages: () => [],
-          chatIsLoading: () => false,
-          isChatOpen: () => false,
-          hasPendingAISuggestion: () => false,
+          noActiveDiet: () => false,
           loadingDiet: () => false,
+          dietFetchDone: () => true,
+          loadingRoutine: () => false,
           errorDiet: () => null,
-          loadWeeklyDiet: () => {},
+          saveRoute: jest.fn(),
+          updateRouteSearchQuery: jest.fn(),
+          clearRouteSearchQuery: jest.fn(),
+          selectRoute: jest.fn(),
+          openDietDialog: jest.fn(),
+          openDietDialogFromChild: jest.fn(),
+          updateSupercenterMealStatus: jest.fn(),
+        }},
+        { provide: billingStore, useValue: {
+          isSubscriptionActive: () => false,
+          isSubscriptionLoading: () => false,
+        }},
+        { provide: aiStore, useValue: {
+          openChatForMeal: jest.fn(),
         }},
         DialogService,
       ],

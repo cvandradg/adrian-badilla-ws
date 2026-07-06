@@ -4,7 +4,7 @@ export const appRoutes: Route[] = [
   {
     path: 'settings',
     loadChildren: () =>
-      import('adrian-badilla/settings').then((m) => m.settingsRoutes),
+      import('adrian-badilla/settings/routes').then((m) => m.settingsRoutes),
   },
   {
     path: '',

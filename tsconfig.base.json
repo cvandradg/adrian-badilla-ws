@@ -48,6 +48,9 @@
       "adrian-badilla/settings": [
         "./libs/adrian-badilla/frontend/settings/src/index.ts"
       ],
+      "adrian-badilla/settings/routes": [
+        "./libs/adrian-badilla/frontend/settings/src/routes.ts"
+      ],
       "@adrian-badilla/news": [
         "./libs/adrian-badilla/frontend/news/src/index.ts"
       ],
