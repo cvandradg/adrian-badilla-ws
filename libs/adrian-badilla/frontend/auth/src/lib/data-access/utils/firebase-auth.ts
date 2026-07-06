@@ -1,8 +1,14 @@
 import { withFirebaseAuth } from '../stores/with-firebase-auth.feature';
-import type { SignalStoreFeature, WritableStateSource } from '@ngrx/signals';
+import type {
+  SignalStoreFeature,
+  SignalStoreFeatureResult,
+  WritableStateSource,
+} from '@ngrx/signals';
 
 export type FeatureOut<Factory extends (...args: unknown[]) => unknown> =
-  ReturnType<Factory> extends SignalStoreFeature<infer _I, infer R> ? R : never;
+  ReturnType<Factory> extends SignalStoreFeature<SignalStoreFeatureResult, infer R>
+    ? R
+    : never;
 
 export type FeatureState<Factory extends (...args: unknown[]) => unknown> =
   FeatureOut<Factory>['state'];

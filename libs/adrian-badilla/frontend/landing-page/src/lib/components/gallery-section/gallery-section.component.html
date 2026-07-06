@@ -1,0 +1,24 @@
+<section id="gallery" data-h-gallery style="position:relative;">
+  <div data-h-sticky style="position:sticky; top:0; height:100vh; overflow:hidden; display:flex; flex-direction:column; justify-content:center; gap:clamp(22px,4vh,46px); padding-block:clamp(40px,7vh,90px);">
+    <div style="max-width:1320px; width:100%; margin:0 auto; padding:0 clamp(20px,5vw,48px);">
+      <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:14px;">
+        <span class="ab-chrome" style="font-family:'Anton',sans-serif; font-size:1.4rem;">03</span>
+        <span style="font-size:13px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--accent, hsl(356 88% 53%));">Resultados reales</span>
+      </div>
+      <h2 style="font-family:'Anton',sans-serif; font-weight:400; font-size:clamp(2.4rem,6vw,5rem); line-height:.92; letter-spacing:-.01em; text-transform:uppercase; margin:0;">Lográ tu objetivo</h2>
+      <p style="margin:14px 0 0; font-size:1rem; color:rgba(255,255,255,.55);">Seguí scrolleando — cada transformación entra en escena.</p>
+    </div>
+    <div style="overflow:hidden; width:100%; height:clamp(440px,88vh,960px); display:flex; align-items:center; -webkit-mask-image:linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); mask-image:linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);">
+      <div data-h-track style="display:flex; align-items:center; gap:clamp(56px,6vw,110px); width:max-content; padding:0 clamp(40px,12vw,200px); will-change:transform;">
+        @for (it of galleryItems; track $index) {
+          <figure class="g-item" [attr.data-depth]="it.depth" [attr.data-vy]="it.vy" [attr.data-align]="it.align" [style.width]="it.w" style="flex:none; margin:0;">
+            <div class="g-cap" style="font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.5); margin-bottom:14px; white-space:nowrap;">{{ it.label }}</div>
+            <div class="g-frame" [style.height]="it.h" style="width:100%; border-radius:4px; overflow:hidden; position:relative; background:#0d0d0d;">
+              <img [src]="it.src" [alt]="it.label" loading="lazy" style="width:100%; height:100%; object-fit:cover; object-position:center; display:block;">
+            </div>
+          </figure>
+        }
+      </div>
+    </div>
+  </div>
+</section>
