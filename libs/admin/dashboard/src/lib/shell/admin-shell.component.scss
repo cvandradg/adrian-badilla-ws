@@ -1,0 +1,105 @@
+@use 'settings/tokens' as t;
+
+// ── Shell layout ──────────────────────────────────────────────────────────────
+
+.admin-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #070e17;
+
+  // ── Top bar ──────────────────────────────────────────────────────────────
+
+  &__topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: t.$dashboard-panel-surface;
+    border-bottom: 1px solid t.$dashboard-border-subtle;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 0.65rem clamp(0.75rem, 3vw, 1.5rem);
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+
+      .brand-logo {
+        width: 1.75rem;
+        height: 1.75rem;
+      }
+
+      .brand-name {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: t.$dashboard-glow-outer;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+    }
+
+    .topbar-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      flex: 1;
+      overflow-x: auto;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      &__item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.4rem;
+        font-size: 0.82rem;
+        color: t.$dashboard-text-muted;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: color 0.2s, background 0.2s;
+
+        &:hover {
+          color: t.$dashboard-text-primary;
+          background: t.$dashboard-hover-surface;
+        }
+
+        &--active {
+          color: t.$dashboard-text-primary;
+          background: t.$dashboard-hover-surface;
+          font-weight: 600;
+        }
+
+        i {
+          font-size: 0.8rem;
+        }
+      }
+    }
+
+    .topbar-actions {
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+  }
+
+  // ── Content ───────────────────────────────────────────────────────────────
+
+  &__content {
+    flex: 1;
+    overflow-y: auto;
+  }
+}

@@ -112,5 +112,11 @@ export class SideMenuComponent {
       route: '/dashboard/configuracion',
       exact: false,
     },
+    {
+      icon: ['fas', 'shield'],
+      label: 'Administrador',
+      route: '/admin',
+      exact: false,
+    },
   ]);
 }

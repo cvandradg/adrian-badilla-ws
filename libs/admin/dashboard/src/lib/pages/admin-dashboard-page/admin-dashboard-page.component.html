@@ -1,0 +1,53 @@
+<div class="admin-dashboard">
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <div class="admin-dashboard__header">
+    <div class="header-title">
+      <i class="pi pi-shield header-title__icon"></i>
+      <div>
+        <h1 class="header-title__main">Administrador</h1>
+        <p class="header-title__sub">Panel de gestión del sistema</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Modules grid ───────────────────────────────────────────────────── -->
+  <div class="admin-dashboard__grid">
+    @for (mod of modules; track mod.id) {
+    <div class="module-card" [class.module-card--unavailable]="!mod.available">
+      <!-- Icon -->
+      <div class="module-card__icon-wrap">
+        <i [class]="mod.icon + ' module-icon'"></i>
+      </div>
+
+      <!-- Info -->
+      <div class="module-card__body">
+        <h2 class="module-title">{{ mod.title }}</h2>
+        <p class="module-description">{{ mod.description }}</p>
+      </div>
+
+      <!-- CTA -->
+      <div class="module-card__footer">
+        @if (mod.available) {
+        <p-button
+          label="Administrar"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          severity="contrast"
+          size="small"
+          [routerLink]="mod.route"
+        />
+        } @else {
+        <p-button
+          label="Próximamente"
+          icon="pi pi-clock"
+          severity="secondary"
+          size="small"
+          [disabled]="true"
+          [text]="true"
+        />
+        }
+      </div>
+    </div>
+    }
+  </div>
+</div>

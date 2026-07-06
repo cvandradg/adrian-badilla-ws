@@ -72,6 +72,13 @@ service cloud.firestore {
       allow read, write: if isOwner(uid);
     }
 
+    // ── exercise-library (global admin collection) ───────────────────────────
+    match /exercise-library/{exerciseId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
     // ── Deny everything else ──────────────────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;

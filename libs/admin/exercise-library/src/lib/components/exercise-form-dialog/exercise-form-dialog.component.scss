@@ -1,0 +1,274 @@
+@use 'settings/tokens' as t;
+
+// ── Form container ────────────────────────────────────────────────────────────
+
+.exercise-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+// ── Tab icons ─────────────────────────────────────────────────────────────────
+
+.tab-icon {
+  margin-right: 0.35rem;
+  font-size: 0.85rem;
+}
+
+.tab-label {
+  font-size: 0.82rem;
+}
+
+// ── Tab content ───────────────────────────────────────────────────────────────
+
+.tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.25rem 0.25rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  max-height: calc(80vh - 10rem);
+
+  @media (max-width: 600px) {
+    padding: 1rem 0;
+    max-height: calc(80vh - 8rem);
+  }
+}
+
+// ── Fields ────────────────────────────────────────────────────────────────────
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  &__label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: t.$dashboard-text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    .required {
+      color: t.$dashboard-glow-outer;
+      margin-left: 0.2rem;
+    }
+  }
+
+  &__input {
+    width: 100%;
+  }
+
+  &__error {
+    color: t.$color-status-error;
+    font-size: 0.78rem;
+  }
+
+  &__hint {
+    color: t.$ab-metal-lo;
+    font-size: 0.78rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  &--toggle {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 540px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toggle-label {
+  font-size: 0.85rem;
+  color: t.$dashboard-text-primary;
+}
+
+.toggles-row {
+  grid-template-columns: repeat(3, 1fr);
+
+  @media (max-width: 540px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Contraindications ─────────────────────────────────────────────────────────
+
+.contraindications-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .section-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: t.$dashboard-text-primary;
+  }
+}
+
+.empty-contraindications {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  border: 1px dashed t.$dashboard-border-subtle;
+  border-radius: 0.5rem;
+  color: t.$dashboard-text-muted;
+  font-size: 0.875rem;
+}
+
+.contraindications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contraindication-item {
+  background: t.$dashboard-panel-surface;
+  border: 1px solid t.$dashboard-border-subtle;
+  border-radius: 0.5rem;
+}
+
+.item-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: t.$dashboard-text-primary;
+}
+
+.contraindication-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+// ── Media preview ─────────────────────────────────────────────────────────────
+
+.media-preview {
+  display: flex;
+  justify-content: flex-start;
+
+  &__img {
+    width: 10rem;
+    height: 7rem;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    border: 1px solid t.$glass-border;
+  }
+}
+
+// ── Review panel ──────────────────────────────────────────────────────────────
+
+.review-panel {
+  gap: 0;
+}
+
+.review-section {
+  padding: 0.75rem 0;
+
+  .review-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: t.$ab-metal-lo;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.review-grid {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 0.4rem 1rem;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 7rem 1fr;
+  }
+}
+
+.review-key {
+  font-size: 0.82rem;
+  color: t.$dashboard-text-muted;
+}
+
+.review-val {
+  font-size: 0.85rem;
+  color: t.$dashboard-text-primary;
+  font-weight: 500;
+}
+
+.review-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.review-warning {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(235, 116, 116, 0.1);
+  border: 1px solid rgba(235, 116, 116, 0.3);
+  border-radius: 0.5rem;
+  color: t.$color-status-error;
+  font-size: 0.85rem;
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────────
+
+.dialog-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 0 0.25rem;
+  border-top: 1px solid t.$dashboard-border-subtle;
+  flex-shrink: 0;
+
+  .footer-error {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: t.$color-status-error;
+
+    i {
+      font-size: 0.85rem;
+    }
+  }
+
+  .footer-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+}

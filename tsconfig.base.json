@@ -71,6 +71,15 @@
       ],
       "@adrian-badilla/ai": [
         "./libs/adrian-badilla/frontend/ai/src/index.ts"
+      ],
+      "@admin/exercise-library": [
+        "./libs/admin/exercise-library/src/index.ts"
+      ],
+      "@admin/exercise-library/routes": [
+        "./libs/admin/exercise-library/src/lib/exercise-library.routes.ts"
+      ],
+      "@admin/dashboard/routes": [
+        "./libs/admin/dashboard/src/lib/admin.routes.ts"
       ]
     }
   },
