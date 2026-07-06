@@ -1,0 +1,5 @@
+<span class="status-chip" [attr.data-status]="status()">
+  @switch (status()) { @case ('active') { Activo } @case ('inactive') { Inactivo
+  } @case ('past_due') { Pago pendiente } @case ('cancelled') { Cancelado }
+  @default { Desconocido } }
+</span>

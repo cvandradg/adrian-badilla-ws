@@ -1,0 +1,54 @@
+<div class="return-page">
+  @if (isPaymentCancelled()) {
+  <div class="return-page__state return-page__state--cancelled">
+    <span class="return-page__icon">❌</span>
+    <h2 class="return-page__title">Pago cancelado</h2>
+    <p class="return-page__message">
+      No se realizó ningún cargo. Puedes intentarlo de nuevo cuando quieras.
+    </p>
+    <button class="return-page__btn" (click)="goToBilling()" type="button">
+      Volver a suscripciones
+    </button>
+  </div>
+  } @else if (store.isPremium()) {
+  <div class="return-page__state return-page__state--success">
+    <span class="return-page__icon">🎉</span>
+    <h2 class="return-page__title">¡Bienvenido a Premium!</h2>
+    <p class="return-page__message">
+      Tu suscripción está activa. Ya tienes acceso a todas las funciones
+      premium.
+    </p>
+    <button class="return-page__btn" (click)="goToBilling()" type="button">
+      Ver mi suscripción
+    </button>
+  </div>
+  } @else if (store.verifyLoading() || store.pendingVerification()) {
+  <div class="return-page__state return-page__state--pending">
+    <span class="return-page__spinner"></span>
+    <h2 class="return-page__title">Verificando tu pago...</h2>
+    <p class="return-page__message">
+      Esto puede tardar unos segundos. Por favor no cierres esta página.
+    </p>
+  </div>
+  } @else if (store.verifyError()) {
+  <div class="return-page__state return-page__state--error">
+    <span class="return-page__icon">⚠️</span>
+    <h2 class="return-page__title">No pudimos verificar tu pago</h2>
+    <p class="return-page__message">{{ store.verifyError() }}</p>
+    <button class="return-page__btn" (click)="goToBilling()" type="button">
+      Ir a mi suscripción
+    </button>
+  </div>
+  } @else {
+  <div class="return-page__state">
+    <span class="return-page__icon">⏳</span>
+    <h2 class="return-page__title">Procesando tu pago</h2>
+    <p class="return-page__message">
+      Tu pago está siendo procesado. Te notificaremos cuando esté confirmado.
+    </p>
+    <button class="return-page__btn" (click)="goToBilling()" type="button">
+      Ver mi suscripción
+    </button>
+  </div>
+  }
+</div>

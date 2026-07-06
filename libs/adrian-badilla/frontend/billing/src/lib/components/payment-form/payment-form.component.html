@@ -1,0 +1,259 @@
+<div class="payment-form">
+  <header class="payment-form__header">
+    <h2 class="payment-form__title">Datos de pago</h2>
+    <p class="payment-form__subtitle">
+      Tu información es procesada de forma segura por ONVO Pay.
+    </p>
+  </header>
+
+  @switch (store.paymentFlowState()) {
+
+  <!-- ── Procesando: resolveCustomer / createPM / callable / esperando webhook ── -->
+  @case ('processing') {
+  <div class="pf-state pf-state--processing">
+    <div class="pf-state__glow"></div>
+    <div class="pf-state__ring-wrap">
+      <div class="pf-state__ring-spin"></div>
+      <div class="pf-state__ring-base">
+        <i class="pi pi-lock pf-state__ring-icon"></i>
+      </div>
+    </div>
+    <div class="pf-state__body">
+      <h3 class="pf-state__title">Procesando tu pago</h3>
+      <p class="pf-state__desc">
+        Tu suscripción está siendo confirmada.<br />Por favor no cierres esta
+        página.
+      </p>
+      <div class="pf-state__dots"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+  }
+
+  <!-- ── Éxito: status='active' confirmado por webhook → Firestore ─────────── -->
+  @case ('success') {
+  <div class="pf-state pf-state--success">
+    <div class="pf-state__glow"></div>
+    <div class="pf-state__ring-wrap">
+      <div class="pf-state__ring-ripple"></div>
+      <div class="pf-state__ring-base">
+        <i class="pi pi-check pf-state__ring-icon"></i>
+      </div>
+    </div>
+    <div class="pf-state__body">
+      <h3 class="pf-state__title">¡Suscripción Premium activada!</h3>
+      <p class="pf-state__desc">
+        Tu pago fue confirmado. Ya tienes acceso a todas las funciones premium.
+      </p>
+      <button class="pf-state__btn" type="button" (click)="goHome()">
+        <i class="pi pi-home"></i>
+        Ir al inicio
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- ── Pago fallido: status='failed' confirmado por webhook ──────────────── -->
+  @case ('failed') {
+  <div class="pf-state pf-state--failed">
+    <div class="pf-state__glow"></div>
+    <div class="pf-state__ring-wrap">
+      <div class="pf-state__ring-base">
+        <i class="pi pi-times pf-state__ring-icon"></i>
+      </div>
+    </div>
+    <div class="pf-state__body">
+      <h3 class="pf-state__title">El pago no pudo procesarse</h3>
+      @if (store.lastPaymentErrorMessage()) {
+      <div class="pf-state__error-box">
+        <i class="pi pi-info-circle"></i>
+        {{ store.lastPaymentErrorMessage() }}
+      </div>
+      } @else {
+      <p class="pf-state__desc">
+        Verifica los datos de tu tarjeta e intenta de nuevo.
+      </p>
+      }
+      <button
+        class="pf-state__btn"
+        type="button"
+        (click)="store.retryPayment()"
+      >
+        <i class="pi pi-refresh"></i>
+        Intentar nuevamente
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- ── Renovación rechazada: status='past_due' ───────────────────────────── -->
+  @case ('past_due') {
+  <div class="pf-state pf-state--warning">
+    <div class="pf-state__glow"></div>
+    <div class="pf-state__ring-wrap">
+      <div class="pf-state__ring-base">
+        <i class="pi pi-exclamation-triangle pf-state__ring-icon"></i>
+      </div>
+    </div>
+    <div class="pf-state__body">
+      <h3 class="pf-state__title">Renovación rechazada</h3>
+      <p class="pf-state__desc">
+        No se pudo renovar tu suscripción. Actualiza tu método de pago para
+        continuar.
+      </p>
+      <button
+        class="pf-state__btn"
+        type="button"
+        (click)="store.retryPayment()"
+      >
+        <i class="pi pi-credit-card"></i>
+        Actualizar método de pago
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- ── Cancelada: status='cancelled' ────────────────────────────────────── -->
+  @case ('cancelled') {
+  <div class="pf-state pf-state--muted">
+    <div class="pf-state__glow"></div>
+    <div class="pf-state__ring-wrap">
+      <div class="pf-state__ring-base">
+        <i class="pi pi-ban pf-state__ring-icon"></i>
+      </div>
+    </div>
+    <div class="pf-state__body">
+      <h3 class="pf-state__title">Suscripción cancelada</h3>
+      <p class="pf-state__desc">
+        Tu suscripción fue cancelada. Puedes suscribirte nuevamente cuando
+        quieras.
+      </p>
+      <button
+        class="pf-state__btn"
+        type="button"
+        (click)="store.retryPayment()"
+      >
+        <i class="pi pi-star"></i>
+        Suscribirme nuevamente
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- ── Formulario: primera vez, retry, o sin suscripción ────────────────── -->
+  @default {
+  <form
+    class="payment-form__form"
+    [formGroup]="cardForm"
+    (ngSubmit)="onSubmit()"
+    novalidate
+  >
+    <!-- Holder Name -->
+    <mat-form-field appearance="outline" class="payment-form__field">
+      <mat-label>Nombre en la tarjeta</mat-label>
+      <input
+        matInput
+        formControlName="holderName"
+        type="text"
+        placeholder="Nombre Apellido"
+        autocomplete="cc-name"
+      />
+      @if (cardForm.get('holderName')?.invalid &&
+      cardForm.get('holderName')?.touched) {
+      <mat-error>Ingresa el nombre tal como aparece en la tarjeta.</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Card Number -->
+    <mat-form-field appearance="outline" class="payment-form__field">
+      <mat-label>Número de tarjeta</mat-label>
+      <input
+        matInput
+        formControlName="cardNumber"
+        type="tel"
+        inputmode="numeric"
+        maxlength="19"
+        placeholder="1234 5678 9012 3456"
+        autocomplete="cc-number"
+      />
+      @if (cardForm.get('cardNumber')?.invalid &&
+      cardForm.get('cardNumber')?.touched) {
+      <mat-error
+        >Ingresa un número de tarjeta válido (13–19 dígitos).</mat-error
+      >
+      }
+    </mat-form-field>
+
+    <!-- Expiry row -->
+    <div class="payment-form__row">
+      <mat-form-field appearance="outline" class="payment-form__field--half">
+        <mat-label>Mes de vencimiento</mat-label>
+        <input
+          matInput
+          formControlName="expMonth"
+          type="number"
+          min="1"
+          max="12"
+          placeholder="MM"
+          autocomplete="cc-exp-month"
+        />
+        @if (cardForm.get('expMonth')?.invalid &&
+        cardForm.get('expMonth')?.touched) {
+        <mat-error>Mes inválido (1–12).</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="payment-form__field--half">
+        <mat-label>Año de vencimiento</mat-label>
+        <input
+          matInput
+          formControlName="expYear"
+          type="number"
+          placeholder="AAAA"
+          autocomplete="cc-exp-year"
+        />
+        @if (cardForm.get('expYear')?.invalid &&
+        cardForm.get('expYear')?.touched) {
+        <mat-error>Año inválido.</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- CVC -->
+    <mat-form-field
+      appearance="outline"
+      class="payment-form__field payment-form__field--cvc"
+    >
+      <mat-label>CVC / CVV</mat-label>
+      <input
+        matInput
+        formControlName="cvc"
+        type="tel"
+        inputmode="numeric"
+        maxlength="4"
+        placeholder="123"
+        autocomplete="cc-csc"
+      />
+      @if (cardForm.get('cvc')?.invalid && cardForm.get('cvc')?.touched) {
+      <mat-error>CVC inválido (3–4 dígitos).</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Backend error (startPaymentFlow errors: customer / PM / subscribe) -->
+    <adrian-badilla-status-message
+      [display]="!!store.checkoutError()"
+      [type]="'error'"
+      [icon]="['fas', 'xmark']"
+      [message]="store.checkoutError()"
+    />
+
+    <!-- Submit button -->
+    <adrian-badilla-primary-animated-button
+      [enable]="cardForm.valid"
+      [loading]="false"
+      [success]="false"
+      [buttonText]="'Suscribirse a Premium'"
+      (submitEvent)="onSubmit()"
+    />
+  </form>
+  } }
+</div>

@@ -1,0 +1,102 @@
+<div class="section-history">
+  <div class="section-history__head">
+    <h2 class="section-history__title">{{ title() }}</h2>
+    <p class="section-history__subtitle">{{ subtitle() }}</p>
+
+    <div
+      class="section-history__filters"
+      role="group"
+      aria-label="Filtrar historial"
+    >
+      @for (f of filters; track f.value) {
+      <button
+        type="button"
+        class="filter-chip"
+        [class.is-active]="activeFilter() === f.value"
+        (click)="setFilter(f.value)"
+        [attr.aria-pressed]="activeFilter() === f.value"
+      >
+        {{ f.label }}
+      </button>
+      }
+    </div>
+  </div>
+
+  <div class="section-history__timeline" role="list">
+    @for (entry of filtered(); track entry.id; let isFirst = $first; let isLast
+    = $last) {
+    <div
+      class="timeline-item"
+      [class.is-first]="isFirst"
+      [class.is-last]="isLast"
+      [class.status-active]="entry.status === 'en-progreso'"
+      [class.status-done]="entry.status === 'completado'"
+      [class.status-cancelled]="entry.status === 'cancelado'"
+      role="listitem"
+    >
+      <div class="timeline-item__connector">
+        <div class="timeline-item__dot"></div>
+        @if (!isLast) {
+        <div class="timeline-item__line"></div>
+        }
+      </div>
+
+      <div class="timeline-item__card">
+        <div class="timeline-item__card-header">
+          <div class="timeline-item__name-group">
+            <span
+              class="timeline-item__status-badge"
+              [attr.aria-label]="'Estado: ' + statusLabel(entry.status)"
+            >
+              {{ statusLabel(entry.status) }}
+            </span>
+            <h3 class="timeline-item__name">{{ entry.name }}</h3>
+          </div>
+
+          <div class="timeline-item__adherence">
+            <div
+              class="adherence-badge"
+              [class.adherence-badge--high]="entry.adherencePercent >= 80"
+              [class.adherence-badge--mid]="
+                entry.adherencePercent >= 60 && entry.adherencePercent < 80
+              "
+              [class.adherence-badge--low]="entry.adherencePercent < 60"
+              [attr.aria-label]="entry.adherencePercent + '% adherencia'"
+            >
+              {{ entry.adherencePercent }}%
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item__meta">
+          <div class="meta-item">
+            <i class="pi pi-calendar" aria-hidden="true"></i>
+            <span>
+              {{ entry.startDate | date : 'dd MMM yyyy' }}
+              @if (entry.endDate) { —
+              {{ entry.endDate | date : 'dd MMM yyyy' }} } @else { — presente }
+            </span>
+          </div>
+          <div class="meta-item">
+            <i
+              class="pi pi-{{ entry.primaryMetricIcon }}"
+              aria-hidden="true"
+            ></i>
+            <span>{{ entry.primaryMetric }}</span>
+          </div>
+        </div>
+
+        <p class="timeline-item__goal">
+          <i class="pi pi-flag" aria-hidden="true"></i>
+          {{ entry.goal }}
+        </p>
+      </div>
+    </div>
+    } @if (filtered().length === 0) {
+    <div class="section-history__empty">
+      <i class="pi pi-inbox" aria-hidden="true"></i>
+      <p>No hay registros con ese filtro.</p>
+    </div>
+    }
+  </div>
+</div>

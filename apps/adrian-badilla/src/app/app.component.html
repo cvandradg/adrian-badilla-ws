@@ -1,2 +1,8 @@
+<!-- Tour overlay lives at root so it survives lazy route navigation -->
+<lib-tour-overlay />
 <router-outlet></router-outlet>
-
+@if (chatResource.value()) {
+<ng-container
+  *ngComponentOutlet="chatResource.value()!; inputs: chatInputs()"
+/>
+}

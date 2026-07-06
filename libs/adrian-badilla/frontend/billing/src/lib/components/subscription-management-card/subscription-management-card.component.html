@@ -1,0 +1,160 @@
+<!-- ══════════════════════════════════════════════════════════════════════
+     Estado 1: Premium activo (sin cancelación programada)
+     ══════════════════════════════════════════════════════════════════════ -->
+@if (store.isPremium() && !store.willExpire()) {
+
+<div class="smc-card smc-card--active">
+  <div class="smc-card__header">
+    <span class="smc-card__icon" aria-hidden="true">💳</span>
+    <h3 class="smc-card__title">Suscripción Premium</h3>
+  </div>
+
+  <div class="smc-card__body">
+    <div class="smc-card__row">
+      <span class="smc-card__label">Plan</span>
+      <span class="smc-card__value">Premium</span>
+    </div>
+    <div class="smc-card__row">
+      <span class="smc-card__label">Estado</span>
+      <span class="smc-card__badge smc-card__badge--active">Activa</span>
+    </div>
+    @if (store.subscription()?.currentPeriodEnd ?? store.subscription()?.expiresAt; as periodEnd) {
+    <div class="smc-card__row">
+      <span class="smc-card__label">Próxima renovación</span>
+      <span class="smc-card__value">{{
+        periodEnd.toDate() | date : 'dd/MM/yyyy'
+      }}</span>
+    </div>
+    }
+  </div>
+
+  <div class="smc-card__actions">
+    <button
+      type="button"
+      class="smc-card__btn smc-card__btn--danger"
+      [disabled]="store.cancelLoading()"
+      (click)="openCancelDialog()"
+    >
+      @if (store.cancelLoading()) {
+      <span class="smc-card__spinner" aria-hidden="true"></span>
+      Cancelando...
+      } @else { Cancelar suscripción }
+    </button>
+
+    @if (store.cancelError()) {
+    <p class="smc-card__error" role="alert">{{ store.cancelError() }}</p>
+    }
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     Estado 2: Cancelación programada (willExpire)
+     ══════════════════════════════════════════════════════════════════════ -->
+} @else if (store.willExpire()) {
+
+<div class="smc-card smc-card--expiring">
+  <div class="smc-card__header">
+    <span class="smc-card__icon" aria-hidden="true">💳</span>
+    <h3 class="smc-card__title">Suscripción Premium</h3>
+  </div>
+
+  <div class="smc-card__body">
+    <div class="smc-card__row">
+      <span class="smc-card__label">Estado</span>
+      <span class="smc-card__badge smc-card__badge--expiring"
+        >Suscripción cancelada</span
+      >
+    </div>
+    @if (store.expirationDate(); as expDate) {
+    <p class="smc-card__notice">
+      Tu suscripción ha sido cancelada. Puedes disfrutar del acceso Premium
+      hasta:
+      <strong>{{ expDate | date : 'dd/MM/yyyy' }}</strong>
+    </p>
+    }
+
+    <p class="smc-card__features-label">Hasta esa fecha mantendrás acceso a:</p>
+    <ul class="smc-card__features" aria-label="Características incluidas">
+      <li>Dietas</li>
+      <li>Rutinas</li>
+      <li>IA</li>
+      <li>Seguimiento</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     Estado 3: Sin suscripción activa
+     ══════════════════════════════════════════════════════════════════════ -->
+} @else {
+
+<div class="smc-card smc-card--inactive">
+  <div class="smc-card__header">
+    <span class="smc-card__icon" aria-hidden="true">💳</span>
+    <h3 class="smc-card__title">Suscripción Premium</h3>
+  </div>
+
+  <p class="smc-card__free-notice">
+    Actualmente no tienes una suscripción activa.
+  </p>
+
+  <div class="smc-card__actions">
+    <button
+      type="button"
+      class="smc-card__btn smc-card__btn--primary"
+      (click)="navigateToBilling()"
+      aria-label="Ir al proceso de suscripción Premium"
+    >
+      Suscribirme
+    </button>
+  </div>
+</div>
+
+}
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     Diálogo de confirmación de cancelación
+     ══════════════════════════════════════════════════════════════════════ -->
+@if (showConfirmDialog()) {
+
+<button
+  type="button"
+  class="smc-dialog-backdrop"
+  (click)="dismissDialog()"
+  (keydown.escape)="dismissDialog()"
+  tabindex="-1"
+  aria-label="Cerrar diálogo"
+></button>
+
+<dialog
+  class="smc-dialog"
+  open
+  aria-labelledby="smc-dialog-title"
+  aria-describedby="smc-dialog-desc"
+  (keydown.escape)="dismissDialog()"
+>
+  <h4 class="smc-dialog__title" id="smc-dialog-title">
+    ¿Deseas cancelar la renovación automática?
+  </h4>
+  <p class="smc-dialog__desc" id="smc-dialog-desc">
+    Seguirás teniendo acceso Premium hasta el final del período ya pagado.
+  </p>
+  <div class="smc-dialog__actions">
+    <button
+      type="button"
+      class="smc-card__btn smc-card__btn--secondary"
+      (click)="dismissDialog()"
+    >
+      Cancelar
+    </button>
+    <button
+      type="button"
+      class="smc-card__btn smc-card__btn--danger"
+      (click)="confirmCancel()"
+    >
+      Confirmar
+    </button>
+  </div>
+</dialog>
+
+}

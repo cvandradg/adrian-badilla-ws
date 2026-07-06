@@ -14,7 +14,12 @@ export default [
         'error',
         {
           enforceBuildableLibDependency: true,
-          allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?js$'],
+          allow: [
+            '^.*/eslint(\\.base)?\\.config\\.[cm]?js$',
+            '^@adrian-badilla/auth$',
+            '^@adrian-badilla/billing$',
+            '^adrian-badilla/settings$',
+          ],
           depConstraints: [
             {
               sourceTag: '*',

@@ -4,13 +4,16 @@
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "paths": {
@@ -18,7 +21,7 @@
         "./libs/adrian-badilla/frontend/landing-page/src/index.ts"
       ],
       "@adrian-badilla/ui/landing-page/routes": [
-        "./libs/adrian-badilla/frontend/landing-page/src/lib/lib.routes.ts"
+        "./libs/adrian-badilla/frontend/landing-page/src/lib/landing-page.routes.ts"
       ],
       "@adrian-badilla/ui/shared": [
         "./libs/adrian-badilla/frontend/shared/src/index.ts"
@@ -31,18 +34,48 @@
         "./libs/adrian-badilla/frontend/auth/src/index.ts"
       ],
       "@adrian-badilla/auth/routes": [
-        "./libs/adrian-badilla/frontend/auth/src/lib/lib.routes.ts"
+        "./libs/adrian-badilla/frontend/auth/src/lib/auth.routes.ts"
       ],
       "@shared/styles/*": [
         "./libs/adrian-badilla/frontend/shared/src/lib/styles/*"
       ],
       "@adrian-badilla/dashboard/routes": [
-        "./libs/adrian-badilla/frontend/dashboard/src/lib/lib.routes.ts"
+        "./libs/adrian-badilla/frontend/dashboard/src/lib/dashboard.routes.ts"
       ],
       "adrian-badilla/products": [
         "./libs/adrian-badilla/frontend/products/src/index.ts"
+      ],
+      "adrian-badilla/settings": [
+        "./libs/adrian-badilla/frontend/settings/src/index.ts"
+      ],
+      "adrian-badilla/settings/routes": [
+        "./libs/adrian-badilla/frontend/settings/src/routes.ts"
+      ],
+      "@adrian-badilla/news": [
+        "./libs/adrian-badilla/frontend/news/src/index.ts"
+      ],
+      "@adrian-badilla/news/routes": [
+        "./libs/adrian-badilla/frontend/news/src/lib/news.routes.ts"
+      ],
+      "@adrian-badilla/home": [
+        "./libs/adrian-badilla/frontend/home/src/index.ts"
+      ],
+      "@adrian-badilla/home/routes": [
+        "./libs/adrian-badilla/frontend/home/src/lib/home.routes.ts"
+      ],
+      "@adrian-badilla/billing": [
+        "./libs/adrian-badilla/frontend/billing/src/index.ts"
+      ],
+      "@adrian-badilla/billing/routes": [
+        "./libs/adrian-badilla/frontend/billing/src/lib/billing.routes.ts"
+      ],
+      "@adrian-badilla/ai": [
+        "./libs/adrian-badilla/frontend/ai/src/index.ts"
       ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

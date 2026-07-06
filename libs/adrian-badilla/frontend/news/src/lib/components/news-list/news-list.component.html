@@ -1,0 +1,5 @@
+<div class="news-grid">
+  @for (item of news(); track item.id) {
+    <lib-news-card [news]="item" />
+  }
+</div>

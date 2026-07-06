@@ -1,0 +1,36 @@
+.news-home {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  min-height: 100vh;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  &__heading {
+    color: #e2e8f0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+    padding-left: 0.5rem;
+    border-left: 4px solid #22d3ee;
+  }
+}
+
+@media (max-width: 768px) {
+  .news-home {
+    padding: 1rem;
+    gap: 2rem;
+
+    &__heading {
+      font-size: 1.35rem;
+    }
+  }
+}

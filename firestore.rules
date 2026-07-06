@@ -1,0 +1,80 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper ───────────────────────────────────────────────────────────────
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // ── users/{uid} ───────────────────────────────────────────────────────────
+    match /users/{uid} {
+
+      allow read: if isOwner(uid);
+
+      // Require mandatory profile fields on create.
+      // Enforce that isActive is true on creation.
+      allow create: if isOwner(uid)
+        && request.resource.data.keys().hasAll([
+             'uid', 'email', 'displayName', 'photoURL',
+             'provider', 'createdAt', 'updatedAt', 'lastLoginAt', 'isActive'
+           ])
+        && request.resource.data.isActive == true;
+
+      // Prevent modifying uid or createdAt after creation.
+      // Prevent clients from writing the `subscription` field directly —
+      // it is managed exclusively by Firebase Functions (admin SDK).
+      allow update: if isOwner(uid)
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.createdAt == resource.data.createdAt
+        && !request.resource.data.diff(resource.data)
+              .affectedKeys()
+              .hasAny(['subscription']);
+
+      allow delete: if false;
+    }
+
+    // ── users/{uid}/payments ──────────────────────────────────────────────────
+    // Written exclusively by Firebase Functions (Admin SDK).
+    match /users/{uid}/payments/{paymentId} {
+      allow read: if isOwner(uid);
+      allow write: if false;
+    }
+
+    // ── users/{uid}/diets + meals ─────────────────────────────────────────────
+    // Client reads only — diets and meal plans are written by Admin SDK / backend.
+    match /users/{uid}/diets/{dietId} {
+      allow read: if isOwner(uid);
+      allow write: if false;
+    }
+
+    match /users/{uid}/diets/{dietId}/meals/{mealId} {
+      allow read: if isOwner(uid);
+      allow write: if false;
+    }
+
+    // ── users/{uid}/routines + exercices ──────────────────────────────────────
+    // Client reads only — routines are written by Admin SDK / backend.
+    // Note: subcollection is named "exercices" (intentional typo in data model).
+    match /users/{uid}/routines/{routineId} {
+      allow read: if isOwner(uid);
+      allow write: if false;
+    }
+
+    match /users/{uid}/routines/{routineId}/exercices/{exerciceId} {
+      allow read: if isOwner(uid);
+      allow write: if false;
+    }
+
+    // ── users/{uid}/daily-status ──────────────────────────────────────────────
+    match /users/{uid}/daily-status/{entryId} {
+      allow read, write: if isOwner(uid);
+    }
+
+    // ── Deny everything else ──────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

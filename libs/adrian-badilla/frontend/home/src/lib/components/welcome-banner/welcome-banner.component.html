@@ -1,0 +1,31 @@
+<div class="welcome-banner">
+  <div class="welcome-banner__top">
+    <div class="welcome-banner__greeting-section">
+      <span class="welcome-banner__wave">👋</span>
+      <div class="welcome-banner__text">
+        <h2 class="welcome-banner__greeting">{{ greeting }}</h2>
+        <p class="welcome-banner__date">
+          <span class="welcome-banner__day">{{ dayName }}</span> · {{ dateFormatted }}
+        </p>
+      </div>
+    </div>
+    <div class="welcome-banner__badges">
+      <div class="welcome-banner__badge">
+        <span class="welcome-banner__badge-icon">🎯</span>
+        <span class="welcome-banner__badge-text">Día 3</span>
+      </div>
+      <div class="welcome-banner__badge welcome-banner__badge--accent">
+        <span class="welcome-banner__badge-icon">🔥</span>
+        <span class="welcome-banner__badge-text">Racha activa</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="welcome-banner__quote">
+    <div class="welcome-banner__quote-decoration"></div>
+    <div class="welcome-banner__quote-content">
+      <blockquote class="welcome-banner__quote-text">“{{ quote.text }}”</blockquote>
+      <cite class="welcome-banner__quote-author">— {{ quote.author }}</cite>
+    </div>
+  </div>
+</div>

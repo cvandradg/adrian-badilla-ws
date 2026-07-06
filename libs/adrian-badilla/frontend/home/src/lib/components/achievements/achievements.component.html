@@ -1,0 +1,33 @@
+<div class="achievements">
+  <div class="achievements__header">
+    <h3 class="achievements__title">🏆 Logros</h3>
+    <div class="achievements__stats">
+      <span class="achievements__counter">{{ unlockedCount() }}/{{ achievements().length }}</span>
+      <span class="achievements__streak">🔥 {{ streak() }} días</span>
+    </div>
+  </div>
+
+  <div class="achievements__progress-bar">
+    <div class="achievements__progress-fill" [style.width.%]="progressPercent()"></div>
+  </div>
+
+  <div class="achievements__grid">
+    @for (achievement of achievements(); track achievement.id) {
+      <div class="achievements__card" [class.achievements__card--locked]="!achievement.unlocked">
+        <div class="achievements__card-icon">
+          <span>{{ achievement.icon }}</span>
+          @if (achievement.unlocked) {
+            <div class="achievements__card-check">✓</div>
+          }
+        </div>
+        <div class="achievements__card-info">
+          <span class="achievements__card-label">{{ achievement.label }}</span>
+          <span class="achievements__card-desc">{{ achievement.description }}</span>
+        </div>
+        @if (achievement.unlocked && achievement.date) {
+          <span class="achievements__card-date">{{ achievement.date | date:'d MMM' }}</span>
+        }
+      </div>
+    }
+  </div>
+</div>

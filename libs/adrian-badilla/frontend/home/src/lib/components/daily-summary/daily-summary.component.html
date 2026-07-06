@@ -1,0 +1,50 @@
+<div class="daily-summary">
+  <div class="daily-summary__header">
+    <div class="daily-summary__title-group">
+      <span class="daily-summary__icon">📊</span>
+      <h3 class="daily-summary__title">Resumen del día</h3>
+    </div>
+    <span class="daily-summary__status" [class.daily-summary__status--warning]="macroPercentages().protein < 50">
+      {{ statusLabel() }}
+    </span>
+  </div>
+
+  <div class="daily-summary__calories">
+    <div class="daily-summary__calories-ring">
+      <svg viewBox="0 0 100 100">
+        <circle class="daily-summary__ring-bg" cx="50" cy="50" r="42" />
+        <circle
+          class="daily-summary__ring-fill"
+          cx="50" cy="50" r="42"
+          [style.stroke-dasharray]="ringCircumference"
+          [style.stroke-dashoffset]="ringOffset()"
+        />
+      </svg>
+      <div class="daily-summary__ring-text">
+        <span class="daily-summary__ring-value">{{ caloriePercentage() }}%</span>
+        <span class="daily-summary__ring-label">completado</span>
+      </div>
+    </div>
+    <div class="daily-summary__calories-detail">
+      <span class="daily-summary__calories-consumed">{{ summary().calories }}</span>
+      <span class="daily-summary__calories-unit">kcal consumidas</span>
+      <span class="daily-summary__calories-goal">Meta: {{ summary().goal }} kcal</span>
+      <span class="daily-summary__remaining">Faltan {{ remainingCalories() }} kcal</span>
+    </div>
+  </div>
+
+  <div class="daily-summary__macros">
+    @for (macro of macroList(); track macro.label) {
+      <div class="daily-summary__macro">
+        <div class="daily-summary__macro-header">
+          <span class="daily-summary__macro-dot" [style.background]="macro.color"></span>
+          <span class="daily-summary__macro-label">{{ macro.label }}</span>
+          <span class="daily-summary__macro-value">{{ macro.value }}g</span>
+        </div>
+        <div class="daily-summary__macro-bar">
+          <div class="daily-summary__macro-fill" [style.width.%]="macro.percent" [style.background]="macro.color"></div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

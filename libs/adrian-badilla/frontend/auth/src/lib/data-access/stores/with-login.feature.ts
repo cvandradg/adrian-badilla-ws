@@ -9,11 +9,11 @@ import { Router } from '@angular/router';
 import { exhaustMap, pipe, tap, throwError } from 'rxjs';
 import { tapResponse } from '@ngrx/operators';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { User } from 'firebase/auth';
 import { Credentials } from '@adrian-badilla/ui/shared';
 import { FirebaseAuthOut } from '../utils/firebase-auth';
 import { withCustomCallState } from './with-custom-call-state.feature';
 import { mapFirebaseAuthErrorToMessage } from '../errors';
-import { User } from 'firebase/auth';
 
 type LoginDeps = FirebaseAuthOut['state'] &
   Pick<
@@ -48,7 +48,7 @@ export function withLoginResources<T extends LoginDeps>(store: T) {
                 return;
               }
               innerStore.loginSetSuccess();
-              router.navigateByUrl('/dashboard', { replaceUrl: true });
+              router.navigateByUrl('/dashboard/inicio', { replaceUrl: true });
             },
             error: (err: unknown) =>
               innerStore.loginSetError(mapFirebaseAuthErrorToMessage(err)),
@@ -72,7 +72,9 @@ export function withLoginResources<T extends LoginDeps>(store: T) {
                     return;
                   }
                   innerStore.loginSetSuccess();
-                  router.navigateByUrl('/dashboard', { replaceUrl: true });
+                  router.navigateByUrl('/dashboard/inicio', {
+                    replaceUrl: true,
+                  });
                 },
                 error: (err: unknown) =>
                   innerStore.loginSetError(mapFirebaseAuthErrorToMessage(err)),

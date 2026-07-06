@@ -1,0 +1,98 @@
+:host {
+  display: contents;
+}
+
+// ─── Tour FAB ─────────────────────────────────────────────────────────────────
+//
+// Mirrors the AI Chat FAB sizing & positioning contract so both buttons sit
+// in a vertical stack. The 68 px bottom offset places it directly above the
+// Chat FAB (which is at bottom: 16 px + 44 px height = 60 px → we add ~8 px gap).
+//
+// Design: indigo/violet accent that signals "guided / help" (vs. the chat
+// button's purple/cyan accent). Shares the glassmorphism + breathing animation
+// aesthetic for visual cohesion.
+
+// SCSS constants matching the TypeScript constants in fab-layout.store.ts.
+$_fab-height: 44px;
+$_fab-height-mobile: 40px;
+$_inter-fab-gap: 8px;
+
+.tour-fab {
+  // --fab-bottom-base already accounts for tracker height + gap above tracker
+  // plus one FAB height + inter-FAB gap (computed in TourFabComponent).
+  // The fallback (16px) replicates the old default when no tracker is present.
+  position: fixed;
+  bottom: calc(
+    var(--fab-bottom-base, #{$_fab-height + $_inter-fab-gap + 16px}) +
+      env(safe-area-inset-bottom, 0)
+  );
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(rgba(10, 14, 26, 0.78), rgba(10, 14, 26, 0.78))
+      padding-box,
+    linear-gradient(135deg, #4f46e5, #7c3aed) border-box;
+  border: 1.5px solid transparent;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  color: #c4b5fd;
+  font-size: 0.88rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.3), 0 0 4px rgba(79, 70, 229, 0.14);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  opacity: 0.88;
+  animation: fab-tour-idle 7s ease-in-out infinite;
+
+  i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &:hover {
+    transform: translateY(-2px) scale(1.08);
+    opacity: 1;
+    color: #c7d2fe;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 12px rgba(79, 70, 229, 0.3);
+    animation: none;
+
+    i {
+      transform: rotate(15deg);
+    }
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  @media (max-width: 600px) {
+    // On mobile the FAB size is 40px; the TS side already computed the correct
+    // tourFabBottomBase using FAB_HEIGHT_MOBILE, so CSS variable is already right.
+    bottom: calc(
+      var(--fab-bottom-base, #{$_fab-height-mobile + $_inter-fab-gap + 16px}) +
+        env(safe-area-inset-bottom, 0)
+    );
+    right: 14px;
+    width: 40px;
+    height: 40px;
+    font-size: 0.82rem;
+  }
+}
+
+@keyframes fab-tour-idle {
+  0%,
+  100% {
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.3), 0 0 4px rgba(79, 70, 229, 0.14);
+  }
+  50% {
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.3), 0 0 8px rgba(79, 70, 229, 0.24);
+  }
+}

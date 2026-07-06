@@ -1,0 +1,71 @@
+<section
+  class="tracker"
+  [appTourAnchor]="tourAnchorId()"
+  [class.tracker--complete]="isComplete()"
+  [class.tracker--collapsed]="collapsed()"
+  [attr.aria-label]="ariaLabel()"
+>
+  <!-- Progress bar — always in DOM; becomes top-border when collapsed -->
+  <div class="tracker__bar-track" aria-hidden="true">
+    <div
+      class="tracker__bar-fill"
+      [style.width.%]="barWidth()"
+      [class.tracker__bar-fill--complete]="isComplete()"
+    ></div>
+  </div>
+
+  <!-- Header -->
+  <div class="tracker__header">
+    <span class="tracker__label">
+      @if (!collapsed()) {
+      <i class="pi {{ icon() }}"></i>
+      {{ label() }}
+      }
+    </span>
+
+    @if (collapsed()) {
+    <!-- Compact summary slot — projected by each tracker -->
+    <ng-content select="[collapsed-summary]" />
+    } @else {
+    <!-- Optional badge slot (e.g. kcal badge for diets) -->
+    <ng-content select="[header-badge]" />
+
+    <div class="tracker__header-right">
+      <span class="tracker__count">
+        {{ completedCount() }}<span class="tracker__count-sep">/</span
+        >{{ totalCount() }}
+      </span>
+      <span class="tracker__pct" [ngClass]="pctColorClass()">{{ pct() }}%</span>
+    </div>
+    }
+
+    <button
+      type="button"
+      class="tracker__caret"
+      [attr.aria-expanded]="!collapsed()"
+      [attr.aria-label]="'Mostrar u ocultar ' + label()"
+      (click)="toggleCollapsed()"
+    >
+      <i
+        class="pi"
+        [class.pi-chevron-up]="!collapsed()"
+        [class.pi-chevron-down]="collapsed()"
+      ></i>
+    </button>
+  </div>
+
+  <!-- Body: always in DOM so the CSS transition can animate both directions -->
+  <div class="tracker__body" [class.tracker__body--hidden]="collapsed()">
+    <div class="tracker__body-inner">
+      <!-- Stats row — content projected by each tracker -->
+      <div class="tracker__stats">
+        <ng-content select="[expanded-stats]" />
+      </div>
+
+      <!-- Extras slot (PR chips, etc.) — optional -->
+      <ng-content select="[extras]" />
+
+      <p class="tracker__message">{{ message() }}</p>
+    </div>
+  </div>
+</section>

@@ -1,4 +1,9 @@
 export const environment = {
+  spoonacular: {
+    appId: '7df10edf',
+    appKey: '9e5b311ad8734607b5cee8948f52a719'
+  },
+
   firebaseConfig: {
     apiKey: 'AIzaSyDOw-93h4zq1gZnrsUxaCO8uS1CQsi571E',
     authDomain: 'adrian-badilla-ws-firebase.firebaseapp.com',

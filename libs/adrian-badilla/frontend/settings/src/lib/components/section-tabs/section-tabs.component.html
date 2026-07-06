@@ -1,0 +1,27 @@
+<div class="section-tabs">
+  <div class="section-tabs__card">
+    <div class="section-tabs__bar" role="tablist">
+      @for (tab of tabs(); track tab.value) {
+      <button
+        role="tab"
+        type="button"
+        class="section-tabs__tab"
+        [class.section-tabs__tab--active]="activeTab() === tab.value"
+        [attr.aria-selected]="activeTab() === tab.value"
+        [appTourAnchor]="tab.value === 'diets' ? 'diets-tab' : null"
+        (click)="onTabClick(tab.value)"
+      >
+        <fa-icon [icon]="tab.icon" class="section-tabs__icon" />
+        <span>{{ tab.label }}</span>
+      </button>
+      }
+    </div>
+
+    <div
+      class="section-tabs__panels"
+      [class.section-tabs__panels--fill]="panelsFillHeight()"
+    >
+      <ng-content />
+    </div>
+  </div>
+</div>

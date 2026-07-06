@@ -1,0 +1,21 @@
+<!-- @if (!isMobile()) {
+  <lib-additional-info-column />
+} -->
+
+<lib-section-tabs
+  [tabs]="tabs"
+  [activeTab]="activeTab()"
+  (tabChange)="setActiveTab($event)"
+  [panelsFillHeight]="activeTab() === 'diets'"
+>
+  @switch (activeTab()) { @case ('diets') {
+  <lib-adrian-badilla-diets />
+  } @case ('historial') {
+  <lib-diet-history-settings />
+  } @case ('config') {
+  <div class="diets-config-placeholder">
+    <i class="pi pi-sliders-h" aria-hidden="true"></i>
+    <p>Configuración de dietas próximamente</p>
+  </div>
+  } }
+</lib-section-tabs>

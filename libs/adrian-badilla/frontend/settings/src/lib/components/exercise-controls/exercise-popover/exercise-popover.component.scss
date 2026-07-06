@@ -1,0 +1,224 @@
+/* ── Exercise Popover — Glassmorphism floating card ──────────────────────── */
+
+.exercise-popover {
+  width: 320px;
+  max-height: 65vh;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(12, 17, 30, 0.94);
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  border: 1px solid rgba(167, 139, 250, 0.22);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(167, 139, 250, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  cursor: move;
+  user-select: none;
+
+  /* Drag cursor feedback */
+  &.cdk-drag-preview {
+    opacity: 0.85;
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.75),
+      0 0 0 1px rgba(167, 139, 250, 0.12);
+  }
+
+  &.cdk-drag-animating {
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+
+.exercise-popover__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid rgba(167, 139, 250, 0.12);
+  background: rgba(167, 139, 250, 0.04);
+}
+
+.exercise-popover__header-content {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.exercise-popover__icon {
+  font-size: 0.9rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.exercise-popover__name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+/* ── Close Button ────────────────────────────────────────────────────────── */
+
+.exercise-popover__close-btn {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(167, 139, 250, 0.1);
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  i {
+    font-size: 0.9rem;
+  }
+}
+
+/* ── Video ───────────────────────────────────────────────────────────────── */
+
+.exercise-popover__video-wrapper {
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.3) 100%);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.exercise-popover__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Placeholder ─────────────────────────────────────────────────────────── */
+
+.exercise-popover__placeholder {
+  padding: 1.6rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.exercise-popover__placeholder-icon {
+  font-size: 2rem;
+  color: rgba(167, 139, 250, 0.35);
+}
+
+.exercise-popover__placeholder-text {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.3);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+/* ── Description ─────────────────────────────────────────────────────────── */
+
+.exercise-popover__description {
+  padding: 1rem 1.2rem;
+  border-top: 1px solid rgba(167, 139, 250, 0.1);
+  background: rgba(167, 139, 250, 0.02);
+  flex: 1;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(167, 139, 250, 0.25);
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(167, 139, 250, 0.4);
+    }
+  }
+}
+
+.exercise-popover__description-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+}
+
+.exercise-popover__description-title {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(165, 180, 252, 0.9);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.exercise-popover__reps {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(167, 139, 250, 0.15);
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid rgba(167, 139, 250, 0.25);
+}
+
+.exercise-popover__reps-icon {
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.exercise-popover__reps-value {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(167, 139, 250, 1);
+  min-width: 20px;
+  text-align: center;
+}
+
+.exercise-popover__description-text {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: justify;
+  letter-spacing: 0.01em;
+  word-spacing: 0.05em;
+}
+
+/* ── Global Overlay Panel Styles ────────────────────────────────────────── */
+/* panelClass only applies visual styling, CDK handles positioning */
+:global(.exercise-overlay-panel) {
+  pointer-events: none;
+}
+
+:global(.exercise-overlay-panel > *) {
+  pointer-events: auto;
+}

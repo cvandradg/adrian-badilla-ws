@@ -1,0 +1,11 @@
+<!-- Tour trigger FAB — sits above the AI chat FAB -->
+<button
+  type="button"
+  class="tour-fab"
+  [style.--fab-bottom-base]="tourFabBottomBase()"
+  (click)="startTour()"
+  aria-label="Iniciar tour de la aplicación"
+  title="Tour guiado"
+>
+  <i class="pi pi-compass"></i>
+</button>

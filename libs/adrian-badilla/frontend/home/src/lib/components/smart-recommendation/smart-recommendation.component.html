@@ -1,0 +1,18 @@
+<div class="insight">
+  <div class="insight__header">
+    <span class="insight__header-icon">✨</span>
+    <h3 class="insight__header-title">Datos curiosos</h3>
+  </div>
+
+  <div class="insight__tips">
+    @for (tip of tips; track tip.description) {
+      <div class="insight__tip">
+        <span class="insight__tip-icon">{{ tip.icon }}</span>
+        <div class="insight__tip-content">
+          <span class="insight__tip-title" [style.color]="tip.color">{{ tip.title }}</span>
+          <p class="insight__tip-text">{{ tip.description }}</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

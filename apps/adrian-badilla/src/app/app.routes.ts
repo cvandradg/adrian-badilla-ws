@@ -2,6 +2,11 @@ import { Route } from '@angular/router';
 
 export const appRoutes: Route[] = [
   {
+    path: 'settings',
+    loadChildren: () =>
+      import('adrian-badilla/settings/routes').then((m) => m.settingsRoutes),
+  },
+  {
     path: '',
     loadChildren: () => import('@adrian-badilla/ui/landing-page/routes'),
   },
@@ -17,5 +22,10 @@ export const appRoutes: Route[] = [
       ),
   },
 
+  {
+    path: 'billing',
+    loadChildren: () =>
+      import('@adrian-badilla/billing/routes').then((m) => m.billingRoutes),
+  },
   { path: '**', redirectTo: '' },
 ];

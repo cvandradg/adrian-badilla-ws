@@ -1,0 +1,61 @@
+<div class="config-page">
+  <header class="config-page__header">
+    <h1 class="config-page__title">Configuración</h1>
+    <p class="config-page__subtitle">Personaliza tu experiencia en la app</p>
+  </header>
+
+  <!-- ── Apariencia ─────────────────────────────────────────────────────── -->
+  <section class="config-section" aria-labelledby="appearance-heading">
+    <h2 class="config-section__heading" id="appearance-heading">
+      <span class="config-section__icon" aria-hidden="true">🎨</span>
+      Apariencia
+    </h2>
+
+    <div class="config-card">
+      <div class="config-row">
+        <div class="config-row__info">
+          <span class="config-row__label">Tamaño de texto</span>
+          <span class="config-row__desc"
+            >Ajusta el tamaño de la fuente en toda la app</span
+          >
+        </div>
+
+        <div
+          class="font-scale-picker"
+          role="group"
+          aria-label="Tamaño de texto"
+        >
+          @for (opt of scaleOptions; track opt.value) {
+          <button
+            type="button"
+            class="font-scale-picker__btn"
+            [class.font-scale-picker__btn--active]="
+              currentScale() === opt.value
+            "
+            [attr.aria-pressed]="currentScale() === opt.value"
+            [attr.aria-label]="opt.description"
+            [title]="opt.description"
+            (click)="setScale(opt.value)"
+          >
+            <span
+              class="font-scale-picker__letter"
+              [style.font-size.rem]="opt.value"
+            >
+              {{ opt.label }}
+            </span>
+            <span class="font-scale-picker__desc">{{ opt.description }}</span>
+          </button>
+          }
+        </div>
+      </div>
+
+      <!-- Live preview strip -->
+      <div class="font-preview" aria-hidden="true">
+        <p class="font-preview__sample" [style.font-size.rem]="currentScale()">
+          Vista previa del texto con el tamaño seleccionado.
+        </p>
+        <span class="font-preview__badge">{{ currentScale() }}×</span>
+      </div>
+    </div>
+  </section>
+</div>

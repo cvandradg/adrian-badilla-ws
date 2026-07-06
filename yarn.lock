@@ -34,7 +34,7 @@ __metadata:
     "@fortawesome/free-brands-svg-icons": "npm:^7.1.0"
     "@fortawesome/free-solid-svg-icons": "npm:^7.1.0"
     "@fortawesome/pro-light-svg-icons": "npm:^7.1.0"
-    "@fortawesome/pro-regular-svg-icons": "npm:^7.1.0"
+    "@fortawesome/pro-regular-svg-icons": "npm:^7.2.0"
     "@fortawesome/pro-solid-svg-icons": "npm:^7.1.0"
     "@fortawesome/pro-thin-svg-icons": "npm:^7.1.0"
     "@fortawesome/sharp-solid-svg-icons": "npm:^7.1.0"
@@ -49,6 +49,7 @@ __metadata:
     "@nx/js": "npm:22.6.4"
     "@nx/web": "npm:22.6.4"
     "@nx/workspace": "npm:22.6.4"
+    "@primeuix/themes": "npm:^2.0.3"
     "@schematics/angular": "npm:21.2.7"
     "@swc-node/register": "npm:1.11.1"
     "@swc/core": "npm:1.15.5"
@@ -58,6 +59,7 @@ __metadata:
     "@typescript-eslint/utils": "npm:^8.40.0"
     angular-eslint: "npm:21.2.0"
     baseline-browser-mapping: "npm:^2.10.16"
+    chart.js: "npm:^4.5.1"
     cypress: "npm:15.8.0"
     eslint: "npm:^9.8.0"
     eslint-config-prettier: "npm:^10.0.0"
@@ -71,6 +73,7 @@ __metadata:
     node-fetch: "npm:^3.3.2"
     nx: "npm:22.6.4"
     prettier: "npm:^2.6.2"
+    primeicons: "npm:^7.0.0"
     primeng: "npm:^21.1.5"
     punycode: "npm:^2.3.1"
     rxjs: "npm:~7.8.0"
@@ -4313,6 +4316,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fortawesome/fontawesome-common-types@npm:7.2.0":
+  version: 7.2.0
+  resolution: "@fortawesome/fontawesome-common-types@npm:7.2.0"
+  checksum: 10c0/991ca1390c078d973e92034cf7dbae2fc3aa50cd7ff322b7b23e4c54ec84dae12979bada9a782bdaea11a1577ae74d802aa651c590f41d2e1b1126c17e6cd413
+  languageName: node
+  linkType: hard
+
 "@fortawesome/fontawesome-svg-core@npm:^7.0.0, @fortawesome/fontawesome-svg-core@npm:^7.0.1":
   version: 7.1.0
   resolution: "@fortawesome/fontawesome-svg-core@npm:7.1.0"
@@ -4349,12 +4359,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/pro-regular-svg-icons@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "@fortawesome/pro-regular-svg-icons@npm:7.1.0"
+"@fortawesome/pro-regular-svg-icons@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "@fortawesome/pro-regular-svg-icons@npm:7.2.0"
   dependencies:
-    "@fortawesome/fontawesome-common-types": "npm:7.1.0"
-  checksum: 10c0/1707b75623e190c74e1c839168e058ce6f783c7b9419d6064ce8991e9016d162c5076a462edb985b52e5b5adbe9122e7e486c8d16aeeef8d8fbca1c17db3d51d
+    "@fortawesome/fontawesome-common-types": "npm:7.2.0"
+  checksum: 10c0/eb5fa5669412f6ea635539ae5e64113485f7a7756022288f9f063b6f2604f91c453307f24fe14616bc32a4063a9f668eef37aff0933c28199f7655e3704a21be
   languageName: node
   linkType: hard
 
@@ -5613,6 +5623,13 @@ __metadata:
   peerDependencies:
     tslib: 2
   checksum: 10c0/a720a6accaae71fa9e7fa06e93e382702aa5760ef2bdc3bc45c19dc2228a01cc735d36cb970c654bc5e88f1328d55d1f0d5eceef0b76bcc327a2ce863e7b0021
+  languageName: node
+  linkType: hard
+
+"@kurkle/color@npm:^0.3.0":
+  version: 0.3.4
+  resolution: "@kurkle/color@npm:0.3.4"
+  checksum: 10c0/0e9fd55c614b005c5f0c4c755bca19ec0293bc7513b4ea3ec1725234f9c2fa81afbc78156baf555c8b9cb0d305619253c3f5bca016067daeebb3d00ebb4ea683
   languageName: node
   linkType: hard
 
@@ -7425,6 +7442,15 @@ __metadata:
   dependencies:
     "@primeuix/styled": "npm:^0.7.4"
   checksum: 10c0/d1b0f4b9cb9bad3099dac57efc5dbf2648712ddf914801a43cc21d1bbf4512aec3703e2fb2430fabba70684f73e797e9ff68fe54f60d7b7c2e5a79a1a9a76b7a
+  languageName: node
+  linkType: hard
+
+"@primeuix/themes@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "@primeuix/themes@npm:2.0.3"
+  dependencies:
+    "@primeuix/styled": "npm:^0.7.4"
+  checksum: 10c0/4e51aa7ce0a73946b5605c485c281e3e5d82937efa5da1881e31aaae810ccbef34e29b888d24823428ad3303fa2825c99a88dfcb53718e15bfee18b63a12a53d
   languageName: node
   linkType: hard
 
@@ -10773,6 +10799,15 @@ __metadata:
   version: 2.1.1
   resolution: "chardet@npm:2.1.1"
   checksum: 10c0/d8391dd412338442b3de0d3a488aa9327f8bcf74b62b8723d6bd0b85c4084d50b731320e0a7c710edb1d44de75969995d2784b80e4c13b004a6c7a0db4c6e793
+  languageName: node
+  linkType: hard
+
+"chart.js@npm:^4.5.1":
+  version: 4.5.1
+  resolution: "chart.js@npm:4.5.1"
+  dependencies:
+    "@kurkle/color": "npm:^0.3.0"
+  checksum: 10c0/3f2a11dcaae9079e8e6b8ad077e2ae311f04996f9da14815730891e66215ee8b5f2c0eb70b5a156e5bde0f89a41bae13506dc6153e50fd22dcb282b21eec706f
   languageName: node
   linkType: hard
 
@@ -20139,6 +20174,13 @@ __metadata:
     ansi-styles: "npm:^5.2.0"
     react-is: "npm:^18.3.1"
   checksum: 10c0/719b27d70cd8b01013485054c5d094e1fe85e093b09ee73553e3b19302da3cf54fbd6a7ea9577d6471aeff8d372200e56979ffc4c831e2133520bd18060895fb
+  languageName: node
+  linkType: hard
+
+"primeicons@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "primeicons@npm:7.0.0"
+  checksum: 10c0/a7f6344d6db49e785d2040b35f8cae761d15bb8f8ee70ade8981d45438245414e913fe7235921122aade2b0a11a032c98b44dc527be2da11aa791ff145099c06
   languageName: node
   linkType: hard
 

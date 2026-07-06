@@ -1,0 +1,53 @@
+<div class="day-scroll-wrapper">
+  <!-- ── Left fade + arrow (mobile only) ───────────────────────────────── -->
+  <div
+    class="scroll-edge scroll-edge--left"
+    [class.scroll-edge--visible]="canScrollLeft()"
+    [inert]="!canScrollLeft() || null"
+  >
+    <button
+      type="button"
+      class="scroll-arrow"
+      tabindex="-1"
+      aria-label="Días anteriores"
+      (click)="scrollToPrev()"
+    >
+      <i class="pi pi-chevron-left"></i>
+    </button>
+  </div>
+
+  <!-- ── Scrollable days list ───────────────────────────────────────────── -->
+  <div class="days-sidebar" #scrollEl (scroll)="onScroll()">
+    @for (day of days(); track day.id) {
+    <button
+      type="button"
+      class="day-item"
+      [class.active]="day.id === selectedDayId()"
+      [class.complete]="isComplete(day.id)"
+      (click)="daySelected.emit(day.id)"
+      [attr.aria-pressed]="day.id === selectedDayId()"
+    >
+      <span class="day-label">{{ day.label }}</span>
+      <span class="day-date">{{ day.date }}</span>
+      <ng-content select="[day-extra]"></ng-content>
+    </button>
+    }
+  </div>
+
+  <!-- ── Right fade + arrow (mobile only) ──────────────────────────────── -->
+  <div
+    class="scroll-edge scroll-edge--right"
+    [class.scroll-edge--visible]="canScrollRight()"
+    [inert]="!canScrollRight() || null"
+  >
+    <button
+      type="button"
+      class="scroll-arrow"
+      tabindex="-1"
+      aria-label="Días siguientes"
+      (click)="scrollToNext()"
+    >
+      <i class="pi pi-chevron-right"></i>
+    </button>
+  </div>
+</div>

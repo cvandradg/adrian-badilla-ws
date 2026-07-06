@@ -1,0 +1,57 @@
+<div class="meal-card" [class.is-accepted]="item().status === 'completed'">
+  <!-- HEADER -->
+  <div class="meal-header">
+    <div class="meal-title">{{ item().title }}</div>
+    @if (item().subtitle) {
+    <div class="meal-time">{{ item().subtitle }}</div>
+    }
+    <div class="meal-status-actions">
+      <button
+        type="button"
+        class="status-btn status-btn--accept"
+        [class.active]="item().status === 'completed'"
+        [appTourAnchor]="checkAnchorId()"
+        (click)="toggleComplete()"
+        title="Confirmar"
+      >
+        <i class="pi pi-check"></i>
+      </button>
+      <button
+        type="button"
+        class="status-btn status-btn--reject"
+        [class.active]="item().status === 'skipped'"
+        (click)="toggleSkip()"
+        title="Rechazar"
+      >
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- INNER CARD — title slot + action row + extra-content slot -->
+  <button
+    type="button"
+    class="static-meal-card"
+    [appTourAnchor]="cardBodyAnchorId()"
+    (click)="toggleDropdown()"
+  >
+    <div class="card-name-trigger">
+      <ng-content select="[card-name]"></ng-content>
+      <i
+        class="pi pi-chevron-down dropdown-chevron"
+        [class.rotate]="isDropdownOpen()"
+      ></i>
+    </div>
+    <div class="meal-bottom-row">
+      <!-- e.g. macros for meals, exercise count for routines -->
+      <ng-content select="[extra-content]"></ng-content>
+    </div>
+  </button>
+
+  <!-- DROPDOWN — populated by the consumer via dropdown-content slot -->
+  @if (isDropdownOpen()) {
+  <div class="meal-dropdown" [appTourAnchor]="dropdownAnchorId()">
+    <ng-content select="[dropdown-content]"></ng-content>
+  </div>
+  }
+</div>

@@ -1,0 +1,72 @@
+<!-- Loading state -->
+@if (store.loadingAthleteProfile()) {
+<div
+  class="ap-card ap-card--loading"
+  aria-busy="true"
+  aria-label="Cargando perfil deportivo"
+>
+  <div class="ap-card__skeleton ap-card__skeleton--title"></div>
+  <div class="ap-card__skeleton ap-card__skeleton--text"></div>
+  <div class="ap-card__skeleton ap-card__skeleton--btn"></div>
+</div>
+
+} @else if (store.athleteProfileCompleted()) {
+
+<!-- Completed state -->
+<div class="ap-card ap-card--done">
+  <div class="ap-card__header">
+    <span class="ap-card__check" aria-hidden="true">
+      <i class="pi pi-check-circle"></i>
+    </span>
+    <div class="ap-card__title-group">
+      <h3 class="ap-card__title">Perfil deportivo completado</h3>
+      @if (store.athleteProfileUpdatedAt(); as updatedAt) {
+      <p class="ap-card__meta">
+        Última actualización:
+        <time [dateTime]="updatedAt.toISOString()">{{
+          updatedAt | date : 'dd/MM/yyyy'
+        }}</time>
+      </p>
+      }
+    </div>
+  </div>
+
+  <button
+    type="button"
+    class="ap-card__btn ap-card__btn--secondary"
+    (click)="onOpenForm()"
+    aria-label="Editar información del perfil deportivo"
+  >
+    <i class="pi pi-pencil" aria-hidden="true"></i>
+    Editar información
+  </button>
+</div>
+
+} @else {
+
+<!-- Pending state -->
+<div class="ap-card ap-card--pending">
+  <div class="ap-card__icon-ring" aria-hidden="true">
+    <i class="pi pi-bolt"></i>
+  </div>
+
+  <div class="ap-card__body">
+    <h3 class="ap-card__title">Completa tu perfil deportivo</h3>
+    <p class="ap-card__desc">
+      Esta información permitirá personalizar automáticamente tus rutinas y
+      dietas según tus objetivos reales.
+    </p>
+  </div>
+
+  <button
+    type="button"
+    class="ap-card__btn ap-card__btn--primary"
+    (click)="onOpenForm()"
+    aria-label="Completar cuestionario de perfil deportivo"
+  >
+    <i class="pi pi-clipboard" aria-hidden="true"></i>
+    Completar cuestionario
+  </button>
+</div>
+
+}

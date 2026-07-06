@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { COMPONENTS, MODULES } from '@adrian-badilla/ui/shared';
 import { firebaseAuthStore } from '../../data-access/stores/auth.store';
 
@@ -9,8 +9,8 @@ import { firebaseAuthStore } from '../../data-access/stores/auth.store';
   imports: [MODULES, COMPONENTS],
 })
 export class PassResetComponent {
-  firebaseAuthStore = inject(firebaseAuthStore);
+  readonly firebaseAuthStore = inject(firebaseAuthStore);
 
-  @Input()
-  public user!: string;
+  /** Required: the email address to prefill in the reset form. */
+  readonly user = input.required<string>();
 }

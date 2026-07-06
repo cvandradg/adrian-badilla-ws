@@ -1,0 +1,41 @@
+<div class="subscription-page">
+  <header class="subscription-page__header">
+    <h1 class="subscription-page__title">Mi Suscripción</h1>
+    <p class="subscription-page__subtitle">
+      Gestiona tu plan y métodos de pago.
+    </p>
+  </header>
+
+  <section class="subscription-page__card-section">
+    <lib-subscription-card />
+  </section>
+
+  @if (!store.isPremium() && !store.isSubscriptionLoading()) {
+  <section class="subscription-page__upgrade-section">
+    <lib-premium-banner />
+  </section>
+  } @if (showCancelOption()) {
+  <section class="subscription-page__actions">
+    <button
+      class="subscription-page__cancel-btn"
+      [disabled]="store.cancelLoading()"
+      (click)="onCancelSubscription()"
+      type="button"
+    >
+      @if (store.cancelLoading()) { Cancelando... } @else { Cancelar suscripción
+      }
+    </button>
+
+    @if (store.cancelError()) {
+    <p class="subscription-page__error">{{ store.cancelError() }}</p>
+    }
+  </section>
+  } @if (store.willExpire()) {
+  <section class="subscription-page__expiry-notice">
+    <p class="subscription-page__expiry-text">
+      Tu suscripción ha sido cancelada. Tu acceso Premium continuará hasta el
+      <strong>{{ store.expirationDate() | date : 'dd/MM/yyyy' }}</strong>.
+    </p>
+  </section>
+  }
+</div>

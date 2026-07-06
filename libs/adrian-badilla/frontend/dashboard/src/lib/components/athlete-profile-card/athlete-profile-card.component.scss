@@ -1,0 +1,192 @@
+/* ── Host ─────────────────────────────────────────────────────────────────── */
+
+:host {
+  display: block;
+}
+
+/* ── Base card ─────────────────────────────────────────────────────────────── */
+
+.ap-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid var(--app-border);
+  backdrop-filter: blur(12px);
+}
+
+/* ── Pending state ─────────────────────────────────────────────────────────── */
+
+.ap-card--pending {
+  background: linear-gradient(
+    135deg,
+    rgba(88, 28, 135, 0.3) 0%,
+    rgba(7, 14, 23, 0.85) 100%
+  );
+  border-color: rgba(167, 139, 250, 0.25);
+  align-items: flex-start;
+}
+
+.ap-card__icon-ring {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: rgba(167, 139, 250, 0.15);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  color: #c4b5fd;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.ap-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+/* ── Completed state ───────────────────────────────────────────────────────── */
+
+.ap-card--done {
+  background: linear-gradient(
+    135deg,
+    rgba(16, 64, 52, 0.35) 0%,
+    rgba(7, 14, 23, 0.85) 100%
+  );
+  border-color: rgba(52, 211, 153, 0.25);
+}
+
+.ap-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.ap-card__check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  color: #34d399;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.ap-card__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+/* ── Loading state ─────────────────────────────────────────────────────────── */
+
+.ap-card--loading {
+  background: var(--app-surface);
+  gap: 0.75rem;
+}
+
+.ap-card__skeleton {
+  border-radius: 0.5rem;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+
+  &--title {
+    height: 1.1rem;
+    width: 55%;
+  }
+  &--text {
+    height: 0.85rem;
+    width: 80%;
+  }
+  &--btn {
+    height: 2.25rem;
+    width: 10rem;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ── Shared text ───────────────────────────────────────────────────────────── */
+
+.ap-card__title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--app-text);
+}
+
+.ap-card__desc {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--app-text-muted);
+  line-height: 1.55;
+}
+
+.ap-card__meta {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--app-text-muted);
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────────────── */
+
+.ap-card__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 0.625rem;
+  border: 1px solid transparent;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease,
+    transform 120ms ease;
+  align-self: flex-start;
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &--primary {
+    background: rgba(167, 139, 250, 0.18);
+    border-color: rgba(167, 139, 250, 0.4);
+    color: #c4b5fd;
+
+    &:hover {
+      background: rgba(167, 139, 250, 0.28);
+      border-color: rgba(167, 139, 250, 0.6);
+    }
+  }
+
+  &--secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--app-border);
+    color: var(--app-text-muted);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.09);
+      color: var(--app-text);
+    }
+  }
+}

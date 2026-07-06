@@ -1,0 +1,974 @@
+:host {
+  /* Same flex-column pattern as RoutinesPageComponent host */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 0;
+
+  --date-range-control-height: 3.5rem;
+  --routes-panel-height: 40vh;
+  --p-inputtext-padding-y: 1rem;
+  --p-inputtext-background: transparent;
+  --p-floatlabel-focus-color: hsla(0, 0%, 100%, 0.7);
+  --p-inputtext-focus-border-color: hsla(0, 0%, 100%, 0.2);
+  --p-button-text-primary-color: #fff;
+  --p-timeline-event-connector-color: #22d3ee;
+  --p-timeline-event-marker-content-background: transparent;
+}
+
+/* ── Page wrapper: timeline + tracker (mirrors .routines-page) ── */
+.diets-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Timeline takes all remaining space; internal scroll lives inside DayTimelineShellComponent */
+.diets-page__timeline {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Tracker is pinned below — never shrinks, never scrolls */
+.diets-page__tracker {
+  flex: 0 0 auto;
+}
+
+/* ── Premium upgrade card ─────────────────────────────────────── */
+.no-plan-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.25rem;
+}
+
+.premium-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  padding: 2.5rem 1.75rem;
+  border-radius: 22px;
+  border: 1px solid rgba(167, 139, 250, 0.25);
+  background: linear-gradient(
+    160deg,
+    rgba(109, 40, 217, 0.12),
+    rgba(30, 20, 60, 0.55)
+  );
+  backdrop-filter: blur(20px);
+  box-shadow: 0 12px 40px rgba(109, 40, 217, 0.18);
+  max-width: 380px;
+  width: 100%;
+
+  &__badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #c4b5fd;
+    background: rgba(167, 139, 250, 0.12);
+    border: 1px solid rgba(167, 139, 250, 0.3);
+    border-radius: 20px;
+    padding: 0.2rem 0.85rem;
+  }
+
+  &__icon-ring {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    border: 2px solid rgba(196, 181, 253, 0.4);
+    background: linear-gradient(
+      135deg,
+      rgba(124, 58, 237, 0.3),
+      rgba(167, 139, 250, 0.12)
+    );
+  }
+
+  &__icon {
+    font-size: 1.75rem;
+    color: #c4b5fd;
+  }
+
+  &__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin: 0;
+    line-height: 1.35;
+  }
+
+  &__message {
+    font-size: 0.82rem;
+    color: rgba(241, 245, 249, 0.55);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  &__features {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-self: stretch;
+    text-align: left;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: rgba(241, 245, 249, 0.65);
+
+      i {
+        color: #a78bfa;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  &__cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #7c3aed, #a78bfa);
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.18s, transform 0.12s;
+    box-shadow: 0 4px 18px rgba(124, 58, 237, 0.45);
+
+    &:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+  }
+
+  &__note {
+    font-size: 0.72rem;
+    color: rgba(241, 245, 249, 0.3);
+    margin: 0;
+  }
+}
+
+.sub-title {
+  filter: drop-shadow(0 0 10px rgba(200, 220, 255, 0.4));
+  letter-spacing: 0.009375em;
+  line-height: 1.75rem;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+label {
+  color: #fff;
+}
+
+.form-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0 1rem;
+
+  @media (min-width: 768px) {
+    padding: 0;
+  }
+}
+
+.form-toolbar__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.date-picker-container {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: var(--date-range-control-height);
+}
+
+:host ::ng-deep .add-route-btn.p-button {
+  flex: 0 0 auto;
+}
+
+:host ::ng-deep .filter-btn.p-button {
+  width: var(--date-range-control-height);
+  flex: 0 0 auto;
+}
+
+:host ::ng-deep .date-picker-container .p-inputwrapper,
+:host ::ng-deep .date-picker-container .p-inputtext,
+:host ::ng-deep .date-picker-container .p-iconfield {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+:host ::ng-deep .date-picker-container .p-iconfield {
+  position: relative;
+}
+
+:host ::ng-deep input.p-inputtext.route-search-input {
+  padding-right: 2.75rem;
+}
+
+:host .route-search-clear {
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  width: 1.3rem;
+  height: 1.3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 150ms ease-out, background-color 150ms ease-out;
+}
+
+:host .route-search-clear .pi {
+  font-size: 0.78rem;
+}
+
+:host .route-search-clear:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+:host .route-search-clear:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.65);
+  outline-offset: 2px;
+}
+
+:host ::ng-deep .form-toolbar__buttons .p-button {
+  width: 100%;
+  min-height: 44px;
+  border: 0.01em solid rgba(200, 220, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+:host ::ng-deep .form-toolbar__buttons .save-btn.p-button {
+  background: rgba(20, 80, 45, 0.8);
+  border-color: rgba(20, 80, 45, 0.5);
+}
+
+:host ::ng-deep .form-toolbar__buttons .discard-btn.p-button {
+  background: rgba(140, 30, 30, 0.8);
+  border-color: rgba(140, 30, 30, 0.5);
+}
+
+:host
+  ::ng-deep
+  .form-toolbar__buttons
+  .p-button.p-button-text:not(:disabled):hover {
+  background-color: rgba(200, 220, 255, 0.2);
+  box-shadow: inset 0 0 30px rgba(200, 220, 255, 0.7);
+  border-radius: 3px;
+}
+
+/* Layout now provided by lib-day-timeline-shell */
+
+.edit-title {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.0125em;
+  line-height: 2rem;
+  word-break: break-all;
+  font-family: univiaPro, Roboto, Avenir, Helvetica, Arial, sans-serif;
+}
+
+.editor-layout__top {
+  display: grid;
+  grid-template-columns: 33% minmax(0, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+.editor-layout__top > p-floatlabel.date-picker-container {
+  width: 100%;
+  min-width: 0;
+  display: block;
+}
+
+.editor-bottom-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  margin-top: 1rem;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgba(220, 240, 255, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.5s ease;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker i {
+  font-size: 1rem;
+  transition: color 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter 0.4s ease;
+  position: relative;
+  z-index: 2;
+}
+
+// ✅ COMPLETED — cyan/blue ring with subtle glow
+:host ::ng-deep .route-timeline .timeline-marker.completed {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.15),
+    rgba(139, 92, 246, 0.1),
+    rgba(34, 211, 238, 0.15)
+  );
+  border-color: rgba(34, 211, 238, 0.9);
+  animation: markerGlowCyan 2.5s ease-in-out infinite;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker.completed i {
+  color: #22d3ee;
+  animation: iconGlowCyan 2.5s ease-in-out infinite;
+  transform: scale(1.05);
+}
+
+// ❌ SKIPPED — rose ring with subtle glow
+:host ::ng-deep .route-timeline .timeline-marker.skipped {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.85);
+  animation: markerGlowRed 2.5s ease-in-out infinite;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker.skipped i {
+  color: #f87171;
+  animation: iconGlowRed 2.5s ease-in-out infinite;
+  transform: scale(1.05);
+}
+
+// ⏳ PENDING
+:host ::ng-deep .route-timeline .timeline-marker.pending {
+  background: rgba(220, 240, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:host ::ng-deep .route-timeline .timeline-marker.pending i {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+// Marker glow keyframes — subtle effect with border and icon glow
+@keyframes markerGlowCyan {
+  0%,
+  100% {
+    border-color: rgba(34, 211, 238, 0.9);
+    box-shadow: inset 0 0 8px rgba(34, 211, 238, 0.2),
+      0 0 8px rgba(34, 211, 238, 0.15);
+  }
+  50% {
+    border-color: rgba(34, 211, 238, 1);
+    box-shadow: inset 0 0 8px rgba(34, 211, 238, 0.2),
+      0 0 16px rgba(34, 211, 238, 0.3);
+  }
+}
+
+@keyframes markerGlowRed {
+  0%,
+  100% {
+    border-color: rgba(239, 68, 68, 0.85);
+    box-shadow: inset 0 0 6px rgba(239, 68, 68, 0.15),
+      0 0 6px rgba(239, 68, 68, 0.1);
+  }
+  50% {
+    border-color: rgba(239, 68, 68, 1);
+    box-shadow: inset 0 0 6px rgba(239, 68, 68, 0.15),
+      0 0 12px rgba(239, 68, 68, 0.25);
+  }
+}
+
+// Icon glow keyframes — breathing effect for icon drop-shadow
+@keyframes iconGlowCyan {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.8));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px rgba(34, 211, 238, 1))
+      drop-shadow(0 0 2px rgba(34, 211, 238, 0.6));
+  }
+}
+
+@keyframes iconGlowRed {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 3px rgba(239, 68, 68, 0.8));
+  }
+  50% {
+    filter: drop-shadow(0 0 6px rgba(239, 68, 68, 1))
+      drop-shadow(0 0 2px rgba(239, 68, 68, 0.6));
+  }
+}
+
+// Marker button base
+:host ::ng-deep .route-timeline .timeline-marker-button {
+  border: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker-button:hover {
+  transform: scale(1.08);
+}
+
+:host ::ng-deep .route-timeline .timeline-marker-button:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.65);
+  outline-offset: 2px;
+}
+
+// ⚪ Removed complex breath keyframes — moved sparkle effects to cards
+
+.supercenter-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.supercenter-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.01em;
+}
+
+.ultima-edicion {
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: rgba(200, 220, 255, 0.5);
+  white-space: nowrap;
+  transition: color 200ms ease;
+}
+
+.route-supercenter-location {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.4;
+  margin-top: 0.15rem;
+}
+
+:host .route-supercenter-card {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  transition: background-color 180ms ease, box-shadow 180ms ease;
+}
+
+:host .route-supercenter-card:hover {
+  background: rgba(200, 220, 255, 0.06);
+}
+
+:host .route-supercenter-card:hover .ultima-edicion {
+  color: rgba(200, 220, 255, 0.7);
+}
+
+:host .route-supercenter-card:hover .route-supercenter-location {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+:host .route-supercenter-card:focus-visible {
+  outline: 1px solid rgba(200, 220, 255, 0.4);
+  outline-offset: 1px;
+}
+
+:host ::ng-deep .p-timeline-event-opposite {
+  display: none;
+}
+
+:host ::ng-deep .p-timeline .p-timeline-event {
+  width: 100%;
+  flex: 1 1 100%;
+  min-width: 0;
+  overflow: visible;
+}
+
+:host ::ng-deep .p-timeline .p-timeline-event-content {
+  min-width: 0;
+  overflow: visible;
+  flex: 1 1 auto;
+  padding-right: 0.2rem;
+  padding-left: 0.2rem;
+}
+
+:host ::ng-deep .route-timeline {
+  padding-top: 0.5rem;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+:host .routes-empty {
+  height: var(--routes-panel-height);
+  min-height: 22rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 4.5rem 2rem 2rem;
+}
+
+:host .routes-empty__content {
+  max-width: 28rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 33%;
+  transform: translateY(-50%);
+}
+
+:host .routes-empty__icon {
+  font-size: 2.5rem;
+  color: rgba(200, 220, 255, 0.85);
+  filter: drop-shadow(0 0 12px rgba(200, 220, 255, 0.25));
+}
+
+:host .routes-empty__title {
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+:host .routes-empty__text {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 24rem;
+}
+
+:host ::ng-deep input.p-inputtext.route-editor-input {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+:host ::ng-deep input.p-inputtext.route-editor-input[readonly] {
+  border: none;
+  box-shadow: none;
+}
+
+:host ::ng-deep input.p-inputtext.route-editor-input:not([readonly]) {
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: none;
+}
+
+:host ::ng-deep input.p-inputtext.route-editor-input:not([readonly]):focus {
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: none;
+  outline: none;
+}
+
+:host .editor-empty-state {
+  min-height: 10rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.5rem;
+  border-radius: 8px;
+}
+
+:host .editor-empty-state__content {
+  width: 100%;
+  max-width: 28rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 40%;
+  transform: translateY(-50%);
+}
+
+:host .editor-empty-state__icon {
+  font-size: 2rem;
+  color: rgba(200, 220, 255, 0.82);
+  filter: drop-shadow(0 0 10px rgba(200, 220, 255, 0.2));
+}
+
+:host .editor-empty-state__title {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+:host .editor-empty-state__text {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  max-width: 28rem;
+}
+
+:host .editor-empty-state :is(.p-button, .add-route-btn) {
+  margin-top: 0.5rem;
+}
+
+.add-route-btn .pi {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* =========================
+   SPACING (Tailwind → CSS)
+========================= */
+
+.mt-2 {
+  margin-top: 0.5rem; /* 8px */
+}
+
+.mt-3 {
+  margin-top: 1rem; /* 16px */
+}
+
+.mt-4 {
+  margin-top: 1.5rem; /* 24px */
+}
+
+.mb-3 {
+  margin-bottom: 1rem; /* 16px */
+}
+
+.mr-3 {
+  margin-right: 1rem; /* 16px */
+}
+
+.m-0 {
+  margin: 0;
+}
+
+.p-1 {
+  padding: 0.25rem; /* 4px */
+}
+
+/* =========================
+   FLEX UTILS
+========================= */
+
+.align-items-start {
+  align-items: flex-start;
+}
+
+// COLORES PARA EL TIMELINE
+
+.timeline-marker {
+  transition: all 0.3s ease;
+}
+
+.timeline-marker.completed {
+  background-color: #22d3ee;
+  border-color: #22d3ee;
+}
+
+.timeline-marker.skipped {
+  background-color: #ef4444;
+  border-color: #ef4444;
+}
+
+.timeline-marker.pending {
+  background-color: #374151;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker.decision-light {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.25),
+    rgba(139, 92, 246, 0.2),
+    rgba(34, 211, 238, 0.15)
+  );
+  border: 2px solid #22d3ee;
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.8), 0 0 20px rgba(34, 211, 238, 0.6),
+    inset 0 0 16px rgba(34, 211, 238, 0.3);
+  animation: markerGlowLightPulse 2s infinite;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker.decision-light i {
+  color: #22d3ee;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  text-shadow: none;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker.decision-balanced {
+  background: linear-gradient(
+    135deg,
+    rgba(250, 204, 21, 0.25),
+    rgba(250, 204, 21, 0.15)
+  );
+  border: 2px solid #facc15;
+  box-shadow: 0 0 8px rgba(250, 204, 21, 0.7), 0 0 16px rgba(250, 204, 21, 0.5),
+    inset 0 0 12px rgba(250, 204, 21, 0.25);
+  animation: markerGlowBalancedPulse 2s infinite;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker.decision-balanced i {
+  color: #fde047;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  text-shadow: none;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker.decision-protein {
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.25),
+    rgba(239, 68, 68, 0.15)
+  );
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.7), 0 0 16px rgba(239, 68, 68, 0.5),
+    inset 0 0 12px rgba(239, 68, 68, 0.25);
+  animation: markerGlowProteinPulse 2s infinite;
+}
+
+:host ::ng-deep .route-timeline .timeline-marker.decision-protein i {
+  color: #ff6b6b;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  text-shadow: none;
+}
+
+.timeline-marker.pulse-completed {
+  animation: markerBreathCyan 3s ease-in-out infinite;
+}
+
+.timeline-marker.pulse-skipped {
+  animation: markerBreathRed 3s ease-in-out infinite;
+}
+
+// CONNECTOR — synced with marker breathing
+
+:host ::ng-deep .route-timeline .p-timeline-event-connector {
+  width: 2px !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  transition: background-color 0.5s ease, box-shadow 0.5s ease !important;
+  position: relative;
+  overflow: visible;
+}
+
+// CSS :has() — reactively colors connector with marker
+:host
+  ::ng-deep
+  .route-timeline
+  .p-timeline-event-separator:has(.timeline-marker.completed)
+  .p-timeline-event-connector {
+  background-color: rgba(34, 211, 238, 0.5) !important;
+  animation: connectorBreathCyan 3s ease-in-out infinite;
+}
+
+:host
+  ::ng-deep
+  .route-timeline
+  .p-timeline-event-separator:has(.timeline-marker.skipped)
+  .p-timeline-event-connector {
+  background-color: rgba(239, 68, 68, 0.5) !important;
+  animation: connectorBreathRed 3s ease-in-out infinite;
+}
+
+// Fallback: DOM class approach
+:host ::ng-deep .route-timeline .p-timeline-event-connector.completed-line {
+  background-color: rgba(34, 211, 238, 0.5) !important;
+  animation: connectorBreathCyan 3s ease-in-out infinite;
+}
+
+:host ::ng-deep .route-timeline .p-timeline-event-connector.balanced-line {
+  background-color: rgba(250, 204, 21, 0.5) !important;
+  box-shadow: 0 0 6px rgba(250, 204, 21, 0.2);
+}
+
+:host ::ng-deep .route-timeline .p-timeline-event-connector.skipped-line {
+  background-color: rgba(239, 68, 68, 0.5) !important;
+  animation: connectorBreathRed 3s ease-in-out infinite;
+}
+
+:host ::ng-deep .route-timeline .p-timeline-event-connector.pending-line {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+// Connector breath — same 3s cycle as markers
+@keyframes connectorBreathCyan {
+  0%,
+  100% {
+    background-color: rgba(34, 211, 238, 0.4);
+    box-shadow: 0 0 6px rgba(34, 211, 238, 0.15);
+  }
+  50% {
+    background-color: rgba(34, 211, 238, 0.75);
+    box-shadow: 0 0 14px rgba(34, 211, 238, 0.4);
+  }
+}
+
+@keyframes connectorBreathRed {
+  0%,
+  100% {
+    background-color: rgba(239, 68, 68, 0.35);
+    box-shadow: 0 0 4px rgba(239, 68, 68, 0.1);
+  }
+  50% {
+    background-color: rgba(239, 68, 68, 0.65);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+  }
+}
+
+/* ========================= */
+/* MARKER CONTAINER           */
+/* ========================= */
+
+.marker-with-actions {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ========================= */
+/* 🎉 TIMELINE 100% COMPLETE  */
+/* ========================= */
+
+:host ::ng-deep .route-timeline {
+  position: relative;
+}
+
+:host ::ng-deep .route-timeline.timeline-complete .timeline-marker.completed {
+  animation: markerBreathCyan 3s ease-in-out infinite;
+}
+
+:host
+  ::ng-deep
+  .route-timeline.timeline-complete
+  .p-timeline-event-connector.completed-line {
+  animation: connectorBreathCyan 3s ease-in-out infinite;
+}
+
+// Subtle sparkle effects on timeline completion
+:host ::ng-deep .route-timeline.timeline-complete::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  pointer-events: none;
+  background: radial-gradient(
+      2px 2px at 15% 25%,
+      rgba(34, 211, 238, 0.8) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      2px 2px at 85% 35%,
+      rgba(52, 224, 232, 0.7) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      1.5px 1.5px at 25% 60%,
+      rgba(34, 211, 238, 0.6) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      2px 2px at 75% 70%,
+      rgba(52, 224, 232, 0.8) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      1.5px 1.5px at 45% 15%,
+      rgba(34, 211, 238, 0.7) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      2px 2px at 60% 80%,
+      rgba(52, 224, 232, 0.65) 0%,
+      transparent 100%
+    );
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%,
+    100% 100%;
+  animation: timelineSparkles 1.5s ease-out 1;
+  z-index: 1;
+  opacity: 0;
+}
+
+// Sparkle shimmer animation
+@keyframes timelineSparkles {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  60% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes markerGlowLightPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(34, 211, 238, 0.6),
+      0 0 16px rgba(34, 211, 238, 0.4), inset 0 0 12px rgba(34, 211, 238, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(34, 211, 238, 0.9),
+      0 0 28px rgba(34, 211, 238, 0.7), inset 0 0 20px rgba(34, 211, 238, 0.4);
+  }
+}

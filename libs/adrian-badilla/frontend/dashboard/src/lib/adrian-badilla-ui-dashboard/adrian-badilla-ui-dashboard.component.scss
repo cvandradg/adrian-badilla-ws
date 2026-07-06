@@ -2,11 +2,12 @@
 @use 'mixins/surfaces' as surfaces;
 
 :host {
-  color: tokens.$dashboard-text-primary;
-  display: block;
+  color: var(--app-text);
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
-  padding-inline: tokens.$dashboard-shell-spacing;
-  height: 100svh;
+  padding: 0 1.5rem;
+  min-height: 100dvh;
   margin-inline: auto;
   --mat-sidenav-container-shape: none;
   --dashboard-text-soft: #{tokens.$dashboard-text-soft};
@@ -19,6 +20,14 @@
   --dashboard-panel-gap: #{tokens.$dashboard-panel-gap};
   --dashboard-panel-min-block-size: #{tokens.$dashboard-panel-min-block-size};
   --dashboard-content-blur: #{tokens.$dashboard-content-blur};
+
+  @media (max-width: 767px) {
+    padding-inline: 0;
+    /* Definite height is required so that height:100% propagates correctly
+       through the entire flex chain down to routines-page and other pages.
+       min-height alone does NOT create a definite height for % children. */
+    height: 100dvh;
+  }
 }
 
 mat-sidenav-container.dashboard-shell {
@@ -26,14 +35,15 @@ mat-sidenav-container.dashboard-shell {
   max-inline-size: var(--dashboard-shell-max-inline-size);
   margin-inline: auto;
   block-size: 100%;
+  flex: 1;
 }
 
 .dashboard-content {
-  block-size: 100%;
-  overflow-x: hidden;
-  min-block-size: 0;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-block-size: 0;
+  overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -43,10 +53,11 @@ mat-sidenav-container.dashboard-shell {
   inline-size: 0;
   block-size: 0;
 }
-
+// agregado por steven para que se aline el texto de moofy vip e ingresar
 .inline-flex {
   display: flex;
   align-items: center;
+  gap: 1rem;
 }
 
 .gap-3 {
@@ -55,15 +66,65 @@ mat-sidenav-container.dashboard-shell {
 
 .ml-2 {
   margin-left: 0.5rem;
+
+  @media (max-width: 767px) {
+    display: none;
+  }
 }
 
 .container-header {
   flex: 0 0 auto;
-  @include surfaces.panel-header(0.7rem 1rem);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 1rem;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.015)
+  );
+  border-bottom: 1px solid var(--app-border);
+  backdrop-filter: blur(12px);
+  line-height: 1.5;
+  /* Mobile: sticky header so it stays visible during scroll */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  overflow: hidden; /* prevent horizontal scroll */
+
+  @media (max-width: 767px) {
+    padding: 0.7rem 1rem;
+    border-radius: 0;
+
+    .header-start {
+      order: 2;
+    }
+    .header-actions {
+      order: 1;
+    }
+  }
 }
 
 .menu-toggle {
   cursor: pointer;
+}
+
+.navbar-logo {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  opacity: 0.85;
+  transition: opacity 150ms ease;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  @media (max-width: 767px) {
+    width: 32px;
+    height: 32px;
+  }
 }
 
 .title {
@@ -73,6 +134,15 @@ mat-sidenav-container.dashboard-shell {
 }
 
 .login-button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.48rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--app-border);
+  background: var(--app-surface-soft);
+  color: var(--app-text-muted);
   font-weight: 500;
   font-size: 0.875rem;
   letter-spacing: 0.0892857143em;
@@ -80,6 +150,47 @@ mat-sidenav-container.dashboard-shell {
   text-transform: uppercase;
   white-space: nowrap;
   text-align: center;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease,
+    box-shadow 150ms ease, transform 150ms ease;
+
+  &:hover {
+    background: rgba(61, 165, 194, 0.14);
+    border-color: var(--app-border-strong);
+    color: var(--app-text);
+    box-shadow: 0 8px 24px rgba(61, 165, 194, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(61, 165, 194, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--app-focus-ring);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 767px) {
+    gap: 0;
+    min-width: 2.4rem;
+    justify-content: center;
+    padding-inline: 0.68rem;
+    text-indent: 0;
+    font-size: 0;
+    letter-spacing: 0;
+
+    fa-icon {
+      font-size: 0.875rem;
+    }
+
+    span {
+      display: none;
+    }
+  }
 }
 
 .header-actions {
@@ -113,14 +224,36 @@ mat-sidenav-container.dashboard-shell {
 }
 
 .dashboard-container {
-  @include surfaces.glass-panel-shell();
-
   display: flex;
-  flex: 1 1 auto;
   flex-direction: column;
-  background: tokens.$dashboard-content-surface;
-  backdrop-filter: blur(var(--dashboard-content-blur));
-  -webkit-backdrop-filter: blur(var(--dashboard-content-blur));
+  flex: 1;
+  min-height: 0;
+  margin-top: 1rem;
+  border-radius: 1.25rem;
+  border: 1px solid var(--app-border) !important;
+  box-shadow: var(--app-shadow) !important;
+  background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.035),
+      rgba(255, 255, 255, 0.015)
+    ),
+    var(--app-surface);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  /* Mobile: Don't set overflow here; let children handle scrolling */
+  overflow: hidden;
+
+  @media (min-width: 768px) {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  @media (max-width: 767px) {
+    margin-top: 0;
+    border-radius: 0;
+    border: none !important;
+    box-shadow: none !important;
+  }
 }
 
 .router-slot {
@@ -128,12 +261,8 @@ mat-sidenav-container.dashboard-shell {
   min-block-size: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-}
-
-.dashboard-spacer {
-  flex: 0 0 var(--dashboard-shell-spacing);
-  block-size: var(--dashboard-shell-spacing);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 :host ::ng-deep .dashboard-shell > .mat-drawer-content,
@@ -150,9 +279,13 @@ mat-sidenav-container.dashboard-shell {
 }
 
 :host ::ng-deep .mat-drawer-backdrop.mat-drawer-shown {
-  backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   background: tokens.$dashboard-backdrop;
+  /* Force GPU compositing layer — required for backdrop-filter
+     to render in production builds on mobile Chrome/WebView */
+  transform: translateZ(0);
+  will-change: backdrop-filter;
 }
 
 .right-sidenav {
@@ -163,11 +296,6 @@ mat-sidenav-container.dashboard-shell {
 .left-sidenav,
 .right-sidenav {
   min-block-size: var(--dashboard-panel-min-block-size);
-}
-
-.dashboard-spacer {
-  flex: 0 0 var(--dashboard-shell-spacing);
-  block-size: var(--dashboard-shell-spacing);
 }
 
 @media (min-width: 960px) {

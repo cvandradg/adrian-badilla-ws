@@ -1,0 +1,30 @@
+<p-carousel
+  [value]="featured()"
+  [numVisible]="1"
+  [numScroll]="1"
+  [circular]="true"
+  [autoplayInterval]="5000"
+  [responsiveOptions]="responsiveOptions"
+  class="news-highlight-carousel"
+>
+  <ng-template #item let-news>
+    <div class="highlight-card">
+      <div
+        class="highlight-card__background"
+        [style.backgroundImage]="'url(' + news.image + ')'"
+      >
+        <div class="highlight-card__overlay">
+          <div class="highlight-card__content">
+            <p-tag
+              [value]="news.category"
+              [severity]="getCategorySeverity(news.category)"
+              class="highlight-card__tag"
+            />
+            <h2 class="highlight-card__title">{{ news.title }}</h2>
+            <p class="highlight-card__description">{{ news.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</p-carousel>

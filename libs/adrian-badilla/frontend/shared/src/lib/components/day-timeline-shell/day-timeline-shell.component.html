@@ -1,0 +1,16 @@
+<div class="day-shell">
+  <!-- SIDEBAR -->
+  <lib-day-sidebar
+    class="day-shell__sidebar"
+    appTourAnchor="day-timeline"
+    [days]="days()"
+    [selectedDayId]="selectedDayId()"
+    [completedDayIds]="completedDayIds()"
+    (daySelected)="daySelected.emit($event)"
+  />
+
+  <!-- CONTENT -->
+  <div class="day-shell__content">
+    <ng-content />
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="home-page">
+  <!-- Welcome Banner -->
+  <lib-welcome-banner />
+
+  <!-- Promo Carousel -->
+  <lib-promo-carousel />
+
+  <!-- Primary Row: Summary + Recommendation -->
+  <div class="home-page__primary">
+    <lib-daily-summary
+      [summary]="dailySummary()"
+      [remainingCalories]="remainingCalories()"
+      [isGoalReached]="isGoalReached()"
+      [macroPercentages]="macroPercentages()"
+    />
+    <lib-smart-recommendation [recommendation]="recommendation()" />
+  </div>
+
+  <!-- Leaderboard -->
+  <lib-leaderboard [topThree]="topThree()" [restList]="restOfList()" />
+
+  <!-- Progress Row -->
+  <lib-weekly-progress
+    [weeklyProgress]="weeklyProgress()"
+    [goal]="dailySummary().goal"
+  />
+
+  <!-- Achievements -->
+  <lib-achievements
+    [achievements]="achievements()"
+    [streak]="streak()"
+  />
+
+  <!-- News Section -->
+  <section class="home-page__news">
+    <h2 class="home-page__section-title">📰 Noticias</h2>
+    <lib-news-list [news]="latestNews()" />
+  </section>
+</div>

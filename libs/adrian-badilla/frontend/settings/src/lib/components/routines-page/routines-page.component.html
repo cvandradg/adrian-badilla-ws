@@ -1,0 +1,60 @@
+<lib-section-tabs
+  [tabs]="tabs"
+  [activeTab]="activeTab()"
+  (tabChange)="setActiveTab($event)"
+  [panelsFillHeight]="activeTab() === 'rutinas'"
+>
+  @switch (activeTab()) { @case ('rutinas') {
+  <!-- ── Skeleton while first load ────────────────────────────────────── -->
+  @if (isLoadingRoutine()) {
+  <lib-skeleton-loader variant="page" [rows]="4" />
+  } @else if (showPaywall()) {
+  <!-- Regla 1: no premium -->
+  <lib-premium-banner />
+  } @else if (showPendingPlan()) {
+  <!-- Regla 3: premium sin contenido -->
+  <lib-pending-plan />
+  } @else if (showContent()) {
+  <!-- ── Scrollable timeline area ─────────────────────────────────────── -->
+  <!-- lib-shared-item-timeline is ALWAYS rendered so the day sidebar stays
+           visible. When the selected day has no exercises, restDayLabel causes
+           the rest-day card to appear inside the content area instead. -->
+  <div class="routines-page">
+    <div class="routines-page__timeline">
+      <lib-shared-item-timeline
+        [days]="routineDayBases()"
+        [selectedDayId]="selectedRoutineDayId()"
+        [completedDayIds]="completedRoutineDayIds()"
+        [items]="selectedDayRoutines()"
+        headingTitle="Plan de entrenamiento"
+        headingSubtitle="Organiza tus ejercicios día por día"
+        [isTimelineComplete]="isSelectedDayComplete()"
+        [restDayLabel]="isRestDay() ? selectedDayLabel() : null"
+        (daySelected)="selectDay($event)"
+        (statusChange)="handleStatusChange($event)"
+        (openChat)="openChat($event)"
+        (itemDetails)="openDetails($event)"
+      />
+    </div>
+
+    <!-- ── Progress tracker pinned at bottom ────────────────────────────── -->
+    <lib-routine-progress-tracker
+      class="routines-page__tracker"
+      [metrics]="progressMetrics()"
+    />
+  </div>
+  }
+  <!-- end @else -->
+  } @case ('historial') {
+  <lib-section-history
+    [entries]="routineHistoryEntries"
+    title="🏋️ Historial de Rutinas"
+    subtitle="Registro completo de tus planes de entrenamiento"
+  />
+  } @case ('config') {
+  <div class="routines-config-placeholder">
+    <i class="pi pi-sliders-h" aria-hidden="true"></i>
+    <p>Configuración de rutinas próximamente</p>
+  </div>
+  } }
+</lib-section-tabs>

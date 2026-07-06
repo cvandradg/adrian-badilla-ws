@@ -1,0 +1,66 @@
+<div class="leaderboard">
+  <h3 class="leaderboard__title">🏅 Ranking del día</h3>
+
+  <!-- Podium -->
+  <div class="podium">
+    @if (topThree().length >= 3) {
+      <!-- 2nd Place -->
+      <div class="podium__column podium__column--second">
+        <div class="podium__crown podium__crown--silver">♛</div>
+        <div class="podium__avatar">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>
+        </div>
+        <div class="podium__pedestal podium__pedestal--second">
+          <span class="podium__name">{{ topThree()[1].title }}</span>
+          <span class="podium__value">◆ {{ topThree()[1].value }}</span>
+        </div>
+        <div class="podium__base podium__base--second">
+          <span># 2</span>
+        </div>
+      </div>
+
+      <!-- 1st Place -->
+      <div class="podium__column podium__column--first">
+        <div class="podium__crown podium__crown--gold">👑</div>
+        <div class="podium__avatar podium__avatar--first">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>
+        </div>
+        <div class="podium__pedestal podium__pedestal--first">
+          <span class="podium__name">{{ topThree()[0].title }}</span>
+          <span class="podium__value podium__value--gold">◆ {{ topThree()[0].value }}</span>
+        </div>
+        <div class="podium__base podium__base--first">
+          <span># 1</span>
+        </div>
+      </div>
+
+      <!-- 3rd Place -->
+      <div class="podium__column podium__column--third">
+        <div class="podium__crown podium__crown--blue">♛</div>
+        <div class="podium__avatar">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>
+        </div>
+        <div class="podium__pedestal podium__pedestal--third">
+          <span class="podium__name">{{ topThree()[2].title }}</span>
+          <span class="podium__value podium__value--blue">◆ {{ topThree()[2].value }}</span>
+        </div>
+        <div class="podium__base podium__base--third">
+          <span># 3</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Rest of list -->
+  @if (restList().length > 0) {
+    <div class="leaderboard__list">
+      @for (item of restList(); track item.position) {
+        <div class="leaderboard__row">
+          <span class="leaderboard__row-position"># {{ item.position }}</span>
+          <span class="leaderboard__row-title">{{ item.title }}</span>
+          <span class="leaderboard__row-value">◆ {{ item.value }}</span>
+        </div>
+      }
+    </div>
+  }
+</div>

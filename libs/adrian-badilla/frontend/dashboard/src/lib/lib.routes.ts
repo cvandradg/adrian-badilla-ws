@@ -1,6 +1,5 @@
 import { Route } from '@angular/router';
 import { DashboardComponent } from './adrian-badilla-ui-dashboard/adrian-badilla-ui-dashboard.component';
-import { DashboardSectionPlaceholderComponent } from './section-placeholder/section-placeholder.component';
 
 export const adrianBadillaDashboardRoutes: Route[] = [
   {
@@ -8,6 +7,12 @@ export const adrianBadillaDashboardRoutes: Route[] = [
     title: 'Panel',
     component: DashboardComponent,
     children: [
+      {
+        path: 'inicio',
+        title: 'Inicio',
+        loadChildren: () =>
+          import('@adrian-badilla/home').then((m) => m.HOME_ROUTES),
+      },
       {
         path: 'products',
         title: 'Productos',
@@ -19,22 +24,58 @@ export const adrianBadillaDashboardRoutes: Route[] = [
       {
         path: 'dietas',
         title: 'Dietas',
-        component: DashboardSectionPlaceholderComponent,
-        data: {
-          title: 'Dietas',
-          description:
-            'Espacio reservado para planes de alimentación, seguimiento nutricional y organización de dietas.',
-        },
+        loadChildren: () =>
+          import('../../../settings/src/lib/lib.routes').then(
+            (module) => module.settingsRoutes
+          ),
       },
       {
         path: 'rutinas',
         title: 'Rutinas',
-        component: DashboardSectionPlaceholderComponent,
-        data: {
-          title: 'Rutinas',
-          description:
-            'Espacio reservado para programas de entrenamiento, bloques semanales y seguimiento de rutinas.',
-        },
+        loadChildren: () =>
+          import('../../../settings/src/lib/lib.routes').then(
+            (module) => module.routinesRoutes
+          ),
+      },
+      {
+        path: 'accesorios',
+        title: 'Accesorios',
+        loadComponent: () =>
+          import('./accesorios/accesorios.component').then(
+            (m) => m.AccesoriosComponent
+          ),
+      },
+      {
+        path: 'suplementos',
+        title: 'Suplementos',
+        loadComponent: () =>
+          import('./suplementos/suplementos.component').then(
+            (m) => m.SuplementosComponent
+          ),
+      },
+      {
+        path: 'cocina',
+        title: 'Cocina',
+        loadComponent: () =>
+          import('./cocina-coming-soon/cocina-coming-soon.component').then(
+            (m) => m.CocinaComingSoonComponent
+          ),
+      },
+      {
+        path: 'perfil',
+        title: 'Perfil',
+        loadComponent: () =>
+          import('./pages/profile-page/profile-page.component').then(
+            (m) => m.ProfilePageComponent
+          ),
+      },
+      {
+        path: 'configuracion',
+        title: 'Configuración',
+        loadComponent: () =>
+          import(
+            '../../../settings/src/lib/components/app-config-page/app-config-page.component'
+          ).then((m) => m.AppConfigPageComponent),
       },
     ],
   },

@@ -1,0 +1,88 @@
+/* ── Exercise Dropdown ────────────────────────────────────────────────────── */
+
+.exercise-dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.exercise-dropdown__header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+  color: rgba(165, 180, 252, 0.8);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ── Exercise Row ─────────────────────────────────────────────────────────── */
+
+.exercise-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.28rem 0.35rem;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background 120ms ease;
+
+  &:hover {
+    background: rgba(167, 139, 250, 0.1);
+  }
+
+  &.is-active {
+    background: rgba(167, 139, 250, 0.15);
+
+    .exercise-row__eye-btn {
+      color: #a78bfa;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(167, 139, 250, 0.5);
+    outline-offset: 1px;
+  }
+}
+
+.exercise-row__name {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.5;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+}
+
+/* ── Eye Indicator ────────────────────────────────────────────────────────── */
+
+.exercise-row__eye-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 6px;
+  color: rgba(165, 180, 252, 0.4);
+  transition: color 140ms ease;
+  pointer-events: none;
+
+  .pi {
+    font-size: 0.82rem;
+  }
+}
+
+.exercise-row:hover .exercise-row__eye-btn {
+  color: rgba(165, 180, 252, 0.9);
+}

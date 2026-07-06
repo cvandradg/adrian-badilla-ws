@@ -1,0 +1,168 @@
+/* ── COMPONENT CONTAINER ──────────────────────────────────────── */
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+
+  --timeline-gutter: 1rem;
+}
+
+:host ::ng-deep .p-timeline-event-opposite {
+  display: none;
+}
+
+:host ::ng-deep .p-timeline .p-timeline-event {
+  width: 100%;
+  flex: 1 1 100%;
+  min-width: 0;
+  overflow: visible;
+}
+
+:host ::ng-deep .p-timeline .p-timeline-event-content {
+  min-width: 0;
+  overflow: visible;
+  flex: 1 1 auto;
+  padding-right: 0;
+  padding-left: 0.6rem;
+}
+
+:host ::ng-deep .route-timeline {
+  padding-top: 0.5rem;
+  padding-left: var(--timeline-gutter);
+  padding-right: var(--timeline-gutter);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Section heading ──────────────────────────────────────────── */
+
+.timeline-heading {
+  flex: 0 0 auto;
+  padding: 0.75rem var(--timeline-gutter) 0.35rem;
+}
+
+.timeline-heading__title {
+  margin: 0 0 0.2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--app-text, #f1f5f9);
+  letter-spacing: -0.015em;
+}
+
+.timeline-heading__subtitle {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--app-text-muted, rgba(241, 245, 249, 0.5));
+  line-height: 1.4;
+}
+
+/* ── Day selector gutter — mobile only ──────────────────────────────── */
+
+@media (max-width: 767px) {
+  :host ::ng-deep .day-shell__sidebar {
+    padding-left: var(--timeline-gutter);
+  }
+}
+
+/* ── Rest day card ─────────────────────────────────────────────── */
+
+.rest-day-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  margin: 24px 16px;
+  padding: 36px 24px 32px;
+  border-radius: 20px;
+  border: 1px solid rgba(167, 139, 250, 0.18);
+  background: rgba(88, 28, 135, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: restCardIn 360ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.rest-day-card__icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(167, 139, 250, 0.3);
+  background: rgba(124, 58, 237, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: floatIcon 3s ease-in-out infinite;
+
+  i {
+    font-size: 1.75rem;
+    color: #c084fc;
+    filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.5));
+  }
+}
+
+.rest-day-card__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.rest-day-card__message {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+  max-width: 300px;
+}
+
+.rest-day-card__tips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.rest-day-card__tip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+
+  i {
+    font-size: 0.72rem;
+    color: #a78bfa;
+  }
+}
+
+@keyframes restCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes floatIcon {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
