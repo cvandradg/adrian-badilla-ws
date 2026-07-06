@@ -1,11 +1,9 @@
 import { Component, computed, inject, resource, Type } from '@angular/core';
-import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { NgComponentOutlet } from '@angular/common';
-import { TourOverlayComponent } from 'adrian-badilla/settings';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
-import { settingsStoreDev } from 'adrian-badilla/settings';
-import { FabLayoutStore } from 'adrian-badilla/settings';
+import { TourOverlayComponent, settingsStoreDev, FabLayoutStore } from 'adrian-badilla/settings';
 
 @Component({
   imports: [RouterModule, NgComponentOutlet, TourOverlayComponent],
@@ -34,10 +32,6 @@ export class AppComponent {
     return url !== '/' && !url.startsWith('/?') && !url.startsWith('/auth');
   });
 
-  /**
-   * Inputs passed to AiCoachChatComponent via ngComponentOutletInputs.
-   * This keeps the AI lib decoupled from settingsStoreDev and FabLayoutStore.
-   */
   readonly chatInputs = computed(() => ({
     remainingMacros: (this.settingsStore as any).remainingMacros?.() ?? null,
     fabBottomBase: this.fabLayout.fabBaseBottom(),
@@ -51,4 +45,13 @@ export class AppComponent {
       return AiCoachChatComponent;
     },
   });
+
+  constructor() {
+    this.router.events
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        const inAppChrome = /^\/(auth|dashboard)\b/.test(event.urlAfterRedirects);
+        document.body.classList.toggle('app-chrome', inAppChrome);
+      });
+  }
 }

@@ -1,10 +1,9 @@
-import { inject, provideAppInitializer, signal } from '@angular/core';
+import { inject, provideAppInitializer } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { SideMenuComponent } from './side-menu.component';
-import { FontAwesomeicons } from '../../../../shared/src/lib/assets/icons/fontawesome';
-import { FirebaseAuthService } from '@adrian-badilla/ui/shared';
+import { FontAwesomeicons } from '@adrian-badilla/ui/shared/assets/icons/fontawesome';
 
 describe('SideMenuComponent', () => {
   let component: SideMenuComponent;
@@ -18,14 +17,6 @@ describe('SideMenuComponent', () => {
         provideAppInitializer(() => {
           inject(FaIconLibrary).addIcons(...FontAwesomeicons);
         }),
-        {
-          provide: FirebaseAuthService,
-          useValue: {
-            currentUser: signal(null),
-            user$: { subscribe: jest.fn() },
-            authState$: { subscribe: jest.fn() },
-          },
-        },
       ],
     }).compileComponents();
 

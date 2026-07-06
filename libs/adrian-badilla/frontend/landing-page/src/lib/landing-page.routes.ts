@@ -1,9 +1,9 @@
 import { Route } from '@angular/router';
-import { LandingPageComponent } from './adrian-badilla-ui-landing-page/adrian-badilla-ui-landing-page.component';
+import { LandingShellComponent } from './components/landing-shell/landing-shell.component';
 
 export default [
   {
     path: '',
-    component: LandingPageComponent
+    component: LandingShellComponent,
   },
 ] as Route[];

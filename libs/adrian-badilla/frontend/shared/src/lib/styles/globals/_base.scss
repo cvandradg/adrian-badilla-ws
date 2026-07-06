@@ -6,34 +6,6 @@
 * {
   margin: 0;
   padding: 0;
-  scrollbar-width: none; // Firefox
-  -ms-overflow-style: none; // IE/Edge
-
-  &::-webkit-scrollbar {
-    display: none; // Chrome/Safari/Opera
-  }
-}
-
-html {
-  --app-canvas-top: #14283b;
-  --app-canvas-bottom: #04090f;
-  --app-surface: rgba(9, 18, 29, 0.78);
-  --app-surface-strong: rgba(7, 14, 23, 0.92);
-  --app-surface-soft: rgba(244, 250, 255, 0.045);
-  --app-border: rgba(132, 165, 188, 0.18);
-  --app-border-strong: rgba(132, 165, 188, 0.28);
-  --app-text: #edf5fa;
-  --app-text-muted: rgba(237, 245, 250, 0.72);
-  --app-text-soft: rgba(237, 245, 250, 0.56);
-  --app-accent: #8ac8d4;
-  --app-accent-strong: #3da5c2;
-  --app-accent-soft: rgba(138, 200, 212, 0.16);
-  --app-accent-glow: rgba(138, 200, 212, 0.22);
-  --app-shadow: 0 24px 64px rgba(0, 0, 0, 0.42);
-  --app-shadow-soft: 0 16px 36px rgba(0, 0, 0, 0.3);
-  --app-font-scale: 1;
-  color-scheme: dark;
-  background-color: var(--app-canvas-bottom);
 }
 
 html,
@@ -41,80 +13,37 @@ body {
   // Establishes the default app chrome so feature styles can assume a dark base surface.
   width: 100%;
   height: 100%;
-  overflow-x: hidden;
-  font-family: 'Google Sans Flex', Roboto, Avenir, Helvetica, Arial, sans-serif;
-  font-size: calc(1rem * var(--app-font-scale, 1));
-  color: var(--app-text);
-  background: radial-gradient(
-      circle at top,
-      rgba(97, 148, 182, 0.2),
-      transparent 32%
-    ),
-    radial-gradient(
-      circle at 80% 18%,
-      rgba(61, 165, 194, 0.16),
-      transparent 24%
-    ),
-    linear-gradient(
-        180deg,
-        var(--app-canvas-top),
-        #0a1520 44%,
-        var(--app-canvas-bottom)
-      )
-      no-repeat fixed;
+  // `clip` (not `hidden`) prevents horizontal scrollbars without turning the
+  // document into a scroll container — required so `position: sticky` pinned
+  // scenes (hero, about, gallery) anchor against the viewport scroll.
+  overflow-x: clip;
+  font-family: tokens.$font-primary;
+  color: tokens.$color-neutral-100;
+  // Dark by default so the first paint (before Angular boots the landing) is a
+  // neutral dark surface that blends into the landing's loader — no flash of the
+  // purple "AB" chrome image on refresh. The chrome image is opt-in per route.
+  background-color: tokens.$app-background-color;
+  background-position: center center;
+  background-repeat: repeat;
+  background-size: tokens.$app-background-size;
 }
 
-/* ── Tap / Focus highlight removal ────────────────────────────────────────── */
-/* Removes browser-default blue tap flash on mobile without breaking keyboard a11y. */
-*,
-*::before,
-*::after {
-  -webkit-tap-highlight-color: transparent;
+// The purple "AB" backdrop is the chrome for the in-app routes (auth, dashboard).
+// AppComponent toggles `app-chrome` on <body> when those routes are active, so the
+// public landing keeps a pure dark surface and never flashes the image on load.
+body.app-chrome {
+  background-image: tokens.$app-background-image;
 }
 
-a,
-button,
-[role='button'],
-[tabindex] {
-  outline: none;
+// Smooth in-page navigation for anchor links (landing nav/footer).
+html {
+  scroll-behavior: smooth;
+}
 
-  &:focus {
-    outline: none;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
-
-  &:focus-visible {
-    outline: 2px solid rgba(138, 200, 212, 0.6);
-    outline-offset: 2px;
-  }
-
-  &:active {
-    -webkit-tap-highlight-color: transparent;
-  }
-}
-
-/* Remove browser selection highlight on interactive elements */
-button,
-a,
-[role='button'] {
-  &::selection {
-    background: transparent;
-  }
-}
-
-/* Angular CDK focus states */
-.cdk-focused,
-.cdk-program-focused,
-.cdk-mouse-focused {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-/* PrimeNG focus states */
-.p-component:focus,
-.p-button:focus,
-.p-element:focus {
-  outline: none !important;
-  box-shadow: none !important;
 }
 
 /* Scrollbar: global by design because browser pseudo-elements cannot be scoped usefully. */

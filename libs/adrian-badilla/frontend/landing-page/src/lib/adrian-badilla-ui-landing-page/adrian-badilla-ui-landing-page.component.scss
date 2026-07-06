@@ -1,6 +1,0 @@
-@use 'mixins' as mixins;
-
-.page {
-  @include mixins.flex-column;
-  min-height: 100vh;
-}
