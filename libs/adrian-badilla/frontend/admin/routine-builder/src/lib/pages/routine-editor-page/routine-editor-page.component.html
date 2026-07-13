@@ -1,0 +1,635 @@
+<p-toast position="top-right" />
+
+<div class="editor" [class.editor--has-selection]="selectedExercise() !== null">
+  <!-- ── Header ──────────────────────────────────────────────────────────── -->
+  <header class="editor__header">
+    <div class="header-start">
+      <p-button
+        icon="pi pi-arrow-left"
+        [text]="true"
+        severity="secondary"
+        size="small"
+        styleClass="header-back-btn"
+        (onClick)="goBack()"
+      />
+      <div class="header-info">
+        <span class="header-name">{{ routineName() }}</span>
+        @if (isDirty()) {
+        <span class="header-dirty">Sin guardar</span>
+        }
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <p-button
+        icon="pi pi-plus"
+        label="Día"
+        [outlined]="true"
+        severity="secondary"
+        size="small"
+        [disabled]="days().length >= 7"
+        (onClick)="addDay()"
+      />
+      <p-button
+        icon="pi pi-check"
+        label="Guardar"
+        severity="contrast"
+        [loading]="store.saving()"
+        [disabled]="!isDirty()"
+        (onClick)="save()"
+      />
+    </div>
+  </header>
+
+  <!-- ── Empty days state ──────────────────────────────────────────────────── -->
+  @if (days().length === 0) {
+  <div class="editor__empty">
+    <i class="pi pi-calendar-plus empty-icon"></i>
+    <p class="empty-title">Sin días configurados</p>
+    <p class="empty-sub">
+      Agrega días de entrenamiento para empezar a construir la rutina.
+    </p>
+    <p-button
+      label="Agregar primer día"
+      icon="pi pi-plus"
+      severity="contrast"
+      (onClick)="addDay()"
+    />
+  </div>
+
+  } @else {
+
+  <!-- ── Desktop sidebar (day list) ─── hidden on mobile via CSS ─────────── -->
+  <aside class="editor__sidebar" aria-label="Lista de días">
+    <div class="sidebar-header">
+      <span class="sidebar-title">Días</span>
+      <p-button
+        icon="pi pi-plus"
+        pTooltip="Agregar día"
+        tooltipPosition="right"
+        [text]="true"
+        severity="secondary"
+        size="small"
+        [disabled]="days().length >= 7"
+        (onClick)="addDay()"
+      />
+    </div>
+
+    <nav class="sidebar-days">
+      @for (day of days(); track day.dayId; let i = $index) {
+      <button
+        type="button"
+        class="sidebar-day"
+        [class.sidebar-day--active]="activeTab() === i"
+        (click)="activeTab.set(i); clearSelection()"
+      >
+        <div class="sidebar-day__icon">
+          <i class="pi pi-sun"></i>
+        </div>
+        <div class="sidebar-day__info">
+          <span class="sidebar-day__name">{{ day.name }}</span>
+          <span class="sidebar-day__count">
+            {{ day.exercises.length }} ejercicio{{
+              day.exercises.length !== 1 ? 's' : ''
+            }}
+          </span>
+        </div>
+        <div
+          class="sidebar-day__actions"
+          (click)="$event.stopPropagation()"
+          (keydown)="$event.stopPropagation()"
+        >
+          <p-button
+            icon="pi pi-angle-up"
+            [text]="true"
+            severity="secondary"
+            size="small"
+            [disabled]="i === 0"
+            (onClick)="moveDayLeft(i)"
+          />
+          <p-button
+            icon="pi pi-angle-down"
+            [text]="true"
+            severity="secondary"
+            size="small"
+            [disabled]="i === days().length - 1"
+            (onClick)="moveDayRight(i)"
+          />
+          <p-button
+            icon="pi pi-trash"
+            [text]="true"
+            severity="danger"
+            size="small"
+            (onClick)="removeDay(day.dayId)"
+          />
+        </div>
+      </button>
+      }
+    </nav>
+  </aside>
+
+  <!-- ── Day tabs (mobile) + main panel (desktop) ──────────────────────── -->
+  <p-tabs
+    [value]="activeTab()"
+    (valueChange)="activeTab.set($any($event))"
+    scrollable
+    styleClass="editor__tabs"
+  >
+    <p-tablist class="rb-days-tablist">
+      @for (day of days(); track day.dayId; let i = $index) {
+      <p-tab [value]="i">
+        <span class="tab-day-name">{{ day.name }}</span>
+        @if (day.exercises.length > 0) {
+        <span class="tab-count">{{ day.exercises.length }}</span>
+        }
+      </p-tab>
+      }
+    </p-tablist>
+
+    <p-tabpanels>
+      @for (day of days(); track day.dayId; let i = $index) {
+      <p-tabpanel [value]="i">
+        <div class="day-panel">
+          <!-- ── Day header ──────────────────────────────────────────── -->
+          <div class="day-header">
+            <div class="day-header__left">
+              <i class="pi pi-sun day-icon" aria-hidden="true"></i>
+              <div class="day-header__text">
+                <label [for]="'day-name-' + day.dayId" class="sr-only"
+                  >Nombre del día</label
+                >
+                <input
+                  [id]="'day-name-' + day.dayId"
+                  type="text"
+                  pInputText
+                  [value]="day.name"
+                  (change)="renameDay(day.dayId, $any($event.target).value)"
+                  placeholder="Nombre del día"
+                  class="day-name-input"
+                />
+                <span class="day-meta">
+                  {{ day.exercises.length }} ejercicio{{
+                    day.exercises.length !== 1 ? 's' : ''
+                  }}
+                </span>
+              </div>
+            </div>
+            <div class="day-header__controls">
+              <p-button
+                icon="pi pi-angle-left"
+                pTooltip="Mover izquierda"
+                tooltipPosition="top"
+                [text]="true"
+                severity="secondary"
+                size="small"
+                [disabled]="i === 0"
+                (onClick)="moveDayLeft(i)"
+              />
+              <p-button
+                icon="pi pi-angle-right"
+                pTooltip="Mover derecha"
+                tooltipPosition="top"
+                [text]="true"
+                severity="secondary"
+                size="small"
+                [disabled]="i === days().length - 1"
+                (onClick)="moveDayRight(i)"
+              />
+              <p-button
+                icon="pi pi-trash"
+                pTooltip="Eliminar día"
+                tooltipPosition="top"
+                [text]="true"
+                severity="danger"
+                size="small"
+                (onClick)="removeDay(day.dayId)"
+              />
+            </div>
+          </div>
+
+          <!-- ── Exercise list ───────────────────────────────────────── -->
+          <div class="exercise-list">
+            @if (day.exercises.length === 0) {
+            <div class="exercise-list__empty">
+              <i class="pi pi-dumbbell"></i>
+              <span>Sin ejercicios. Agrega el primero.</span>
+            </div>
+            } @for (ex of day.exercises; track ex.exId; let j = $index) {
+            <article
+              class="ex-card"
+              [class.ex-card--selected]="selectedExId() === ex.exId"
+              (click)="selectExercise(day.dayId, ex.exId)"
+              (keyup.enter)="selectExercise(day.dayId, ex.exId)"
+            >
+              <!-- ── Card header: thumbnail + info + actions ───────── -->
+              <div class="ex-card__header">
+                <div class="ex-thumb-wrap">
+                  <span class="ex-num">{{ j + 1 }}</span>
+                  @if (getExerciseThumbnail(ex.exerciseId)) {
+                  <img
+                    [src]="getExerciseThumbnail(ex.exerciseId)"
+                    [alt]="getExerciseName(ex.exerciseId)"
+                    loading="lazy"
+                    class="ex-thumb-img"
+                  />
+                  } @else {
+                  <div class="ex-thumb-placeholder">
+                    <i class="pi pi-bolt" aria-hidden="true"></i>
+                  </div>
+                  }
+                </div>
+
+                <div class="ex-identity">
+                  <span class="ex-name">{{
+                    getExerciseName(ex.exerciseId)
+                  }}</span>
+                  @if (getExerciseMuscles(ex.exerciseId)) {
+                  <span class="ex-muscle-tag">
+                    <i class="pi pi-bolt" aria-hidden="true"></i>
+                    {{ getExerciseMuscles(ex.exerciseId) }}
+                  </span>
+                  }
+                </div>
+
+                <div class="ex-actions">
+                  <p-button
+                    icon="pi pi-angle-up"
+                    pTooltip="Mover arriba"
+                    tooltipPosition="top"
+                    [text]="true"
+                    severity="secondary"
+                    size="small"
+                    [disabled]="j === 0"
+                    (onClick)="moveExerciseUp(day.dayId, ex.exId)"
+                  />
+                  <p-button
+                    icon="pi pi-angle-down"
+                    pTooltip="Mover abajo"
+                    tooltipPosition="top"
+                    [text]="true"
+                    severity="secondary"
+                    size="small"
+                    [disabled]="j === day.exercises.length - 1"
+                    (onClick)="moveExerciseDown(day.dayId, ex.exId)"
+                  />
+                  <p-button
+                    icon="pi pi-trash"
+                    pTooltip="Quitar ejercicio"
+                    tooltipPosition="top"
+                    [text]="true"
+                    severity="danger"
+                    size="small"
+                    (onClick)="removeExercise(day.dayId, ex.exId)"
+                  />
+                </div>
+              </div>
+
+              <!-- ── Stats grid ────────────────────────────────────── -->
+              <div class="ex-stats">
+                <div class="stat-field">
+                  <label [for]="'sets-' + ex.exId" class="stat-label"
+                    >Series</label
+                  >
+                  <p-inputnumber
+                    [inputId]="'sets-' + ex.exId"
+                    [ngModel]="ex.sets"
+                    (ngModelChange)="
+                      updateExerciseField(day.dayId, ex.exId, 'sets', $event)
+                    "
+                    [min]="1"
+                    [max]="20"
+                    [showButtons]="true"
+                    buttonLayout="stacked"
+                    styleClass="stat-input"
+                  />
+                </div>
+                <div class="stat-field">
+                  <label [for]="'reps-min-' + ex.exId" class="stat-label"
+                    >Reps mín</label
+                  >
+                  <p-inputnumber
+                    [inputId]="'reps-min-' + ex.exId"
+                    [ngModel]="ex.repsMin"
+                    (ngModelChange)="
+                      updateExerciseField(day.dayId, ex.exId, 'repsMin', $event)
+                    "
+                    [min]="1"
+                    [max]="100"
+                    styleClass="stat-input"
+                  />
+                </div>
+                <div class="stat-field">
+                  <label [for]="'reps-max-' + ex.exId" class="stat-label"
+                    >Reps máx</label
+                  >
+                  <p-inputnumber
+                    [inputId]="'reps-max-' + ex.exId"
+                    [ngModel]="ex.repsMax"
+                    (ngModelChange)="
+                      updateExerciseField(day.dayId, ex.exId, 'repsMax', $event)
+                    "
+                    [min]="1"
+                    [max]="100"
+                    styleClass="stat-input"
+                  />
+                </div>
+                <div class="stat-field">
+                  <label [for]="'rest-' + ex.exId" class="stat-label"
+                    >Descanso (s)</label
+                  >
+                  <p-inputnumber
+                    [inputId]="'rest-' + ex.exId"
+                    [ngModel]="ex.restSeconds"
+                    (ngModelChange)="
+                      updateExerciseField(
+                        day.dayId,
+                        ex.exId,
+                        'restSeconds',
+                        $event
+                      )
+                    "
+                    [min]="0"
+                    [max]="600"
+                    [step]="15"
+                    styleClass="stat-input"
+                  />
+                </div>
+                <div class="stat-field">
+                  <label [for]="'rir-' + ex.exId" class="stat-label">RIR</label>
+                  <p-inputnumber
+                    [inputId]="'rir-' + ex.exId"
+                    [ngModel]="ex.rir"
+                    (ngModelChange)="
+                      updateExerciseField(day.dayId, ex.exId, 'rir', $event)
+                    "
+                    [min]="0"
+                    [max]="10"
+                    styleClass="stat-input"
+                  />
+                </div>
+                <div class="stat-field">
+                  <label [for]="'tempo-' + ex.exId" class="stat-label"
+                    >Tempo</label
+                  >
+                  <input
+                    [id]="'tempo-' + ex.exId"
+                    type="text"
+                    pInputText
+                    [ngModel]="ex.tempo"
+                    (ngModelChange)="
+                      updateExerciseField(day.dayId, ex.exId, 'tempo', $event)
+                    "
+                    placeholder="2-0-2-0"
+                    class="stat-text-input"
+                  />
+                </div>
+              </div>
+
+              <!-- ── Notes ─────────────────────────────────────────── -->
+              <div class="ex-notes">
+                <label [for]="'notes-' + ex.exId" class="stat-label"
+                  >Notas</label
+                >
+                <textarea
+                  [id]="'notes-' + ex.exId"
+                  pTextarea
+                  [ngModel]="ex.notes"
+                  (ngModelChange)="
+                    updateExerciseField(day.dayId, ex.exId, 'notes', $event)
+                  "
+                  placeholder="Indicaciones adicionales…"
+                  [rows]="2"
+                  class="notes-input"
+                ></textarea>
+              </div>
+            </article>
+            }
+
+            <!-- ── Add exercise button ─────────────────────────────── -->
+            <button
+              type="button"
+              class="add-ex-btn"
+              (click)="openPicker(day.dayId)"
+            >
+              <i class="pi pi-plus-circle" aria-hidden="true"></i>
+              <span>Agregar ejercicio</span>
+            </button>
+          </div>
+        </div>
+      </p-tabpanel>
+      }
+    </p-tabpanels>
+  </p-tabs>
+
+  <!-- ── Desktop properties panel ─── hidden on mobile via CSS ──────────── -->
+  <aside class="editor__properties" aria-label="Propiedades del ejercicio">
+    @if (selectedExercise(); as ex) { @let dayId = selectedDayId()!;
+
+    <div class="props-header">
+      <div class="props-thumb">
+        @if (getExerciseThumbnail(ex.exerciseId)) {
+        <img
+          [src]="getExerciseThumbnail(ex.exerciseId)"
+          [alt]="getExerciseName(ex.exerciseId)"
+          class="props-thumb-img"
+        />
+        } @else {
+        <div class="props-thumb-placeholder">
+          <i class="pi pi-bolt" aria-hidden="true"></i>
+        </div>
+        }
+      </div>
+      <div class="props-identity">
+        <span class="props-name">{{ getExerciseName(ex.exerciseId) }}</span>
+        @if (getExerciseMuscles(ex.exerciseId)) {
+        <span class="props-muscle">
+          <i class="pi pi-bolt" aria-hidden="true"></i>
+          {{ getExerciseMuscles(ex.exerciseId) }}
+        </span>
+        }
+      </div>
+      <p-button
+        icon="pi pi-times"
+        pTooltip="Cerrar"
+        [text]="true"
+        severity="secondary"
+        size="small"
+        (onClick)="clearSelection()"
+      />
+    </div>
+
+    <div class="props-section">
+      <h3 class="props-section-title">Configuración</h3>
+      <div class="props-grid">
+        <div class="props-field props-field--full">
+          <label [for]="'p-sets-' + ex.exId" class="props-label">Series</label>
+          <p-inputnumber
+            [inputId]="'p-sets-' + ex.exId"
+            [ngModel]="ex.sets"
+            (ngModelChange)="
+              updateExerciseField(dayId, ex.exId, 'sets', $event)
+            "
+            [min]="1"
+            [max]="20"
+            [showButtons]="true"
+            buttonLayout="horizontal"
+            decrementButtonIcon="pi pi-minus"
+            incrementButtonIcon="pi pi-plus"
+            styleClass="props-input"
+          />
+        </div>
+        <div class="props-field">
+          <label [for]="'p-rmin-' + ex.exId" class="props-label"
+            >Reps mín</label
+          >
+          <p-inputnumber
+            [inputId]="'p-rmin-' + ex.exId"
+            [ngModel]="ex.repsMin"
+            (ngModelChange)="
+              updateExerciseField(dayId, ex.exId, 'repsMin', $event)
+            "
+            [min]="1"
+            [max]="100"
+            styleClass="props-input"
+          />
+        </div>
+        <div class="props-field">
+          <label [for]="'p-rmax-' + ex.exId" class="props-label"
+            >Reps máx</label
+          >
+          <p-inputnumber
+            [inputId]="'p-rmax-' + ex.exId"
+            [ngModel]="ex.repsMax"
+            (ngModelChange)="
+              updateExerciseField(dayId, ex.exId, 'repsMax', $event)
+            "
+            [min]="1"
+            [max]="100"
+            styleClass="props-input"
+          />
+        </div>
+        <div class="props-field">
+          <label [for]="'p-rest-' + ex.exId" class="props-label"
+            >Descanso (s)</label
+          >
+          <p-inputnumber
+            [inputId]="'p-rest-' + ex.exId"
+            [ngModel]="ex.restSeconds"
+            (ngModelChange)="
+              updateExerciseField(dayId, ex.exId, 'restSeconds', $event)
+            "
+            [min]="0"
+            [max]="600"
+            [step]="15"
+            styleClass="props-input"
+          />
+        </div>
+        <div class="props-field">
+          <label [for]="'p-rir-' + ex.exId" class="props-label">RIR</label>
+          <p-inputnumber
+            [inputId]="'p-rir-' + ex.exId"
+            [ngModel]="ex.rir"
+            (ngModelChange)="updateExerciseField(dayId, ex.exId, 'rir', $event)"
+            [min]="0"
+            [max]="10"
+            styleClass="props-input"
+          />
+        </div>
+        <div class="props-field props-field--full">
+          <label [for]="'p-tempo-' + ex.exId" class="props-label">Tempo</label>
+          <input
+            [id]="'p-tempo-' + ex.exId"
+            type="text"
+            pInputText
+            [ngModel]="ex.tempo"
+            (ngModelChange)="
+              updateExerciseField(dayId, ex.exId, 'tempo', $event)
+            "
+            placeholder="2-0-2-0"
+            class="props-text-input"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="props-section">
+      <h3 class="props-section-title">Notas</h3>
+      <textarea
+        [id]="'p-notes-' + ex.exId"
+        pTextarea
+        [ngModel]="ex.notes"
+        (ngModelChange)="updateExerciseField(dayId, ex.exId, 'notes', $event)"
+        placeholder="Indicaciones adicionales…"
+        [rows]="4"
+        class="props-notes"
+      ></textarea>
+    </div>
+
+    }
+  </aside>
+
+  }
+</div>
+
+<!-- ── Exercise Picker Dialog ────────────────────────────────────────────── -->
+<p-dialog
+  header="Agregar Ejercicio"
+  [visible]="pickerVisible()"
+  (visibleChange)="pickerVisible.set($event)"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  appendTo="body"
+  [style]="{
+    width: 'min(720px, calc(100vw - 48px))',
+    maxHeight: 'calc(100vh - 96px)',
+    height: 'auto'
+  }"
+  [contentStyle]="{ padding: '0', overflow: 'hidden' }"
+  styleClass="exercise-picker-dialog"
+>
+  <div class="picker">
+    <div class="picker__search">
+      <label for="picker-search" class="sr-only">Buscar ejercicio</label>
+      <i class="pi pi-search picker-search-icon" aria-hidden="true"></i>
+      <input
+        id="picker-search"
+        type="text"
+        pInputText
+        class="picker-search-input"
+        placeholder="Buscar por nombre o músculo…"
+        [ngModel]="pickerSearch()"
+        (ngModelChange)="pickerSearch.set($event)"
+      />
+    </div>
+
+    <div class="picker__list">
+      @if (pickerExercises().length === 0) {
+      <div class="picker-empty">
+        <i class="pi pi-search-minus"></i>
+        <span>Sin resultados</span>
+      </div>
+      } @for (ex of pickerExercises(); track ex.id) {
+      <button type="button" class="picker-item" (click)="addExercise(ex.id)">
+        <div class="picker-item__thumb">
+          @if (ex.thumbnailUrl) {
+          <img [src]="ex.thumbnailUrl" [alt]="ex.name" loading="lazy" />
+          } @else {
+          <i class="pi pi-image"></i>
+          }
+        </div>
+        <div class="picker-item__info">
+          <span class="picker-name">{{ ex.name }}</span>
+          @if (ex.primaryMuscles.length) {
+          <span class="picker-muscles">
+            <i class="pi pi-bolt"></i>
+            {{ ex.primaryMuscles.slice(0, 2).join(', ') }}
+          </span>
+          }
+        </div>
+        <i class="pi pi-plus picker-item__add"></i>
+      </button>
+      }
+    </div>
+  </div>
+</p-dialog>

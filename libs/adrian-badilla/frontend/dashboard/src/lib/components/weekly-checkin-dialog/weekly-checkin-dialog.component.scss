@@ -1,0 +1,346 @@
+:host ::ng-deep .p-dialog-mask:has(.weekly-checkin-dialog) {
+  padding: 1rem;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+:host ::ng-deep .weekly-checkin-dialog.p-dialog {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 2rem);
+  top: 0 !important;
+}
+
+:host ::ng-deep .weekly-checkin-dialog.p-dialog .p-dialog-header,
+:host ::ng-deep .weekly-checkin-dialog.p-dialog .p-dialog-content {
+  flex-shrink: 0;
+}
+
+:host ::ng-deep .weekly-checkin-dialog.p-dialog .p-dialog-content {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  max-height: calc(100dvh - 8.5rem);
+  padding-bottom: 1rem;
+}
+
+.weekly-checkin-dialog {
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h2 {
+      color: rgba(241, 245, 249, 0.95);
+      font-size: 1.15rem;
+    }
+
+    p {
+      margin-top: 0.35rem;
+      color: rgba(241, 245, 249, 0.55);
+      line-height: 1.5;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding: 1rem;
+    border-radius: 16px;
+    background: linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.04),
+      rgba(255, 255, 255, 0.018)
+    );
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  &__section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h3 {
+      color: rgba(241, 245, 249, 0.92);
+      font-size: 0.95rem;
+    }
+
+    p {
+      color: rgba(241, 245, 249, 0.55);
+      line-height: 1.5;
+    }
+  }
+
+  &__consent {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    border: 1px solid rgba(167, 139, 250, 0.25);
+    background: rgba(88, 28, 135, 0.12);
+    color: rgba(241, 245, 249, 0.74);
+
+    p {
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    label {
+      color: rgba(241, 245, 249, 0.9);
+      font-size: 0.9rem;
+    }
+  }
+
+  &__photo-grid,
+  &__form-grid {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  &__form-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  &__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  &__meta,
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__meta {
+    flex: 1 1 320px;
+    align-items: flex-start;
+    flex-direction: column;
+    color: rgba(241, 245, 249, 0.58);
+  }
+
+  &__hint {
+    color: rgba(251, 191, 36, 0.9);
+    line-height: 1.5;
+  }
+
+  &__error {
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    background: rgba(248, 113, 113, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.25);
+    color: #fecaca;
+  }
+
+  &__loading {
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    background: rgba(96, 165, 250, 0.12);
+    border: 1px solid rgba(96, 165, 250, 0.24);
+    color: rgba(219, 234, 254, 0.95);
+    line-height: 1.5;
+  }
+}
+
+.photo-card,
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.photo-card {
+  min-width: 0;
+  padding: 0.9rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+
+  &__header,
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  &__header {
+    min-width: 0;
+  }
+
+  &__status {
+    color: #a7f3d0;
+    font-size: 0.75rem;
+  }
+
+  &__status--muted {
+    color: rgba(241, 245, 249, 0.45);
+  }
+
+  &__error {
+    margin: 0;
+    color: #fecaca;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  &__preview {
+    position: relative;
+    inline-size: 100%;
+    min-inline-size: 0;
+    block-size: 12rem;
+    min-block-size: 12rem;
+    max-block-size: 12rem;
+    overflow: hidden;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &__image,
+  &__placeholder {
+    width: 100%;
+    height: 12rem;
+    border-radius: 12px;
+  }
+
+  &__image {
+    display: block;
+    max-width: 100%;
+    object-fit: cover;
+  }
+
+  &__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(241, 245, 249, 0.42);
+  }
+}
+
+:host ::ng-deep .photo-card__image-shell {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  min-inline-size: 0;
+}
+
+:host ::ng-deep .photo-card__image-shell .p-image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+:host ::ng-deep .photo-card__image-shell .p-image-preview-container {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+:host ::ng-deep .photo-card__image-shell .p-image-preview-indicator-container {
+  inset: auto 0 0 auto;
+}
+
+:host ::ng-deep .photo-card__image-shell img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  max-block-size: 12rem;
+  object-fit: cover;
+}
+
+.field {
+  span {
+    color: rgba(241, 245, 249, 0.62);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  &__hint {
+    color: rgba(191, 219, 254, 0.66);
+    font-size: 0.75rem;
+    line-height: 1.45;
+  }
+}
+
+:host ::ng-deep .field .p-inputnumber,
+:host ::ng-deep .field .p-inputnumber-input,
+:host ::ng-deep .field textarea.p-inputtextarea {
+  width: 100%;
+}
+
+:host ::ng-deep .field .p-inputnumber-input,
+:host ::ng-deep textarea.p-inputtextarea {
+  min-height: 2.8rem;
+  border-radius: 12px;
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(15, 23, 42, 0.56);
+  color: rgba(248, 250, 252, 0.96);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+:host ::ng-deep .field .p-inputnumber-input::placeholder,
+:host ::ng-deep textarea.p-inputtextarea::placeholder {
+  color: rgba(148, 163, 184, 0.72);
+}
+
+:host ::ng-deep .field .p-inputnumber-input:focus,
+:host ::ng-deep textarea.p-inputtextarea:focus {
+  border-color: rgba(167, 139, 250, 0.45);
+  box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.18);
+}
+
+@media (min-width: 768px) {
+  .weekly-checkin-dialog__photo-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  :host ::ng-deep .p-dialog-mask:has(.weekly-checkin-dialog) {
+    padding: 0.5rem;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+  }
+
+  :host ::ng-deep .weekly-checkin-dialog.p-dialog {
+    max-height: calc(100dvh - 1rem);
+  }
+
+  :host ::ng-deep .weekly-checkin-dialog.p-dialog .p-dialog-content {
+    max-height: calc(100dvh - 7.5rem);
+  }
+
+  .weekly-checkin-dialog__content {
+    gap: 0.85rem;
+  }
+}

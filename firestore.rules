@@ -8,10 +8,38 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == uid;
     }
 
+    function isValidWeeklyProgressStatus(status) {
+      return status in ['draft', 'uploading', 'complete', 'failed'];
+    }
+
+    function isValidWeeklyProgressSource(source) {
+      return source in ['weekly_checkin', 'legacy_monthly', 'demo'];
+    }
+
+    function hasOptionalWeeklyProgressSource() {
+      return !('source' in request.resource.data)
+        || request.resource.data.source == null
+        || isValidWeeklyProgressSource(request.resource.data.source);
+    }
+
+    function hasOptionalWeeklyProgressWeekId(weekId) {
+      return !('weekId' in request.resource.data)
+        || request.resource.data.weekId == null
+        || request.resource.data.weekId == weekId;
+    }
+
+    function hasOptionalWeeklyProgressUserId(uid) {
+      return !('userId' in request.resource.data)
+        || request.resource.data.userId == null
+        || request.resource.data.userId == uid;
+    }
+
     // ── users/{uid} ───────────────────────────────────────────────────────────
     match /users/{uid} {
 
-      allow read: if isOwner(uid);
+      // Admin/client diagnostics currently reads user documents directly from
+      // the frontend using an arbitrary uid. Keep writes owner-scoped.
+      allow read: if request.auth != null;
 
       // Require mandatory profile fields on create.
       // Enforce that isActive is true on creation.
@@ -72,8 +100,29 @@ service cloud.firestore {
       allow read, write: if isOwner(uid);
     }
 
+    match /users/{uid}/progress-checkins/{weekId} {
+      allow read, delete: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && hasOptionalWeeklyProgressUserId(uid)
+        && isValidWeeklyProgressStatus(request.resource.data.status)
+        && hasOptionalWeeklyProgressSource()
+        && hasOptionalWeeklyProgressWeekId(weekId);
+    }
+
+    match /users/{uid}/privacy-consents/{consentId} {
+      allow read, create, update, delete: if isOwner(uid);
+    }
+
     // ── exercise-library (global admin collection) ───────────────────────────
     match /exercise-library/{exerciseId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    // ── routine-library (global admin collection) ────────────────────────────
+    // Used by admin Routine Builder and AI Diagnostics from the client app.
+    match /routine-library/{routineId} {
       allow read: if request.auth != null;
       allow create, update: if request.auth != null;
       allow delete: if request.auth != null;

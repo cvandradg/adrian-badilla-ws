@@ -1,0 +1,253 @@
+@use 'settings/tokens' as t;
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.routine-builder {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(0.75rem, 3vw, 1.5rem);
+  min-height: 100%;
+
+  &__toolbar {
+    background: t.$dashboard-panel-surface;
+    border: 1px solid t.$dashboard-border-subtle;
+    border-radius: 0.75rem;
+    backdrop-filter: blur(t.$dashboard-content-blur);
+    -webkit-backdrop-filter: blur(t.$dashboard-content-blur);
+    padding: 0.75rem 1rem;
+
+    .toolbar-start {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      font-weight: 700;
+      color: t.$dashboard-text-primary;
+
+      &__icon {
+        color: t.$dashboard-glow-outer;
+      }
+    }
+
+    .toolbar-count {
+      font-size: 0.75rem;
+      color: t.$dashboard-text-muted;
+      background: t.$dashboard-hover-surface;
+      border: 1px solid t.$dashboard-border-subtle;
+      border-radius: 999px;
+      padding: 0.2rem 0.6rem;
+    }
+  }
+
+  &__search {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .search-icon {
+      position: absolute;
+      left: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: t.$ab-metal-lo;
+      pointer-events: none;
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+
+    .search-input {
+      width: 100%;
+      padding-left: 2.5rem;
+      background: t.$dashboard-panel-surface;
+      border: 1px solid t.$dashboard-border-subtle;
+      border-radius: 0.5rem;
+      color: t.$dashboard-text-primary;
+      height: 2.75rem;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+
+      &::placeholder {
+        color: t.$ab-metal-lo;
+      }
+      &:focus {
+        outline: none;
+        border-color: t.$dashboard-glow-outer;
+      }
+    }
+  }
+
+  &__skeleton-grid,
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: 0.75rem;
+
+    @media (min-width: 1200px) {
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1rem;
+    }
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 4rem 1rem;
+    text-align: center;
+
+    .empty-icon {
+      font-size: 3rem;
+      color: t.$ab-metal-lo;
+    }
+    .empty-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: t.$dashboard-text-primary;
+    }
+    .empty-sub {
+      font-size: 0.875rem;
+      color: t.$dashboard-text-muted;
+      max-width: 28ch;
+    }
+  }
+
+  // ── Desktop: join toolbar + search into one card (mirrors Exercise Library) ──
+  @media (min-width: 1200px) {
+    gap: 0;
+
+    &__toolbar {
+      border-radius: 0.75rem 0.75rem 0 0;
+      border-bottom: none;
+    }
+
+    &__search {
+      border-radius: 0 0 0.75rem 0.75rem;
+      background: t.$dashboard-panel-surface;
+      border: 1px solid t.$dashboard-border-subtle;
+      backdrop-filter: blur(t.$dashboard-content-blur);
+      -webkit-backdrop-filter: blur(t.$dashboard-content-blur);
+      padding: 0.625rem 1rem;
+      border-top: none;
+      margin-bottom: 1.25rem;
+
+      // Compensate for container padding-left so icon stays inside the input
+      .search-icon {
+        left: calc(1rem + 0.875rem);
+      }
+    }
+
+    &__empty {
+      border: 1px solid t.$dashboard-border-subtle;
+      border-top: none;
+      border-radius: 0 0 0.75rem 0.75rem;
+      background: t.$dashboard-panel-surface;
+    }
+  }
+}
+
+.routine-card {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: t.$dashboard-panel-surface;
+  border: 1px solid t.$dashboard-border-subtle;
+  border-radius: 0.75rem;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:hover {
+    border-color: t.$dashboard-border-strong;
+    background: t.$dashboard-hover-surface;
+  }
+  &--skeleton {
+    pointer-events: none;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+
+    .routine-name {
+      font-size: 0.925rem;
+      font-weight: 700;
+      color: t.$dashboard-text-primary;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .routine-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+
+      .meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.75rem;
+        color: t.$dashboard-text-muted;
+      }
+    }
+
+    .routine-description {
+      font-size: 0.78rem;
+      color: t.$ab-metal-lo;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+  }
+
+  &__status {
+    flex-shrink: 0;
+    padding-top: 0.15rem;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.15rem;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .routine-card {
+    grid-template-columns: 1fr;
+
+    &__status {
+      order: 2;
+    }
+    &__actions {
+      justify-content: flex-end;
+      border-top: 1px solid t.$dashboard-border-subtle;
+      padding-top: 0.5rem;
+    }
+  }
+}

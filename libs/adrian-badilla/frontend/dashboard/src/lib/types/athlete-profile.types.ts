@@ -1,61 +1,96 @@
 import type { Timestamp } from 'firebase/firestore';
+import {
+  EQUIPMENT_CATALOG,
+  GOAL_CATALOG,
+  INJURY_AREA_CATALOG,
+  MEAL_SCHEDULE_CATALOG,
+  MEDICAL_CONDITION_CATALOG,
+  MUSCLE_CATALOG,
+  PREFERRED_SCHEDULE_CATALOG,
+  SEVERITY_CATALOG,
+  SPORT_CATALOG,
+  TRAINING_CONSISTENCY_CATALOG,
+  TRAINING_EXPERIENCE_CATALOG,
+  TRAINING_LOCATION_CATALOG,
+  TRAINING_STYLE_PREFERENCE_CATALOG,
+  TRAINING_TYPE_CATALOG,
+  WEEK_DAY_CATALOG,
+  type EquipmentId,
+  type GoalId,
+  type InjuryAreaId,
+  type MealScheduleId,
+  type MedicalConditionId,
+  type MuscleId,
+  type PreferredScheduleId,
+  type SeverityId,
+  type TrainingConsistencyId,
+  type TrainingExperienceId,
+  type TrainingLocationId,
+  type TrainingStylePreferenceId,
+  type TrainingTypeId,
+  type WeekDayId,
+} from '@adrian-badilla/ai';
 
 // ─── Enums / union literals ────────────────────────────────────────────────────
 
-export type TrainingExperience = 'beginner' | 'intermediate' | 'advanced';
+export type TrainingExperience = TrainingExperienceId;
 
-export type TrainingGoal =
-  | 'lose_fat'
-  | 'gain_muscle'
-  | 'body_recomposition'
-  | 'sports_performance'
-  | 'maintain_weight';
+export type TrainingGoal = GoalId;
 
-export type TrainingConsistency = 'low' | 'medium' | 'high';
+export type TrainingConsistency = TrainingConsistencyId;
 
-export type PreferredSchedule = 'morning' | 'midday' | 'afternoon' | 'evening';
+export type PreferredSchedule = PreferredScheduleId;
 
 /** Where the user trains. Controls equipment selector visibility and AI routine filtering. */
-export type TrainingLocation = 'gym' | 'home' | 'both';
+export type TrainingLocation = TrainingLocationId;
 
 /**
  * User's preferred workout style.
  * The AI Coach uses this to structure session volume and rest periods.
  */
-export type TrainingStylePreference = 'short' | 'medium' | 'long';
+export type TrainingStylePreference = TrainingStylePreferenceId;
+export type InjuryArea = InjuryAreaId;
+export type MedicalConditionType = MedicalConditionId;
 
 /**
  * Severity levels for injuries and diseases.
  * 'severe' triggers a manual-review flag so the AI Coach defers to a human trainer.
  */
-export type InjurySeverity = 'minor' | 'moderate' | 'severe';
-export type DiseaseSeverity = 'minor' | 'moderate' | 'severe';
+export type InjurySeverity = SeverityId;
+export type DiseaseSeverity = SeverityId;
 
 export type AlcoholFrequency = 'never' | 'occasionally' | 'frequent';
 
-export type MealSlot =
-  | 'breakfast'
-  | 'mid_morning'
-  | 'lunch'
-  | 'afternoon_snack'
-  | 'dinner'
-  | 'post_workout';
+export type MealSlot = MealScheduleId;
+
+export interface AthleteProfileInjury {
+  area?: InjuryArea;
+  severity?: InjurySeverity;
+  notes: string;
+}
+
+export interface AthleteProfileCondition {
+  type?: MedicalConditionType;
+  name?: string;
+  severity?: DiseaseSeverity;
+  notes: string;
+}
 
 // ─── Sub-documents ────────────────────────────────────────────────────────────
 
 export interface AthleteProfileTraining {
   sport: string;
   trainingExperience: TrainingExperience;
-  trainingType: string;
+  trainingType: TrainingTypeId;
   goal: TrainingGoal;
   /** Days of the week the user can train. e.g. ['monday', 'wednesday', 'friday'] */
-  availableDays: string[];
+  availableDays: WeekDayId[];
   preferredSchedule: PreferredSchedule;
   /** Training session duration in minutes. */
   sessionDuration: number;
   trainingConsistency: TrainingConsistency;
   /** Available equipment identifiers. e.g. ['full_gym', 'dumbbells'] */
-  availableEquipment: string[];
+  availableEquipment: EquipmentId[];
 
   // ── AI-ready fields (all optional for backward compatibility) ─────────────────────
 
@@ -87,14 +122,14 @@ export interface AthleteProfileTraining {
    * Muscle groups to emphasize in generated routines.
    * AI Coach: increases frequency and volume for these groups.
    */
-  priorityMuscles?: string[];
+  priorityMuscles?: MuscleId[];
 
   /**
    * Muscle groups to exclude or minimize.
    * AI Coach: removes or substitutes exercises targeting these groups.
    * Useful for mild discomfort that doesn't warrant a full injury description.
    */
-  avoidMuscles?: string[];
+  avoidMuscles?: MuscleId[];
 }
 
 export interface AthleteProfileNutrition {
@@ -108,6 +143,8 @@ export interface AthleteProfileHealth {
   diseaseDescription: string;
   hasInjury: boolean;
   injuryDescription: string;
+  injuries?: AthleteProfileInjury[];
+  conditions?: AthleteProfileCondition[];
 
   // ── AI-ready fields (optional for backward compatibility) ───────────────────────
 
@@ -159,33 +196,25 @@ export interface AthleteProfileFormData {
 
 // ─── Display helpers ──────────────────────────────────────────────────────────
 
-export const TRAINING_EXPERIENCE_LABELS: Record<TrainingExperience, string> = {
-  beginner: 'Principiante',
-  intermediate: 'Intermedio',
-  advanced: 'Avanzado',
-};
+function toLabelRecord<TKey extends string>(
+  catalog: readonly { id: TKey; label: string }[]
+): Record<TKey, string> {
+  return Object.fromEntries(
+    catalog.map((item) => [item.id, item.label])
+  ) as Record<TKey, string>;
+}
 
-export const TRAINING_GOAL_LABELS: Record<TrainingGoal, string> = {
-  lose_fat: 'Bajar grasa',
-  gain_muscle: 'Ganar músculo',
-  body_recomposition: 'Recomposición corporal',
-  sports_performance: 'Rendimiento deportivo',
-  maintain_weight: 'Mantener peso',
-};
+export const TRAINING_EXPERIENCE_LABELS: Record<TrainingExperience, string> =
+  toLabelRecord(TRAINING_EXPERIENCE_CATALOG);
+
+export const TRAINING_GOAL_LABELS: Record<TrainingGoal, string> =
+  toLabelRecord(GOAL_CATALOG);
 
 export const TRAINING_CONSISTENCY_LABELS: Record<TrainingConsistency, string> =
-  {
-    low: 'Baja',
-    medium: 'Media',
-    high: 'Alta',
-  };
+  toLabelRecord(TRAINING_CONSISTENCY_CATALOG);
 
-export const PREFERRED_SCHEDULE_LABELS: Record<PreferredSchedule, string> = {
-  morning: 'Mañana',
-  midday: 'Mediodía',
-  afternoon: 'Tarde',
-  evening: 'Noche',
-};
+export const PREFERRED_SCHEDULE_LABELS: Record<PreferredSchedule, string> =
+  toLabelRecord(PREFERRED_SCHEDULE_CATALOG);
 
 export const ALCOHOL_FREQUENCY_LABELS: Record<AlcoholFrequency, string> = {
   never: 'Nunca',
@@ -193,53 +222,24 @@ export const ALCOHOL_FREQUENCY_LABELS: Record<AlcoholFrequency, string> = {
   frequent: 'Frecuente',
 };
 
-export const MEAL_SLOT_LABELS: Record<MealSlot, string> = {
-  breakfast: 'Desayuno',
-  mid_morning: 'Media mañana',
-  lunch: 'Almuerzo',
-  afternoon_snack: 'Merienda',
-  dinner: 'Cena',
-  post_workout: 'Post-entreno',
-};
+export const MEAL_SLOT_LABELS: Record<MealSlot, string> = toLabelRecord(
+  MEAL_SCHEDULE_CATALOG
+);
 
-export const TRAINING_TYPE_OPTIONS: string[] = [
-  'Fuerza',
-  'Cardio',
-  'HIIT',
-  'CrossFit',
-  'Yoga / Pilates',
-  'Artes marciales',
-  'Natación',
-  'Ciclismo',
-  'Mixto',
-  'Otro',
-];
+export const TRAINING_TYPE_OPTIONS: {
+  value: TrainingTypeId;
+  label: string;
+}[] = TRAINING_TYPE_CATALOG.map((item) => ({
+  value: item.id,
+  label: item.label,
+}));
 
-/** Predefined sport options for the sport select. 'Otro' triggers a free-text input. */
-export const SPORT_OPTIONS: string[] = [
-  'Gym',
-  'Fisicoculturismo',
-  'Powerlifting',
-  'CrossFit',
-  'Running',
-  'Ciclismo',
-  'Natación',
-  'Fútbol',
-  'Baloncesto',
-  'Artes marciales',
-  'Calistenia',
-  'Otro',
-];
+/** Predefined sport options for the sport select. 'other' triggers a free-text input. */
+export const SPORT_OPTIONS: { value: string; label: string }[] =
+  SPORT_CATALOG.map((item) => ({ value: item.id, label: item.label }));
 
-export const WEEK_DAY_OPTIONS: { value: string; label: string }[] = [
-  { value: 'monday', label: 'Lun' },
-  { value: 'tuesday', label: 'Mar' },
-  { value: 'wednesday', label: 'Mié' },
-  { value: 'thursday', label: 'Jue' },
-  { value: 'friday', label: 'Vie' },
-  { value: 'saturday', label: 'Sáb' },
-  { value: 'sunday', label: 'Dom' },
-];
+export const WEEK_DAY_OPTIONS: { value: WeekDayId; label: string }[] =
+  WEEK_DAY_CATALOG.map((item) => ({ value: item.id, label: item.label }));
 
 export const SESSION_DURATION_OPTIONS: { value: number; label: string }[] = [
   { value: 30, label: '30 minutos' },
@@ -250,77 +250,66 @@ export const SESSION_DURATION_OPTIONS: { value: number; label: string }[] = [
   { value: 120, label: 'Más de 90 minutos' },
 ];
 
-export const EQUIPMENT_OPTIONS: { value: string; label: string }[] = [
-  { value: 'full_gym', label: 'Gimnasio completo' },
-  { value: 'dumbbells', label: 'Mancuernas' },
-  { value: 'olympic_bar', label: 'Barra olímpica' },
-  { value: 'weight_plates', label: 'Discos' },
-  { value: 'bench', label: 'Banco' },
-  { value: 'cables', label: 'Poleas' },
-  { value: 'smith_machine', label: 'Máquina Smith' },
-  { value: 'resistance_bands', label: 'Bandas elásticas' },
-  { value: 'trx', label: 'TRX' },
-  { value: 'bodyweight', label: 'Peso corporal' },
-  { value: 'other', label: 'Otro' },
-];
+export const EQUIPMENT_OPTIONS: { value: EquipmentId; label: string }[] =
+  EQUIPMENT_CATALOG.map((item) => ({ value: item.id, label: item.label }));
 
 /**
  * Equipment options shown when training at home or both gym+home.
  * AI Coach: determines exercise substitutions when gym equipment is unavailable.
  */
-export const HOME_EQUIPMENT_OPTIONS: { value: string; label: string }[] = [
-  { value: 'dumbbells', label: 'Mancuernas' },
-  { value: 'barbell', label: 'Barra' },
-  { value: 'weight_plates', label: 'Discos' },
-  { value: 'bench', label: 'Banco' },
-  { value: 'resistance_bands', label: 'Bandas' },
-  { value: 'kettlebell', label: 'Kettlebell' },
-  { value: 'cable_pulley', label: 'Polea' },
-  { value: 'rack', label: 'Rack' },
-  { value: 'multi_machine', label: 'Máquina multifunción' },
-  { value: 'bodyweight_only', label: 'Peso corporal solamente' },
-];
+export const HOME_EQUIPMENT_OPTIONS: { value: EquipmentId; label: string }[] =
+  EQUIPMENT_CATALOG.filter((item) =>
+    [
+      'dumbbells',
+      'barbell',
+      'weight_plates',
+      'bench',
+      'resistance_bands',
+      'kettlebell',
+      'cable_pulley',
+      'rack',
+      'multi_machine',
+      'bodyweight_only',
+    ].includes(item.id)
+  ).map((item) => ({ value: item.id, label: item.label }));
 
 export const TRAINING_LOCATION_OPTIONS: {
   value: TrainingLocation;
   label: string;
-}[] = [
-  { value: 'gym', label: 'Gimnasio' },
-  { value: 'home', label: 'Casa' },
-  { value: 'both', label: 'Ambos' },
-];
+}[] = TRAINING_LOCATION_CATALOG.map((item) => ({
+  value: item.id,
+  label: item.label,
+}));
 
 export const TRAINING_STYLE_PREFERENCE_LABELS: Record<
   TrainingStylePreference,
   string
-> = {
-  short: 'Cortos e intensos',
-  medium: 'Moderados',
-  long: 'Largos y progresivos',
-};
+> = toLabelRecord(TRAINING_STYLE_PREFERENCE_CATALOG);
 
 /** Muscle groups selectable as priority or avoid targets. */
-export const MUSCLE_GROUP_OPTIONS: { value: string; label: string }[] = [
-  { value: 'chest', label: 'Pecho' },
-  { value: 'back', label: 'Espalda' },
-  { value: 'shoulders', label: 'Hombros' },
-  { value: 'arms', label: 'Brazos' },
-  { value: 'legs', label: 'Piernas' },
-  { value: 'glutes', label: 'Glúteos' },
-  { value: 'abs', label: 'Abdomen' },
-];
+export const MUSCLE_GROUP_OPTIONS: { value: MuscleId; label: string }[] =
+  MUSCLE_CATALOG.map((item) => ({ value: item.id, label: item.label }));
 
-export const INJURY_SEVERITY_LABELS: Record<InjurySeverity, string> = {
-  minor: 'Leve',
-  moderate: 'Moderada',
-  severe: 'Severa',
-};
+export const INJURY_SEVERITY_LABELS: Record<InjurySeverity, string> =
+  toLabelRecord(SEVERITY_CATALOG);
 
-export const DISEASE_SEVERITY_LABELS: Record<DiseaseSeverity, string> = {
-  minor: 'Leve',
-  moderate: 'Moderada',
-  severe: 'Severa',
-};
+export const DISEASE_SEVERITY_LABELS: Record<DiseaseSeverity, string> =
+  toLabelRecord(SEVERITY_CATALOG);
+
+export const INJURY_AREA_LABELS: Record<InjuryArea, string> = toLabelRecord(
+  INJURY_AREA_CATALOG
+);
+
+export const MEDICAL_CONDITION_LABELS: Record<MedicalConditionType, string> =
+  toLabelRecord(MEDICAL_CONDITION_CATALOG);
+
+export const INJURY_AREA_OPTIONS: {
+  value: InjuryArea;
+  label: string;
+}[] = INJURY_AREA_CATALOG.map((item) => ({
+  value: item.id,
+  label: item.label,
+}));
 
 // ─── Validation ───────────────────────────────────────────────────────────────
 
@@ -347,6 +336,9 @@ export function validateAthleteProfileFormData(
   }
   if (!data.training.goal) {
     return 'Selecciona tu objetivo principal de entrenamiento.';
+  }
+  if ((data.training.priorityMuscles?.length ?? 0) > 3) {
+    return 'Selecciona hasta 3 músculos prioritarios para que podamos personalizar mejor tu rutina.';
   }
   return null;
 }

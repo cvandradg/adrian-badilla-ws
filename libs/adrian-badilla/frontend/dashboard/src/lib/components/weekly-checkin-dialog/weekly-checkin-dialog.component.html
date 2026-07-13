@@ -1,0 +1,290 @@
+<p-dialog
+  [visible]="visible()"
+  [modal]="true"
+  [position]="'top'"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="!store.saving()"
+  [style]="{
+    width: 'min(980px, 96vw)',
+    maxHeight: 'calc(100dvh - 2rem)'
+  }"
+  [contentStyle]="{
+    overflow: 'auto'
+  }"
+  styleClass="weekly-checkin-dialog"
+  (visibleChange)="$event ? visibleChange.emit($event) : close()"
+>
+  <p-confirmDialog />
+  <ng-template pTemplate="header">
+    <div class="weekly-checkin-dialog__header">
+      <div>
+        <h2>Check-in semanal</h2>
+        <p>Registra tus fotos, medidas y sensaciones de la semana.</p>
+      </div>
+      <p-tag
+        [value]="store.currentWeekStatus()"
+        [severity]="store.currentWeekStatus() === 'complete' ? 'success' : 'warn'"
+      />
+    </div>
+  </ng-template>
+
+  @if (currentCheckIn(); as currentCheckIn) {
+  <div class="weekly-checkin-dialog__content">
+    @if (loadingCurrentWeek()) {
+    <div class="weekly-checkin-dialog__loading">
+      Estamos cargando tu check-in semanal guardado. Mientras tanto puedes completar el borrador local.
+    </div>
+    }
+
+    @if (store.error()) {
+    <div class="weekly-checkin-dialog__error">
+      {{ store.error() }}
+    </div>
+    }
+
+    <section class="weekly-checkin-dialog__section">
+      <div class="weekly-checkin-dialog__section-header">
+        <h3>Fotografias</h3>
+        <p>Sube frontal, lateral y posterior. Las fotos son privadas.</p>
+      </div>
+
+      @if (!store.consentAccepted()) {
+      <div class="weekly-checkin-dialog__consent">
+        <p>
+          Las fotografias de progreso son privadas y se utilizaran unicamente para registrar tu evolucion dentro de la aplicacion.
+          Puedes eliminarlas en cualquier momento.
+        </p>
+        <p-checkbox
+          binary
+          [ngModel]="store.consentAccepted()"
+          (ngModelChange)="store.acceptProgressPhotoConsent()"
+          inputId="progress-photo-consent"
+        />
+        <label for="progress-photo-consent">
+          He leido y acepto el tratamiento de mis fotografias de progreso.
+        </label>
+      </div>
+      }
+
+      <div class="weekly-checkin-dialog__photo-grid">
+        @for (type of photoTypes; track type) {
+        <article class="photo-card">
+          <div class="photo-card__header">
+            <strong>{{ progressPhotoLabels[type] }}</strong>
+            <p-tag
+              [value]="photoStatusLabel(type)"
+              [severity]="photoStatusSeverity(type)"
+            />
+          </div>
+
+          <div class="photo-card__preview">
+            @if (photoPreview(type); as preview) {
+            <p-image
+              [src]="preview"
+              [preview]="true"
+              styleClass="photo-card__image-shell"
+              imageClass="photo-card__image"
+            />
+            } @else {
+            <div class="photo-card__placeholder">
+              {{ progressPhotoLabels[type] }}
+            </div>
+            }
+          </div>
+
+          <div class="photo-card__actions">
+            <input
+              #fileInput
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              hidden
+              (change)="onFileSelected(type, $event)"
+            />
+            <p-button
+              label="Seleccionar"
+              icon="pi pi-upload"
+              severity="secondary"
+              [outlined]="true"
+              (onClick)="fileInput.click()"
+            />
+            <p-button
+              label="Eliminar"
+              icon="pi pi-trash"
+              severity="danger"
+              [text]="true"
+              [disabled]="!photoPreview(type)"
+              (onClick)="deleteStoredPhoto(type)"
+            />
+            @if (photoStatus(type) === 'failed') {
+            <p-button
+              label="Reintentar"
+              icon="pi pi-refresh"
+              severity="warn"
+              [text]="true"
+              (onClick)="triggerRetry(type, fileInput)"
+            />
+            }
+          </div>
+
+          <div class="photo-card__progress">
+            <p-progressBar
+              [value]="store.uploadProgress()[type]"
+              [showValue]="false"
+            />
+          </div>
+
+          @if (photoError(type); as photoError) {
+          <p class="photo-card__error">{{ photoError }}</p>
+          }
+        </article>
+        }
+      </div>
+    </section>
+
+    <section class="weekly-checkin-dialog__section">
+      <div class="weekly-checkin-dialog__section-header">
+        <h3>Medidas corporales</h3>
+        <p>
+          Introduce tus medidas actuales. Utiliza centimetros para las medidas corporales y kilogramos para el peso.
+        </p>
+      </div>
+
+      <div class="weekly-checkin-dialog__form-grid">
+        <label class="field">
+          <span>Peso</span>
+          <p-inputNumber
+            [ngModel]="measurementValue('weightKg')"
+            (ngModelChange)="updateMeasurement('weightKg', $event)"
+            mode="decimal"
+            [minFractionDigits]="1"
+            [maxFractionDigits]="1"
+            placeholder="95.5"
+            suffix=" kg"
+          />
+        </label>
+
+        <label class="field">
+          <span>Grasa corporal</span>
+          <p-inputNumber
+            [ngModel]="measurementValue('bodyFatPercent')"
+            (ngModelChange)="updateMeasurement('bodyFatPercent', $event)"
+            mode="decimal"
+            [minFractionDigits]="1"
+            [maxFractionDigits]="1"
+            placeholder="15"
+            suffix=" %"
+          />
+        </label>
+
+        <label class="field">
+          <span>Pecho</span>
+          <p-inputNumber [ngModel]="measurementValue('chestCm')" (ngModelChange)="updateMeasurement('chestCm', $event)" placeholder="102" suffix=" cm" />
+        </label>
+        <label class="field">
+          <span>Cintura</span>
+          <p-inputNumber [ngModel]="measurementValue('waistCm')" (ngModelChange)="updateMeasurement('waistCm', $event)" placeholder="80" suffix=" cm" />
+        </label>
+        <label class="field">
+          <span>Cadera</span>
+          <p-inputNumber [ngModel]="measurementValue('hipCm')" (ngModelChange)="updateMeasurement('hipCm', $event)" placeholder="96" suffix=" cm" />
+        </label>
+        <label class="field">
+          <span>Biceps izquierdo</span>
+          <p-inputNumber [ngModel]="measurementValue('leftArmCm')" (ngModelChange)="updateMeasurement('leftArmCm', $event)" placeholder="36" suffix=" cm" />
+        </label>
+        <label class="field">
+          <span>Biceps derecho</span>
+          <p-inputNumber [ngModel]="measurementValue('rightArmCm')" (ngModelChange)="updateMeasurement('rightArmCm', $event)" placeholder="36" suffix=" cm" />
+        </label>
+        <label class="field">
+          <span>Muslo</span>
+          <p-inputNumber [ngModel]="measurementValue('thighCm')" (ngModelChange)="updateMeasurement('thighCm', $event)" placeholder="60" suffix=" cm" />
+        </label>
+        <label class="field">
+          <span>Pantorrilla</span>
+          <p-inputNumber [ngModel]="measurementValue('calfCm')" (ngModelChange)="updateMeasurement('calfCm', $event)" placeholder="38" suffix=" cm" />
+        </label>
+      </div>
+    </section>
+
+    <section class="weekly-checkin-dialog__section">
+      <div class="weekly-checkin-dialog__section-header">
+        <h3>Autoevaluacion semanal</h3>
+        <p>
+          Evalua como te sentiste esta semana utilizando una escala del 1 al 10.
+        </p>
+      </div>
+
+      <div class="weekly-checkin-dialog__form-grid">
+        <label class="field"><span>Energia</span><p-inputNumber [ngModel]="currentCheckIn.selfAssessment.energy" (ngModelChange)="updateSelfAssessment('energy', $event)" [min]="1" [max]="10" placeholder="1 - 10" /></label>
+        <label class="field"><span>Hambre</span><p-inputNumber [ngModel]="currentCheckIn.selfAssessment.hunger" (ngModelChange)="updateSelfAssessment('hunger', $event)" [min]="1" [max]="10" placeholder="1 - 10" /></label>
+        <label class="field"><span>Dolor muscular</span><p-inputNumber [ngModel]="currentCheckIn.selfAssessment.soreness" (ngModelChange)="updateSelfAssessment('soreness', $event)" [min]="1" [max]="10" placeholder="1 - 10" /></label>
+        <label class="field"><span>Estres</span><p-inputNumber [ngModel]="currentCheckIn.selfAssessment.stress" (ngModelChange)="updateSelfAssessment('stress', $event)" [min]="1" [max]="10" placeholder="1 - 10" /></label>
+        <label class="field"><span>Motivacion</span><p-inputNumber [ngModel]="currentCheckIn.selfAssessment.motivation" (ngModelChange)="updateSelfAssessment('motivation', $event)" [min]="1" [max]="10" placeholder="1 - 10" /></label>
+        <label class="field"><span>Sueno promedio</span><p-inputNumber [ngModel]="currentCheckIn.selfAssessment.sleepAverageHours" (ngModelChange)="updateSelfAssessment('sleepAverageHours', $event)" mode="decimal" [minFractionDigits]="1" [maxFractionDigits]="1" placeholder="7.5" suffix=" h" /></label>
+        <label class="field"><span>Adherencia a la dieta</span><p-inputNumber [ngModel]="currentCheckIn.selfAssessment.dietAdherencePercent" (ngModelChange)="updateSelfAssessment('dietAdherencePercent', $event)" placeholder="90" suffix=" %" /></label>
+        <label class="field"><span>Entrenamientos completados</span><p-inputNumber [ngModel]="currentCheckIn.selfAssessment.workoutsCompleted" (ngModelChange)="updateSelfAssessment('workoutsCompleted', $event)" placeholder="5" /></label>
+        <label class="field"><span>Entrenamientos planificados</span><p-inputNumber [ngModel]="currentCheckIn.selfAssessment.workoutsPlanned" (ngModelChange)="updateSelfAssessment('workoutsPlanned', $event)" placeholder="6" /></label>
+      </div>
+    </section>
+
+    <section class="weekly-checkin-dialog__section">
+      <div class="weekly-checkin-dialog__section-header">
+        <h3>Notas</h3>
+        <p>
+          Describe cualquier cambio importante de esta semana: molestias, mejoras, alimentacion, energia, lesiones o cualquier observacion relevante.
+        </p>
+      </div>
+
+      <textarea
+        pTextarea
+        rows="4"
+        [ngModel]="currentCheckIn.notes"
+        (ngModelChange)="store.updateNotes($event)"
+        placeholder="Como te sentiste esta semana?"
+      ></textarea>
+    </section>
+
+    <section class="weekly-checkin-dialog__footer">
+      <div class="weekly-checkin-dialog__meta">
+        <div>
+          <span>Progreso de carga</span>
+          <strong>{{ overallUploadProgress() }}%</strong>
+        </div>
+        @if (saveDisabledReason(); as saveDisabledReason) {
+        <small class="weekly-checkin-dialog__hint">{{ saveDisabledReason }}</small>
+        }
+      </div>
+
+      <div class="weekly-checkin-dialog__actions">
+        <p-button label="Cerrar" severity="secondary" [text]="true" (onClick)="close()" />
+        @if (currentCheckIn.status !== 'draft' || currentCheckIn.createdAt) {
+        <p-button
+          label="Eliminar check-in"
+          icon="pi pi-trash"
+          severity="danger"
+          [text]="true"
+          [disabled]="store.deleting() || store.saving()"
+          (onClick)="confirmDeleteCheckIn()"
+        />
+        }
+        <p-button
+          label="Guardar check-in"
+          icon="pi pi-check"
+          severity="contrast"
+          [loading]="store.saving()"
+          [disabled]="!store.formValid() || store.saving()"
+          (onClick)="submit()"
+        />
+      </div>
+    </section>
+  </div>
+  } @else {
+  <div class="weekly-checkin-dialog__content">
+    <div class="weekly-checkin-dialog__error">
+      No fue posible inicializar el borrador semanal.
+    </div>
+  </div>
+  }
+</p-dialog>

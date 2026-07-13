@@ -77,6 +77,12 @@ export const adrianBadillaDashboardRoutes: Route[] = [
             '../../../settings/src/lib/components/app-config-page/app-config-page.component'
           ).then((m) => m.AppConfigPageComponent),
       },
+      // ── Admin module (child of Dashboard shell) ─────────────────────────────────
+      {
+        path: 'admin',
+        loadChildren: () =>
+          import('@admin/dashboard/routes').then((m) => m.adminRoutes),
+      },
     ],
   },
 ];

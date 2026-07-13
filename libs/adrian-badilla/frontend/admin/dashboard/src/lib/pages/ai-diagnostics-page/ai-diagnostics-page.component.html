@@ -1,0 +1,1414 @@
+<div class="ai-diagnostics">
+  @let status = statusDescriptor();
+  @let topRecommendation = store.topRecommendation();
+
+  <header class="ai-diagnostics__hero">
+    <div class="hero-copy">
+      <div class="hero-copy__meta">
+        <p-tag value="TEMP / ADMIN" severity="warn" />
+        <span>Ruta interna para probar Recommendation Engine con datos reales.</span>
+      </div>
+
+      <div class="hero-copy__title-row">
+        <div>
+          <h1>AI Diagnostics</h1>
+          <p>
+            Panel de depuracion para explicar el contexto, las reglas aplicadas y la
+            recomendacion final sin tocar el flujo real del producto.
+          </p>
+        </div>
+
+        <div class="hero-status">
+          <p-tag [value]="status.label" [severity]="status.tone" />
+          <span>{{ status.description }}</span>
+        </div>
+      </div>
+
+      <div class="hero-metadata">
+        <div class="hero-metadata__item">
+          <span class="meta-label">Ultima ejecucion</span>
+          <strong>{{ lastRunText() }}</strong>
+        </div>
+        <div class="hero-metadata__item">
+          <span class="meta-label">User ID actual</span>
+          <strong>{{ store.userId() || 'Pendiente' }}</strong>
+        </div>
+        <div class="hero-metadata__item">
+          <span class="meta-label">Top recommendations</span>
+          <strong>{{ store.topRecommendations().length }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-actions">
+      <div class="hero-actions__group">
+        <span class="hero-actions__label">Analisis</span>
+        <div class="action-row">
+          <p-button
+            label="Ejecutar analisis"
+            icon="pi pi-play"
+            severity="contrast"
+            [loading]="store.loadingRecommendations()"
+            (onClick)="runDiagnostics()"
+          />
+          <p-button
+            label="Generar AI Coach"
+            icon="pi pi-sparkles"
+            severity="warn"
+            [loading]="store.generatingAiCoachPreview()"
+            [disabled]="!store.userContext() || !store.topRecommendation()"
+            (onClick)="generateAiCoachPreview()"
+          />
+          <p-button
+            label="Copiar resultado"
+            icon="pi pi-copy"
+            severity="secondary"
+            [text]="true"
+            [disabled]="store.topRecommendations().length === 0"
+            (onClick)="copyRecommendationSnapshot()"
+          />
+        </div>
+      </div>
+
+      <div class="hero-actions__group">
+        <span class="hero-actions__label">Navegacion tecnica</span>
+        <div class="action-row">
+          <p-button
+            label="Expandir todo"
+            icon="pi pi-plus-circle"
+            severity="secondary"
+            [text]="true"
+            (onClick)="expandAllPanels()"
+          />
+          <p-button
+            label="Contraer todo"
+            icon="pi pi-minus-circle"
+            severity="secondary"
+            [text]="true"
+            (onClick)="collapseAllPanels()"
+          />
+          <p-button
+            label="Ver rutina activa"
+            icon="pi pi-eye"
+            severity="secondary"
+            [text]="true"
+            [loading]="store.loadingActiveAssignment()"
+            (onClick)="loadActiveAssignment()"
+          />
+          <p-button
+            label="Asignar top routine"
+            icon="pi pi-send"
+            severity="secondary"
+            [text]="true"
+            [loading]="store.assigningRoutine()"
+            (onClick)="assignTopRoutine()"
+          />
+          <p-button
+            label="Volver al Admin"
+            icon="pi pi-arrow-left"
+            severity="secondary"
+            [text]="true"
+            routerLink="/dashboard/admin"
+          />
+        </div>
+      </div>
+
+      @if (copyFeedback()) {
+      <div class="hero-feedback" role="status">
+        <i class="pi pi-check-circle" aria-hidden="true"></i>
+        <span>{{ copyFeedback() }}</span>
+      </div>
+      }
+    </div>
+  </header>
+
+  <section class="ai-diagnostics__panel ai-diagnostics__panel--controls">
+    <div class="panel-title">
+      <h2>Entrada manual</h2>
+      <p>La pantalla solo ejecuta acciones cuando el administrador presiona un boton.</p>
+    </div>
+
+    <div class="control-grid">
+      <label class="field-block" for="diagnostics-user-id">
+        <span class="field-label">User ID</span>
+        <input
+          id="diagnostics-user-id"
+          pInputText
+          type="text"
+          class="field-input"
+          placeholder="Ej. 3xFZ6..."
+          [value]="store.userId()"
+          (input)="store.setUserId($any($event.target).value)"
+        />
+      </label>
+
+      <div class="view-switch" aria-label="Cambiar entre vista resumida y tecnica">
+        <button
+          type="button"
+          class="view-switch__button"
+          [class.is-active]="activeView() === 'summary'"
+          (click)="setActiveView('summary')"
+        >
+          Vista resumida
+        </button>
+        <button
+          type="button"
+          class="view-switch__button"
+          [class.is-active]="activeView() === 'technical'"
+          (click)="setActiveView('technical')"
+        >
+          Vista tecnica
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <nav class="ai-diagnostics__nav" aria-label="Navegacion por secciones">
+    @for (section of visibleSections(); track section.id) {
+    <button
+      type="button"
+      class="section-chip"
+      (click)="scrollToSection(section.id)"
+    >
+      <strong>{{ section.label }}</strong>
+      <span>{{ section.description }}</span>
+    </button>
+    }
+  </nav>
+
+  @if (store.loadingRecommendations()) {
+  <section class="ai-diagnostics__panel ai-diagnostics__panel--loading">
+    <div class="loading-state">
+      <p-progressSpinner strokeWidth="4" />
+      <div>
+        <h2>Ejecutando Recommendation Engine</h2>
+        <p>Estamos cargando el contexto del usuario, evaluando candidatos y preparando el resumen.</p>
+      </div>
+    </div>
+
+    <div class="skeleton-grid" aria-hidden="true">
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card skeleton-card--wide"></div>
+    </div>
+  </section>
+  }
+
+  @if (store.recommendationError()) {
+  <div class="ai-diagnostics__error">
+    <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+    <div>
+      <strong>No se pudo completar el analisis.</strong>
+      <span>{{ store.recommendationError() }}</span>
+    </div>
+  </div>
+  }
+
+  @if (shouldShowEmptyState()) {
+  <section class="ai-diagnostics__panel empty-state">
+    <div class="empty-state__icon">
+      <i class="pi pi-sparkles" aria-hidden="true"></i>
+    </div>
+    <div class="empty-state__copy">
+      <h2>Listo para ejecutar una prueba</h2>
+      <p>
+        Ingresa un userId valido y ejecuta el analisis para ver la recomendacion principal,
+        el razonamiento paso a paso y el detalle tecnico.
+      </p>
+    </div>
+  </section>
+  }
+
+  @if (activeView() === 'summary' && store.userContext() && topRecommendation) {
+  @let userContext = store.userContext()!;
+  <section id="summary-result" class="ai-diagnostics__panel">
+    <div class="panel-title panel-title--with-action">
+      <div>
+        <h2>1. Resultado principal</h2>
+        <p>La rutina ganadora se presenta primero para facilitar la explicacion del diagnostico.</p>
+      </div>
+
+      <p-tag
+        [value]="compatibilityLabel(topRecommendation.normalizedScore)"
+        [severity]="status.tone === 'danger' ? 'danger' : 'success'"
+      />
+    </div>
+
+    <div class="result-hero">
+      <article class="result-hero__primary">
+        <div class="result-hero__eyebrow-row">
+          <span class="eyebrow">Rank #{{ topRecommendation.rank }}</span>
+          <p-tag value="Top recommendation" severity="success" />
+        </div>
+
+        <h3>{{ topRecommendation.routineTemplate.name }}</h3>
+        <p>
+          Esta es la mejor coincidencia actual segun el contexto normalizado del usuario y
+          las reglas del Recommendation Engine.
+        </p>
+
+        <div class="score-meter score-meter--hero" [attr.data-tone]="scoreTone(topRecommendation.normalizedScore)">
+          <div class="score-meter__track">
+            <div
+              class="score-meter__fill"
+              [style.width.%]="scorePercent(topRecommendation.normalizedScore)"
+            ></div>
+          </div>
+          <div class="score-meter__labels">
+            <span>0</span>
+            <strong>{{ topRecommendation.normalizedScore }}/100</strong>
+            <span>100</span>
+          </div>
+        </div>
+
+        <div class="result-metrics">
+          <div class="metric-card">
+            <span class="meta-label">Score bruto</span>
+            <strong>{{ topRecommendation.score }}</strong>
+          </div>
+          <div class="metric-card">
+            <span class="meta-label">Compatibilidad</span>
+            <strong>{{ compatibilityLabel(topRecommendation.normalizedScore) }}</strong>
+          </div>
+          <div class="metric-card">
+            <span class="meta-label">Warnings</span>
+            <strong>{{ topRecommendation.warnings.length }}</strong>
+          </div>
+          <div class="metric-card">
+            <span class="meta-label">Adaptaciones</span>
+            <strong>{{ topRecommendation.requiredAdaptations.length }}</strong>
+          </div>
+        </div>
+      </article>
+
+      <article class="result-hero__secondary">
+        <div class="list-block">
+          <h4>Por que fue elegida</h4>
+          <div class="reason-list">
+            @for (reason of topRecommendation.reasons; track reason.code + reason.points) {
+            <div class="reason-row reason-row--positive">
+              <i class="pi pi-check-circle" aria-hidden="true"></i>
+              <div>
+                <strong>{{ reason.label }}</strong>
+                <span>{{ reason.points > 0 ? '+' : '' }}{{ reason.points }}</span>
+              </div>
+            </div>
+            } @empty {
+            <p class="empty-copy">No se registraron razones positivas.</p>
+            }
+          </div>
+        </div>
+
+        <div class="list-block">
+          <h4>Penalizaciones y warnings</h4>
+          <div class="reason-list">
+            @for (penalty of topRecommendation.penalties; track penalty.code + penalty.points) {
+            <div class="reason-row reason-row--negative">
+              <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+              <div>
+                <strong>{{ penalty.label }}</strong>
+                <span>{{ penalty.points }}</span>
+              </div>
+            </div>
+            } @empty {
+            <p class="empty-copy">Sin penalizaciones registradas.</p>
+            }
+          </div>
+
+          @if (topRecommendation.warnings.length > 0) {
+          <div class="warning-panel">
+            <strong>Warnings</strong>
+            <ul>
+              @for (warning of topRecommendation.warnings; track warning) {
+              <li>{{ warning }}</li>
+              }
+            </ul>
+          </div>
+          }
+        </div>
+
+        <div class="list-block">
+          <h4>Adaptaciones requeridas</h4>
+          <div class="pill-list">
+            @for (adaptation of topRecommendation.requiredAdaptations; track adaptation) {
+            <span class="pill pill--warning">{{ adaptation }}</span>
+            } @empty {
+            <span class="pill pill--muted">Sin adaptaciones requeridas</span>
+            }
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="summary-flow" class="ai-diagnostics__panel">
+    <div class="panel-title">
+      <h2>2. Como llego la IA a esta conclusion</h2>
+      <p>Secuencia explicable construida unicamente con los datos que ya produce el sistema.</p>
+    </div>
+
+    <div class="flow-list">
+      @for (step of diagnosticSteps(); track step.title) {
+      <article class="flow-step" [attr.data-tone]="step.tone">
+        <span class="flow-step__dot" aria-hidden="true"></span>
+        <div>
+          <h3>{{ step.title }}</h3>
+          <p>{{ step.description }}</p>
+        </div>
+      </article>
+      }
+    </div>
+  </section>
+
+  <section id="summary-context" class="ai-diagnostics__panel">
+    <div class="panel-title">
+      <h2>3. Contexto del usuario</h2>
+      <p>Resumen claro del contexto que realmente entro al Recommendation Engine.</p>
+    </div>
+
+    <div class="summary-grid summary-grid--two">
+      <article class="summary-card">
+        <div class="panel-title">
+          <h3>Estado del usuario</h3>
+          <p>Readiness calculado desde el contexto real del usuario.</p>
+        </div>
+
+        <div class="meta-list meta-list--two-columns">
+          <div class="meta-item">
+            <span class="meta-label">userId</span>
+            <strong>{{ userContext.userId }}</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">displayName</span>
+            <strong>{{ userContext.displayName || 'Sin nombre' }}</strong>
+          </div>
+        </div>
+
+        <div class="tag-grid">
+          <p-tag
+            [value]="'Health: ' + booleanLabel(userContext.readiness.isHealthProfileComplete)"
+            [severity]="booleanSeverity(userContext.readiness.isHealthProfileComplete)"
+          />
+          <p-tag
+            [value]="'Athlete: ' + booleanLabel(userContext.readiness.isAthleteProfileComplete)"
+            [severity]="booleanSeverity(userContext.readiness.isAthleteProfileComplete)"
+          />
+          <p-tag
+            [value]="'Nutrition: ' + booleanLabel(userContext.readiness.isNutritionProfileComplete)"
+            [severity]="booleanSeverity(userContext.readiness.isNutritionProfileComplete)"
+          />
+          <p-tag
+            [value]="'Workout Ready: ' + booleanLabel(userContext.readiness.isWorkoutRecommendationReady)"
+            [severity]="booleanSeverity(userContext.readiness.isWorkoutRecommendationReady)"
+          />
+        </div>
+
+        <div class="list-block">
+          <h4>Campos faltantes</h4>
+          @if (hasMissingFields(userContext)) {
+          <ul>
+            @for (field of userContext.readiness.missingFields; track field) {
+            <li>{{ field }}</li>
+            }
+          </ul>
+          } @else {
+          <p class="empty-copy">No hay campos faltantes para el contexto actual.</p>
+          }
+        </div>
+      </article>
+
+      <article class="summary-card">
+        <div class="panel-title">
+          <h3>Perfil normalizado</h3>
+          <p>Lo que consume el engine despues de normalizar Athlete Profile.</p>
+        </div>
+
+        <div class="meta-list meta-list--two-columns">
+          <div class="meta-item">
+            <span class="meta-label">goal</span>
+            <strong>{{ userContext.athleteProfile.goal || 'N/A' }}</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">trainingExperience</span>
+            <strong>{{ userContext.athleteProfile.trainingExperience || 'N/A' }}</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">trainingLocation</span>
+            <strong>{{ userContext.athleteProfile.trainingLocation || 'N/A' }}</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">sessionDuration</span>
+            <strong>{{ userContext.athleteProfile.sessionDuration ?? 'N/A' }}</strong>
+          </div>
+        </div>
+
+        <div class="list-block">
+          <h4>Available Days</h4>
+          <div class="pill-list">
+            @for (day of userContext.athleteProfile.availableDays; track day) {
+            <span class="pill">{{ day }}</span>
+            } @empty {
+            <span class="pill pill--muted">Sin dias disponibles</span>
+            }
+          </div>
+        </div>
+
+        <div class="list-block">
+          <h4>Available Equipment</h4>
+          <div class="pill-list">
+            @for (equipment of userContext.athleteProfile.availableEquipment; track equipment) {
+            <span class="pill">{{ equipment }}</span>
+            } @empty {
+            <span class="pill pill--muted">Sin equipo definido</span>
+            }
+          </div>
+        </div>
+
+        <div class="list-block">
+          <h4>Salud</h4>
+          <ul>
+            @for (item of healthRestrictionsSummary(userContext); track item) {
+            <li>{{ item }}</li>
+            }
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="summary-candidates" class="ai-diagnostics__panel">
+    <div class="panel-title">
+      <h2>4. Candidatos evaluados</h2>
+      <p>Comparacion compacta para entender por que gano una rutina sin inundar la pantalla de JSON.</p>
+    </div>
+
+    <div class="candidate-grid">
+      @for (recommendation of store.topRecommendations(); track recommendation.routineId) {
+      <details class="candidate-card" [attr.data-selected]="recommendation.rank === 1" [open]="recommendation.rank === 1">
+        <summary class="candidate-card__summary">
+          <div>
+            <div class="candidate-card__summary-row">
+              <span class="eyebrow">Rank #{{ recommendation.rank }}</span>
+              @if (recommendation.rank === 1) {
+              <p-tag value="Ganadora" severity="success" />
+              }
+            </div>
+            <h3>{{ recommendation.routineTemplate.name }}</h3>
+            <p>{{ highlightReasons(recommendation).join(' | ') || 'Sin fortalezas destacadas' }}</p>
+          </div>
+
+          <div class="score-block" [attr.data-tone]="scoreTone(recommendation.normalizedScore)">
+            <strong>{{ recommendation.normalizedScore }}</strong>
+            <span>/ 100</span>
+          </div>
+        </summary>
+
+        <div class="candidate-card__body">
+          <div class="meta-list meta-list--two-columns">
+            <div class="meta-item">
+              <span class="meta-label">Fortaleza principal</span>
+              <strong>{{ recommendation.reasons[0]?.label || 'Sin razon principal' }}</strong>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Penalizacion principal</span>
+              <strong>{{ primaryPenalty(recommendation) }}</strong>
+            </div>
+          </div>
+
+          <div class="score-meter" [attr.data-tone]="scoreTone(recommendation.normalizedScore)">
+            <div class="score-meter__track">
+              <div
+                class="score-meter__fill"
+                [style.width.%]="scorePercent(recommendation.normalizedScore)"
+              ></div>
+            </div>
+            <div class="score-meter__labels">
+              <span>0</span>
+              <strong>{{ recommendation.normalizedScore }}/100</strong>
+              <span>100</span>
+            </div>
+          </div>
+
+          <details class="breakdown-panel">
+            <summary class="breakdown-panel__summary">
+              <div>
+                <h4>Score Breakdown</h4>
+                <p>Bonus, penalizaciones y senales neutrales para este candidato.</p>
+              </div>
+              <span class="breakdown-panel__total">Total {{ recommendation.score }}</span>
+            </summary>
+
+            <div class="breakdown-list">
+              @for (item of scoreBreakdown(recommendation); track item.type + item.code + item.points) {
+              <div class="breakdown-item" [attr.data-type]="item.type">
+                <div class="breakdown-item__main">
+                  <strong>{{ item.criterion }}</strong>
+                  <p>{{ item.description }}</p>
+                </div>
+                <div class="breakdown-item__meta">
+                  <span class="breakdown-item__type">{{ scoreTypeLabel(item.type) }}</span>
+                  <strong>{{ scorePointsLabel(item.points) }}</strong>
+                  <code>{{ item.code }}</code>
+                </div>
+              </div>
+              }
+            </div>
+          </details>
+        </div>
+      </details>
+      }
+    </div>
+  </section>
+
+  <section id="summary-coach" class="ai-diagnostics__panel">
+    <div class="panel-title panel-title--with-action">
+      <div>
+        <h2>5. AI Coach Preview</h2>
+        <p>Resumen de lo que recibira la futura capa AI Coach usando la recomendacion top actual.</p>
+      </div>
+
+      <p-button
+        label="Generar contexto AI Coach"
+        icon="pi pi-sparkles"
+        severity="contrast"
+        [loading]="store.generatingAiCoachPreview()"
+        [disabled]="!store.userContext() || !store.topRecommendation()"
+        (onClick)="generateAiCoachPreview()"
+      />
+    </div>
+
+    @if (store.aiCoachError()) {
+    <div class="ai-diagnostics__error ai-diagnostics__error--inline">
+      <i class="pi pi-times-circle" aria-hidden="true"></i>
+      <span>{{ store.aiCoachError() }}</span>
+    </div>
+    }
+
+    @if (store.aiCoachContext(); as aiCoachContext) {
+    <div class="summary-grid summary-grid--two">
+      <article class="summary-card">
+        <div class="panel-title">
+          <h3>Resumen del AIRoutineCoachContext</h3>
+          <p>Version corta para explicar rapidamente que recibira la IA.</p>
+        </div>
+
+        <ul class="coach-summary-list">
+          @for (item of aiCoachContextSummary(aiCoachContext); track item) {
+          <li>{{ item }}</li>
+          }
+        </ul>
+      </article>
+
+      <article class="summary-card">
+        <div class="panel-title">
+          <h3>Validacion del response simulado</h3>
+          <p>Resultado del validator sobre la respuesta generada por la facade actual.</p>
+        </div>
+
+        <div class="tag-grid">
+          <p-tag
+            [value]="store.aiCoachValidation()?.valid ? 'Valid' : 'Invalid'"
+            [severity]="validationSeverity(store.aiCoachValidation())"
+          />
+          @if (store.aiCoachValidation(); as validation) {
+          <span class="pill pill--muted">checkedAt: {{ validation.checkedAt }}</span>
+          }
+        </div>
+
+        @if (store.aiCoachValidation(); as validation) {
+        <div class="list-block">
+          <h4>Errores</h4>
+          <ul>
+            @for (error of validation.errors; track error) {
+            <li>{{ error }}</li>
+            } @empty {
+            <li>Sin errores</li>
+            }
+          </ul>
+        </div>
+        }
+      </article>
+    </div>
+
+    <admin-collapsible-card
+      title="AVAILABLE EXERCISE ALTERNATIVES"
+      description="Alternativas reales del Exercise Library compatibles con el equipo y la ubicacion actuales."
+      [expandAllVersion]="expandAllVersion()"
+      [collapseAllVersion]="collapseAllVersion()"
+    >
+      <div card-summary class="collapsible-summary">
+        <div class="pill-list">
+          @for (item of alternativesCollapsedSummary(aiCoachContext.availableExerciseAlternatives); track item) {
+          <span class="pill pill--muted">{{ item }}</span>
+          }
+        </div>
+      </div>
+
+      <div card-content>
+        @if (aiCoachContext.availableExerciseAlternatives.length > 0) {
+        <div class="summary-grid summary-grid--three">
+          @for (alternative of aiCoachContext.availableExerciseAlternatives; track alternative.exerciseId) {
+          <div class="summary-card">
+            <div class="meta-item">
+              <span class="meta-label">nombre</span>
+              <strong>{{ alternative.name }}</strong>
+            </div>
+
+            <ul class="coach-summary-list">
+              @for (item of aiCoachAlternativeSummary(alternative); track item) {
+              <li>{{ item }}</li>
+              }
+            </ul>
+          </div>
+          }
+        </div>
+        } @else {
+        <p class="empty-copy">
+          No hay alternativas compatibles disponibles con el equipo y ubicacion actuales.
+        </p>
+        }
+      </div>
+    </admin-collapsible-card>
+    } @else {
+    <p class="empty-copy">
+      Ejecuta primero el diagnostico y luego genera el AI Coach Preview para ver este bloque.
+    </p>
+    }
+  </section>
+  }
+
+  @if (activeView() === 'technical') {
+  <section id="technical-json" class="ai-diagnostics__panel">
+    <div class="panel-title">
+      <h2>JSON tecnico</h2>
+      <p>Entrada, salida y trazabilidad completa con bloques plegables y scroll interno.</p>
+    </div>
+
+    <div class="summary-grid summary-grid--two">
+      <admin-collapsible-card
+        title="AIRoutineCoachContext"
+        description="Contexto completo generado desde el usuario y la recomendacion top."
+        [expandAllVersion]="expandAllVersion()"
+        [collapseAllVersion]="collapseAllVersion()"
+      >
+        <div card-summary class="collapsible-summary">
+          <div class="pill-list">
+            @for (item of aiCoachContextCollapsedSummary(store.aiCoachContext(), store.aiCoachContextJson()); track item) {
+            <span class="pill pill--muted">{{ item }}</span>
+            }
+          </div>
+        </div>
+
+        <div card-content class="json-card">
+          <div class="json-card__toolbar">
+            <div>
+              <strong>Contexto que recibira la futura IA</strong>
+              <p>Incluye usuario, rutina recomendada, score breakdown y restricciones estructuradas.</p>
+            </div>
+            <p-button
+              label="Copiar"
+              icon="pi pi-copy"
+              size="small"
+              severity="secondary"
+              [text]="true"
+              (onClick)="copyText(store.aiCoachContextJson(), 'AIRoutineCoachContext')"
+            />
+          </div>
+          <pre>{{ store.aiCoachContextJson() }}</pre>
+        </div>
+      </admin-collapsible-card>
+
+      <admin-collapsible-card
+        title="Prompt generado"
+        description="Salida de AIRoutineCoachPromptBuilder."
+        [expandAllVersion]="expandAllVersion()"
+        [collapseAllVersion]="collapseAllVersion()"
+      >
+        <div card-summary class="collapsible-summary">
+          <div class="pill-list">
+            @for (item of promptCollapsedSummary(store.aiCoachPrompt()); track item) {
+            <span class="pill pill--muted">{{ item }}</span>
+            }
+          </div>
+        </div>
+
+        <div card-content class="json-card">
+          <div class="json-card__toolbar">
+            <div>
+              <strong>Prompt listo para enviar a un LLM</strong>
+              <p>Se mantiene sin llamadas HTTP ni proveedor externo.</p>
+            </div>
+            <p-button
+              label="Copiar"
+              icon="pi pi-copy"
+              size="small"
+              severity="secondary"
+              [text]="true"
+              (onClick)="copyText(store.aiCoachPrompt(), 'Prompt generado')"
+            />
+          </div>
+          <pre>{{ store.aiCoachPrompt() }}</pre>
+        </div>
+      </admin-collapsible-card>
+
+      <admin-collapsible-card
+        title="JSON schema esperado"
+        description="Contrato tipado esperado para la futura respuesta del LLM."
+        [expandAllVersion]="expandAllVersion()"
+        [collapseAllVersion]="collapseAllVersion()"
+      >
+        <div card-summary class="collapsible-summary">
+          <div class="pill-list">
+            @for (item of jsonSchemaCollapsedSummary(store.aiCoachSchemaJson()); track item) {
+            <span class="pill pill--muted">{{ item }}</span>
+            }
+          </div>
+        </div>
+
+        <div card-content class="json-card">
+          <div class="json-card__toolbar">
+            <div>
+              <strong>Schema de AIRoutineCoachResponse</strong>
+              <p>Sirve como contrato de validacion para una futura integracion con IA.</p>
+            </div>
+            <p-button
+              label="Copiar"
+              icon="pi pi-copy"
+              size="small"
+              severity="secondary"
+              [text]="true"
+              (onClick)="copyText(store.aiCoachSchemaJson(), 'JSON schema')"
+            />
+          </div>
+          <pre>{{ store.aiCoachSchemaJson() }}</pre>
+        </div>
+      </admin-collapsible-card>
+
+      <admin-collapsible-card
+        title="Respuesta simulada"
+        description="Salida actual de AIRoutineCoachFacade sin proveedor externo."
+        [expandAllVersion]="expandAllVersion()"
+        [collapseAllVersion]="collapseAllVersion()"
+      >
+        <div card-summary class="collapsible-summary">
+          <div class="pill-list">
+            @for (item of jsonPayloadCollapsedSummary('Respuesta lista', store.aiCoachResponseJson()); track item) {
+            <span class="pill pill--muted">{{ item }}</span>
+            }
+          </div>
+        </div>
+
+        <div card-content class="json-card">
+          <div class="json-card__toolbar">
+            <div>
+              <strong>Respuesta mock actual</strong>
+              <p>Se usa para validar la infraestructura del AI Coach sin tocar persistencia.</p>
+            </div>
+            <p-button
+              label="Copiar"
+              icon="pi pi-copy"
+              size="small"
+              severity="secondary"
+              [text]="true"
+              (onClick)="copyText(store.aiCoachResponseJson(), 'Respuesta simulada')"
+            />
+          </div>
+          <pre>{{ store.aiCoachResponseJson() }}</pre>
+        </div>
+      </admin-collapsible-card>
+
+      <admin-collapsible-card
+        title="Snapshot de validacion"
+        description="Resultado serializado del validator."
+        [expandAllVersion]="expandAllVersion()"
+        [collapseAllVersion]="collapseAllVersion()"
+      >
+        <div card-summary class="collapsible-summary">
+          <div class="pill-list">
+            @for (item of jsonPayloadCollapsedSummary('Snapshot listo', store.aiCoachValidationJson()); track item) {
+            <span class="pill pill--muted">{{ item }}</span>
+            }
+          </div>
+        </div>
+
+        <div card-content class="json-card">
+          <div class="json-card__toolbar">
+            <div>
+              <strong>Resultado completo del validator</strong>
+              <p>Muestra valid, errors y checkedAt para fines de debugging.</p>
+            </div>
+            <p-button
+              label="Copiar"
+              icon="pi pi-copy"
+              size="small"
+              severity="secondary"
+              [text]="true"
+              (onClick)="copyText(store.aiCoachValidationJson(), 'Snapshot de validacion')"
+            />
+          </div>
+          <pre>{{ store.aiCoachValidationJson() }}</pre>
+        </div>
+      </admin-collapsible-card>
+
+      <admin-collapsible-card
+        title="Recommendation Debug JSON"
+        description="userId, userContext y recomendaciones serializadas para depuracion rapida."
+        [expandAllVersion]="expandAllVersion()"
+        [collapseAllVersion]="collapseAllVersion()"
+      >
+        <div card-summary class="collapsible-summary">
+          <div class="pill-list">
+            @for (item of jsonPayloadCollapsedSummary('Debug listo', store.recommendationDebugJson()); track item) {
+            <span class="pill pill--muted">{{ item }}</span>
+            }
+          </div>
+        </div>
+
+        <div card-content class="json-card">
+          <div class="json-card__toolbar">
+            <div>
+              <strong>Agregado principal del diagnostico</strong>
+              <p>Incluye entrada y salida del Recommendation Engine.</p>
+            </div>
+            <p-button
+              label="Copiar"
+              icon="pi pi-copy"
+              size="small"
+              severity="secondary"
+              [text]="true"
+              (onClick)="copyText(store.recommendationDebugJson(), 'Recommendation Debug JSON')"
+            />
+          </div>
+          <pre>{{ store.recommendationDebugJson() }}</pre>
+        </div>
+      </admin-collapsible-card>
+    </div>
+  </section>
+
+  <section id="technical-simulator" class="ai-diagnostics__panel">
+    <admin-collapsible-card
+      title="AI Coach Response Simulator"
+      description="Edita una AIRoutineCoachResponse simulada, validala y aplicala en memoria sobre la recomendacion top."
+      [initiallyExpanded]="true"
+      [expandAllVersion]="expandAllVersion()"
+      [collapseAllVersion]="collapseAllVersion()"
+    >
+      <div card-summary class="collapsible-summary">
+        <div class="pill-list">
+          @for (item of simulatorCollapsedSummary(store.simulatedCoachResponse(), store.coachResponseValidation()); track item) {
+          <span class="pill pill--muted">{{ item }}</span>
+          }
+        </div>
+      </div>
+
+      <div card-content>
+        <div class="panel-title panel-title--with-action">
+          <div>
+            <h3>Acciones del simulador</h3>
+            <p>Controla la validacion y la aplicacion en memoria sin tocar Firestore.</p>
+          </div>
+
+          <div class="action-row">
+            <p-button
+              label="Cargar ejemplo vacio"
+              icon="pi pi-file"
+              severity="secondary"
+              [text]="true"
+              (onClick)="store.loadEmptySimulatedCoachResponse()"
+            />
+            <p-button
+              label="Cargar ejemplo de reemplazo"
+              icon="pi pi-refresh"
+              severity="secondary"
+              [text]="true"
+              [disabled]="!store.simulatedCoachResponseExampleAvailable()"
+              (onClick)="store.loadReplacementExampleSimulatedCoachResponse()"
+            />
+            <p-button
+              label="Validar respuesta"
+              icon="pi pi-check-circle"
+              severity="secondary"
+              (onClick)="store.validateSimulatedCoachResponse()"
+            />
+            <p-button
+              label="Aplicar simulacion"
+              icon="pi pi-play-circle"
+              severity="contrast"
+              [loading]="store.applyingCoachResponse()"
+              [disabled]="!store.topRecommendation() || !store.aiCoachContext()"
+              (onClick)="store.applySimulatedCoachResponse()"
+            />
+            <p-button
+              label="Restablecer"
+              icon="pi pi-undo"
+              severity="secondary"
+              [text]="true"
+              (onClick)="store.resetSimulatedCoachResponse()"
+            />
+          </div>
+        </div>
+
+        @if (!store.simulatedCoachResponseExampleAvailable()) {
+        <p class="empty-copy">
+          No existe una alternativa valida para construir automaticamente un ejemplo de reemplazo.
+        </p>
+        }
+
+        @if (store.coachApplyError()) {
+        <div class="ai-diagnostics__error ai-diagnostics__error--inline">
+          <i class="pi pi-times-circle" aria-hidden="true"></i>
+          <span>{{ store.coachApplyError() }}</span>
+        </div>
+        }
+
+        <article class="json-card">
+          <div class="json-card__toolbar">
+            <div>
+              <strong>JSON de AIRoutineCoachResponse</strong>
+              <p>Editor manual de la respuesta simulada.</p>
+            </div>
+            <p-button
+              label="Copiar"
+              icon="pi pi-copy"
+              size="small"
+              severity="secondary"
+              [text]="true"
+              (onClick)="copyText(store.simulatedCoachResponse(), 'JSON del simulador')"
+            />
+          </div>
+          <textarea
+            class="json-editor"
+            [value]="store.simulatedCoachResponse()"
+            (input)="store.setSimulatedCoachResponse($any($event.target).value)"
+          ></textarea>
+        </article>
+
+        <div class="summary-grid summary-grid--two">
+          <article class="summary-card">
+            <div class="panel-title">
+              <h3>Validacion visual</h3>
+              <p>Resultado actual del AIRoutineCoachResponseValidator.</p>
+            </div>
+
+            <div class="tag-grid">
+              <p-tag
+                [value]="store.coachResponseValidation()?.valid ? 'Valid' : 'Invalid'"
+                [severity]="validationSeverity(store.coachResponseValidation())"
+              />
+              @if (store.coachResponseValidation(); as validation) {
+              <span class="pill pill--muted">checkedAt: {{ validation.checkedAt }}</span>
+              }
+            </div>
+
+            @if (store.coachResponseValidation(); as validation) {
+            <div class="list-block">
+              <h4>Errores</h4>
+              <ul>
+                @for (error of validation.errors; track error) {
+                <li>{{ error }}</li>
+                } @empty {
+                <li>Sin errores</li>
+                }
+              </ul>
+            </div>
+            }
+          </article>
+
+          <article class="summary-card">
+            <div class="panel-title">
+              <h3>Resultado aplicado</h3>
+              <p>Resumen corto de la rutina adaptada en memoria.</p>
+            </div>
+
+            <div class="pill-list">
+              @for (item of adaptedRoutineCollapsedSummary(store.appliedCoachResult()); track item) {
+              <span class="pill pill--muted">{{ item }}</span>
+              }
+            </div>
+          </article>
+        </div>
+      </div>
+    </admin-collapsible-card>
+
+    <admin-collapsible-card
+      title="Adapted Routine Preview"
+      description="Comparacion en memoria entre la rutina original y la rutina adaptada por el applier."
+      [expandAllVersion]="expandAllVersion()"
+      [collapseAllVersion]="collapseAllVersion()"
+    >
+      <div card-summary class="collapsible-summary">
+        <div class="pill-list">
+          @for (item of adaptedRoutineCollapsedSummary(store.appliedCoachResult()); track item) {
+          <span class="pill pill--muted">{{ item }}</span>
+          }
+        </div>
+      </div>
+
+      <div card-content>
+        @if (store.appliedCoachResult(); as appliedResult) {
+        <div class="summary-grid summary-grid--two">
+          <article class="summary-card">
+            <div class="panel-title">
+              <h3>Resumen</h3>
+            </div>
+
+            <div class="meta-list meta-list--two-columns">
+              <div class="meta-item">
+                <span class="meta-label">rutina original</span>
+                <strong>{{ appliedResult.originalRecommendation.routineTemplate.name }}</strong>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">reviewRequired</span>
+                <strong>{{ appliedResult.reviewRequired ? 'Si' : 'No' }}</strong>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">cambios aplicados</span>
+                <strong>{{ appliedResult.appliedExerciseChanges.length + appliedResult.appliedVolumeChanges.length }}</strong>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">cambios rechazados</span>
+                <strong>{{ appliedResult.rejectedChanges.length }}</strong>
+              </div>
+            </div>
+
+            <div class="list-block">
+              <h4>Warnings</h4>
+              <ul>
+                @for (warning of appliedWarnings(appliedResult); track warning) {
+                <li>{{ warning }}</li>
+                } @empty {
+                <li>Sin warnings</li>
+                }
+              </ul>
+            </div>
+          </article>
+
+          <article class="summary-card">
+            <div class="panel-title">
+              <h3>Applied Exercise Changes</h3>
+              <p>Comparacion completa entre el ejercicio original y el reemplazo sugerido.</p>
+            </div>
+
+            <div class="exercise-change-list">
+              @for (change of appliedResult.appliedExerciseChanges; track change.exerciseId + change.reason) {
+              @let preview = appliedExerciseChangePreview(appliedResult, change.exerciseId, change.replacementExerciseId, change.reason);
+              <article class="exercise-change-card">
+                <div class="exercise-change-card__columns">
+                  <section class="exercise-detail-card">
+                    <span class="meta-label">Ejercicio original</span>
+                    <strong>{{ preview.original.name }}</strong>
+                    <span class="exercise-detail-card__id">(id: {{ preview.original.id }})</span>
+
+                    <div class="exercise-detail-card__meta">
+                      <div class="meta-item">
+                        <span class="meta-label">Musculos principales</span>
+                        <strong>{{ preview.original.primaryMuscles.join(', ') }}</strong>
+                      </div>
+                      <div class="meta-item">
+                        <span class="meta-label">Patron de movimiento</span>
+                        <strong>{{ preview.original.movementPattern }}</strong>
+                      </div>
+                      <div class="meta-item">
+                        <span class="meta-label">Equipo requerido</span>
+                        <strong>{{ preview.original.requiredEquipment.join(', ') }}</strong>
+                      </div>
+                    </div>
+                  </section>
+
+                  <div class="exercise-change-card__arrow" aria-hidden="true">-&gt;</div>
+
+                  <section class="exercise-detail-card">
+                    <span class="meta-label">Ejercicio reemplazo</span>
+                    @if (preview.replacement; as replacement) {
+                    <strong>{{ replacement.name }}</strong>
+                    <span class="exercise-detail-card__id">(id: {{ replacement.id }})</span>
+
+                    <div class="exercise-detail-card__meta">
+                      <div class="meta-item">
+                        <span class="meta-label">Musculos principales</span>
+                        <strong>{{ replacement.primaryMuscles.join(', ') }}</strong>
+                      </div>
+                      <div class="meta-item">
+                        <span class="meta-label">Patron de movimiento</span>
+                        <strong>{{ replacement.movementPattern }}</strong>
+                      </div>
+                      <div class="meta-item">
+                        <span class="meta-label">Equipo requerido</span>
+                        <strong>{{ replacement.requiredEquipment.join(', ') }}</strong>
+                      </div>
+                    </div>
+                    } @else {
+                    <p class="empty-copy">No hay ejercicio de reemplazo aplicado.</p>
+                    }
+                  </section>
+                </div>
+
+                <div class="list-block">
+                  <h4>Motivo del cambio</h4>
+                  <p>{{ preview.reason }}</p>
+                </div>
+
+                <div class="list-block">
+                  <h4>Coincidencias biomecanicas</h4>
+                  @if (preview.matchReasons.length > 0) {
+                  <div class="pill-list">
+                    @for (matchReason of preview.matchReasons; track matchReason) {
+                    <span class="pill pill--positive">{{ matchReason }}</span>
+                    }
+                  </div>
+                  } @else {
+                  <p class="empty-copy">No hay coincidencias estructuradas registradas para este reemplazo.</p>
+                  }
+                </div>
+              </article>
+              } @empty {
+              <p class="empty-copy">Sin cambios aplicados</p>
+              }
+            </div>
+          </article>
+        </div>
+
+        <div class="summary-grid summary-grid--two">
+          <article class="summary-card">
+            <div class="panel-title">
+              <h3>Applied Volume Changes</h3>
+            </div>
+            <ul>
+              @for (change of appliedResult.appliedVolumeChanges; track change.targetId + change.reason) {
+              <li>
+                {{ change.targetId }} | setsDeltaApplied: {{ change.setsDeltaApplied }} |
+                repsDeltaApplied: {{ change.repsDeltaApplied }} | {{ change.reason }}
+              </li>
+              } @empty {
+              <li>Sin cambios de volumen</li>
+              }
+            </ul>
+          </article>
+
+          <article class="summary-card">
+            <div class="panel-title">
+              <h3>Rejected Changes</h3>
+            </div>
+            <ul>
+              @for (change of appliedResult.rejectedChanges; track change.changeType + change.targetId + change.reason) {
+              <li>{{ change.changeType }} | {{ change.targetId }} | {{ change.reason }}</li>
+              } @empty {
+              <li>Sin cambios rechazados</li>
+              }
+            </ul>
+          </article>
+        </div>
+
+        <admin-collapsible-card
+          title="AIRoutineCoachAppliedResult"
+          description="Resultado serializado del applier."
+          [expandAllVersion]="expandAllVersion()"
+          [collapseAllVersion]="collapseAllVersion()"
+        >
+          <div card-summary class="collapsible-summary">
+            <div class="pill-list">
+              @for (item of jsonPayloadCollapsedSummary('Resultado listo', store.appliedCoachResultJson()); track item) {
+              <span class="pill pill--muted">{{ item }}</span>
+              }
+            </div>
+          </div>
+
+          <div card-content class="json-card">
+            <div class="json-card__toolbar">
+              <div>
+                <strong>Resultado serializado del applier</strong>
+                <p>Muestra originalRecommendation, adaptedRoutineTemplate y cambios aplicados.</p>
+              </div>
+              <p-button
+                label="Copiar"
+                icon="pi pi-copy"
+                size="small"
+                severity="secondary"
+                [text]="true"
+                (onClick)="copyText(store.appliedCoachResultJson(), 'AIRoutineCoachAppliedResult')"
+              />
+            </div>
+            <pre>{{ store.appliedCoachResultJson() }}</pre>
+          </div>
+        </admin-collapsible-card>
+        } @else {
+        <p class="empty-copy">
+          Todavia no hay una rutina adaptada en memoria. Valida y aplica una respuesta simulada para ver el preview.
+        </p>
+        }
+      </div>
+    </admin-collapsible-card>
+  </section>
+
+  <section id="technical-assignment" class="ai-diagnostics__panel">
+    <div class="summary-grid summary-grid--two">
+      <article class="summary-card">
+        <div class="panel-title">
+          <h2>Asignacion de rutina</h2>
+          <p>Flujo manual de prueba para admin. Nunca se ejecuta automaticamente.</p>
+        </div>
+
+        @if (store.assignmentError()) {
+        <div class="ai-diagnostics__error ai-diagnostics__error--inline">
+          <i class="pi pi-times-circle" aria-hidden="true"></i>
+          <span>{{ store.assignmentError() }}</span>
+        </div>
+        }
+
+        @if (store.latestAssignment(); as latestAssignment) {
+        <div class="meta-list meta-list--two-columns">
+          <div class="meta-item">
+            <span class="meta-label">assignmentId</span>
+            <strong>{{ latestAssignment.id }}</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">status</span>
+            <strong>{{ latestAssignment.status }}</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">routineTemplateId</span>
+            <strong>{{ latestAssignment.routineTemplateId }}</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">recommendationScore</span>
+            <strong>{{ latestAssignment.recommendationScore }}</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">dias clonados</span>
+            <strong>{{ latestAssignment.days.length }}</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">ejercicios clonados</span>
+            <strong>{{ assignedExerciseCount(latestAssignment) }}</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">assignedAt</span>
+            <strong>{{ timestampToDate(latestAssignment.assignedAt) | date: 'medium' }}</strong>
+          </div>
+        </div>
+        } @else {
+        <p class="empty-copy">Todavia no se ha asignado una rutina desde este panel.</p>
+        }
+      </article>
+
+      <article class="summary-card">
+        <div class="panel-title panel-title--with-action">
+          <div>
+            <h2>Rutina activa hidratada</h2>
+            <p>Documento principal, dias y ejercicios cargados desde AssignedRoutineFacade.</p>
+          </div>
+
+          <p-button
+            [label]="store.showActiveAssignmentDebug() ? 'Ocultar JSON' : 'Ver agregado JSON'"
+            [icon]="store.showActiveAssignmentDebug() ? 'pi pi-eye-slash' : 'pi pi-code'"
+            severity="secondary"
+            [text]="true"
+            (onClick)="store.toggleActiveAssignmentDebug()"
+          />
+        </div>
+
+        @if (store.activeAssignmentError()) {
+        <div class="ai-diagnostics__error ai-diagnostics__error--inline">
+          <i class="pi pi-times-circle" aria-hidden="true"></i>
+          <span>{{ store.activeAssignmentError() }}</span>
+        </div>
+        }
+
+        @if (store.activeAssignment(); as activeAssignment) {
+        <div class="meta-list meta-list--two-columns">
+          <div class="meta-item">
+            <span class="meta-label">documento principal</span>
+            <strong>{{ activeAssignment.id }}</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">status</span>
+            <strong>{{ activeAssignment.status }}</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">routineTemplateId</span>
+            <strong>{{ activeAssignment.routineTemplateId }}</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">dias</span>
+            <strong>{{ activeAssignment.days.length }}</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">ejercicios</span>
+            <strong>{{ assignedExerciseCount(activeAssignment) }}</strong>
+          </div>
+        </div>
+
+        <div class="day-grid">
+          @for (day of activeAssignment.days; track day.id) {
+          <article class="day-card">
+            <div class="day-card__header">
+              <div>
+                <span class="eyebrow">{{ day.dayId }}</span>
+                <h3>{{ day.dayName }}</h3>
+              </div>
+              <p-tag [value]="day.exerciseCount + ' ejercicios'" severity="info" />
+            </div>
+
+            <div class="meta-list meta-list--two-columns">
+              <div class="meta-item">
+                <span class="meta-label">order</span>
+                <strong>{{ day.order }}</strong>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">estimatedDuration</span>
+                <strong>{{ day.estimatedDuration }} min</strong>
+              </div>
+            </div>
+
+            <div class="exercise-list">
+              @for (exercise of day.exercises; track exercise.id) {
+              <div class="exercise-row">
+                <div>
+                  <strong>{{ exercise.nameSnapshot || exercise.exerciseId }}</strong>
+                  <p>
+                    originalExerciseId: {{ exercise.originalExerciseId }}<br />
+                    exerciseId: {{ exercise.exerciseId }}
+                  </p>
+                </div>
+                <div class="exercise-row__meta">
+                  <span>#{{ exercise.order }}</span>
+                  <span>{{ exercise.sets }}x{{ exercise.repsMin }}-{{ exercise.repsMax }}</span>
+                  <span>{{ exercise.restSeconds }}s</span>
+                  <span>{{ exercise.status }}</span>
+                </div>
+              </div>
+              }
+            </div>
+          </article>
+          }
+        </div>
+
+        @if (store.showActiveAssignmentDebug()) {
+        <div class="json-card">
+          <div class="json-card__toolbar">
+            <div>
+              <strong>Active Assignment Debug JSON</strong>
+              <p>Agregado serializado de la rutina activa.</p>
+            </div>
+            <p-button
+              label="Copiar"
+              icon="pi pi-copy"
+              size="small"
+              severity="secondary"
+              [text]="true"
+              (onClick)="copyText(store.activeAssignmentDebugJson(), 'Active Assignment Debug JSON')"
+            />
+          </div>
+          <pre>{{ store.activeAssignmentDebugJson() }}</pre>
+        </div>
+        }
+        } @else if (!store.loadingActiveAssignment()) {
+        <p class="empty-copy">
+          No hay rutina activa cargada. Usa "Ver rutina activa" para consultar el agregado actual.
+        </p>
+        }
+      </article>
+    </div>
+  </section>
+  }
+</div>

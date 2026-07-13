@@ -6,10 +6,25 @@ import {
   serverTimestamp,
   Firestore,
 } from '@angular/fire/firestore';
+import {
+  normalizeAthleteProfile,
+  normalizeAthleteProfileFormData,
+} from '@adrian-badilla/ai';
 import type {
   AthleteProfile,
   AthleteProfileFormData,
 } from '../types/athlete-profile.types';
+
+function buildPersistedHealthPayload(
+  health: AthleteProfile['health']
+): Record<string, unknown> {
+  return {
+    hasDisease: health.hasDisease,
+    hasInjury: health.hasInjury,
+    conditions: health.conditions ?? [],
+    injuries: health.injuries ?? [],
+  };
+}
 
 // ─── Repository ───────────────────────────────────────────────────────────────
 
@@ -38,7 +53,9 @@ export class AthleteProfileRepository {
     const snap = await getDoc(ref);
     if (!snap.exists()) return null;
     const data = snap.data();
-    return (data['athleteProfile'] as AthleteProfile | undefined) ?? null;
+    return normalizeAthleteProfile(
+      (data['athleteProfile'] as AthleteProfile | undefined) ?? null
+    ) as AthleteProfile | null;
   }
 
   /**
@@ -56,9 +73,11 @@ export class AthleteProfileRepository {
   ): Promise<void> {
     const ref = doc(this.#db, 'users', uid);
     const now = serverTimestamp();
+    const normalizedFormData = normalizeAthleteProfileFormData(formData);
 
     const profileData: Record<string, unknown> = {
-      ...formData,
+      ...normalizedFormData,
+      health: buildPersistedHealthPayload(normalizedFormData.health),
       completed: true,
       updatedAt: now,
     };

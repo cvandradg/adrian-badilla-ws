@@ -94,13 +94,18 @@ export function withCurrentUser<T extends CurrentUserDeps>(store: T) {
       /**
        * True when the user is logged in but hasn't completed physical onboarding.
        * `undefined` profile = still loading (don't show form yet).
+       * Checks `healthProfile.isComplete` first; falls back to legacy `physicalDataComplete`.
        */
       needsOnboarding: computed(() => {
         if (!s.authInitialized() || !s.firebaseUser()) return false;
         const profile = s.userProfile();
         if (profile === undefined) return false; // still loading
         if (profile === null) return true; // doc not found
-        return !profile.physicalDataComplete;
+        return !(
+          profile.healthProfile?.isComplete ??
+          profile.physicalDataComplete ??
+          false
+        );
       }),
     })),
 

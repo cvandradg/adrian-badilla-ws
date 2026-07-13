@@ -73,13 +73,19 @@
         "./libs/adrian-badilla/frontend/ai/src/index.ts"
       ],
       "@admin/exercise-library": [
-        "./libs/admin/exercise-library/src/index.ts"
+        "./libs/adrian-badilla/frontend/admin/exercise-library/src/index.ts"
       ],
       "@admin/exercise-library/routes": [
-        "./libs/admin/exercise-library/src/lib/exercise-library.routes.ts"
+        "./libs/adrian-badilla/frontend/admin/exercise-library/src/lib/exercise-library.routes.ts"
       ],
       "@admin/dashboard/routes": [
-        "./libs/admin/dashboard/src/lib/admin.routes.ts"
+        "./libs/adrian-badilla/frontend/admin/dashboard/src/lib/admin.routes.ts"
+      ],
+      "@admin/routine-builder": [
+        "./libs/adrian-badilla/frontend/admin/routine-builder/src/index.ts"
+      ],
+      "@admin/routine-builder/routes": [
+        "./libs/adrian-badilla/frontend/admin/routine-builder/src/lib/routine-builder.routes.ts"
       ]
     }
   },

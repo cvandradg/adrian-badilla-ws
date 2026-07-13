@@ -1,0 +1,78 @@
+@use 'settings/tokens' as t;
+
+// ── Admin shell ───────────────────────────────────────────────────────────────
+// Lightweight content organizer. Does NOT control the viewport.
+// The parent DashboardComponent already owns the header, sidenav, background,
+// and scrollable content area. This component only adds admin sub-navigation
+// and a router-outlet slot.
+
+.admin-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100%;
+
+  // ── Admin sub-navigation ──────────────────────────────────────────────────
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem clamp(0.75rem, 3vw, 1.5rem);
+    background: t.$dashboard-panel-surface;
+    border-bottom: 1px solid t.$dashboard-border-subtle;
+    backdrop-filter: blur(t.$dashboard-content-blur);
+    -webkit-backdrop-filter: blur(t.$dashboard-content-blur);
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-shrink: 0;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  // ── Content ───────────────────────────────────────────────────────────────
+
+  &__content {
+    flex: 1;
+    min-height: 0;
+    overflow: visible;
+  }
+}
+
+// ── Admin nav items ───────────────────────────────────────────────────────────
+
+.admin-nav__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: t.$dashboard-text-muted;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s, background 0.2s;
+
+  i {
+    font-size: 0.8rem;
+  }
+
+  &:hover {
+    color: t.$dashboard-text-primary;
+    background: t.$dashboard-hover-surface;
+  }
+
+  &--active {
+    color: t.$dashboard-text-primary;
+    background: t.$dashboard-hover-surface;
+    font-weight: 600;
+  }
+}
+
+:host {
+  display: block;
+  min-height: 100%;
+}

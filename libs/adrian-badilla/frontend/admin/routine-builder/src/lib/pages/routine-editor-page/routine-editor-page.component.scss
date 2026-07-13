@@ -1,0 +1,1212 @@
+@use 'settings/tokens' as t;
+
+// ─── Screen-reader only ───────────────────────────────────────────────────────
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// ─── Slide-in animation for exercise cards ────────────────────────────────────
+@keyframes ex-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ─── Editor shell ─────────────────────────────────────────────────────────────
+.editor {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+
+  // ── Header ────────────────────────────────────────────────────────────────
+  &__header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    background: t.$dashboard-panel-surface;
+    border-bottom: 1px solid t.$dashboard-border-subtle;
+    backdrop-filter: blur(t.$dashboard-content-blur);
+    -webkit-backdrop-filter: blur(t.$dashboard-content-blur);
+    min-width: 0;
+    overflow: hidden;
+
+    .header-start {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .header-info {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .header-name {
+      font-size: clamp(0.85rem, 3vw, 1rem);
+      font-weight: 700;
+      color: t.$dashboard-text-primary;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: clamp(80px, 30vw, 220px);
+    }
+
+    .header-dirty {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #fbbf24;
+      white-space: nowrap;
+      flex-shrink: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+  }
+
+  // ── Empty state ────────────────────────────────────────────────────────────
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 4rem 1.5rem;
+    text-align: center;
+
+    .empty-icon {
+      font-size: 3rem;
+      color: t.$ab-metal-lo;
+      opacity: 0.4;
+    }
+
+    .empty-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: t.$dashboard-text-primary;
+      overflow-wrap: anywhere;
+      word-break: normal;
+    }
+
+    .empty-sub {
+      font-size: 0.875rem;
+      color: t.$dashboard-text-muted;
+      max-width: 30ch;
+      line-height: 1.6;
+      overflow-wrap: break-word;
+    }
+  }
+
+  // ── Tabs ──────────────────────────────────────────────────────────────────
+  &__tabs {
+    flex: 1;
+  }
+}
+
+// ─── Tab pills ────────────────────────────────────────────────────────────────
+.tab-day-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 7rem;
+}
+
+.tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.3rem;
+  margin-left: 0.35rem;
+  font-size: 0.6rem;
+  font-weight: 800;
+  background: t.$dashboard-glow-outer;
+  color: #000;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+// ─── Day panel (tab content wrapper) ─────────────────────────────────────────
+.day-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.125rem 1rem;
+  max-width: 100%;
+  overflow: hidden;
+
+  @media (min-width: 600px) {
+    padding: 1.5rem;
+  }
+
+  // On desktop: fill the full tabpanel height, scroll internally.
+  // Content is centered with a comfortable max reading width.
+  @media (min-width: 1200px) {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 2rem max(1.5rem, calc((100% - 860px) / 2));
+    box-sizing: border-box;
+    // The editor surface colour shows through uniformly (no background set here).
+    // The editor grid's background: t.$dashboard-content-surface is the canvas.
+  }
+}
+
+// ─── Day header ───────────────────────────────────────────────────────────────
+.day-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  overflow: hidden;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-shrink: 0;
+  }
+}
+
+.day-icon {
+  font-size: 1.125rem;
+  color: t.$dashboard-glow-outer;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.day-name-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid t.$dashboard-border-subtle;
+  border-radius: 0;
+  color: t.$dashboard-text-primary;
+  height: 2rem;
+  padding: 0 0.2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:focus {
+    outline: none;
+    border-bottom-color: t.$dashboard-glow-outer;
+  }
+  &::placeholder {
+    color: t.$ab-metal-lo;
+    font-weight: 400;
+  }
+}
+
+.day-meta {
+  font-size: 0.7rem;
+  color: t.$dashboard-text-muted;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ─── Exercise list ────────────────────────────────────────────────────────────
+.exercise-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 100%;
+  overflow: hidden;
+  // On desktop: day-panel is the scroll container; list just flows naturally
+  @media (min-width: 1200px) {
+    overflow: visible;
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    padding: 2.5rem 1.5rem;
+    border: 1.5px dashed t.$dashboard-border-subtle;
+    border-radius: 0.875rem;
+    color: t.$dashboard-text-muted;
+    font-size: 0.875rem;
+    text-align: center;
+    overflow-wrap: anywhere;
+    overflow: hidden;
+
+    i {
+      font-size: 1.75rem;
+      opacity: 0.35;
+    }
+  }
+}
+
+// ─── Exercise card ────────────────────────────────────────────────────────────
+.ex-card {
+  background: t.$dashboard-panel-surface;
+  backdrop-filter: blur(t.$dashboard-content-blur);
+  -webkit-backdrop-filter: blur(t.$dashboard-content-blur);
+  border: 1px solid t.$dashboard-border-subtle;
+  border-radius: 1rem;
+  overflow: hidden; // prevents any child overflowing the card boundary
+  max-width: 100%;
+  animation: ex-slide-in 0.22s ease both;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: t.$dashboard-border-strong;
+  }
+
+  // ── Card header row ──────────────────────────────────────────────────────
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem 0.75rem 0.625rem;
+    min-width: 0;
+    overflow: hidden;
+  }
+}
+
+// ─── Exercise thumbnail ───────────────────────────────────────────────────────
+.ex-thumb-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.625rem;
+  overflow: hidden;
+}
+
+.ex-num {
+  position: absolute;
+  top: -0.25rem;
+  left: -0.25rem;
+  z-index: 2;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: t.$dashboard-glow-outer;
+  color: #000;
+  font-size: 0.6rem;
+  font-weight: 800;
+  border-radius: 999px;
+  line-height: 1;
+}
+
+.ex-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ex-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    t.$dashboard-hover-surface 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+
+  i {
+    font-size: 1.15rem;
+    color: t.$dashboard-glow-outer;
+    opacity: 0.55;
+  }
+}
+
+// ─── Exercise identity ────────────────────────────────────────────────────────
+.ex-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ex-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: t.$dashboard-text-primary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.ex-muscle-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: t.$dashboard-glow-outer;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.15rem 0.4rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  width: fit-content;
+
+  i {
+    font-size: 0.6rem;
+    flex-shrink: 0;
+  }
+}
+
+// ─── Exercise card actions ────────────────────────────────────────────────────
+.ex-actions {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+  margin-left: auto;
+
+  // Ensure 44px touch targets on each button
+  ::ng-deep .p-button {
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+  }
+}
+
+// ─── Stats grid ───────────────────────────────────────────────────────────────
+// Mobile-first: 2 columns. Expands to 3 from 400px, auto-fill from 560px.
+.ex-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.625rem 0.75rem;
+  padding: 0.75rem;
+  border-top: 1px solid t.$dashboard-border-subtle;
+  max-width: 100%;
+  overflow: hidden;
+
+  @media (min-width: 400px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (min-width: 560px) {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+}
+
+.stat-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.stat-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: t.$ab-metal-lo;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-input {
+  width: 100%;
+}
+
+.stat-text-input {
+  width: 100%;
+  background: t.$dashboard-hover-surface;
+  border: 1px solid t.$dashboard-border-subtle;
+  border-radius: 0.4rem;
+  color: t.$dashboard-text-primary;
+  height: 2.25rem;
+  padding: 0 0.5rem;
+  font-size: 0.875rem;
+  min-width: 0;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: t.$dashboard-glow-outer;
+  }
+  &::placeholder {
+    color: t.$ab-metal-lo;
+  }
+}
+
+// ─── Notes ────────────────────────────────────────────────────────────────────
+.ex-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.625rem 0.75rem 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+
+  .notes-input {
+    width: 100%;
+    background: t.$dashboard-hover-surface;
+    border: 1px solid t.$dashboard-border-subtle;
+    border-radius: 0.5rem;
+    color: t.$dashboard-text-primary;
+    padding: 0.5rem 0.625rem;
+    font-size: 0.8rem;
+    resize: none;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+
+    &:focus {
+      outline: none;
+      border-color: t.$dashboard-glow-outer;
+    }
+    &::placeholder {
+      color: t.$ab-metal-lo;
+      font-style: italic;
+    }
+  }
+}
+
+// ─── Add exercise button ──────────────────────────────────────────────────────
+.add-ex-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.875rem;
+  background: transparent;
+  border: 1.5px dashed t.$dashboard-border-subtle;
+  border-radius: 0.875rem;
+  color: t.$dashboard-text-muted;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  min-height: 2.75rem;
+  overflow: hidden;
+
+  span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  i {
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: t.$dashboard-hover-surface;
+    border-color: t.$dashboard-glow-outer;
+    color: t.$dashboard-glow-outer;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// ─── Desktop 3-panel layout ───────────────────────────────────────────────────
+// Mobile: flex column (existing).  Desktop (≥1200px): header | sidebar + main [+ props].
+// The sidebar is always visible on desktop.
+// The properties panel appears only when an exercise is selected.
+
+.editor__sidebar,
+.editor__properties {
+  display: none; // hidden on mobile; shown by media query below
+}
+
+@media (min-width: 1200px) {
+  // Editor host fills the admin-shell__content (which now has a definite height)
+  :host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  // Hide the tab navigation on desktop — sidebar handles day switching.
+  // Using :host ::ng-deep gives [_nghost] specificity which reliably overrides
+  // any PrimeNG display rule, including ones with !important at equal specificity.
+  :host ::ng-deep .rb-days-tablist {
+    display: none !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  // Propagate definite height to tabpanels and remove PrimeNG default background
+  :host ::ng-deep .editor__tabs p-tabpanels,
+  :host ::ng-deep .editor__tabs .p-tabpanels {
+    height: 100%;
+    overflow: hidden;
+    background: transparent !important;
+  }
+  :host ::ng-deep .editor__tabs p-tabpanel,
+  :host ::ng-deep .editor__tabs .p-tabpanel {
+    height: 100%;
+    overflow: hidden;
+    background: transparent !important;
+  }
+
+  .editor {
+    display: grid;
+    grid-template-areas:
+      'header  header'
+      'sidebar main';
+    grid-template-columns: 260px minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    height: 100%;
+    overflow: hidden;
+    background: t.$dashboard-content-surface;
+
+    // When an exercise is selected: expand to 3 columns
+    &--has-selection {
+      grid-template-areas:
+        'header  header  header'
+        'sidebar main    props';
+      grid-template-columns: 260px minmax(0, 1fr) 360px;
+    }
+  }
+
+  .editor__header {
+    grid-area: header;
+  }
+  .editor__empty {
+    grid-column: 1 / -1;
+    align-self: start;
+  }
+  .editor__sidebar {
+    grid-area: sidebar;
+    display: flex;
+  }
+  .editor__tabs {
+    grid-area: main;
+    overflow: hidden; // no external scroll — day-panel scrolls internally
+    background: transparent;
+  }
+  .editor__properties {
+    grid-area: props;
+    display: none; // hidden until an exercise is selected
+
+    .editor--has-selection & {
+      display: flex;
+    }
+  }
+
+  // Slimmer header on desktop
+  .editor__header .header-name {
+    max-width: 40vw;
+  }
+
+  // Hide stats from cards — they live in the properties panel on desktop
+  .ex-stats,
+  .ex-notes {
+    display: none;
+  }
+
+  // Selected card gets an accent ring
+  .ex-card--selected {
+    border-color: t.$dashboard-glow-outer !important;
+    background: rgba(61, 165, 194, 0.06) !important;
+  }
+
+  // Cards are fully clickable on desktop
+  .ex-card {
+    cursor: pointer;
+  }
+}
+
+// ─── Sidebar ─────────────────────────────────────────────────────────────────
+
+.editor__sidebar {
+  flex-direction: column;
+  background: t.$dashboard-panel-surface;
+  border-right: 1px solid t.$dashboard-border-subtle;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0.875rem 0.75rem;
+  border-bottom: 1px solid t.$dashboard-border-subtle;
+  flex-shrink: 0;
+}
+
+.sidebar-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: t.$ab-metal-lo;
+}
+
+.sidebar-days {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.sidebar-day {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.625rem 0.5rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s;
+  min-height: 2.75rem;
+
+  &:hover {
+    background: t.$dashboard-hover-surface;
+    border-color: t.$dashboard-border-subtle;
+  }
+
+  &--active {
+    background: rgba(61, 165, 194, 0.1);
+    border-color: t.$dashboard-glow-outer;
+
+    .sidebar-day__name {
+      color: t.$dashboard-glow-outer;
+    }
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    width: 1.75rem;
+    height: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+    background: rgba(61, 165, 194, 0.08);
+    color: t.$dashboard-glow-outer;
+    font-size: 0.8rem;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  &__name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: t.$dashboard-text-primary;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__count {
+    font-size: 0.68rem;
+    color: t.$dashboard-text-muted;
+    white-space: nowrap;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  &:hover &__actions {
+    opacity: 1;
+  }
+}
+
+// ─── Properties panel ─────────────────────────────────────────────────────────
+
+.editor__properties {
+  flex-direction: column;
+  background: t.$dashboard-panel-surface;
+  border-left: 1px solid t.$dashboard-border-subtle;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0; // prevent the panel itself from overflowing the grid cell
+  box-sizing: border-box;
+}
+
+.props-header {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.875rem;
+  border-bottom: 1px solid t.$dashboard-border-subtle;
+  flex-shrink: 0;
+}
+
+.props-thumb {
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.props-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.props-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    t.$dashboard-hover-surface,
+    rgba(255, 255, 255, 0.02)
+  );
+
+  i {
+    font-size: 1rem;
+    color: t.$dashboard-glow-outer;
+    opacity: 0.6;
+  }
+}
+
+.props-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.props-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: t.$dashboard-text-primary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.props-muscle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: t.$dashboard-glow-outer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  i {
+    font-size: 0.6rem;
+    flex-shrink: 0;
+  }
+}
+
+.props-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.props-section-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: t.$ab-metal-lo;
+}
+
+.props-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  min-width: 0;
+  box-sizing: border-box;
+
+  // Constrain PrimeNG InputNumber so it never overflows its grid cell
+  ::ng-deep .p-inputnumber {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+
+    .p-inputnumber-input {
+      flex: 1;
+      min-width: 0;
+      width: 0; // flex child — actual width is set by flex: 1
+    }
+
+    // Stacked +/- buttons must not push the input out
+    .p-inputnumber-button-group {
+      flex-shrink: 0;
+    }
+  }
+
+  ::ng-deep .p-inputtext {
+    min-width: 0;
+    box-sizing: border-box;
+  }
+}
+
+.props-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  &--full {
+    grid-column: 1 / -1;
+  }
+}
+
+.props-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: t.$ab-metal-lo;
+}
+
+.props-input {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.props-text-input {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  background: t.$dashboard-hover-surface;
+  border: 1px solid t.$dashboard-border-subtle;
+  border-radius: 0.4rem;
+  color: t.$dashboard-text-primary;
+  height: 2.25rem;
+  padding: 0 0.625rem;
+  font-size: 0.875rem;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: t.$dashboard-glow-outer;
+  }
+  &::placeholder {
+    color: t.$ab-metal-lo;
+  }
+}
+
+.props-notes {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  background: t.$dashboard-hover-surface;
+  border: 1px solid t.$dashboard-border-subtle;
+  border-radius: 0.5rem;
+  color: t.$dashboard-text-primary;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 4.5rem;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: t.$dashboard-glow-outer;
+  }
+  &::placeholder {
+    color: t.$ab-metal-lo;
+    font-style: italic;
+  }
+}
+
+.props-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  height: 100%;
+
+  i {
+    font-size: 2rem;
+    color: t.$ab-metal-lo;
+    opacity: 0.4;
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: t.$dashboard-text-muted;
+    line-height: 1.5;
+    max-width: 18ch;
+  }
+}
+
+// ─── Exercise picker ──────────────────────────────────────────────────────────
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 1rem;
+
+  &__search {
+    position: relative;
+    flex-shrink: 0;
+
+    .picker-search-icon {
+      position: absolute;
+      left: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: t.$ab-metal-lo;
+      pointer-events: none;
+      font-size: 0.875rem;
+    }
+
+    .picker-search-input {
+      width: 100%;
+      padding-left: 2.5rem;
+      background: t.$dashboard-panel-surface;
+      border: 1px solid t.$dashboard-border-subtle;
+      border-radius: 0.5rem;
+      color: t.$dashboard-text-primary;
+      height: 2.75rem;
+      font-size: 0.9rem;
+
+      &::placeholder {
+        color: t.$ab-metal-lo;
+      }
+      &:focus {
+        outline: none;
+        border-color: t.$dashboard-glow-outer;
+      }
+    }
+  }
+
+  &__list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding-right: 0.25rem;
+  }
+}
+
+:host ::ng-deep .p-dialog-mask:has(.exercise-picker-dialog) {
+  padding: 48px 24px;
+  box-sizing: border-box;
+  align-items: center;
+}
+
+:host ::ng-deep .exercise-picker-dialog {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: 0;
+  background: t.$dashboard-panel-surface;
+  border: 1px solid t.$dashboard-border-subtle;
+}
+
+:host ::ng-deep .exercise-picker-dialog .p-dialog-header {
+  flex-shrink: 0;
+  border-bottom: 1px solid t.$dashboard-border-subtle;
+  background: t.$dashboard-panel-surface;
+}
+
+:host ::ng-deep .exercise-picker-dialog .p-dialog-content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  background: t.$dashboard-panel-surface;
+}
+
+@media (max-width: 640px) {
+  :host ::ng-deep .p-dialog-mask:has(.exercise-picker-dialog) {
+    padding: 16px;
+    align-items: flex-start;
+  }
+}
+
+.picker-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  color: t.$dashboard-text-muted;
+  font-size: 0.875rem;
+}
+
+.picker-item {
+  display: grid;
+  grid-template-columns: 2.75rem 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  background: t.$dashboard-panel-surface;
+  border: 1px solid t.$dashboard-border-subtle;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+  width: 100%;
+
+  &:hover {
+    border-color: t.$dashboard-glow-outer;
+    background: t.$dashboard-hover-surface;
+  }
+
+  &__thumb {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.3rem;
+    overflow: hidden;
+    background: t.$dashboard-hover-surface;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    i {
+      color: t.$ab-metal-lo;
+      font-size: 0.9rem;
+    }
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+
+    .picker-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: t.$dashboard-text-primary;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .picker-muscles {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      font-size: 0.73rem;
+      color: t.$dashboard-text-muted;
+    }
+  }
+
+  &__add {
+    color: t.$dashboard-glow-outer;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+}

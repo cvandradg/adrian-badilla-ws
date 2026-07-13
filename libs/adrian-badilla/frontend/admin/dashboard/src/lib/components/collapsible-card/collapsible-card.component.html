@@ -1,0 +1,33 @@
+<article class="collapsible-card">
+  <button
+    type="button"
+    class="collapsible-card__header"
+    [attr.aria-expanded]="expanded()"
+    (click)="toggle()"
+  >
+    <div class="collapsible-card__heading">
+      <div class="collapsible-card__title-row">
+        <i class="collapsible-card__indicator" [class]="indicatorIcon()" aria-hidden="true"></i>
+        <h3>{{ title() }}</h3>
+      </div>
+
+      @if (description()) {
+      <p>{{ description() }}</p>
+      }
+    </div>
+
+    <span class="collapsible-card__state">{{ stateLabel() }}</span>
+  </button>
+
+  @if (!expanded()) {
+  <div class="collapsible-card__summary">
+    <ng-content select="[card-summary]" />
+  </div>
+  }
+
+  @if (expanded()) {
+  <div class="collapsible-card__content">
+    <ng-content select="[card-content]" />
+  </div>
+  }
+</article>

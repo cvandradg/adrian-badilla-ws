@@ -1,0 +1,89 @@
+@use 'settings/tokens' as t;
+
+.collapsible-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.03);
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  &__heading {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h3 {
+      color: t.$dashboard-text-primary;
+    }
+
+    p {
+      color: t.$dashboard-text-muted;
+      line-height: 1.5;
+    }
+  }
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: 0;
+  }
+
+  &__indicator {
+    color: t.$dashboard-text-muted;
+    font-size: 0.85rem;
+    line-height: 1;
+    transition: transform 180ms ease;
+  }
+
+  &__state {
+    flex-shrink: 0;
+    padding: 0.35rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    color: t.$dashboard-text-muted;
+    font-size: 0.78rem;
+    line-height: 1;
+  }
+
+  &__summary,
+  &__content {
+    animation: collapsible-card-fade-in 180ms ease;
+  }
+}
+
+@keyframes collapsible-card-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

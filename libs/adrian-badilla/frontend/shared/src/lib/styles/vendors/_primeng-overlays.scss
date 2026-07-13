@@ -1,0 +1,180 @@
+@use '../settings/tokens' as t;
+
+// ─── PrimeNG Overlay Responsive Overrides ────────────────────────────────────
+//
+// Fixes Dialog, ConfirmDialog, DynamicDialog, and Toast on mobile.
+// Mobile-first: 320px → Desktop.
+//
+// Why here:
+//   PrimeNG appends all overlays to <body>, outside any Angular component's
+//   view encapsulation. Global styles are the only place that can target them.
+//
+// Design tokens used:
+//   $dashboard-panel-surface   rgba(9, 18, 29, 0.78)   card background
+//   $dashboard-border-subtle   rgba(132, 165, 188, 0.18)  card border
+//   $dashboard-content-blur    18px                     backdrop blur
+//   $dashboard-panel-radius    1rem                     corner radius
+
+// ─── Internal constants ───────────────────────────────────────────────────────
+
+$-margin: 1rem; // 16px safe edge margin
+$-max-w: calc(100vw - #{$-margin * 2}); // full-width minus margins
+$-radius: t.$dashboard-panel-radius;
+
+// ─── 1. Dialog & ConfirmDialog ────────────────────────────────────────────────
+//
+// The mask (.p-dialog-mask) fills the viewport with position:fixed and uses
+// flex to center the dialog. Adding padding to the mask forces the dialog
+// to stay inside the safe zone on every screen size.
+
+.p-dialog-mask {
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  // Push mask away from edges so the dialog can never touch the viewport border
+  .p-dialog-mask {
+    padding: $-margin !important;
+    padding-top: max(#{$-margin}, env(safe-area-inset-top)) !important;
+    padding-bottom: max(#{$-margin}, env(safe-area-inset-bottom)) !important;
+    padding-left: max(#{$-margin}, env(safe-area-inset-left)) !important;
+    padding-right: max(#{$-margin}, env(safe-area-inset-right)) !important;
+    align-items: flex-start !important; // show dialog near top for tall content
+  }
+
+  // Constrain the dialog itself to the padded container
+  .p-dialog {
+    max-width: $-max-w !important;
+    width: 100% !important;
+    max-height: calc(100dvh - #{$-margin * 2}) !important;
+    margin: 0 !important;
+    border-radius: $-radius !important;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  // Override inline-style width on very narrow phones (360px→390px)
+  @media (max-width: 480px) {
+    .p-dialog {
+      max-width: 100% !important;
+    }
+  }
+
+  // Text overflow safety inside any dialog section
+  .p-dialog-header,
+  .p-dialog-content,
+  .p-dialog-footer {
+    overflow-wrap: anywhere !important;
+    white-space: normal !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box;
+  }
+}
+
+// ─── 2. Toast ─────────────────────────────────────────────────────────────────
+//
+// On mobile, all corner-pinned toasts are converted to a centered strip that
+// spans the full width minus the safe margin. This matches the notification
+// style seen in native mobile apps.
+
+@media (max-width: 640px) {
+  // Any positioned toast container
+  .p-toast {
+    // Span from $-margin to $-margin on both sides (no transform needed)
+    left: $-margin !important;
+    right: $-margin !important;
+    inset-inline-start: $-margin !important;
+    inset-inline-end: $-margin !important;
+    transform: none !important;
+    max-width: none !important;
+    width: auto !important;
+    box-sizing: border-box;
+  }
+
+  // Top variants → pin to top safe zone
+  .p-toast-top-right,
+  .p-toast-top-left,
+  .p-toast-top-center {
+    top: max(#{$-margin}, env(safe-area-inset-top)) !important;
+    inset-block-start: max(#{$-margin}, env(safe-area-inset-top)) !important;
+  }
+
+  // Bottom variants → pin to bottom safe zone
+  .p-toast-bottom-right,
+  .p-toast-bottom-left,
+  .p-toast-bottom-center {
+    bottom: max(#{$-margin}, env(safe-area-inset-bottom)) !important;
+    inset-block-end: max(#{$-margin}, env(safe-area-inset-bottom)) !important;
+    top: auto !important;
+    inset-block-start: auto !important;
+  }
+
+  // Toast message fills the full container width
+  .p-toast-message {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  // Text inside toast messages wraps cleanly
+  .p-toast-message-text,
+  .p-toast-summary,
+  .p-toast-detail {
+    overflow-wrap: anywhere !important;
+    white-space: normal !important;
+    overflow-x: hidden !important;
+    min-width: 0;
+  }
+}
+
+// ─── 3. DynamicDialog ────────────────────────────────────────────────────────
+//
+// DynamicDialog uses the same .p-dialog and .p-dialog-mask classes, so the
+// rules above already apply. These rules handle the case where DialogService
+// adds extra wrapper selectors.
+
+.p-dynamic-dialog {
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .p-dynamic-dialog {
+    max-width: $-max-w !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: $-radius !important;
+    box-sizing: border-box;
+  }
+}
+
+// ─── 4. OverlayPanel & Popover ───────────────────────────────────────────────
+//
+// Popovers should never overflow the viewport horizontally.
+
+@media (max-width: 640px) {
+  .p-overlaypanel,
+  .p-popover {
+    max-width: $-max-w !important;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+}
+
+// ─── 5. Global overflow protection (all PrimeNG overlays) ────────────────────
+//
+// Any PrimeNG overlay rendered to <body> that contains long text must wrap it.
+
+.p-component-overlay,
+.p-overlay {
+  box-sizing: border-box;
+}
+
+// Prevent any PrimeNG text from producing horizontal scroll
+.p-dialog-header span,
+.p-dialog-content *,
+.p-toast-summary,
+.p-toast-detail,
+.p-confirmdialog-message {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}

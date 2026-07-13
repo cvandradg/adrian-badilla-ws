@@ -11,6 +11,7 @@ import { environment } from '@adrian-badilla/ui/shared';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFunctions, provideFunctions } from '@angular/fire/functions';
+import { getStorage, provideStorage } from '@angular/fire/storage';
 import { provideRouter } from '@angular/router';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { FontAwesomeicons } from '@adrian-badilla/ui/shared/assets/icons/fontawesome';
@@ -26,6 +27,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideAnimationsAsync(),
     provideFirestore(() => getFirestore()),
+    provideStorage(() => getStorage()),
     provideHttpClient(),
     providePrimeNG({
       ripple: true,

@@ -1,0 +1,35 @@
+<div class="admin-shell">
+  <!-- ── Admin sub-navigation ────────────────────────────────────────── -->
+  <nav class="admin-shell__nav" aria-label="Navegación administrativa">
+    <a
+      class="admin-nav__item"
+      routerLink="/dashboard/admin"
+      routerLinkActive="admin-nav__item--active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="pi pi-th-large"></i>
+      <span>Dashboard</span>
+    </a>
+    <a
+      class="admin-nav__item"
+      routerLink="/dashboard/admin/exercise-library"
+      routerLinkActive="admin-nav__item--active"
+    >
+      <i class="pi pi-book"></i>
+      <span>Ejercicios</span>
+    </a>
+    <a
+      class="admin-nav__item"
+      routerLink="/dashboard/admin/routine-builder"
+      routerLinkActive="admin-nav__item--active"
+    >
+      <i class="pi pi-list-check"></i>
+      <span>Rutinas</span>
+    </a>
+  </nav>
+
+  <!-- ── Content ─────────────────────────────────────────────────────── -->
+  <div class="admin-shell__content">
+    <router-outlet />
+  </div>
+</div>

@@ -1,0 +1,118 @@
+@use 'settings/tokens' as t;
+
+.bulk-importer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bulk-importer__entry,
+.draft-card,
+.bulk-importer__toolbar,
+.bulk-importer__footer {
+  background: t.$dashboard-panel-surface;
+  border: 1px solid t.$dashboard-border-subtle;
+  border-radius: 0.75rem;
+}
+
+.bulk-importer__entry,
+.bulk-importer__toolbar,
+.bulk-importer__footer {
+  padding: 1rem;
+}
+
+.bulk-importer__label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: t.$dashboard-text-primary;
+}
+
+.bulk-importer__textarea {
+  width: 100%;
+}
+
+.bulk-importer__actions,
+.bulk-importer__footer,
+.draft-card__header,
+.selection-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.bulk-importer__actions,
+.bulk-importer__footer {
+  justify-content: space-between;
+  margin-top: 0.75rem;
+}
+
+.bulk-importer__hint,
+.selection-count {
+  color: t.$dashboard-text-muted;
+}
+
+.bulk-importer__error {
+  margin-top: 0.75rem;
+  color: red;
+}
+
+.draft-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.draft-card {
+  padding: 1rem;
+}
+
+.draft-card__header {
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.draft-card__selection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.draft-card__grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+
+  label {
+    font-size: 0.85rem;
+    color: t.$dashboard-text-muted;
+  }
+}
+
+.field--review {
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.field--full {
+  grid-column: 1 / -1;
+}
+
+.bulk-importer__spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+@media (min-width: 900px) {
+  .draft-card__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -1,0 +1,165 @@
+<p-toast position="top-right" />
+<p-confirmDialog />
+
+<div class="routine-builder">
+
+  <!-- ── Toolbar ──────────────────────────────────────────────────────── -->
+  <p-toolbar styleClass="routine-builder__toolbar">
+    <ng-template #start>
+      <div class="toolbar-start">
+        <span class="toolbar-title">
+          <i class="pi pi-list-check toolbar-title__icon"></i>
+          Creador de Rutinas
+        </span>
+        @if (!store.loading()) {
+          <span class="toolbar-count">{{ store.totalCount() }} plantillas</span>
+        }
+      </div>
+    </ng-template>
+    <ng-template #end>
+      <p-button
+        label="Nueva Plantilla"
+        icon="pi pi-plus"
+        severity="contrast"
+        size="small"
+        [loading]="store.saving()"
+        (onClick)="openCreateDialog()"
+      />
+    </ng-template>
+  </p-toolbar>
+
+  <!-- ── Search ───────────────────────────────────────────────────────── -->
+  <div class="routine-builder__search">
+    <label for="routine-search" class="sr-only">Buscar plantillas</label>
+    <i class="pi pi-search search-icon" aria-hidden="true"></i>
+    <input
+      id="routine-search"
+      type="text"
+      pInputText
+      class="search-input"
+      placeholder="Buscar por nombre, descripción o etiqueta…"
+      [value]="searchValue()"
+      (input)="onSearch($any($event.target).value)"
+    />
+  </div>
+
+  <!-- ── Loading skeleton ──────────────────────────────────────────────── -->
+  @if (store.loading()) {
+    <div class="routine-builder__skeleton-grid">
+      @for (item of skeletonItems; track $index) {
+        <div class="routine-card routine-card--skeleton">
+          <div class="routine-card__body">
+            <p-skeleton width="55%" height="1.1rem" styleClass="mb-2" />
+            <p-skeleton width="38%" height="0.8rem" />
+          </div>
+          <div class="routine-card__actions">
+            <p-skeleton width="2rem" height="2rem" borderRadius="50%" />
+            <p-skeleton width="2rem" height="2rem" borderRadius="50%" />
+            <p-skeleton width="2rem" height="2rem" borderRadius="50%" />
+          </div>
+        </div>
+      }
+    </div>
+
+  } @else if (store.filteredRoutines().length === 0) {
+    <!-- ── Empty state ────────────────────────────────────────────────── -->
+    <div class="routine-builder__empty">
+      <i class="pi pi-inbox empty-icon"></i>
+      <p class="empty-title">
+        {{ store.search() ? 'Sin resultados' : 'Sin plantillas' }}
+      </p>
+      <p class="empty-sub">
+        {{ store.search()
+          ? 'Prueba con otro término.'
+          : 'Crea la primera plantilla de rutina.' }}
+      </p>
+      @if (!store.search()) {
+        <p-button
+          label="Nueva Plantilla"
+          icon="pi pi-plus"
+          severity="contrast"
+          (onClick)="openCreateDialog()"
+        />
+      }
+    </div>
+
+  } @else {
+    <!-- ── Routine grid ────────────────────────────────────────────────── -->
+    <div class="routine-builder__grid">
+      @for (routine of store.filteredRoutines(); track routine.id) {
+        <div class="routine-card">
+          <div class="routine-card__body">
+            <span class="routine-name">{{ routine.name }}</span>
+
+            <div class="routine-meta">
+              <p-tag
+                [value]="difficultyLabel(routine.difficulty)"
+                [severity]="difficultyTag(routine.difficulty)"
+                styleClass="meta-tag"
+              />
+              <span class="meta-item">
+                <i class="pi pi-calendar"></i>
+                {{ routine.daysPerWeek }} días / semana
+              </span>
+              <span class="meta-item">
+                <i class="pi pi-layers"></i>
+                {{ routine.days.length }} día{{ routine.days.length !== 1 ? 's' : '' }} configurado{{ routine.days.length !== 1 ? 's' : '' }}
+              </span>
+            </div>
+
+            @if (routine.description) {
+              <p class="routine-description">{{ routine.description }}</p>
+            }
+          </div>
+
+          <div class="routine-card__status">
+            <p-tag
+              [value]="routine.isActive ? 'Activa' : 'Inactiva'"
+              [severity]="routine.isActive ? 'success' : 'secondary'"
+            />
+          </div>
+
+          <div class="routine-card__actions">
+            <p-button
+              icon="pi pi-pencil"
+              pTooltip="Editor visual"
+              tooltipPosition="top"
+              [text]="true"
+              severity="info"
+              size="small"
+              (onClick)="openEditor(routine)"
+            />
+            <p-button
+              icon="pi pi-sliders-h"
+              pTooltip="Editar metadatos"
+              tooltipPosition="top"
+              [text]="true"
+              severity="secondary"
+              size="small"
+              (onClick)="openEditMetaDialog(routine)"
+            />
+            <p-button
+              icon="pi pi-copy"
+              pTooltip="Duplicar"
+              tooltipPosition="top"
+              [text]="true"
+              severity="secondary"
+              size="small"
+              (onClick)="duplicateRoutine(routine)"
+            />
+            <p-button
+              icon="pi pi-trash"
+              pTooltip="Eliminar"
+              tooltipPosition="top"
+              [text]="true"
+              severity="danger"
+              size="small"
+              (onClick)="confirmDelete(routine)"
+            />
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+</div>

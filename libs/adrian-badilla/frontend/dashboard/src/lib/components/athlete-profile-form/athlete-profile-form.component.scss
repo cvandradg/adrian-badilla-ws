@@ -204,8 +204,97 @@
   min-height: 5rem;
 }
 
+.apf__prime-select {
+  width: 100%;
+}
+
 .apf__input--indent {
   margin-top: 0.35rem;
+}
+
+:host ::ng-deep {
+  .apf__prime-select.p-select {
+    width: 100%;
+    min-height: 2.75rem;
+    border-radius: 0.625rem;
+    border: 1px solid var(--app-border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--app-text);
+    box-shadow: none;
+    transition: border-color 150ms ease, background 150ms ease,
+      box-shadow 150ms ease;
+
+    &:hover {
+      border-color: rgba(167, 139, 250, 0.35);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    &.p-focus,
+    &:focus-within {
+      border-color: rgba(167, 139, 250, 0.5);
+      background: rgba(167, 139, 250, 0.05);
+      box-shadow: 0 0 0 0.2rem rgba(167, 139, 250, 0.12);
+    }
+
+    .p-select-label {
+      padding: 0.6rem 0.875rem;
+      color: var(--app-text);
+      font-size: 0.875rem;
+    }
+
+    .p-placeholder {
+      color: var(--app-text-muted);
+      opacity: 0.8;
+    }
+
+    .p-select-dropdown {
+      width: 2.75rem;
+      color: #a0aec0;
+    }
+
+    .p-select-clear-icon {
+      color: var(--app-text-muted);
+    }
+  }
+
+  .apf__prime-select-panel.p-select-overlay {
+    border-radius: 0.875rem;
+    border: 1px solid rgba(167, 139, 250, 0.16);
+    background: rgba(16, 24, 39, 0.96);
+    box-shadow: 0 24px 60px rgba(2, 6, 23, 0.45);
+    backdrop-filter: blur(18px);
+    overflow: hidden;
+
+    .p-select-header {
+      background: rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .p-select-list-container {
+      background: transparent;
+    }
+
+    .p-select-option {
+      color: var(--app-text);
+      background: transparent;
+      transition: background 120ms ease, color 120ms ease;
+    }
+
+    .p-select-option:not(.p-select-option-selected):not(.p-disabled).p-focus {
+      background: rgba(167, 139, 250, 0.12);
+      color: #e9d5ff;
+    }
+
+    .p-select-option.p-select-option-selected {
+      background: rgba(167, 139, 250, 0.18);
+      color: #c4b5fd;
+    }
+
+    .p-select-empty-message {
+      color: var(--app-text-muted);
+      padding: 0.9rem 1rem;
+    }
+  }
 }
 
 /* ── Radio / Checkbox pills ───────────────────────────────────────────────── */

@@ -1,0 +1,383 @@
+<div class="bulk-importer">
+  <div class="bulk-importer__entry">
+    <label class="bulk-importer__label" for="bulk-import-text">
+      Pega un ejercicio por línea
+    </label>
+    <textarea
+      id="bulk-import-text"
+      pTextarea
+      [ngModel]="importText()"
+      (ngModelChange)="importText.set($event)"
+      rows="8"
+      placeholder="Barra Bench Press&#10;Press de pierna en maquina&#10;Hip Thrust con barra"
+      class="bulk-importer__textarea"
+    ></textarea>
+    <div class="bulk-importer__actions">
+      <p-button
+        label="Generar drafts"
+        icon="pi pi-sparkles"
+        severity="contrast"
+        [disabled]="!importText().trim()"
+        (onClick)="generateDrafts()"
+      />
+      @if (drafts().length) {
+      <p-button
+        label="Guardar seleccionados"
+        icon="pi pi-save"
+        [loading]="saving()"
+        [disabled]="selectedCount() === 0"
+        (onClick)="saveSelected()"
+      />
+      }
+    </div>
+    <small class="bulk-importer__hint">
+      Se crean drafts locales y editables. Nada se guarda hasta confirmar.
+    </small>
+    @if (error()) {
+    <div class="bulk-importer__error">{{ error() }}</div>
+    }
+  </div>
+
+  @if (drafts().length) {
+  <p-divider />
+
+  <div class="bulk-importer__toolbar">
+    <div class="selection-tools">
+      <p-checkbox
+        binary="true"
+        [ngModel]="selectedCount() === drafts().length"
+        (ngModelChange)="selectAll($event)"
+        inputId="select-all-drafts"
+      />
+      <label for="select-all-drafts">Seleccionar todos</label>
+      <span class="selection-count">{{ selectedCount() }} seleccionados</span>
+    </div>
+  </div>
+
+  <div class="draft-grid">
+    @for (draft of drafts(); track draft.draftId) {
+    <section class="draft-card">
+      <div class="draft-card__header">
+        <div class="draft-card__selection">
+          <p-checkbox
+            binary="true"
+            [ngModel]="draft.selected"
+            (ngModelChange)="updateDraft(draft.draftId, { selected: $event })"
+            [inputId]="'draft-' + draft.draftId"
+          />
+          <label [for]="'draft-' + draft.draftId">Incluir</label>
+        </div>
+        @if (hasCriticalFieldIssues(draft)) {
+        <p-tag
+          value="Revisar"
+          severity="warn"
+          [pTooltip]="criticalFieldNames(draft).join(', ')"
+          tooltipPosition="top"
+        />
+        }
+        <p-button
+          icon="pi pi-trash"
+          severity="danger"
+          [text]="true"
+          (onClick)="removeDraft(draft.draftId)"
+        />
+      </div>
+
+      <div class="draft-card__grid">
+        <div class="field field--full">
+          <span class="field__label">Nombre</span>
+          <input
+            [id]="'draft-name-' + draft.draftId"
+            aria-label="Nombre del draft"
+            pInputText
+            [ngModel]="draft.name"
+            (ngModelChange)="updateDraft(draft.draftId, { name: $event })"
+          />
+        </div>
+
+        <div class="field field--full">
+          <span class="field__label">Descripción</span>
+          <textarea
+            [id]="'draft-description-' + draft.draftId"
+            aria-label="Descripción del draft"
+            pTextarea
+            rows="2"
+            [ngModel]="draft.description"
+            (ngModelChange)="
+              updateDraft(draft.draftId, { description: $event })
+            "
+          ></textarea>
+        </div>
+
+        <div
+          class="field"
+          [class.field--review]="isFieldNeedingReview(draft, 'primaryMuscles')"
+        >
+          <span class="field__label">Músculos primarios</span>
+          <p-multiselect
+            [inputId]="'draft-primary-' + draft.draftId"
+            ariaLabel="Músculos primarios"
+            [options]="muscleOptions"
+            [ngModel]="draft.primaryMuscles"
+            (ngModelChange)="
+              updateDraft(draft.draftId, { primaryMuscles: $event })
+            "
+            display="chip"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            appendTo="body"
+          />
+        </div>
+
+        <div
+          class="field"
+          [class.field--review]="
+            isFieldNeedingReview(draft, 'secondaryMuscles')
+          "
+        >
+          <span class="field__label">Músculos secundarios</span>
+          <p-multiselect
+            [inputId]="'draft-secondary-' + draft.draftId"
+            ariaLabel="Músculos secundarios"
+            [options]="muscleOptions"
+            [ngModel]="draft.secondaryMuscles"
+            (ngModelChange)="
+              updateDraft(draft.draftId, { secondaryMuscles: $event })
+            "
+            display="chip"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            appendTo="body"
+          />
+        </div>
+
+        <div class="field">
+          <span class="field__label">Equipo requerido</span>
+          <p-multiselect
+            [inputId]="'draft-equipment-' + draft.draftId"
+            ariaLabel="Equipo requerido"
+            [options]="equipmentOptions"
+            [ngModel]="draft.requiredEquipment"
+            (ngModelChange)="
+              updateDraft(draft.draftId, { requiredEquipment: $event })
+            "
+            display="chip"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            appendTo="body"
+          />
+        </div>
+
+        <div class="field">
+          <span class="field__label">Lugares</span>
+          <p-multiselect
+            [inputId]="'draft-locations-' + draft.draftId"
+            ariaLabel="Lugares de entrenamiento"
+            [options]="locationOptions"
+            [ngModel]="draft.trainingLocations"
+            (ngModelChange)="
+              updateDraft(draft.draftId, { trainingLocations: $event })
+            "
+            display="chip"
+            optionLabel="label"
+            optionValue="value"
+            appendTo="body"
+          />
+        </div>
+
+        <div
+          class="field"
+          [class.field--review]="isFieldNeedingReview(draft, 'movementPattern')"
+        >
+          <span class="field__label">Patrón</span>
+          <p-select
+            [inputId]="'draft-pattern-' + draft.draftId"
+            ariaLabel="Patrón de movimiento"
+            [options]="movementPatternOptions"
+            [ngModel]="draft.movementPattern"
+            (ngModelChange)="
+              updateDraft(draft.draftId, { movementPattern: $event })
+            "
+            optionLabel="label"
+            optionValue="value"
+            appendTo="body"
+          />
+        </div>
+
+        <div
+          class="field"
+          [class.field--review]="
+            isFieldNeedingReview(draft, 'exerciseCategory')
+          "
+        >
+          <span class="field__label">Categoría</span>
+          <p-select
+            [inputId]="'draft-category-' + draft.draftId"
+            ariaLabel="Categoría del ejercicio"
+            [options]="categoryOptions"
+            [ngModel]="draft.exerciseCategory"
+            (ngModelChange)="
+              updateDraft(draft.draftId, { exerciseCategory: $event })
+            "
+            optionLabel="label"
+            optionValue="value"
+            appendTo="body"
+          />
+        </div>
+
+        <div class="field">
+          <span class="field__label">Tipo</span>
+          <p-select
+            [inputId]="'draft-type-' + draft.draftId"
+            ariaLabel="Tipo de ejercicio"
+            [options]="typeOptions"
+            [ngModel]="draft.exerciseType"
+            (ngModelChange)="
+              updateDraft(draft.draftId, { exerciseType: $event })
+            "
+            optionLabel="label"
+            optionValue="value"
+            appendTo="body"
+          />
+        </div>
+
+        <div class="field">
+          <span class="field__label">Dificultad técnica</span>
+          <p-select
+            [inputId]="'draft-tech-' + draft.draftId"
+            ariaLabel="Dificultad técnica"
+            [options]="levelOptions"
+            [ngModel]="draft.technicalDifficulty"
+            (ngModelChange)="
+              updateDraft(draft.draftId, { technicalDifficulty: $event })
+            "
+            optionLabel="label"
+            optionValue="value"
+            appendTo="body"
+          />
+        </div>
+
+        <div class="field">
+          <span class="field__label">Riesgo</span>
+          <p-select
+            [inputId]="'draft-risk-' + draft.draftId"
+            ariaLabel="Nivel de riesgo"
+            [options]="levelOptions"
+            [ngModel]="draft.riskLevel"
+            (ngModelChange)="updateDraft(draft.draftId, { riskLevel: $event })"
+            optionLabel="label"
+            optionValue="value"
+            appendTo="body"
+          />
+        </div>
+
+        <div class="field">
+          <span class="field__label">Fatiga</span>
+          <p-select
+            [inputId]="'draft-fatigue-' + draft.draftId"
+            ariaLabel="Nivel de fatiga"
+            [options]="levelOptions"
+            [ngModel]="draft.fatigueLevel"
+            (ngModelChange)="
+              updateDraft(draft.draftId, { fatigueLevel: $event })
+            "
+            optionLabel="label"
+            optionValue="value"
+            appendTo="body"
+          />
+        </div>
+
+        <div
+          class="field"
+          [class.field--review]="isFieldNeedingReview(draft, 'movementPlane')"
+        >
+          <span class="field__label">Plano</span>
+          <p-select
+            [inputId]="'draft-plane-' + draft.draftId"
+            ariaLabel="Plano de movimiento"
+            [options]="movementPlaneOptions"
+            [ngModel]="draft.movementPlane"
+            (ngModelChange)="
+              updateDraft(draft.draftId, { movementPlane: $event })
+            "
+            optionLabel="label"
+            optionValue="value"
+            appendTo="body"
+          />
+        </div>
+
+        <div
+          class="field"
+          [class.field--review]="isFieldNeedingReview(draft, 'bodyRegion')"
+        >
+          <span class="field__label">Body region</span>
+          <p-select
+            [inputId]="'draft-region-' + draft.draftId"
+            ariaLabel="Región corporal"
+            [options]="bodyRegionOptions"
+            [ngModel]="draft.bodyRegion"
+            (ngModelChange)="updateDraft(draft.draftId, { bodyRegion: $event })"
+            optionLabel="label"
+            optionValue="value"
+            appendTo="body"
+          />
+        </div>
+
+        <div
+          class="field"
+          [class.field--review]="isFieldNeedingReview(draft, 'goals')"
+        >
+          <span class="field__label">Goals</span>
+          <p-multiselect
+            [inputId]="'draft-goals-' + draft.draftId"
+            ariaLabel="Goals"
+            [options]="goalOptions"
+            [ngModel]="draft.goals"
+            (ngModelChange)="updateDraft(draft.draftId, { goals: $event })"
+            display="chip"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            appendTo="body"
+          />
+        </div>
+
+        <div
+          class="field field--full"
+          [class.field--review]="isFieldNeedingReview(draft, 'tags')"
+        >
+          <span class="field__label">Tags sugeridos</span>
+          <p-multiselect
+            [inputId]="'draft-tags-' + draft.draftId"
+            ariaLabel="Tags sugeridos"
+            [options]="tagOptions"
+            [ngModel]="draft.tags"
+            (ngModelChange)="updateDraft(draft.draftId, { tags: $event })"
+            display="chip"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            appendTo="body"
+          />
+        </div>
+      </div>
+    </section>
+    }
+  </div>
+  }
+
+  <div class="bulk-importer__footer">
+    <p-button
+      label="Cancelar"
+      severity="secondary"
+      [text]="true"
+      (onClick)="cancel()"
+    />
+    @if (saving()) {
+    <p-progressSpinner strokeWidth="4" styleClass="bulk-importer__spinner" />
+    }
+  </div>
+</div>

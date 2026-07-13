@@ -1,0 +1,132 @@
+<form [formGroup]="form" class="routine-form" (ngSubmit)="save()">
+
+  <div class="form-content">
+
+    <div class="field">
+      <label class="field__label" for="rt-name">Nombre <span class="required">*</span></label>
+      <input
+        id="rt-name"
+        type="text"
+        pInputText
+        formControlName="name"
+        placeholder="Ej. Full Body 3 días"
+        class="field__input"
+        [class.ng-invalid]="isFieldInvalid('name')"
+      />
+      @if (isFieldInvalid('name')) {
+        <small class="field__error">Nombre obligatorio (mín. 3 caracteres).</small>
+      }
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="rt-desc">Descripción</label>
+      <textarea
+        id="rt-desc"
+        pTextarea
+        formControlName="description"
+        placeholder="Breve descripción del objetivo de la rutina…"
+        rows="3"
+        class="field__input"
+      ></textarea>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <span class="field__label">Dificultad <span class="required">*</span></span>
+        <p-select
+          formControlName="difficulty"
+          [options]="difficultyOptions"
+          placeholder="Seleccionar"
+          styleClass="field__input"
+          ariaLabel="Dificultad"
+          appendTo="body"
+        />
+      </div>
+      <div class="field">
+        <label class="field__label" for="rt-days">Días por semana</label>
+        <p-inputnumber
+          inputId="rt-days"
+          formControlName="daysPerWeek"
+          [min]="1"
+          [max]="7"
+          [showButtons]="true"
+          styleClass="field__input"
+        />
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="field__label">Objetivos</span>
+      <p-multiselect
+        formControlName="goals"
+        [options]="goalOptions"
+        placeholder="Seleccionar objetivos"
+        display="chip"
+        styleClass="field__input"
+        ariaLabel="Objetivos"
+        appendTo="body"
+      />
+    </div>
+
+    <div class="field">
+      <span class="field__label">Lugares de entrenamiento</span>
+      <p-multiselect
+        formControlName="trainingLocations"
+        [options]="locationOptions"
+        placeholder="Seleccionar"
+        display="chip"
+        styleClass="field__input"
+        ariaLabel="Lugares"
+        appendTo="body"
+      />
+    </div>
+
+    <div class="field">
+      <span class="field__label">Etiquetas</span>
+      <p-autocomplete
+        formControlName="tags"
+        [multiple]="true"
+        [suggestions]="tagSuggestions()"
+        (completeMethod)="noopComplete()"
+        placeholder="Agrega etiquetas"
+        styleClass="field__input"
+        ariaLabel="Etiquetas"
+      />
+    </div>
+
+    <p-divider />
+
+    <div class="field-row toggles-row">
+      <div class="field field--toggle">
+        <p-toggleswitch formControlName="isActive" ariaLabel="Estado activo" />
+        <span class="toggle-label">{{ form.get('isActive')?.value ? 'Activa' : 'Inactiva' }}</span>
+      </div>
+      <div class="field field--toggle">
+        <p-toggleswitch formControlName="isTemplate" ariaLabel="Es plantilla" />
+        <span class="toggle-label">Plantilla maestra</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Footer ──────────────────────────────────────────────────────────── -->
+  <div class="form-footer">
+    @if (store.error()) {
+      <span class="footer-error">
+        <i class="pi pi-exclamation-circle"></i>
+        {{ store.error() }}
+      </span>
+    }
+    <div class="footer-actions">
+      <p-button label="Cancelar" severity="secondary" [text]="true" type="button" (onClick)="cancel()" />
+      <p-button
+        [label]="isEditMode ? 'Guardar' : 'Crear y abrir editor'"
+        icon="pi pi-check"
+        severity="contrast"
+        type="submit"
+        [loading]="store.saving()"
+      />
+    </div>
+  </div>
+
+</form>

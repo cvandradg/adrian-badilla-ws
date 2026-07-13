@@ -27,10 +27,7 @@ export const appRoutes: Route[] = [
     loadChildren: () =>
       import('@adrian-badilla/billing/routes').then((m) => m.billingRoutes),
   },
-  {
-    path: 'admin',
-    loadChildren: () =>
-      import('@admin/dashboard/routes').then((m) => m.adminRoutes),
-  },
+  // Legacy redirect: /admin/** → /dashboard/admin/**
+  { path: 'admin', redirectTo: '/dashboard/admin', pathMatch: 'prefix' },
   { path: '**', redirectTo: '' },
 ];

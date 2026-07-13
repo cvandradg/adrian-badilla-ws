@@ -1,5 +1,11 @@
 <div class="apf" role="form" aria-label="Cuestionario de perfil deportivo">
-  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  @if (store.athleteProfileError()) {
+  <div class="apf__error" role="alert">
+    <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+    {{ store.athleteProfileError() }}
+  </div>
+  }
+
   <div class="apf__header">
     <div class="apf__header-icon" aria-hidden="true">
       <i class="pi pi-user-edit"></i>
@@ -7,7 +13,7 @@
     <div>
       <h2 class="apf__header-title">Perfil deportivo</h2>
       <p class="apf__header-sub">
-        Completa la información para personalizar tu experiencia
+        Completa la informacion para personalizar tu experiencia
       </p>
     </div>
     <button
@@ -20,17 +26,6 @@
     </button>
   </div>
 
-  <!-- ── Error banner ───────────────────────────────────────────────────── -->
-  @if (store.athleteProfileError()) {
-  <div class="apf__error" role="alert">
-    <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
-    {{ store.athleteProfileError() }}
-  </div>
-  }
-
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       SECTION 1 — ENTRENAMIENTO
-  ════════════════════════════════════════════════════════════════════════ -->
   <section class="apf__section" aria-labelledby="section-training">
     <h3 class="apf__section-title" id="section-training">
       <span class="apf__section-icon" aria-hidden="true">💪</span>
@@ -38,27 +33,26 @@
     </h3>
 
     <div class="apf__fields">
-      <!-- Sport -->
       <div class="apf__field">
-        <label class="apf__label" for="sport"
-          >Deporte o actividad principal</label
-        >
-        <select
-          id="sport"
-          class="apf__select"
-          [value]="formData().training.sport"
-          (change)="onSportChange($any($event.target).value)"
-        >
-          <option value="" disabled>Selecciona una opción</option>
-          @for (opt of sportOptions; track opt) {
-          <option [value]="opt">{{ opt }}</option>
-          }
-        </select>
+        <label class="apf__label" for="sport">Deporte o actividad principal</label>
+        <p-select
+          inputId="sport"
+          [options]="sportOptions"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="formData().training.sport || null"
+          (ngModelChange)="onSportChange($event ?? '')"
+          placeholder="Selecciona una opcion"
+          styleClass="apf__prime-select"
+          panelStyleClass="apf__prime-select-panel"
+          appendTo="body"
+          ariaLabel="Deporte o actividad principal"
+        />
         @if (showCustomSport()) {
         <input
           type="text"
           class="apf__input apf__input--indent"
-          placeholder="Describe tu deporte…"
+          placeholder="Describe tu deporte..."
           [value]="customSportText()"
           (input)="customSportText.set($any($event.target).value)"
           autocomplete="off"
@@ -67,41 +61,38 @@
         }
       </div>
 
-      <!-- Training type -->
       <div class="apf__field">
-        <label class="apf__label" for="trainingType"
-          >Tipo de entrenamiento</label
-        >
-        <select
-          id="trainingType"
-          class="apf__select"
-          [value]="formData().training.trainingType"
-          (change)="updateTraining('trainingType', $any($event.target).value)"
-        >
-          @for (opt of trainingTypeOptions; track opt) {
-          <option [value]="opt">{{ opt }}</option>
-          }
-        </select>
+        <label class="apf__label" for="trainingType">Tipo de entrenamiento</label>
+        <p-select
+          inputId="trainingType"
+          [options]="trainingTypeOptions"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="formData().training.trainingType"
+          (ngModelChange)="updateTraining('trainingType', $event)"
+          styleClass="apf__prime-select"
+          panelStyleClass="apf__prime-select-panel"
+          appendTo="body"
+          ariaLabel="Tipo de entrenamiento"
+        />
       </div>
 
-      <!-- Experience -->
       <div class="apf__field">
         <label class="apf__label" for="trainingExperience">Experiencia</label>
-        <select
-          id="trainingExperience"
-          class="apf__select"
-          [value]="formData().training.trainingExperience"
-          (change)="
-            updateTraining('trainingExperience', $any($event.target).value)
-          "
-        >
-          @for (opt of experienceOptions; track opt.value) {
-          <option [value]="opt.value">{{ opt.label }}</option>
-          }
-        </select>
+        <p-select
+          inputId="trainingExperience"
+          [options]="experienceOptions"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="formData().training.trainingExperience"
+          (ngModelChange)="updateTraining('trainingExperience', $event)"
+          styleClass="apf__prime-select"
+          panelStyleClass="apf__prime-select-panel"
+          appendTo="body"
+          ariaLabel="Experiencia de entrenamiento"
+        />
       </div>
 
-      <!-- Months training (optional) -->
       <div class="apf__field">
         <label class="apf__label" for="monthsTraining">
           Meses de entrenamiento consistente
@@ -113,70 +104,61 @@
           class="apf__input"
           min="0"
           max="600"
-          placeholder="Ej: 6, 18, 36…"
+          placeholder="Ej: 6, 18, 36..."
           [value]="formData().training.monthsTraining ?? ''"
           (input)="onMonthsTrainingChange($any($event.target).value)"
           autocomplete="off"
         />
       </div>
 
-      <!-- Primary goal -->
       <div class="apf__field">
         <label class="apf__label" for="goal">Objetivo principal</label>
-        <select
-          id="goal"
-          class="apf__select"
-          [value]="formData().training.goal"
-          (change)="updateTraining('goal', $any($event.target).value)"
-        >
-          @for (opt of goalOptions; track opt.value) {
-          <option [value]="opt.value">{{ opt.label }}</option>
-          }
-        </select>
+        <p-select
+          inputId="goal"
+          [options]="goalOptions"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="formData().training.goal"
+          (ngModelChange)="updateTraining('goal', $event)"
+          styleClass="apf__prime-select"
+          panelStyleClass="apf__prime-select-panel"
+          appendTo="body"
+          ariaLabel="Objetivo principal"
+        />
       </div>
 
-      <!-- Secondary goal (optional) -->
       <div class="apf__field">
         <label class="apf__label" for="secondaryGoal">
           Objetivo secundario
           <span class="apf__label-optional">(opcional)</span>
         </label>
-        <select
-          id="secondaryGoal"
-          class="apf__select"
-          [value]="formData().training.secondaryGoal ?? ''"
-          (change)="onSecondaryGoalChange($any($event.target).value)"
-        >
-          <option value="">Ninguno</option>
-          @for (opt of goalOptions; track opt.value) { @if (opt.value !==
-          formData().training.goal) {
-          <option [value]="opt.value">{{ opt.label }}</option>
-          } }
-        </select>
+        <p-select
+          inputId="secondaryGoal"
+          [options]="secondaryGoalOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="formData().training.secondaryGoal ?? ''"
+          (ngModelChange)="onSecondaryGoalChange($event ?? '')"
+          styleClass="apf__prime-select"
+          panelStyleClass="apf__prime-select-panel"
+          appendTo="body"
+          ariaLabel="Objetivo secundario"
+        />
       </div>
 
-      <!-- Training style preference -->
       <div class="apf__field">
         <label class="apf__label">Estilo de sesiones preferido</label>
-        <div
-          class="apf__radio-group"
-          role="group"
-          aria-label="Estilo de entrenamiento"
-        >
+        <div class="apf__radio-group" role="group" aria-label="Estilo de entrenamiento">
           @for (opt of trainingStyleOptions; track opt.value) {
           <label
             class="apf__radio-pill"
-            [class.apf__radio-pill--active]="
-              formData().training.trainingStylePreference === opt.value
-            "
+            [class.apf__radio-pill--active]="formData().training.trainingStylePreference === opt.value"
           >
             <input
               type="radio"
               name="trainingStylePreference"
               [value]="opt.value"
-              [checked]="
-                formData().training.trainingStylePreference === opt.value
-              "
+              [checked]="formData().training.trainingStylePreference === opt.value"
               (change)="updateTraining('trainingStylePreference', opt.value)"
               class="apf__radio-input"
             />
@@ -188,9 +170,6 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       SECTION 2 — DISPONIBILIDAD
-  ════════════════════════════════════════════════════════════════════════ -->
   <section class="apf__section" aria-labelledby="section-availability">
     <h3 class="apf__section-title" id="section-availability">
       <span class="apf__section-icon" aria-hidden="true">📅</span>
@@ -198,20 +177,13 @@
     </h3>
 
     <div class="apf__fields">
-      <!-- Training location -->
       <div class="apf__field">
-        <label class="apf__label">¿Dónde entrenas habitualmente?</label>
-        <div
-          class="apf__radio-group"
-          role="group"
-          aria-label="Lugar de entrenamiento"
-        >
+        <label class="apf__label">Donde entrenas habitualmente?</label>
+        <div class="apf__radio-group" role="group" aria-label="Lugar de entrenamiento">
           @for (opt of trainingLocationOptions; track opt.value) {
           <label
             class="apf__radio-pill"
-            [class.apf__radio-pill--active]="
-              formData().training.trainingLocation === opt.value
-            "
+            [class.apf__radio-pill--active]="formData().training.trainingLocation === opt.value"
           >
             <input
               type="radio"
@@ -227,19 +199,12 @@
         </div>
       </div>
 
-      <!-- Smart equipment — shown only for 'home' or 'both' -->
       @if (showEquipmentSelector()) {
       <div class="apf__field">
         <label class="apf__label">
-          @if (formData().training.trainingLocation === 'both') { Equipamiento
-          disponible en casa (el gimnasio se añade automáticamente) } @else {
-          Equipamiento disponible en casa }
+          @if (formData().training.trainingLocation === 'hybrid') { Equipamiento disponible en casa (el gimnasio se anade automaticamente) } @else { Equipamiento disponible en casa }
         </label>
-        <div
-          class="apf__chip-group"
-          role="group"
-          aria-label="Equipamiento disponible"
-        >
+        <div class="apf__chip-group" role="group" aria-label="Equipamiento disponible">
           @for (opt of homeEquipmentOptions; track opt.value) {
           <button
             type="button"
@@ -255,14 +220,9 @@
       </div>
       }
 
-      <!-- Days available (chips) -->
       <div class="apf__field">
-        <label class="apf__label">Días disponibles para entrenar</label>
-        <div
-          class="apf__chip-group"
-          role="group"
-          aria-label="Días de entrenamiento"
-        >
+        <label class="apf__label">Dias disponibles para entrenar</label>
+        <div class="apf__chip-group" role="group" aria-label="Dias de entrenamiento">
           @for (day of weekDayOptions; track day.value) {
           <button
             type="button"
@@ -278,54 +238,45 @@
         </div>
       </div>
 
-      <!-- Session duration -->
       <div class="apf__field">
-        <label class="apf__label" for="sessionDuration"
-          >Duración de cada sesión</label
-        >
-        <select
-          id="sessionDuration"
-          class="apf__select"
-          [value]="formData().training.sessionDuration"
-          (change)="
-            updateTraining('sessionDuration', +$any($event.target).value)
-          "
-        >
-          @for (opt of sessionDurationOptions; track opt.value) {
-          <option [value]="opt.value">{{ opt.label }}</option>
-          }
-        </select>
+        <label class="apf__label" for="sessionDuration">Duracion de cada sesion</label>
+        <p-select
+          inputId="sessionDuration"
+          [options]="sessionDurationOptions"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="formData().training.sessionDuration"
+          (ngModelChange)="updateTraining('sessionDuration', $event)"
+          styleClass="apf__prime-select"
+          panelStyleClass="apf__prime-select-panel"
+          appendTo="body"
+          ariaLabel="Duracion de cada sesion"
+        />
       </div>
 
-      <!-- Preferred schedule -->
       <div class="apf__field">
-        <label class="apf__label" for="preferredSchedule"
-          >Horario preferido</label
-        >
-        <select
-          id="preferredSchedule"
-          class="apf__select"
-          [value]="formData().training.preferredSchedule"
-          (change)="
-            updateTraining('preferredSchedule', $any($event.target).value)
-          "
-        >
-          @for (opt of scheduleOptions; track opt.value) {
-          <option [value]="opt.value">{{ opt.label }}</option>
-          }
-        </select>
+        <label class="apf__label" for="preferredSchedule">Horario preferido</label>
+        <p-select
+          inputId="preferredSchedule"
+          [options]="scheduleOptions"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="formData().training.preferredSchedule"
+          (ngModelChange)="updateTraining('preferredSchedule', $event)"
+          styleClass="apf__prime-select"
+          panelStyleClass="apf__prime-select-panel"
+          appendTo="body"
+          ariaLabel="Horario preferido"
+        />
       </div>
 
-      <!-- Consistency -->
       <div class="apf__field">
         <label class="apf__label">Constancia actual</label>
         <div class="apf__radio-group" role="group" aria-label="Constancia">
           @for (opt of consistencyOptions; track opt.value) {
           <label
             class="apf__radio-pill"
-            [class.apf__radio-pill--active]="
-              formData().training.trainingConsistency === opt.value
-            "
+            [class.apf__radio-pill--active]="formData().training.trainingConsistency === opt.value"
           >
             <input
               type="radio"
@@ -343,28 +294,23 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       SECTION 3 — MÚSCULOS
-  ════════════════════════════════════════════════════════════════════════ -->
   <section class="apf__section" aria-labelledby="section-muscles">
     <h3 class="apf__section-title" id="section-muscles">
       <span class="apf__section-icon" aria-hidden="true">🎯</span>
-      Músculos
+      Musculos
       <span class="apf__section-badge">opcional</span>
     </h3>
 
     <div class="apf__fields">
-      <!-- Priority muscles -->
       <div class="apf__field">
         <label class="apf__label">
           Grupos musculares a priorizar
           <span class="apf__label-optional">(opcional)</span>
         </label>
-        <div
-          class="apf__chip-group"
-          role="group"
-          aria-label="Músculos prioritarios"
-        >
+        <p class="apf__help">
+          Selecciona hasta 3 musculos prioritarios para que podamos personalizar mejor tu rutina.
+        </p>
+        <div class="apf__chip-group" role="group" aria-label="Musculos prioritarios">
           @for (opt of muscleGroupOptions; track opt.value) {
           <button
             type="button"
@@ -372,6 +318,7 @@
             [class.apf__chip--active]="isPriorityMuscleSelected(opt.value)"
             (click)="togglePriorityMuscle(opt.value)"
             [attr.aria-pressed]="isPriorityMuscleSelected(opt.value)"
+            [disabled]="!canSelectMorePriorityMuscles(opt.value)"
           >
             {{ opt.label }}
           </button>
@@ -379,17 +326,12 @@
         </div>
       </div>
 
-      <!-- Avoid muscles -->
       <div class="apf__field">
         <label class="apf__label">
           Grupos musculares a evitar
           <span class="apf__label-optional">(opcional)</span>
         </label>
-        <div
-          class="apf__chip-group"
-          role="group"
-          aria-label="Músculos a evitar"
-        >
+        <div class="apf__chip-group" role="group" aria-label="Musculos a evitar">
           @for (opt of muscleGroupOptions; track opt.value) {
           <button
             type="button"
@@ -406,25 +348,19 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       SECTION 4 — NUTRICIÓN
-  ════════════════════════════════════════════════════════════════════════ -->
   <section class="apf__section" aria-labelledby="section-nutrition">
     <h3 class="apf__section-title" id="section-nutrition">
       <span class="apf__section-icon" aria-hidden="true">🥗</span>
-      Nutrición
+      Nutricion
     </h3>
 
     <div class="apf__fields">
-      <!-- Follows diet -->
       <div class="apf__field">
-        <label class="apf__label">¿Sigues alguna dieta actualmente?</label>
+        <label class="apf__label">Sigues alguna dieta actualmente?</label>
         <div class="apf__radio-group" role="group" aria-label="Sigue dieta">
           <label
             class="apf__radio-pill"
-            [class.apf__radio-pill--active]="
-              formData().nutrition.followsDiet === true
-            "
+            [class.apf__radio-pill--active]="formData().nutrition.followsDiet === true"
           >
             <input
               type="radio"
@@ -433,13 +369,11 @@
               (change)="updateNutrition('followsDiet', true)"
               class="apf__radio-input"
             />
-            Sí
+            Si
           </label>
           <label
             class="apf__radio-pill"
-            [class.apf__radio-pill--active]="
-              formData().nutrition.followsDiet === false
-            "
+            [class.apf__radio-pill--active]="formData().nutrition.followsDiet === false"
           >
             <input
               type="radio"
@@ -453,14 +387,9 @@
         </div>
       </div>
 
-      <!-- Meal schedule (checkboxes) -->
       <div class="apf__field">
         <label class="apf__label">Horario de comidas habitual</label>
-        <div
-          class="apf__checkbox-group"
-          role="group"
-          aria-label="Comidas del día"
-        >
+        <div class="apf__checkbox-group" role="group" aria-label="Comidas del dia">
           @for (slot of mealSlotOptions; track slot.value) {
           <label
             class="apf__checkbox-pill"
@@ -478,7 +407,6 @@
         </div>
       </div>
 
-      <!-- Food intolerances -->
       <div class="apf__field">
         <label class="apf__label" for="foodIntolerances">
           Intolerancias o restricciones alimentarias
@@ -488,67 +416,50 @@
           id="foodIntolerances"
           type="text"
           class="apf__input"
-          placeholder="Ej: lactosa, gluten, mariscos…"
+          placeholder="Ej: lactosa, gluten, mariscos..."
           [value]="formData().nutrition.foodIntolerances"
-          (input)="
-            updateNutrition('foodIntolerances', $any($event.target).value)
-          "
+          (input)="updateNutrition('foodIntolerances', $any($event.target).value)"
           autocomplete="off"
         />
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       SECTION 5 — SALUD
-  ════════════════════════════════════════════════════════════════════════ -->
   <section class="apf__section" aria-labelledby="section-health">
     <h3 class="apf__section-title" id="section-health">
       <span class="apf__section-icon" aria-hidden="true">🏥</span>
       Salud
     </h3>
     <p class="apf__section-note">
-      Esta información permitirá adaptar automáticamente tu rutina y, en algunos
-      casos, enviarla a revisión manual.
+      Esta informacion permitira adaptar automaticamente tu rutina y, en algunos casos, enviarla a revision manual.
     </p>
 
     <div class="apf__fields">
-      <!-- Has disease -->
       <div class="apf__field">
-        <label class="apf__label"
-          >¿Padeces alguna enfermedad o condición médica?</label
-        >
-        <div
-          class="apf__radio-group"
-          role="group"
-          aria-label="Padece enfermedad"
-        >
+        <label class="apf__label">Padeces alguna enfermedad o condicion medica?</label>
+        <div class="apf__radio-group" role="group" aria-label="Padece enfermedad">
           <label
             class="apf__radio-pill"
-            [class.apf__radio-pill--active]="
-              formData().health.hasDisease === true
-            "
+            [class.apf__radio-pill--active]="formData().health.hasDisease === true"
           >
             <input
               type="radio"
               name="hasDisease"
               [checked]="formData().health.hasDisease === true"
-              (change)="updateHealth('hasDisease', true)"
+              (change)="onHasDiseaseChange(true)"
               class="apf__radio-input"
             />
-            Sí
+            Si
           </label>
           <label
             class="apf__radio-pill"
-            [class.apf__radio-pill--active]="
-              formData().health.hasDisease === false
-            "
+            [class.apf__radio-pill--active]="formData().health.hasDisease === false"
           >
             <input
               type="radio"
               name="hasDisease"
               [checked]="formData().health.hasDisease === false"
-              (change)="updateHealth('hasDisease', false)"
+              (change)="onHasDiseaseChange(false)"
               class="apf__radio-input"
             />
             No
@@ -558,81 +469,79 @@
 
       @if (formData().health.hasDisease) {
       <div class="apf__field apf__field--conditional">
-        <label class="apf__label" for="diseaseDescription"
-          >Describe brevemente</label
-        >
+        <label class="apf__label" for="conditionName">Condicion medica</label>
+        <input
+          id="conditionName"
+          type="text"
+          class="apf__input"
+          placeholder="Ej: asma, hipertension, diabetes, hipotiroidismo..."
+          [value]="primaryCondition().name ?? ''"
+          (input)="updatePrimaryConditionName($any($event.target).value)"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="apf__field apf__field--conditional">
+        <label class="apf__label" for="diseaseSeverity">Severidad</label>
+        <p-select
+          inputId="diseaseSeverity"
+          [options]="diseaseSeverityOptions"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="primaryCondition().severity ?? null"
+          (ngModelChange)="updatePrimaryConditionSeverity($event ?? '')"
+          placeholder="Selecciona la severidad"
+          styleClass="apf__prime-select"
+          panelStyleClass="apf__prime-select-panel"
+          appendTo="body"
+          ariaLabel="Severidad de condicion medica"
+        />
+      </div>
+
+      <div class="apf__field apf__field--conditional">
+        <label class="apf__label" for="diseaseDescription">Notas opcionales</label>
         <textarea
           id="diseaseDescription"
           class="apf__textarea"
           rows="3"
-          placeholder="Ej: diabetes tipo 2, hipertensión, hipotiroidismo…"
-          [value]="formData().health.diseaseDescription"
-          (input)="
-            updateHealth('diseaseDescription', $any($event.target).value)
-          "
+          placeholder="Ej: Asma desde infancia"
+          [value]="primaryCondition().notes"
+          (input)="updatePrimaryConditionNotes($any($event.target).value)"
         ></textarea>
       </div>
 
-      <div class="apf__field apf__field--conditional">
-        <label class="apf__label" for="diseaseSeverity">Gravedad</label>
-        <select
-          id="diseaseSeverity"
-          class="apf__select"
-          [value]="formData().health.diseaseSeverity ?? ''"
-          (change)="
-            updateHealth(
-              'diseaseSeverity',
-              $any($event.target).value || undefined
-            )
-          "
-        >
-          <option value="">Selecciona la gravedad</option>
-          @for (opt of diseaseSeverityOptions; track opt.value) {
-          <option [value]="opt.value">{{ opt.label }}</option>
-          }
-        </select>
-      </div>
-
-      @if (formData().health.diseaseSeverity === 'severe') {
+      @if (primaryCondition().severity === 'severe') {
       <div class="apf__warning" role="alert">
         <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
-        Con una condición severa, el AI Coach no generará rutinas
-        automáticamente. Un entrenador revisará tu caso antes de comenzar.
+        Con una condicion severa, el AI Coach no generara rutinas automaticamente. Un entrenador revisara tu caso antes de comenzar.
       </div>
       } }
 
-      <!-- Has injury -->
       <div class="apf__field">
-        <label class="apf__label"
-          >¿Tienes alguna lesión activa o limitación física?</label
-        >
-        <div class="apf__radio-group" role="group" aria-label="Tiene lesión">
+        <label class="apf__label">Tienes alguna lesion activa o limitacion fisica?</label>
+        <div class="apf__radio-group" role="group" aria-label="Tiene lesion">
           <label
             class="apf__radio-pill"
-            [class.apf__radio-pill--active]="
-              formData().health.hasInjury === true
-            "
+            [class.apf__radio-pill--active]="formData().health.hasInjury === true"
           >
             <input
               type="radio"
               name="hasInjury"
               [checked]="formData().health.hasInjury === true"
-              (change)="updateHealth('hasInjury', true)"
+              (change)="onHasInjuryChange(true)"
               class="apf__radio-input"
             />
-            Sí
+            Si
           </label>
           <label
             class="apf__radio-pill"
-            [class.apf__radio-pill--active]="
-              formData().health.hasInjury === false
-            "
+            [class.apf__radio-pill--active]="formData().health.hasInjury === false"
           >
             <input
               type="radio"
               name="hasInjury"
               [checked]="formData().health.hasInjury === false"
-              (change)="updateHealth('hasInjury', false)"
+              (change)="onHasInjuryChange(false)"
               class="apf__radio-input"
             />
             No
@@ -642,52 +551,60 @@
 
       @if (formData().health.hasInjury) {
       <div class="apf__field apf__field--conditional">
-        <label class="apf__label" for="injuryDescription"
-          >Describe brevemente</label
-        >
+        <label class="apf__label" for="injuryArea">Zona afectada</label>
+        <p-select
+          inputId="injuryArea"
+          [options]="injuryAreaOptions"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="primaryInjury().area ?? null"
+          (ngModelChange)="updatePrimaryInjuryArea($event ?? '')"
+          placeholder="Selecciona una zona"
+          styleClass="apf__prime-select"
+          panelStyleClass="apf__prime-select-panel"
+          appendTo="body"
+          ariaLabel="Zona afectada"
+        />
+      </div>
+
+      <div class="apf__field apf__field--conditional">
+        <label class="apf__label" for="injurySeverity">Severidad</label>
+        <p-select
+          inputId="injurySeverity"
+          [options]="injurySeverityOptions"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="primaryInjury().severity ?? null"
+          (ngModelChange)="updatePrimaryInjurySeverity($event ?? '')"
+          placeholder="Selecciona la severidad"
+          styleClass="apf__prime-select"
+          panelStyleClass="apf__prime-select-panel"
+          appendTo="body"
+          ariaLabel="Severidad de lesion"
+        />
+      </div>
+
+      <div class="apf__field apf__field--conditional">
+        <label class="apf__label" for="injuryDescription">Notas opcionales</label>
         <textarea
           id="injuryDescription"
           class="apf__textarea"
           rows="3"
-          placeholder="Ej: rotura de ligamento cruzado, dolor lumbar crónico…"
-          [value]="formData().health.injuryDescription"
-          (input)="updateHealth('injuryDescription', $any($event.target).value)"
+          placeholder="Ej: Esguince de tobillo"
+          [value]="primaryInjury().notes"
+          (input)="updatePrimaryInjuryNotes($any($event.target).value)"
         ></textarea>
       </div>
 
-      <div class="apf__field apf__field--conditional">
-        <label class="apf__label" for="injurySeverity">Gravedad</label>
-        <select
-          id="injurySeverity"
-          class="apf__select"
-          [value]="formData().health.injurySeverity ?? ''"
-          (change)="
-            updateHealth(
-              'injurySeverity',
-              $any($event.target).value || undefined
-            )
-          "
-        >
-          <option value="">Selecciona la gravedad</option>
-          @for (opt of injurySeverityOptions; track opt.value) {
-          <option [value]="opt.value">{{ opt.label }}</option>
-          }
-        </select>
-      </div>
-
-      @if (formData().health.injurySeverity === 'severe') {
+      @if (primaryInjury().severity === 'severe') {
       <div class="apf__warning" role="alert">
         <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
-        Con una lesión severa, la rutina será revisada manualmente por un
-        entrenador antes de ser generada.
+        Con una lesion severa, la rutina sera revisada manualmente por un entrenador antes de ser generada.
       </div>
       } }
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       SECTION 6 — ESTILO DE VIDA
-  ════════════════════════════════════════════════════════════════════════ -->
   <section class="apf__section" aria-labelledby="section-lifestyle">
     <h3 class="apf__section-title" id="section-lifestyle">
       <span class="apf__section-icon" aria-hidden="true">🌟</span>
@@ -695,32 +612,28 @@
     </h3>
 
     <div class="apf__fields">
-      <!-- Profession -->
       <div class="apf__field">
         <label class="apf__label" for="profession">
-          Profesión u ocupación
+          Profesion u ocupacion
           <span class="apf__label-optional">(opcional)</span>
         </label>
         <input
           id="profession"
           type="text"
           class="apf__input"
-          placeholder="Ej: oficinista, maestro, trabajo físico…"
+          placeholder="Ej: oficinista, maestro, trabajo fisico..."
           [value]="formData().lifestyle.profession"
           (input)="updateLifestyle('profession', $any($event.target).value)"
           autocomplete="off"
         />
       </div>
 
-      <!-- Smoker -->
       <div class="apf__field">
-        <label class="apf__label">¿Fumas?</label>
+        <label class="apf__label">Fumas?</label>
         <div class="apf__radio-group" role="group" aria-label="Fumador">
           <label
             class="apf__radio-pill"
-            [class.apf__radio-pill--active]="
-              formData().lifestyle.smoker === true
-            "
+            [class.apf__radio-pill--active]="formData().lifestyle.smoker === true"
           >
             <input
               type="radio"
@@ -729,13 +642,11 @@
               (change)="updateLifestyle('smoker', true)"
               class="apf__radio-input"
             />
-            Sí
+            Si
           </label>
           <label
             class="apf__radio-pill"
-            [class.apf__radio-pill--active]="
-              formData().lifestyle.smoker === false
-            "
+            [class.apf__radio-pill--active]="formData().lifestyle.smoker === false"
           >
             <input
               type="radio"
@@ -749,30 +660,31 @@
         </div>
       </div>
 
-      <!-- Alcohol -->
       <div class="apf__field">
         <label class="apf__label" for="alcohol">Consumo de alcohol</label>
-        <select
-          id="alcohol"
-          class="apf__select"
-          [value]="formData().lifestyle.alcohol"
-          (change)="updateLifestyle('alcohol', $any($event.target).value)"
-        >
-          @for (opt of alcoholOptions; track opt.value) {
-          <option [value]="opt.value">{{ opt.label }}</option>
-          }
-        </select>
+        <p-select
+          inputId="alcohol"
+          [options]="alcoholOptions"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="formData().lifestyle.alcohol"
+          (ngModelChange)="updateLifestyle('alcohol', $event)"
+          styleClass="apf__prime-select"
+          panelStyleClass="apf__prime-select-panel"
+          appendTo="body"
+          ariaLabel="Consumo de alcohol"
+        />
       </div>
     </div>
   </section>
 
-  <!-- ── Form actions ────────────────────────────────────────────────────── -->
   @if (validationError()) {
   <div class="apf__validation-error" role="alert">
     <i class="pi pi-info-circle" aria-hidden="true"></i>
     {{ validationError() }}
   </div>
   }
+
   <div class="apf__actions">
     <button
       type="button"
@@ -791,7 +703,7 @@
     >
       @if (store.savingAthleteProfile()) {
       <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
-      Guardando… } @else {
+      Guardando... } @else {
       <i class="pi pi-check" aria-hidden="true"></i>
       Guardar perfil }
     </button>

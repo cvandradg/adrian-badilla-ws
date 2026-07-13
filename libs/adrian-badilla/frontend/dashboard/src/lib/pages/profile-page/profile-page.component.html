@@ -1,5 +1,4 @@
-﻿<div class="profile-page">
-  <!-- ── Top bar ── -->
+<div class="profile-page">
   <div class="profile-page__topbar">
     <button
       type="button"
@@ -12,11 +11,8 @@
     <span class="profile-page__topbar-title">Mi Perfil</span>
   </div>
 
-  <!-- ── Body: sidebar + content ── -->
   <div class="profile-page__body">
-    <!-- ── LEFT: sidebar panel ── -->
     <aside class="profile-page__sidebar">
-      <!-- Hero -->
       <div class="profile-page__hero">
         <div class="profile-page__avatar-ring">
           <img
@@ -28,33 +24,22 @@
         </div>
         <div class="profile-page__identity">
           <h1 class="profile-page__name">{{ displayName() }}</h1>
-          <p class="profile-page__goal">🎯 {{ profile().fitnessGoal }}</p>
+          <p class="profile-page__goal">Meta semanal en progreso</p>
         </div>
       </div>
 
-      <!-- Stats Grid -->
-      <div
-        class="profile-page__stats-grid"
-        role="list"
-        aria-label="Estadísticas"
-      >
+      <div class="profile-page__stats-grid" role="list" aria-label="Estadísticas">
         <div class="stat-card" role="listitem">
           <span class="stat-card__label">Edad</span>
-          <span class="stat-card__value"
-            >{{ ageYears() }}<small>años</small></span
-          >
+          <span class="stat-card__value">{{ ageYears() }}<small>años</small></span>
         </div>
         <div class="stat-card" role="listitem">
           <span class="stat-card__label">Peso</span>
-          <span class="stat-card__value"
-            >{{ weightKg() | number : '1.1-1' }}<small>kg</small></span
-          >
+          <span class="stat-card__value">{{ weightKg() | number : '1.1-1' }}<small>kg</small></span>
         </div>
         <div class="stat-card" role="listitem">
           <span class="stat-card__label">Altura</span>
-          <span class="stat-card__value"
-            >{{ heightCm() }}<small>cm</small></span
-          >
+          <span class="stat-card__value">{{ heightCm() }}<small>cm</small></span>
         </div>
         <div class="stat-card" role="listitem">
           <span class="stat-card__label">IMC</span>
@@ -62,24 +47,18 @@
         </div>
         <div class="stat-card" role="listitem">
           <span class="stat-card__label">Grasa</span>
-          <span class="stat-card__value"
-            >{{ bodyFatPercent() | number : '1.1-1' }}<small>%</small></span
-          >
+          <span class="stat-card__value">{{ bodyFatPercent() | number : '1.1-1' }}<small>%</small></span>
         </div>
       </div>
     </aside>
 
-    <!-- ── RIGHT: tabs + content ── -->
     <div class="profile-page__content">
-      <!-- Tab switcher -->
       <div class="profile-page__tabs" role="tablist">
         <button
           type="button"
           class="profile-page__tab"
           [class.is-active]="activeTab() === 'resumen'"
           (click)="setTab('resumen')"
-          role="tab"
-          [attr.aria-selected]="activeTab() === 'resumen'"
         >
           <i class="pi pi-user" aria-hidden="true"></i>
           Resumen
@@ -89,8 +68,6 @@
           class="profile-page__tab"
           [class.is-active]="activeTab() === 'historial'"
           (click)="setTab('historial')"
-          role="tab"
-          [attr.aria-selected]="activeTab() === 'historial'"
         >
           <i class="pi pi-chart-line" aria-hidden="true"></i>
           Historial
@@ -100,356 +77,435 @@
           class="profile-page__tab profile-page__tab--desktop-only"
           [class.is-active]="activeTab() === 'galeria'"
           (click)="setTab('galeria')"
-          role="tab"
-          [attr.aria-selected]="activeTab() === 'galeria'"
         >
           <i class="pi pi-images" aria-hidden="true"></i>
           Galería
         </button>
       </div>
 
-      <!-- ══════════ RESUMEN TAB ══════════ -->
       @if (activeTab() === 'resumen') {
-
-      <!-- ── Athlete Profile Card / Form ────────────────────────────────── -->
       @if (athleteStore.showAthleteProfileForm()) {
       <lib-athlete-profile-form />
       } @else {
-      <lib-athlete-profile-card
-        (openForm)="athleteStore.openAthleteProfileForm()"
-      />
+      <lib-athlete-profile-card (openForm)="athleteStore.openAthleteProfileForm()" />
       }
 
-      <!-- ── Subscription Management Card ──────────────────────────────── -->
       <lib-subscription-management-card />
 
-      <!-- Body Measurements -->
       <div class="profile-page__section">
-        <h3 class="profile-page__section-title">📐 Medidas Corporales</h3>
-        <div class="measurements-grid">
-          <div class="measurement-item">
-            <span class="measurement-item__label">Pecho</span>
-            <span class="measurement-item__value"
-              >{{ profile().measurements.chest }} cm</span
-            >
+        <h3 class="profile-page__section-title">Check-in semanal</h3>
+        <div class="weekly-checkin-summary">
+          <div class="weekly-checkin-summary__header">
+            <div>
+              <p-tag
+                [value]="statusLabel(weeklyStore.currentWeekStatus())"
+                [severity]="statusSeverity(weeklyStore.currentWeekStatus())"
+              />
+              <h4>Semana actual</h4>
+              <p>Próximo viernes: {{ nextFridayLabel() }}</p>
+            </div>
+
+            <p-button
+              label="Completar check-in semanal"
+              icon="pi pi-camera"
+              severity="contrast"
+              [disabled]="!weeklyStore.canSubmitThisWeek() && !weeklyStore.currentCheckIn()"
+              (onClick)="openWeeklyCheckInDialog()"
+            />
           </div>
-          <div class="measurement-item">
-            <span class="measurement-item__label">Cintura</span>
-            <span class="measurement-item__value"
-              >{{ profile().measurements.waist }} cm</span
-            >
+
+          <div class="weekly-checkin-summary__grid">
+            <div class="summary-chip">
+              <span>Fotos listas</span>
+              <strong>{{ currentWeekPhotoCompletion() }}/3</strong>
+            </div>
+            <div class="summary-chip">
+              <span>Ventana</span>
+              <strong>{{ weeklyStore.canSubmitThisWeek() ? 'Abierta' : 'Cerrada' }}</strong>
+            </div>
+            <div class="summary-chip">
+              <span>Último check-in</span>
+              <strong>{{ latestCheckIn() ? weekDateLabel(latestCheckIn()!) : 'Sin registros' }}</strong>
+            </div>
           </div>
-          <div class="measurement-item">
-            <span class="measurement-item__label">Caderas</span>
-            <span class="measurement-item__value"
-              >{{ profile().measurements.hips }} cm</span
-            >
+
+          @if (latestCheckIn(); as latest) {
+          <div class="weekly-checkin-summary__latest">
+            <div class="summary-metric">
+              <span>Peso</span>
+              <strong>{{ latest.measurements.weightKg ?? '-' }} kg</strong>
+            </div>
+            <div class="summary-metric">
+              <span>Grasa</span>
+              <strong>{{ latest.measurements.bodyFatPercent ?? '-' }} %</strong>
+            </div>
+            <div class="summary-metric">
+              <span>Adherencia</span>
+              <strong>{{ latest.selfAssessment.dietAdherencePercent ?? '-' }} %</strong>
+            </div>
           </div>
-          <div class="measurement-item">
-            <span class="measurement-item__label">Bícep Izq.</span>
-            <span class="measurement-item__value"
-              >{{ profile().measurements.bicepLeft }} cm</span
-            >
-          </div>
-          <div class="measurement-item">
-            <span class="measurement-item__label">Bícep Der.</span>
-            <span class="measurement-item__value"
-              >{{ profile().measurements.bicepRight }} cm</span
-            >
-          </div>
-          <div class="measurement-item">
-            <span class="measurement-item__label">Muslo</span>
-            <span class="measurement-item__value"
-              >{{ profile().measurements.thighLeft }} cm</span
-            >
-          </div>
-          <div class="measurement-item">
-            <span class="measurement-item__label">Pantorrilla</span>
-            <span class="measurement-item__value"
-              >{{ profile().measurements.calf }} cm</span
-            >
-          </div>
+          }
         </div>
       </div>
 
-      <!-- Charts Dashboard -->
+      <div class="profile-page__section">
+        <h3 class="profile-page__section-title">Medidas corporales</h3>
+        <div class="measurements-grid">
+          <div class="measurement-item"><span class="measurement-item__label">Pecho</span><span class="measurement-item__value">{{ currentMeasurements().chest }} cm</span></div>
+          <div class="measurement-item"><span class="measurement-item__label">Cintura</span><span class="measurement-item__value">{{ currentMeasurements().waist }} cm</span></div>
+          <div class="measurement-item"><span class="measurement-item__label">Caderas</span><span class="measurement-item__value">{{ currentMeasurements().hips }} cm</span></div>
+          <div class="measurement-item"><span class="measurement-item__label">Bícep Izq.</span><span class="measurement-item__value">{{ currentMeasurements().bicepLeft }} cm</span></div>
+          <div class="measurement-item"><span class="measurement-item__label">Bícep Der.</span><span class="measurement-item__value">{{ currentMeasurements().bicepRight }} cm</span></div>
+          <div class="measurement-item"><span class="measurement-item__label">Muslo</span><span class="measurement-item__value">{{ currentMeasurements().thighLeft }} cm</span></div>
+          <div class="measurement-item"><span class="measurement-item__label">Pantorrilla</span><span class="measurement-item__value">{{ currentMeasurements().calf }} cm</span></div>
+        </div>
+      </div>
+
       <div class="profile-page__charts-panel">
-        <!-- Line: Peso & Grasa -->
         <div class="chart-card chart-card--wide">
           <div class="chart-card__header">
-            <span class="chart-card__title"
-              >📈 Evolución Peso &amp; Grasa Corporal</span
-            >
+            <span class="chart-card__title">Evolución peso y grasa corporal</span>
           </div>
           <div class="chart-card__body">
-            <p-chart
-              type="line"
-              [data]="lineChartData()"
-              [options]="lineChartOptions"
-            />
-          </div>
-        </div>
-
-        <!-- Radar + Doughnut side by side -->
-        <div class="chart-card chart-card--half">
-          <div class="chart-card__header">
-            <span class="chart-card__title">🕸 Medidas Corporales</span>
-            <span class="chart-card__badge">Actual vs Inicial</span>
-          </div>
-          <div class="chart-card__body">
-            <p-chart
-              type="radar"
-              [data]="radarChartData()"
-              [options]="radarChartOptions"
-            />
+            <p-chart type="line" [data]="lineChartData()" [options]="lineChartOptions" />
           </div>
         </div>
 
         <div class="chart-card chart-card--half">
           <div class="chart-card__header">
-            <span class="chart-card__title">🍩 Composición Corporal</span>
+            <span class="chart-card__title">Medidas corporales</span>
+            <span class="chart-card__badge">Actual vs inicial</span>
+          </div>
+          <div class="chart-card__body">
+            <p-chart type="radar" [data]="radarChartData()" [options]="radarChartOptions" />
+          </div>
+        </div>
+
+        <div class="chart-card chart-card--half">
+          <div class="chart-card__header">
+            <span class="chart-card__title">Composición corporal</span>
             <span class="chart-card__badge">{{ weightKg() }} kg total</span>
           </div>
           <div class="chart-card__body">
-            <p-chart
-              type="doughnut"
-              [data]="doughnutChartData()"
-              [options]="doughnutChartOptions"
-            />
+            <p-chart type="doughnut" [data]="doughnutChartData()" [options]="doughnutChartOptions" />
           </div>
         </div>
 
-        <!-- Bar: progreso mensual -->
         <div class="chart-card chart-card--wide">
           <div class="chart-card__header">
-            <span class="chart-card__title">📊 Progreso Mensual</span>
+            <span class="chart-card__title">Progreso semanal acumulado</span>
           </div>
           <div class="chart-card__body">
-            <p-chart
-              type="bar"
-              [data]="barChartData()"
-              [options]="barChartOptions"
-            />
+            <p-chart type="bar" [data]="barChartData()" [options]="barChartOptions" />
           </div>
         </div>
       </div>
-
       }
 
-      <!-- ══════════ GALERÍA TAB ══════════ -->
-      @if (activeTab() === 'galeria') {
-
-      <div class="profile-page__section">
-        <h3 class="profile-page__section-title">📸 Galería de Progreso</h3>
-      </div>
-
-      <div class="gallery-layout">
-        <!-- Main selected photo -->
-        <div class="gallery-main">
-          @if (selectedPhoto()) {
-          <div class="gallery-main__photo">
-            <img
-              [src]="selectedPhoto()!.url"
-              [alt]="selectedPhoto()!.label"
-              loading="lazy"
-            />
-            <div class="gallery-main__overlay">
-              <span class="gallery-main__label">{{
-                selectedPhoto()!.label
-              }}</span>
-              <span class="gallery-main__date">{{
-                selectedPhoto()!.date | date : 'dd MMM yyyy'
-              }}</span>
-            </div>
-          </div>
-          }
-        </div>
-
-        <!-- Vertical thumbnail strip -->
-        <ul class="gallery-thumbs" aria-label="Fotos de progreso">
-          @for (photo of profile().progressPhotos; track photo.id) {
-          <li>
-            <button
-              type="button"
-              class="gallery-thumb"
-              [class.is-selected]="selectedPhoto()?.id === photo.id"
-              (click)="selectPhoto(photo)"
-              [attr.aria-label]="'Ver foto de ' + photo.label"
-              [attr.aria-pressed]="selectedPhoto()?.id === photo.id"
-            >
-              <img [src]="photo.url" [alt]="photo.label" loading="lazy" />
-              <span class="gallery-thumb__label">{{ photo.label }}</span>
-            </button>
-          </li>
-          }
-        </ul>
-      </div>
-
-      }
-
-      <!-- ══════════ HISTORIAL TAB ══════════ -->
       @if (activeTab() === 'historial') {
-
       <div class="profile-page__section">
-        <h3 class="profile-page__section-title">📊 Evolución de Medidas</h3>
+        <h3 class="profile-page__section-title">Historial semanal</h3>
         <p class="profile-page__section-subtitle">
-          Comparación entre mediciones
+          Organizado por año, mes y semana, manteniendo el look general del timeline actual.
         </p>
       </div>
 
-      <div class="measurement-timeline" role="list">
-        @for (snap of history(); track snap.id; let i = $index; let isLast =
-        $last) {
+      @if (weeklyStore.loadingMonths()) {
+      <div class="history-skeleton-grid">
+        @for (item of [1, 2, 3]; track item) {
+        <p-skeleton height="6rem" borderRadius="16px" />
+        }
+      </div>
+      } @else {
+      <div class="history-shell">
+      <p-accordion
+        [value]="historyExpandedMonth()"
+        (valueChange)="historyExpandedMonth.set($any($event))"
+        expandIcon="pi pi-chevron-right"
+        collapseIcon="pi pi-chevron-down"
+      >
+        @for (yearGroup of groupedCheckInsByMonth(); track yearGroup.year) {
+        <div class="year-heading">{{ yearGroup.year }}</div>
 
-        <div class="msnap" [class.msnap--latest]="i === 0" role="listitem">
-          <!-- Connector -->
-          <div class="msnap__connector">
-            <div class="msnap__dot" [class.msnap__dot--pulse]="i === 0"></div>
-            @if (!isLast) {
-            <div class="msnap__line"></div>
-            }
-          </div>
-
-          <!-- Card -->
-          <div class="msnap__card">
-            <div class="msnap__header">
-              <div class="msnap__date-group">
-                <span class="msnap__label">{{ snap.label }}</span>
-                <span class="msnap__date">{{
-                  snap.date | date : 'dd MMM yyyy'
-                }}</span>
+        @for (monthGroup of yearGroup.months; track monthGroup.monthKey) {
+        <p-accordion-panel [value]="monthGroup.monthKey" (valueChange)="openHistoryMonth(monthGroup.monthKey)">
+          <p-accordion-header>
+            <div class="month-header">
+              <div class="month-header__copy">
+                <strong>{{ monthGroup.label }}</strong>
+                <span class="month-header__meta">{{ monthGroup.checkInCount }} check-ins</span>
               </div>
-              @if (i === 0) {
-              <span class="msnap__current-badge">Actual</span>
+              <div class="month-header__actions">
+                <p-tag
+                  [value]="monthGroup.weeks.length + ' semanas'"
+                  severity="secondary"
+                  styleClass="month-header__tag"
+                />
+              </div>
+            </div>
+          </p-accordion-header>
+          <p-accordion-content>
+            @if (weeklyStore.loadingMonth() && historyExpandedMonth() === monthGroup.monthKey) {
+            <p-skeleton height="8rem" borderRadius="16px" />
+            } @else {
+            <div class="weekly-card-list">
+              @for (week of monthGroup.weeks; track week.weekId; let i = $index; let isLast = $last) {
+              <div class="msnap" [class.msnap--latest]="i === 0">
+                <div class="msnap__connector">
+                  <div class="msnap__dot" [class.msnap__dot--pulse]="i === 0"></div>
+                  @if (!isLast) {
+                  <div class="msnap__line"></div>
+                  }
+                </div>
+
+                <div class="msnap__card">
+                  <div class="msnap__header">
+                    <div class="msnap__date-group">
+                      <span class="msnap__label">Semana {{ week.weekOfMonth }}</span>
+                      <span class="msnap__date">{{ weekDateLabel(week) }}</span>
+                    </div>
+                    <div class="weekly-status-stack">
+                      <p-tag [value]="statusLabel(week.status)" [severity]="statusSeverity(week.status)" />
+                      @if (lateSubmissionLabel(week); as lateSubmissionLabel) {
+                      <p-tag [value]="lateSubmissionLabel" severity="warn" />
+                      }
+                    </div>
+                  </div>
+
+                  <div class="msnap__key-stats">
+                    <div class="msnap__kstat"><span class="msnap__kstat-label">Peso</span><span class="msnap__kstat-value">{{ week.measurements.weightKg ?? '-' }}<small>kg</small></span></div>
+                    <div class="msnap__kstat"><span class="msnap__kstat-label">Grasa</span><span class="msnap__kstat-value">{{ week.measurements.bodyFatPercent ?? '-' }}<small>%</small></span></div>
+                    <div class="msnap__kstat"><span class="msnap__kstat-label">IMC</span><span class="msnap__kstat-value">{{ week.measurements.weightKg && heightCm() ? ((week.measurements.weightKg! / ((heightCm() / 100) * (heightCm() / 100))) | number : '1.1-1') : '-' }}</span></div>
+                  </div>
+
+                  <div class="msnap__measures">
+                    <div class="msnap__measure"><span class="msnap__measure-lbl">Pecho</span><span class="msnap__measure-val">{{ week.measurements.chestCm ?? '-' }}</span></div>
+                    <div class="msnap__measure"><span class="msnap__measure-lbl">Cintura</span><span class="msnap__measure-val">{{ week.measurements.waistCm ?? '-' }}</span></div>
+                    <div class="msnap__measure"><span class="msnap__measure-lbl">Cadera</span><span class="msnap__measure-val">{{ week.measurements.hipCm ?? '-' }}</span></div>
+                    <div class="msnap__measure"><span class="msnap__measure-lbl">Brazo</span><span class="msnap__measure-val">{{ week.measurements.rightArmCm ?? '-' }}</span></div>
+                    <div class="msnap__measure"><span class="msnap__measure-lbl">Muslo</span><span class="msnap__measure-val">{{ week.measurements.thighCm ?? '-' }}</span></div>
+                    <div class="msnap__measure"><span class="msnap__measure-lbl">Pantorrilla</span><span class="msnap__measure-val">{{ week.measurements.calfCm ?? '-' }}</span></div>
+                  </div>
+
+                  <div class="weekly-history-actions">
+                    <p-button label="Ver fotografias" icon="pi pi-images" severity="secondary" [outlined]="true" [disabled]="availablePhotoCount(week) === 0" (onClick)="selectWeekForGallery(week)" />
+                    <p-button label="Editar check-in" icon="pi pi-pencil" severity="contrast" [disabled]="!canEditWeek(week)" (onClick)="editWeek(week)" />
+                  </div>
+
+                  @if (week.notes || availablePhotoCount(week) > 0) {
+                  <div class="weekly-history-details">
+                    <p class="weekly-history-details__notes">{{ week.notes || 'Sin notas adicionales.' }}</p>
+                    <div class="weekly-history-details__thumbs">
+                      @for (type of requiredPhotoTypes; track type) {
+                      @if (week.photos[type]?.thumbnailUrl; as thumb) {
+                      <img [src]="thumb" [alt]="progressPhotoLabels[type]" loading="lazy" />
+                      }
+                      }
+                    </div>
+                  </div>
+                  }
+                </div>
+              </div>
               }
             </div>
-
-            <!-- Key stats row -->
-            <div class="msnap__key-stats">
-              <div class="msnap__kstat">
-                <span class="msnap__kstat-label">Peso</span>
-                <span class="msnap__kstat-value"
-                  >{{ snap.weightKg | number : '1.1-1' }}
-                  <small>kg</small></span
-                >
-                @let wDelta = getDelta(history(), i, 'weightKg'); @if (wDelta) {
-                <span
-                  class="msnap__delta"
-                  [class.msnap__delta--up]="wDelta.positive"
-                  [class.msnap__delta--down]="!wDelta.positive"
-                >
-                  {{ wDelta.positive ? '▲' : '▼' }} {{ wDelta.value }}
-                </span>
-                }
-              </div>
-              <div class="msnap__kstat">
-                <span class="msnap__kstat-label">Grasa</span>
-                <span class="msnap__kstat-value"
-                  >{{ snap.bodyFatPercent | number : '1.1-1' }}
-                  <small>%</small></span
-                >
-                @let fDelta = getDelta(history(), i, 'bodyFatPercent'); @if
-                (fDelta) {
-                <span
-                  class="msnap__delta"
-                  [class.msnap__delta--up]="fDelta.positive"
-                  [class.msnap__delta--down]="!fDelta.positive"
-                >
-                  {{ fDelta.positive ? '▲' : '▼' }} {{ fDelta.value }}
-                </span>
-                }
-              </div>
-              <div class="msnap__kstat">
-                <span class="msnap__kstat-label">IMC</span>
-                <span class="msnap__kstat-value">{{ snap.bmi }}</span>
-                @let bDelta = getDelta(history(), i, 'bmi'); @if (bDelta) {
-                <span
-                  class="msnap__delta"
-                  [class.msnap__delta--up]="bDelta.positive"
-                  [class.msnap__delta--down]="!bDelta.positive"
-                >
-                  {{ bDelta.positive ? '▲' : '▼' }} {{ bDelta.value }}
-                </span>
-                }
-              </div>
+            @if (weeklyStore.monthlyCheckIns()[monthGroup.monthKey].length === 0) {
+            <div class="gallery-main__empty">
+              No hay semanas registradas en este mes todavia.
             </div>
+            }
+            }
+          </p-accordion-content>
+        </p-accordion-panel>
+        }
+        }
+      </p-accordion>
+      </div>
 
-            <!-- Measurements mini grid -->
-            <div class="msnap__measures">
-              <div class="msnap__measure">
-                <span class="msnap__measure-lbl">Pecho</span>
-                <span class="msnap__measure-val">{{
-                  snap.measurements.chest
-                }}</span>
-                @let chDelta = getMeasurementDelta(history(), i, 'chest'); @if
-                (chDelta) {
-                <span
-                  class="msnap__delta msnap__delta--sm"
-                  [class.msnap__delta--up]="chDelta.positive"
-                  [class.msnap__delta--down]="!chDelta.positive"
-                >
-                  {{ chDelta.positive ? '+' : '-' }}{{ chDelta.value }}
-                </span>
-                }
-              </div>
-              <div class="msnap__measure">
-                <span class="msnap__measure-lbl">Cintura</span>
-                <span class="msnap__measure-val">{{
-                  snap.measurements.waist
-                }}</span>
-                @let waDelta = getMeasurementDelta(history(), i, 'waist'); @if
-                (waDelta) {
-                <span
-                  class="msnap__delta msnap__delta--sm"
-                  [class.msnap__delta--up]="waDelta.positive"
-                  [class.msnap__delta--down]="!waDelta.positive"
-                >
-                  {{ waDelta.positive ? '+' : '-' }}{{ waDelta.value }}
-                </span>
-                }
-              </div>
-              <div class="msnap__measure">
-                <span class="msnap__measure-lbl">Bícep</span>
-                <span class="msnap__measure-val">{{
-                  snap.measurements.bicepRight
-                }}</span>
-                @let biDelta = getMeasurementDelta(history(), i, 'bicepRight');
-                @if (biDelta) {
-                <span
-                  class="msnap__delta msnap__delta--sm"
-                  [class.msnap__delta--up]="biDelta.positive"
-                  [class.msnap__delta--down]="!biDelta.positive"
-                >
-                  {{ biDelta.positive ? '+' : '-' }}{{ biDelta.value }}
-                </span>
-                }
-              </div>
-              <div class="msnap__measure">
-                <span class="msnap__measure-lbl">Muslo</span>
-                <span class="msnap__measure-val">{{
-                  snap.measurements.thighLeft
-                }}</span>
-                @let thDelta = getMeasurementDelta(history(), i, 'thighLeft');
-                @if (thDelta) {
-                <span
-                  class="msnap__delta msnap__delta--sm"
-                  [class.msnap__delta--up]="thDelta.positive"
-                  [class.msnap__delta--down]="!thDelta.positive"
-                >
-                  {{ thDelta.positive ? '+' : '-' }}{{ thDelta.value }}
-                </span>
-                }
-              </div>
-            </div>
+      @if (weeklyStore.hasMoreMonths()) {
+      <div class="profile-page__section">
+        <p-button
+          label="Cargar meses anteriores"
+          icon="pi pi-history"
+          severity="secondary"
+          [outlined]="true"
+          [loading]="weeklyStore.loadingMoreMonths()"
+          (onClick)="loadMoreMonths()"
+        />
+      </div>
+      }
+      }
+      }
+
+      @if (activeTab() === 'galeria') {
+      <section class="gallery-board">
+        <div class="gallery-board__header">
+          <div class="gallery-board__heading">
+            <h3 class="gallery-board__title">Galeria semanal</h3>
+            <p class="gallery-board__subtitle">
+              Selecciona un mes y revisa cada semana completa sin cambiar de vista.
+            </p>
+          </div>
+
+          <div class="gallery-board__toolbar">
+            <label class="gallery-board__toolbar-label" for="gallery-month-select">Mes</label>
+            <p-select
+              inputId="gallery-month-select"
+              [options]="galleryMonthOptions()"
+              optionLabel="label"
+              optionValue="value"
+              [ngModel]="selectedGalleryMonthKey()"
+              (ngModelChange)="openGalleryMonth($event)"
+              [placeholder]="availableMonths().length ? 'Selecciona un mes' : 'Sin meses disponibles'"
+              styleClass="gallery-board__month-select"
+              panelStyleClass="gallery-board__month-select-panel"
+              appendTo="body"
+              [disabled]="availableMonths().length === 0"
+              [ariaLabel]="galleryMonthAriaLabel()"
+            />
           </div>
         </div>
 
-        }
-      </div>
+        @if (weeklyStore.loadingMonth() && selectedGalleryMonthKey()) {
+        <div class="history-skeleton-grid">
+          @for (item of [1, 2]; track item) {
+          <p-skeleton height="18rem" borderRadius="24px" />
+          }
+        </div>
+        } @else if (!selectedGalleryMonth()) {
+        <div class="gallery-board__empty">
+          No hay meses disponibles todavia para mostrar fotografias.
+        </div>
+        } @else {
+        <div class="gallery-board__month-summary">
+          <div>
+            <h4>{{ selectedGalleryMonth()!.label }}</h4>
+            <p>{{ galleryWeeks().length }} semanas registradas</p>
+          </div>
+          <span class="gallery-board__month-count">
+            {{ galleryWeeks().length }} check-ins
+          </span>
+        </div>
 
+        @if (galleryWeeks().length === 0) {
+        <div class="gallery-board__empty">
+          No hay semanas registradas en este mes todavia.
+        </div>
+        } @else {
+        <div class="gallery-week-stream">
+          @for (week of galleryWeeks(); track week.weekId) {
+          <article class="gallery-week-panel">
+            <div class="gallery-week-panel__header">
+              <div class="gallery-week-panel__date-badge">
+                <strong>{{ weekDateLabel(week).split(' ')[0] }}</strong>
+                <span>{{ weekMonthShortLabel(week) }}</span>
+              </div>
+
+              <div class="gallery-week-panel__summary">
+                <div class="gallery-week-panel__title-row">
+                  <h4>{{ weekDateLabel(week) }}</h4>
+                  <span
+                    class="gallery-week-panel__status"
+                    [class.is-complete]="galleryWeekStatusClass(week) === 'is-complete'"
+                    [class.is-partial]="galleryWeekStatusClass(week) === 'is-partial'"
+                    [class.is-incomplete]="galleryWeekStatusClass(week) === 'is-incomplete'"
+                  >
+                    {{ galleryWeekStatusLabel(week) }}
+                  </span>
+                </div>
+
+                <div class="gallery-week-panel__meta">
+                  <span>{{ week.measurements.weightKg ?? '-' }} kg</span>
+                  <span>{{ availablePhotoCount(week) }}/{{ requiredPhotoTypes.length }} fotos</span>
+                  @if (lateSubmissionLabel(week); as weekLateLabel) {
+                  <span>{{ weekLateLabel }}</span>
+                  }
+                </div>
+              </div>
+
+              <div class="gallery-week-panel__actions">
+                @if (canEditWeek(week)) {
+                <p-button
+                  label="Editar check-in"
+                  icon="pi pi-pencil"
+                  severity="secondary"
+                  [outlined]="true"
+                  (onClick)="editWeek(week)"
+                />
+                } @else {
+                <p-button
+                  [label]="isGalleryWeekExpanded(week.weekId) ? 'Ocultar detalle' : 'Ver detalle'"
+                  icon="pi pi-eye"
+                  severity="secondary"
+                  [outlined]="true"
+                  (onClick)="toggleGalleryWeekDetails(week.weekId)"
+                />
+                }
+              </div>
+            </div>
+
+            <div class="gallery-week-panel__photos">
+              @for (type of requiredPhotoTypes; track type) {
+              <div class="gallery-photo-card">
+                <div class="gallery-photo-card__label">{{ progressPhotoLabels[type] }}</div>
+
+                @if (galleryPhotoUrl(week, type); as photoUrl) {
+                <p-image
+                  [src]="photoUrl"
+                  [preview]="true"
+                  imageClass="gallery-photo-card__image"
+                />
+                <div class="gallery-photo-card__footer">
+                  <span>Disponible</span>
+                  <i class="pi pi-expand" aria-hidden="true"></i>
+                </div>
+                } @else {
+                <div class="gallery-photo-card__empty">
+                  <i class="pi pi-upload" aria-hidden="true"></i>
+                  <strong>Falta foto</strong>
+                  <span>Sube tu foto de {{ progressPhotoLabels[type].toLowerCase() }}</span>
+                </div>
+                }
+              </div>
+              }
+            </div>
+
+            @if (isGalleryWeekExpanded(week.weekId)) {
+            <div class="gallery-week-panel__details">
+              <div class="summary-chip"><span>Pecho</span><strong>{{ week.measurements.chestCm ?? '-' }} cm</strong></div>
+              <div class="summary-chip"><span>Cintura</span><strong>{{ week.measurements.waistCm ?? '-' }} cm</strong></div>
+              <div class="summary-chip"><span>Cadera</span><strong>{{ week.measurements.hipCm ?? '-' }} cm</strong></div>
+              <div class="summary-chip"><span>Adherencia</span><strong>{{ week.selfAssessment.dietAdherencePercent ?? '-' }} %</strong></div>
+            </div>
+
+            @if (week.notes) {
+            <p class="gallery-week-panel__notes">{{ week.notes }}</p>
+            }
+            }
+          </article>
+          }
+        </div>
+        }
+        }
+      </section>
+
+      @if (weeklyStore.hasMoreMonths()) {
+      <div class="profile-page__section">
+        <p-button
+          label="Cargar meses anteriores"
+          icon="pi pi-history"
+          severity="secondary"
+          [outlined]="true"
+          [loading]="weeklyStore.loadingMoreMonths()"
+          (onClick)="loadMoreMonths()"
+        />
+      </div>
+      }
       }
     </div>
-    <!-- /profile-page__content -->
   </div>
-  <!-- /profile-page__body -->
+
+  <lib-weekly-checkin-dialog
+    [visible]="checkInDialogVisible()"
+    (visibleChange)="checkInDialogVisible.set($event)"
+  />
 </div>

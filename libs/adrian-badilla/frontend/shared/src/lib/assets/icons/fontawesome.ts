@@ -53,6 +53,7 @@ import {
   faHatChef,
   faMessageQuestion as faMessageQuestionSolid,
   faSliders as faSlidersSolid,
+  faShield,
 } from '@fortawesome/pro-solid-svg-icons';
 import { faHouseTree } from '@fortawesome/pro-regular-svg-icons';
 import { faBicep } from '@fortawesome/pro-regular-svg-icons';
@@ -106,4 +107,5 @@ export const FontAwesomeicons = [
   faHatChef,
   faMessageQuestionSolid,
   faSlidersSolid,
+  faShield,
 ];

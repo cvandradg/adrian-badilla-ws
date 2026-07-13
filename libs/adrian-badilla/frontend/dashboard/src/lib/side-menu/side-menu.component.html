@@ -34,7 +34,7 @@
     mat-list-item
     [routerLink]="item.route"
     routerLinkActive="menu-item--active"
-    [routerLinkActiveOptions]="{ exact: true }"
+    [routerLinkActiveOptions]="{ exact: item.exact }"
     #rla="routerLinkActive"
     [activated]="rla.isActive"
     class="menu-item"

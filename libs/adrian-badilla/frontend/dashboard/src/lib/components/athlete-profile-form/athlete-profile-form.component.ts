@@ -2,25 +2,36 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
-  OnInit,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { SelectModule } from 'primeng/select';
 import { athleteProfileStore } from '../../store/athlete-profile.store';
 import type {
   AthleteProfileFormData,
+  AthleteProfile,
   TrainingExperience,
   TrainingGoal,
   TrainingConsistency,
   PreferredSchedule,
   TrainingLocation,
   TrainingStylePreference,
+  AthleteProfileCondition,
+  AthleteProfileInjury,
+  InjuryArea,
   InjurySeverity,
   DiseaseSeverity,
   AlcoholFrequency,
   MealSlot,
+  MedicalConditionType,
 } from '../../types/athlete-profile.types';
+import {
+  type EquipmentId,
+  type MuscleId,
+  type WeekDayId,
+} from '@adrian-badilla/ai';
 import {
   TRAINING_EXPERIENCE_LABELS,
   TRAINING_GOAL_LABELS,
@@ -36,8 +47,10 @@ import {
   SESSION_DURATION_OPTIONS,
   HOME_EQUIPMENT_OPTIONS,
   MUSCLE_GROUP_OPTIONS,
+  INJURY_AREA_OPTIONS,
   INJURY_SEVERITY_LABELS,
   DISEASE_SEVERITY_LABELS,
+  MEDICAL_CONDITION_LABELS,
   validateAthleteProfileFormData,
 } from '../../types/athlete-profile.types';
 
@@ -48,7 +61,7 @@ function buildDefaultFormData(): AthleteProfileFormData {
     training: {
       sport: '',
       trainingExperience: 'beginner',
-      trainingType: 'Fuerza',
+      trainingType: 'strength',
       goal: 'maintain_weight',
       availableDays: [],
       preferredSchedule: 'morning',
@@ -57,7 +70,7 @@ function buildDefaultFormData(): AthleteProfileFormData {
       availableEquipment: ['full_gym'],
       // AI-ready optional fields
       trainingLocation: 'gym',
-      trainingStylePreference: 'medium',
+      trainingStylePreference: 'balanced',
       priorityMuscles: [],
       avoidMuscles: [],
     },
@@ -71,6 +84,8 @@ function buildDefaultFormData(): AthleteProfileFormData {
       diseaseDescription: '',
       hasInjury: false,
       injuryDescription: '',
+      injuries: [],
+      conditions: [],
       // AI-ready optional severity fields
       injurySeverity: undefined,
       diseaseSeverity: undefined,
@@ -80,6 +95,21 @@ function buildDefaultFormData(): AthleteProfileFormData {
       smoker: false,
       alcohol: 'never',
     },
+  };
+}
+
+const MAX_PRIORITY_MUSCLES = 3;
+
+function buildEmptyInjury(): AthleteProfileInjury {
+  return {
+    notes: '',
+  };
+}
+
+function buildEmptyCondition(): AthleteProfileCondition {
+  return {
+    type: 'other',
+    notes: '',
   };
 }
 
@@ -99,12 +129,12 @@ function buildDefaultFormData(): AthleteProfileFormData {
 @Component({
   selector: 'lib-athlete-profile-form',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, SelectModule],
   templateUrl: './athlete-profile-form.component.html',
   styleUrl: './athlete-profile-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AthleteProfileFormComponent implements OnInit {
+export class AthleteProfileFormComponent {
   readonly store = inject(athleteProfileStore);
 
   // ── Form state (signal-based) ──────────────────────────────────────────────
@@ -118,8 +148,8 @@ export class AthleteProfileFormComponent implements OnInit {
   ];
 
   readonly goalOptions: { value: TrainingGoal; label: string }[] = [
-    { value: 'lose_fat', label: TRAINING_GOAL_LABELS.lose_fat },
-    { value: 'gain_muscle', label: TRAINING_GOAL_LABELS.gain_muscle },
+    { value: 'fat_loss', label: TRAINING_GOAL_LABELS.fat_loss },
+    { value: 'muscle_gain', label: TRAINING_GOAL_LABELS.muscle_gain },
     {
       value: 'body_recomposition',
       label: TRAINING_GOAL_LABELS.body_recomposition,
@@ -131,6 +161,15 @@ export class AthleteProfileFormComponent implements OnInit {
     { value: 'maintain_weight', label: TRAINING_GOAL_LABELS.maintain_weight },
   ];
 
+  readonly secondaryGoalOptions = computed<
+    { value: TrainingGoal | ''; label: string }[]
+  >(() => [
+    { value: '', label: 'Ninguno' },
+    ...this.goalOptions.filter(
+      (option) => option.value !== this.formData().training.goal
+    ),
+  ]);
+
   readonly consistencyOptions: { value: TrainingConsistency; label: string }[] =
     [
       { value: 'low', label: TRAINING_CONSISTENCY_LABELS.low },
@@ -140,9 +179,10 @@ export class AthleteProfileFormComponent implements OnInit {
 
   readonly scheduleOptions: { value: PreferredSchedule; label: string }[] = [
     { value: 'morning', label: PREFERRED_SCHEDULE_LABELS.morning },
-    { value: 'midday', label: PREFERRED_SCHEDULE_LABELS.midday },
     { value: 'afternoon', label: PREFERRED_SCHEDULE_LABELS.afternoon },
     { value: 'evening', label: PREFERRED_SCHEDULE_LABELS.evening },
+    { value: 'night', label: PREFERRED_SCHEDULE_LABELS.night },
+    { value: 'flexible', label: PREFERRED_SCHEDULE_LABELS.flexible },
   ];
 
   readonly alcoholOptions: { value: AlcoholFrequency; label: string }[] = [
@@ -167,23 +207,23 @@ export class AthleteProfileFormComponent implements OnInit {
     label: string;
   }[] = [
     { value: 'short', label: TRAINING_STYLE_PREFERENCE_LABELS.short },
-    { value: 'medium', label: TRAINING_STYLE_PREFERENCE_LABELS.medium },
+    { value: 'balanced', label: TRAINING_STYLE_PREFERENCE_LABELS.balanced },
     { value: 'long', label: TRAINING_STYLE_PREFERENCE_LABELS.long },
   ];
 
   readonly muscleGroupOptions = MUSCLE_GROUP_OPTIONS;
 
   readonly homeEquipmentOptions = HOME_EQUIPMENT_OPTIONS;
-
+  readonly injuryAreaOptions = INJURY_AREA_OPTIONS;
   readonly injurySeverityOptions: { value: InjurySeverity; label: string }[] = [
-    { value: 'minor', label: INJURY_SEVERITY_LABELS.minor },
+    { value: 'mild', label: INJURY_SEVERITY_LABELS.mild },
     { value: 'moderate', label: INJURY_SEVERITY_LABELS.moderate },
     { value: 'severe', label: INJURY_SEVERITY_LABELS.severe },
   ];
 
   readonly diseaseSeverityOptions: { value: DiseaseSeverity; label: string }[] =
     [
-      { value: 'minor', label: DISEASE_SEVERITY_LABELS.minor },
+      { value: 'mild', label: DISEASE_SEVERITY_LABELS.mild },
       { value: 'moderate', label: DISEASE_SEVERITY_LABELS.moderate },
       { value: 'severe', label: DISEASE_SEVERITY_LABELS.severe },
     ];
@@ -194,7 +234,7 @@ export class AthleteProfileFormComponent implements OnInit {
    */
   readonly showEquipmentSelector = computed(() => {
     const loc = this.formData().training.trainingLocation;
-    return loc === 'home' || loc === 'both';
+    return loc === 'home' || loc === 'hybrid';
   });
 
   /**
@@ -212,26 +252,29 @@ export class AthleteProfileFormComponent implements OnInit {
    */
   readonly showCustomSport = signal(false);
   readonly customSportText = signal('');
+  readonly #loadedProfile = signal<AthleteProfile | null | undefined>(
+    undefined
+  );
 
   // ── Lifecycle ─────────────────────────────────────────────────────────────
 
-  ngOnInit(): void {
+  readonly #syncExistingProfile = effect(() => {
     const existing = this.store.athleteProfile();
-    if (!existing) return;
+    if (!existing || this.#loadedProfile() === existing) return;
 
-    const t = existing.training;
-    // Detect if the stored sport is a custom value not present in SPORT_OPTIONS
-    const isCustomSport = !!t.sport && !SPORT_OPTIONS.includes(t.sport);
-    if (isCustomSport) {
-      this.showCustomSport.set(true);
-      this.customSportText.set(t.sport);
-    }
+    this.#loadedProfile.set(existing);
+
+    const t = existing.training as AthleteProfile['training'];
+    const isCustomSport =
+      !!t.sport && !SPORT_OPTIONS.some((option) => option.value === t.sport);
+    this.showCustomSport.set(isCustomSport);
+    this.customSportText.set(isCustomSport ? t.sport : '');
 
     this.formData.set({
       training: {
-        sport: isCustomSport ? 'Otro' : t.sport || '',
+        sport: isCustomSport ? 'other' : t.sport || '',
         trainingExperience: t.trainingExperience ?? 'beginner',
-        trainingType: t.trainingType ?? 'Fuerza',
+        trainingType: t.trainingType ?? 'strength',
         goal: t.goal ?? 'maintain_weight',
         availableDays: [...(t.availableDays ?? [])],
         preferredSchedule: t.preferredSchedule ?? 'morning',
@@ -240,7 +283,7 @@ export class AthleteProfileFormComponent implements OnInit {
         availableEquipment: [...(t.availableEquipment ?? [])],
         // New optional fields — fallback to defaults for backward compat
         trainingLocation: t.trainingLocation ?? 'gym',
-        trainingStylePreference: t.trainingStylePreference ?? 'medium',
+        trainingStylePreference: t.trainingStylePreference ?? 'balanced',
         ...(t.monthsTraining != null
           ? { monthsTraining: t.monthsTraining }
           : {}),
@@ -252,15 +295,59 @@ export class AthleteProfileFormComponent implements OnInit {
         ...existing.nutrition,
         mealSchedule: [...existing.nutrition.mealSchedule],
       },
-      health: { ...existing.health },
+      health: {
+        ...existing.health,
+        injuries:
+          existing.health.injuries && existing.health.injuries.length > 0
+            ? existing.health.injuries.map((injury) => ({
+                area: injury.area,
+                severity: injury.severity,
+                notes: injury.notes ?? '',
+              }))
+            : existing.health.hasInjury
+            ? [
+                {
+                  notes: existing.health.injuryDescription ?? '',
+                  ...(existing.health.injurySeverity
+                    ? { severity: existing.health.injurySeverity }
+                    : {}),
+                },
+              ]
+            : [],
+        conditions:
+              existing.health.conditions && existing.health.conditions.length > 0
+            ? existing.health.conditions.map((condition) => ({
+                type: condition.type,
+                name:
+                  condition.name ??
+                  (condition.type
+                    ? MEDICAL_CONDITION_LABELS[condition.type]
+                    : undefined) ??
+                  '',
+                severity: condition.severity,
+                notes: condition.notes ?? '',
+              }))
+            : existing.health.hasDisease
+            ? [
+                {
+                  type: 'other',
+                  name: existing.health.diseaseDescription ?? '',
+                  notes: '',
+                  ...(existing.health.diseaseSeverity
+                    ? { severity: existing.health.diseaseSeverity }
+                    : {}),
+                },
+              ]
+            : [],
+      },
       lifestyle: { ...existing.lifestyle },
     });
-  }
+  });
 
   // ── Field helpers ─────────────────────────────────────────────────────────
 
   onSportChange(value: string): void {
-    const isOther = value === 'Otro';
+    const isOther = value === 'other';
     this.showCustomSport.set(isOther);
     if (!isOther) this.customSportText.set('');
     this.updateTraining('sport', value);
@@ -296,6 +383,136 @@ export class AthleteProfileFormComponent implements OnInit {
     }));
   }
 
+  private updatePrimaryInjury(
+    updater: (injury: AthleteProfileInjury) => AthleteProfileInjury
+  ): void {
+    this.formData.update((prev) => ({
+      ...prev,
+      health: {
+        ...prev.health,
+        injuries: [updater(prev.health.injuries?.[0] ?? buildEmptyInjury())],
+      },
+    }));
+  }
+
+  private updatePrimaryCondition(
+    updater: (condition: AthleteProfileCondition) => AthleteProfileCondition
+  ): void {
+    this.formData.update((prev) => ({
+      ...prev,
+      health: {
+        ...prev.health,
+        conditions: [
+          updater(prev.health.conditions?.[0] ?? buildEmptyCondition()),
+        ],
+      },
+    }));
+  }
+
+  primaryInjury(): AthleteProfileInjury {
+    return this.formData().health.injuries?.[0] ?? buildEmptyInjury();
+  }
+
+  primaryCondition(): AthleteProfileCondition {
+    return this.formData().health.conditions?.[0] ?? buildEmptyCondition();
+  }
+
+  onHasInjuryChange(hasInjury: boolean): void {
+    this.formData.update((prev) => ({
+      ...prev,
+      health: {
+        ...prev.health,
+        hasInjury,
+        injuries: hasInjury
+          ? prev.health.injuries && prev.health.injuries.length > 0
+            ? prev.health.injuries
+            : [
+                {
+                  notes: prev.health.injuryDescription,
+                  ...(prev.health.injurySeverity
+                    ? { severity: prev.health.injurySeverity }
+                    : {}),
+                },
+              ]
+          : [],
+      },
+    }));
+  }
+
+  onHasDiseaseChange(hasDisease: boolean): void {
+    this.formData.update((prev) => ({
+      ...prev,
+      health: {
+        ...prev.health,
+        hasDisease,
+        conditions: hasDisease
+          ? prev.health.conditions && prev.health.conditions.length > 0
+            ? prev.health.conditions
+            : [
+                {
+                  type: 'other',
+                  name: prev.health.diseaseDescription,
+                  notes: '',
+                  ...(prev.health.diseaseSeverity
+                    ? { severity: prev.health.diseaseSeverity }
+                    : {}),
+                },
+              ]
+          : [],
+      },
+    }));
+  }
+
+  updatePrimaryInjuryArea(value: string): void {
+    this.updatePrimaryInjury((injury) => ({
+      ...injury,
+      area: value ? (value as InjuryArea) : undefined,
+    }));
+  }
+
+  updatePrimaryInjurySeverity(value: string): void {
+    const severity = (value as InjurySeverity) || undefined;
+    this.updatePrimaryInjury((injury) => ({
+      ...injury,
+      severity,
+    }));
+    this.updateHealth('injurySeverity', severity);
+  }
+
+  updatePrimaryInjuryNotes(value: string): void {
+    this.updatePrimaryInjury((injury) => ({
+      ...injury,
+      notes: value,
+    }));
+    this.updateHealth('injuryDescription', value);
+  }
+
+  updatePrimaryConditionName(value: string): void {
+    this.updatePrimaryCondition((condition) => ({
+      ...condition,
+      type: 'other',
+      name: value,
+    }));
+    this.updateHealth('diseaseDescription', value);
+  }
+
+  updatePrimaryConditionSeverity(value: string): void {
+    const severity = (value as DiseaseSeverity) || undefined;
+    this.updatePrimaryCondition((condition) => ({
+      ...condition,
+      severity,
+    }));
+    this.updateHealth('diseaseSeverity', severity);
+  }
+
+  updatePrimaryConditionNotes(value: string): void {
+    this.updatePrimaryCondition((condition) => ({
+      ...condition,
+      notes: value,
+    }));
+    this.updateHealth('diseaseDescription', value);
+  }
+
   updateLifestyle<K extends keyof AthleteProfileFormData['lifestyle']>(
     field: K,
     value: AthleteProfileFormData['lifestyle'][K]
@@ -323,7 +540,7 @@ export class AthleteProfileFormComponent implements OnInit {
     return this.formData().nutrition.mealSchedule.includes(slot);
   }
 
-  toggleAvailableDay(day: string): void {
+  toggleAvailableDay(day: WeekDayId): void {
     this.formData.update((prev) => {
       const current = prev.training.availableDays;
       const updated = current.includes(day)
@@ -336,11 +553,11 @@ export class AthleteProfileFormComponent implements OnInit {
     });
   }
 
-  isDaySelected(day: string): boolean {
+  isDaySelected(day: WeekDayId): boolean {
     return this.formData().training.availableDays.includes(day);
   }
 
-  toggleEquipment(value: string): void {
+  toggleEquipment(value: EquipmentId): void {
     this.formData.update((prev) => {
       const current = prev.training.availableEquipment;
       const updated = current.includes(value)
@@ -353,7 +570,7 @@ export class AthleteProfileFormComponent implements OnInit {
     });
   }
 
-  isEquipmentSelected(value: string): boolean {
+  isEquipmentSelected(value: EquipmentId): boolean {
     return this.formData().training.availableEquipment.includes(value);
   }
 
@@ -361,14 +578,14 @@ export class AthleteProfileFormComponent implements OnInit {
    * Handles training location change.
    * - 'gym'  → auto-sets equipment to ['full_gym'], hides chip selector
    * - 'home' → clears gym equipment, shows home chip selector
-   * - 'both' → ensures 'full_gym' is included, shows home chip selector
+   * - 'hybrid' → ensures 'full_gym' is included, shows home chip selector
    */
   onTrainingLocationChange(location: TrainingLocation): void {
     this.updateTraining('trainingLocation', location);
 
     if (location === 'gym') {
       this.updateTraining('availableEquipment', ['full_gym']);
-    } else if (location === 'both') {
+    } else if (location === 'hybrid') {
       const current = this.formData().training.availableEquipment;
       if (!current.includes('full_gym')) {
         this.updateTraining('availableEquipment', ['full_gym', ...current]);
@@ -383,11 +600,13 @@ export class AthleteProfileFormComponent implements OnInit {
     }
   }
 
-  togglePriorityMuscle(value: string): void {
+  togglePriorityMuscle(value: MuscleId): void {
     this.formData.update((prev) => {
       const current = prev.training.priorityMuscles ?? [];
       const updated = current.includes(value)
         ? current.filter((m) => m !== value)
+        : current.length >= MAX_PRIORITY_MUSCLES
+        ? current
         : [...current, value];
       return {
         ...prev,
@@ -396,11 +615,16 @@ export class AthleteProfileFormComponent implements OnInit {
     });
   }
 
-  isPriorityMuscleSelected(value: string): boolean {
+  isPriorityMuscleSelected(value: MuscleId): boolean {
     return (this.formData().training.priorityMuscles ?? []).includes(value);
   }
 
-  toggleAvoidMuscle(value: string): void {
+  canSelectMorePriorityMuscles(value: MuscleId): boolean {
+    const current = this.formData().training.priorityMuscles ?? [];
+    return current.includes(value) || current.length < MAX_PRIORITY_MUSCLES;
+  }
+
+  toggleAvoidMuscle(value: MuscleId): void {
     this.formData.update((prev) => {
       const current = prev.training.avoidMuscles ?? [];
       const updated = current.includes(value)
@@ -410,7 +634,7 @@ export class AthleteProfileFormComponent implements OnInit {
     });
   }
 
-  isAvoidMuscleSelected(value: string): boolean {
+  isAvoidMuscleSelected(value: MuscleId): boolean {
     return (this.formData().training.avoidMuscles ?? []).includes(value);
   }
 
@@ -429,13 +653,22 @@ export class AthleteProfileFormComponent implements OnInit {
     const data = this.formData();
     // When 'Otro' is selected for sport, persist the custom text entered
     const finalSport =
-      data.training.sport === 'Otro'
+      data.training.sport === 'other'
         ? this.customSportText().trim()
         : data.training.sport;
 
     await this.store.saveAthleteProfile({
       ...data,
       training: { ...data.training, sport: finalSport },
+      health: {
+        ...data.health,
+        injuries: data.health.hasInjury ? data.health.injuries ?? [] : [],
+        conditions: data.health.hasDisease ? data.health.conditions ?? [] : [],
+        injuryDescription: this.primaryInjury().notes.trim(),
+        injurySeverity: this.primaryInjury().severity,
+        diseaseDescription: this.primaryCondition().name?.trim() ?? '',
+        diseaseSeverity: this.primaryCondition().severity,
+      },
     });
   }
 

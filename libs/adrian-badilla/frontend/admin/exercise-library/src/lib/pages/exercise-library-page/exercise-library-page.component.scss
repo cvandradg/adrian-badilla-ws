@@ -1,0 +1,515 @@
+@use 'settings/tokens' as t;
+
+// ── Accessibility ─────────────────────────────────────────────────────────────
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// ── Page container ─────────────────────────────────────────────────────────
+
+.exercise-library {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(0.75rem, 3vw, 1.5rem);
+  min-height: 100%;
+
+  // ── Toolbar ──────────────────────────────────────────────────────────────
+
+  &__toolbar {
+    background: t.$dashboard-panel-surface;
+    border: 1px solid t.$dashboard-border-subtle;
+    border-radius: 0.75rem;
+    backdrop-filter: blur(t.$dashboard-content-blur);
+    -webkit-backdrop-filter: blur(t.$dashboard-content-blur);
+    padding: 0.75rem 1rem;
+
+    .toolbar-start {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      font-weight: 700;
+      color: t.$dashboard-text-primary;
+
+      &__icon {
+        color: t.$dashboard-glow-outer;
+        font-size: 1.1em;
+      }
+    }
+
+    .toolbar-count {
+      font-size: 0.75rem;
+      color: t.$dashboard-text-muted;
+      background: t.$dashboard-hover-surface;
+      border: 1px solid t.$dashboard-border-subtle;
+      border-radius: 999px;
+      padding: 0.2rem 0.6rem;
+    }
+  }
+
+  // ── Search ────────────────────────────────────────────────────────────────
+
+  &__search {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .search-icon {
+      position: absolute;
+      left: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: t.$ab-metal-lo;
+      pointer-events: none;
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+
+    .search-input {
+      width: 100%;
+      padding-left: 2.5rem;
+      padding-right: 2.5rem;
+      background: t.$dashboard-panel-surface;
+      border: 1px solid t.$dashboard-border-subtle;
+      border-radius: 0.5rem;
+      color: t.$dashboard-text-primary;
+      height: 2.75rem;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+
+      &::placeholder {
+        color: t.$ab-metal-lo;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: t.$dashboard-glow-outer;
+      }
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 0.25rem;
+    }
+  }
+
+  // ── Skeleton grid ─────────────────────────────────────────────────────────
+
+  &__skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: 0.75rem;
+  }
+
+  // ── Empty state ───────────────────────────────────────────────────────────
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 4rem 1rem;
+    text-align: center;
+
+    .empty-icon {
+      font-size: 3rem;
+      color: t.$ab-metal-lo;
+    }
+
+    .empty-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: t.$dashboard-text-primary;
+    }
+
+    .empty-sub {
+      font-size: 0.875rem;
+      color: t.$dashboard-text-muted;
+      max-width: 28ch;
+    }
+  }
+
+  // ── Grid ─────────────────────────────────────────────────────────────────
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: 0.75rem;
+
+    // Desktop: denser grid with more columns
+    @media (min-width: 1200px) {
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1rem;
+    }
+  }
+
+  // ── Desktop one-row toolbar ───────────────────────────────────────────────
+  // On desktop, collapse toolbar + search into a single visual row
+  @media (min-width: 1200px) {
+    gap: 0;
+
+    &__toolbar {
+      border-radius: 0.75rem 0.75rem 0 0;
+      border-bottom: none;
+    }
+
+    &__search {
+      border-radius: 0 0 0.75rem 0.75rem;
+      background: t.$dashboard-panel-surface;
+      border: 1px solid t.$dashboard-border-subtle;
+      backdrop-filter: blur(t.$dashboard-content-blur);
+      -webkit-backdrop-filter: blur(t.$dashboard-content-blur);
+      padding: 0.625rem 1rem;
+      border-top: none;
+      margin-bottom: 1.25rem;
+
+      // On desktop the container has padding-left: 1rem, so the absolute icon
+      // must be shifted right by the same amount to stay inside the input.
+      .search-icon {
+        left: calc(1rem + 0.875rem);
+      }
+    }
+  }
+}
+
+// ── Exercise Card ─────────────────────────────────────────────────────────────
+
+.exercise-card {
+  display: grid;
+  grid-template-columns: 4rem 1fr auto auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: t.$dashboard-panel-surface;
+  border: 1px solid t.$dashboard-border-subtle;
+  border-radius: 0.75rem;
+  backdrop-filter: blur(t.$dashboard-content-blur);
+  -webkit-backdrop-filter: blur(t.$dashboard-content-blur);
+  transition: border-color 0.2s, background 0.2s;
+
+  &:hover {
+    border-color: t.$dashboard-border-strong;
+    background: t.$dashboard-hover-surface;
+  }
+
+  &--skeleton {
+    pointer-events: none;
+  }
+
+  // Thumbnail
+  &__thumb {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    .thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .thumb-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: t.$dashboard-hover-surface;
+      border: 1px solid t.$dashboard-border-subtle;
+      border-radius: 0.5rem;
+      color: t.$ab-metal-lo;
+      font-size: 1.25rem;
+    }
+  }
+
+  // Info
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+
+    .card-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: t.$dashboard-text-primary;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-tags {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .card-muscle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.75rem;
+      color: t.$dashboard-text-muted;
+    }
+
+    .card-meta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.72rem;
+      color: t.$ab-metal-lo;
+    }
+  }
+
+  // Status
+  &__status {
+    flex-shrink: 0;
+  }
+
+  // Actions
+  &__actions {
+    display: flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+  }
+}
+
+// ── Mobile adjustments ────────────────────────────────────────────────────────
+
+@media (max-width: 480px) {
+  .exercise-card {
+    grid-template-columns: 3.5rem 1fr;
+    grid-template-rows: auto auto;
+
+    &__status {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    &__actions {
+      grid-column: 1 / -1;
+      justify-content: flex-end;
+      border-top: 1px solid t.$glass-border;
+      padding-top: 0.5rem;
+      margin-top: 0.25rem;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .exercise-library__table {
+    display: block;
+    background: t.$dashboard-panel-surface;
+    border: 1px solid t.$dashboard-border-subtle;
+    border-top: none;
+    border-radius: 0 0 0.75rem 0.75rem;
+    overflow: hidden;
+  }
+
+  // ── Table element ──────────────────────────────────────────────────────────
+
+  .ex-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+
+    // ── Column widths ────────────────────────────────────────────────────────
+    .col-thumb {
+      width: 3.5rem;
+    }
+    .col-name {
+      width: auto;
+    }
+    .col-muscle {
+      width: 11rem;
+    }
+    .col-level {
+      width: 8rem;
+    }
+    .col-location {
+      width: 10rem;
+    }
+    .col-equipment {
+      width: 10rem;
+    }
+    .col-status {
+      width: 7rem;
+    }
+    .col-actions {
+      width: 8rem;
+    }
+
+    // ── Header ───────────────────────────────────────────────────────────────
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+
+      tr {
+        background: t.$dashboard-hover-surface;
+        border-bottom: 1px solid t.$dashboard-border-subtle;
+      }
+
+      th {
+        padding: 0.75rem 1rem;
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: t.$ab-metal-lo;
+        text-align: left;
+        white-space: nowrap;
+        user-select: none;
+
+        &.col-actions {
+          text-align: right;
+        }
+      }
+    }
+
+    // ── Body ─────────────────────────────────────────────────────────────────
+    tbody {
+      .ex-row {
+        border-bottom: 1px solid rgba(132, 165, 188, 0.08);
+        transition: background 0.15s;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background: t.$dashboard-hover-surface;
+        }
+
+        td {
+          padding: 0.75rem 1rem;
+          vertical-align: middle;
+          font-size: 0.875rem;
+          color: t.$dashboard-text-primary;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+
+          &.col-actions {
+            text-align: right;
+          }
+        }
+      }
+    }
+  }
+
+  // ── Thumbnail cell ─────────────────────────────────────────────────────────
+  .ex-thumb {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.375rem;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    &__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    &__placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: t.$dashboard-hover-surface;
+      border: 1px solid t.$dashboard-border-subtle;
+      border-radius: 0.375rem;
+      color: t.$ab-metal-lo;
+      font-size: 0.9rem;
+    }
+  }
+
+  // ── Cell content helpers ───────────────────────────────────────────────────
+  .ex-name {
+    font-weight: 600;
+    color: t.$dashboard-text-primary;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ex-muscle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.82rem;
+    color: t.$dashboard-text-muted;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+
+    i {
+      font-size: 0.7rem;
+      color: t.$dashboard-glow-outer;
+      flex-shrink: 0;
+    }
+  }
+
+  .ex-cell-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.82rem;
+    color: t.$dashboard-text-muted;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+
+    i {
+      font-size: 0.7rem;
+      color: t.$ab-metal-lo;
+      flex-shrink: 0;
+    }
+  }
+
+  .ex-cell--muted {
+    color: t.$ab-metal-lo;
+    font-size: 0.82rem;
+  }
+
+  // ── Actions cell ───────────────────────────────────────────────────────────
+  .ex-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.125rem;
+  }
+}
